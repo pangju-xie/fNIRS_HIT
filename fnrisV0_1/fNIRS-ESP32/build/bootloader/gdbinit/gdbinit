@@ -1,0 +1,2 @@
+source E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/bootloader/gdbinit/symbols
+source E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/bootloader/gdbinit/connect

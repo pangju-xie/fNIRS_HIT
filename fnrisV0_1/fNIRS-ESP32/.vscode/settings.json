@@ -1,0 +1,34 @@
+{
+  "C_Cpp.intelliSenseEngine": "default",
+  "idf.espIdfPathWin": "D:/ProgramData/Espressif/frameworks/esp-idf-v5.3.3/",
+  "idf.toolsPathWin": "D:\\ProgramData\\Espressif",
+  "idf.pythonInstallPath": "D:\\ProgramData\\Espressif\\tools\\idf-python\\3.11.2\\python.exe",
+  "files.associations": {
+    "gpio.h": "c",
+    "esp_system.h": "c",
+    "event_groups.h": "c",
+    "udp.h": "c",
+    "uart.h": "c",
+    "wifi.h": "c",
+    "led.h": "c",
+    "nvs_flash.h": "c",
+    "spi.h": "c",
+    "stdint.h": "c",
+    "esp_log.h": "c",
+    "netdb.h": "c",
+    "err.h": "c",
+    "esp_mac.h": "c",
+    "esp_wifi.h": "c"
+  },
+  "idf.portWin": "COM6",
+  "idf.flashType": "UART",
+  "idf.openOcdConfigs": [
+    "board/esp32-wrover-kit-3.3v.cfg"
+  ],
+  "idf.customExtraVars": {
+    "OPENOCD_SCRIPTS": "D:\\Espressif\\tools\\openocd-esp32\\v0.12.0-esp32-20230419/openocd-esp32/share/openocd/scripts",
+    "IDF_CCACHE_ENABLE": "1",
+    "ESP_ROM_ELF_DIR": "D:\\Espressif\\tools\\esp-rom-elfs\\20230320/",
+    "IDF_TARGET": "esp32"
+  }
+}
