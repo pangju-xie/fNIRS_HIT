@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1200</width>
+    <height>850</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Signal Processing and Data Visualization</string>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>1000</width>
+    <height>700</height>
+   </size>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="mainLayout">
+    <property name="spacing">
+     <number>10</number>
+    </property>
+    <property name="leftMargin">
+     <number>15</number>
+    </property>
+    <property name="topMargin">
+     <number>15</number>
+    </property>
+    <property name="rightMargin">
+     <number>15</number>
+    </property>
+    <property name="bottomMargin">
+     <number>15</number>
+    </property>
+    <item>
+     <widget class="QGroupBox" name="controlGroup">
+      <property name="title">
+       <string>Control Panel</string>
+      </property>
+      <property name="maximumHeight">
+       <number>60</number>
+      </property>
+      <layout class="QHBoxLayout" name="controlLayout">
+       <item>
+        <widget class="QPushButton" name="startButton">
+         <property name="text">
+          <string>Start (开始)</string>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>35</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="resetButton">
+         <property name="text">
+          <string>Reset (复位)</string>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>35</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="recordButton">
+         <property name="text">
+          <string>Record (记录)</string>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>35</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="stopButton">
+         <property name="text">
+          <string>Stop (停止)</string>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>35</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="saveButton">
+         <property name="text">
+          <string>Save (保存)</string>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>35</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="settingsGroup">
+      <property name="title">
+       <string>Signal Processing Settings</string>
+      </property>
+      <property name="maximumHeight">
+       <number>120</number>
+      </property>
+      <layout class="QHBoxLayout" name="settingsLayout">
+       <item>
+        <layout class="QVBoxLayout" name="signalLayout">
+         <item>
+          <widget class="QLabel" name="signalTypeLabel">
+           <property name="text">
+            <string>Signal Type (信号类型):</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="signalTypeCombo">
+           <property name="minimumSize">
+            <size>
+             <width>150</width>
+             <height>25</height>
+            </size>
+           </property>
+           <item>
+            <property name="text">
+             <string>Raw Light Intensity (原始光强)</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Optical Density (光密度OD)</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Hemoglobin Concentration (血红蛋白浓度)</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="filterLayout">
+         <item>
+          <widget class="QLabel" name="filterLabel">
+           <property name="text">
+            <string>Filter Type (滤波):</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="filterTypeCombo">
+           <property name="minimumSize">
+            <size>
+             <width>120</width>
+             <height>25</height>
+            </size>
+           </property>
+           <item>
+            <property name="text">
+             <string>No Filter (不滤波)</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>S-G Filter (S-G滤波)</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Bandpass Filter (带通滤波)</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Smooth Filter (平滑滤波)</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="sgFilterGroup">
+         <property name="title">
+          <string>S-G Filter Settings</string>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>250</width>
+           <height>80</height>
+          </size>
+         </property>
+         <property name="visible">
+          <bool>false</bool>
+         </property>
+         <layout class="QHBoxLayout" name="sgLayout">
+          <item>
+           <widget class="QLabel" name="windowLabel">
+            <property name="text">
+             <string>Window (窗口值):</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="windowSpinBox">
+            <property name="minimum">
+             <number>3</number>
+            </property>
+            <property name="maximum">
+             <number>101</number>
+            </property>
+            <property name="singleStep">
+             <number>2</number>
+            </property>
+            <property name="value">
+             <number>11</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="polyOrderLabel">
+            <property name="text">
+             <string>Poly Order (多项式阶数):</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="polyOrderSpinBox">
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>5</number>
+            </property>
+            <property name="value">
+             <number>3</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="sgApplyButton">
+            <property name="text">
+             <string>Apply (完成)</string>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>80</width>
+              <height>30</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="butterworthGroup">
+         <property name="title">
+          <string>Butterworth Filter Settings</string>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>400</width>
+           <height>80</height>
+          </size>
+         </property>
+         <property name="visible">
+          <bool>false</bool>
+         </property>
+         <layout class="QHBoxLayout" name="butterworthLayout">
+          <item>
+           <widget class="QLabel" name="lowCutoffLabel">
+            <property name="text">
+             <string>Low Cutoff (下截止频率):</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="lowCutoffEdit">
+            <property name="maximumSize">
+             <size>
+              <width>50</width>
+              <height>25</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>0.01</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="highCutoffLabel">
+            <property name="text">
+             <string>High Cutoff (上截止频率):</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="highCutoffEdit">
+            <property name="maximumSize">
+             <size>
+              <width>50</width>
+              <height>25</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>0.1</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="orderLabel">
+            <property name="text">
+             <string>Order (阶数):</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="orderSpinBox">
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>10</number>
+            </property>
+            <property name="value">
+             <number>4</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="butterworthApplyButton">
+            <property name="text">
+             <string>Apply (完成)</string>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>80</width>
+              <height>30</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="plotGroup">
+      <property name="title">
+       <string>Data Visualization</string>
+      </property>
+      <layout class="QVBoxLayout" name="plotLayout">
+       <property name="spacing">
+        <number>5</number>
+       </property>
+       <item>
+        <layout class="QHBoxLayout" name="plotControlLayout">
+         <item>
+          <widget class="QLabel" name="channelOffsetLabel">
+           <property name="text">
+            <string>Channel Offset:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDoubleSpinBox" name="channelOffsetSpinBox">
+           <property name="minimum">
+            <double>0.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>10.000000000000000</double>
+           </property>
+           <property name="singleStep">
+            <double>0.100000000000000</double>
+           </property>
+           <property name="value">
+            <double>0.500000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="plotControlSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="clearPlotButton">
+           <property name="text">
+            <string>Clear Plot</string>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>100</width>
+             <height>30</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QWidget" name="plotWidget">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>500</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1200</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionOpen"/>
+    <addaction name="actionSave"/>
+    <addaction name="actionExport"/>
+    <addaction name="separator"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+    <addaction name="actionZoomIn"/>
+    <addaction name="actionZoomOut"/>
+    <addaction name="actionResetZoom"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuView"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionOpen">
+   <property name="text">
+    <string>Open</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="text">
+    <string>Save</string>
+   </property>
+  </action>
+  <action name="actionExport">
+   <property name="text">
+    <string>Export</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionZoomIn">
+   <property name="text">
+    <string>Zoom In</string>
+   </property>
+  </action>
+  <action name="actionZoomOut">
+   <property name="text">
+    <string>Zoom Out</string>
+   </property>
+  </action>
+  <action name="actionResetZoom">
+   <property name="text">
+    <string>Reset Zoom</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

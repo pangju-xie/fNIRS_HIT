@@ -7,119 +7,567 @@
     <x>0</x>
     <y>0</y>
     <width>1600</width>
-    <height>900</height>
+    <height>1000</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>1200</width>
+    <height>800</height>
+   </size>
+  </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>fNIRS 信号采集系统</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="Button_Connect">
-    <property name="geometry">
-     <rect>
-      <x>1320</x>
-      <y>30</y>
-      <width>111</width>
-      <height>61</height>
-     </rect>
+   <layout class="QVBoxLayout" name="main_layout">
+    <property name="spacing">
+     <number>8</number>
     </property>
-    <property name="text">
-     <string>连接</string>
+    <property name="leftMargin">
+     <number>10</number>
     </property>
-   </widget>
-   <widget class="QPushButton" name="Button_Disconnect">
-    <property name="geometry">
-     <rect>
-      <x>1450</x>
-      <y>30</y>
-      <width>111</width>
-      <height>61</height>
-     </rect>
+    <property name="topMargin">
+     <number>10</number>
     </property>
-    <property name="text">
-     <string>断开</string>
+    <property name="rightMargin">
+     <number>10</number>
     </property>
-   </widget>
-   <widget class="QPushButton" name="Button_StartSample">
-    <property name="geometry">
-     <rect>
-      <x>1320</x>
-      <y>110</y>
-      <width>111</width>
-      <height>61</height>
-     </rect>
+    <property name="bottomMargin">
+     <number>10</number>
     </property>
-    <property name="text">
-     <string>开始</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="Button_StopSample">
-    <property name="geometry">
-     <rect>
-      <x>1450</x>
-      <y>110</y>
-      <width>111</width>
-      <height>61</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>结束</string>
-    </property>
-   </widget>
-   <widget class="QScrollArea" name="scrollArea">
-    <property name="geometry">
-     <rect>
-      <x>39</x>
-      <y>199</y>
-      <width>1521</width>
-      <height>621</height>
-     </rect>
-    </property>
-    <property name="widgetResizable">
-     <bool>true</bool>
-    </property>
-    <widget class="QWidget" name="Widget_Sensors">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>1519</width>
-       <height>619</height>
-      </rect>
-     </property>
-     <widget class="QWidget" name="verticalLayoutWidget">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>-1</y>
-        <width>1521</width>
-        <height>621</height>
-       </rect>
+    <item>
+     <widget class="QFrame" name="control_frame">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>70</height>
+       </size>
       </property>
-      <layout class="QVBoxLayout" name="VLayout_Sensors"/>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>70</height>
+       </size>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QHBoxLayout" name="control_layout">
+       <property name="spacing">
+        <number>12</number>
+       </property>
+       <property name="leftMargin">
+        <number>10</number>
+       </property>
+       <property name="topMargin">
+        <number>5</number>
+       </property>
+       <property name="rightMargin">
+        <number>10</number>
+       </property>
+       <property name="bottomMargin">
+        <number>5</number>
+       </property>
+       <item>
+        <widget class="QGroupBox" name="connection_group">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>60</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>140</width>
+           <height>60</height>
+          </size>
+         </property>
+         <property name="title">
+          <string>连接控制</string>
+         </property>
+         <layout class="QHBoxLayout" name="connection_layout">
+          <property name="spacing">
+           <number>5</number>
+          </property>
+          <property name="leftMargin">
+           <number>5</number>
+          </property>
+          <property name="topMargin">
+           <number>5</number>
+          </property>
+          <property name="rightMargin">
+           <number>5</number>
+          </property>
+          <property name="bottomMargin">
+           <number>5</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="Button_Connection">
+            <property name="minimumSize">
+             <size>
+              <width>70</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>70</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>连接</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="sampling_group">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>60</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>140</width>
+           <height>60</height>
+          </size>
+         </property>
+         <property name="title">
+          <string>采样控制</string>
+         </property>
+         <layout class="QHBoxLayout" name="sampling_layout">
+          <property name="spacing">
+           <number>5</number>
+          </property>
+          <property name="leftMargin">
+           <number>5</number>
+          </property>
+          <property name="topMargin">
+           <number>5</number>
+          </property>
+          <property name="rightMargin">
+           <number>5</number>
+          </property>
+          <property name="bottomMargin">
+           <number>5</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="Button_Sampling">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>70</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>70</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>开始</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="status_group">
+         <property name="minimumSize">
+          <size>
+           <width>450</width>
+           <height>60</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>60</height>
+          </size>
+         </property>
+         <property name="title">
+          <string>系统状态</string>
+         </property>
+         <layout class="QHBoxLayout" name="status_layout">
+          <property name="spacing">
+           <number>15</number>
+          </property>
+          <property name="leftMargin">
+           <number>5</number>
+          </property>
+          <property name="topMargin">
+           <number>5</number>
+          </property>
+          <property name="rightMargin">
+           <number>5</number>
+          </property>
+          <property name="bottomMargin">
+           <number>5</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="status_label">
+            <property name="minimumSize">
+             <size>
+              <width>80</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>状态: 未连接</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="device_count_label">
+            <property name="minimumSize">
+             <size>
+              <width>60</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>设备: 0台</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="device_info_label">
+            <property name="minimumSize">
+             <size>
+              <width>120</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>设备信息: --</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="battery_label">
+            <property name="minimumSize">
+             <size>
+              <width>70</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>电量: --%</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="status_spacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+       </item>
+      </layout>
      </widget>
-    </widget>
-   </widget>
+    </item>
+    <item>
+     <widget class="QFrame" name="switch_frame">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>50</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>50</height>
+       </size>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::NoFrame</enum>
+      </property>
+      <layout class="QHBoxLayout" name="switch_layout">
+       <property name="spacing">
+        <number>5</number>
+       </property>
+       <property name="leftMargin">
+        <number>10</number>
+       </property>
+       <property name="topMargin">
+        <number>5</number>
+       </property>
+       <property name="rightMargin">
+        <number>10</number>
+       </property>
+       <property name="bottomMargin">
+        <number>5</number>
+       </property>
+       <item>
+        <widget class="QPushButton" name="Button_Configure">
+         <property name="minimumSize">
+          <size>
+           <width>150</width>
+           <height>35</height>
+          </size>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>配置 (Configure)</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="Button_Display">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>150</width>
+           <height>35</height>
+          </size>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>显示 (Display)</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="switch_spacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QStackedWidget" name="stacked_widget">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="configure_widget">
+       <layout class="QVBoxLayout" name="configure_layout">
+        <property name="leftMargin">
+         <number>10</number>
+        </property>
+        <property name="topMargin">
+         <number>10</number>
+        </property>
+        <property name="rightMargin">
+         <number>10</number>
+        </property>
+        <property name="bottomMargin">
+         <number>10</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="configure_title">
+          <property name="text">
+           <string>设备配置界面</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QFrame" name="configure_content">
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <layout class="QVBoxLayout" name="configure_content_layout">
+           <item>
+            <widget class="QLabel" name="configure_placeholder">
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+             <property name="text">
+              <string>配置界面将在单独的文件中实现</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="display_widget">
+       <layout class="QVBoxLayout" name="display_layout">
+        <property name="leftMargin">
+         <number>10</number>
+        </property>
+        <property name="topMargin">
+         <number>10</number>
+        </property>
+        <property name="rightMargin">
+         <number>10</number>
+        </property>
+        <property name="bottomMargin">
+         <number>10</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="display_title">
+          <property name="text">
+           <string>数据显示界面</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QFrame" name="display_content">
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <layout class="QVBoxLayout" name="display_content_layout">
+           <item>
+            <widget class="QLabel" name="display_placeholder">
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+             <property name="text">
+              <string>显示界面将在单独的文件中实现</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
      <width>1600</width>
-     <height>17</height>
+     <height>25</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menu_file">
+    <property name="title">
+     <string>文件(&amp;F)</string>
+    </property>
+    <addaction name="action_save"/>
+    <addaction name="separator"/>
+    <addaction name="action_exit"/>
+   </widget>
+   <widget class="QMenu" name="menu_settings">
+    <property name="title">
+     <string>设置(&amp;S)</string>
+    </property>
+    <addaction name="action_preferences"/>
+   </widget>
+   <widget class="QMenu" name="menu_help">
+    <property name="title">
+     <string>帮助(&amp;H)</string>
+    </property>
+    <addaction name="action_about"/>
+   </widget>
+   <addaction name="menu_file"/>
+   <addaction name="menu_settings"/>
+   <addaction name="menu_help"/>
   </widget>
   <widget class="QStatusBar" name="statusbar">
-   <property name="enabled">
-    <bool>true</bool>
+   <property name="minimumSize">
+    <size>
+     <width>0</width>
+     <height>25</height>
+    </size>
    </property>
   </widget>
+  <action name="action_save">
+   <property name="text">
+    <string>保存数据(&amp;S)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="action_exit">
+   <property name="text">
+    <string>退出(&amp;X)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="action_preferences">
+   <property name="text">
+    <string>首选项(&amp;P)</string>
+   </property>
+  </action>
+  <action name="action_about">
+   <property name="text">
+    <string>关于(&amp;A)</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>
 </ui>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer name="control_spacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>

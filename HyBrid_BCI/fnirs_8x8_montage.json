@@ -1,0 +1,248 @@
+{
+  "enabled_sensor_types": [
+    "fnirs"
+  ],
+  "sampling_rates": {
+    "fnirs": 10
+  },
+  "channel_counts": {
+    "fnirs_sources": 9,
+    "fnirs_detectors": 8
+  },
+  "enabled_channels": {
+    "fnirs": {
+      "S1-D1": "FC1-C1",
+      "S1-D2": "FC1-FC3",
+      "S2-D1": "CP1-C1",
+      "S2-D3": "CP1-CP3",
+      "S3-D1": "C3-C1",
+      "S3-D2": "C3-FC3",
+      "S3-D3": "C3-CP3",
+      "S3-D4": "C3-C5",
+      "S4-D2": "FC5-FC3",
+      "S4-D4": "FC5-C5",
+      "S5-D5": "FC2-C2",
+      "S5-D6": "FC2-FC4",
+      "S6-D5": "CP2-C2",
+      "S6-D7": "CP2-CP4",
+      "S7-D5": "C4-C2",
+      "S7-D6": "C4-FC4",
+      "S7-D7": "C4-CP4",
+      "S7-D8": "C4-C6",
+      "S8-D6": "FC6-FC4",
+      "S8-D8": "FC6-C6",
+      "S9-D3": "CP5-CP3",
+      "S9-D4": "CP5-C5"
+    },
+    "fnirssource": [
+      "FC1",
+      "CP1",
+      "C3",
+      "FC5",
+      "FC2",
+      "CP2",
+      "C4",
+      "FC6",
+      "CP5"
+    ],
+    "fnirsdetect": [
+      "C1",
+      "FC3",
+      "CP3",
+      "C5",
+      "C2",
+      "FC4",
+      "CP4",
+      "C6"
+    ]
+  },
+  "sensor_configs": {
+    "fnirs": {
+      "color": [
+        "#E91E63",
+        "#1040ff"
+      ],
+      "prefix": [
+        "S",
+        "D"
+      ],
+      "max_channels": 0,
+      "min_channels": 0,
+      "channels_per_row": 8,
+      "max_sources": 32,
+      "max_detectors": 32,
+      "min_sources": 1,
+      "min_detectors": 1
+    }
+  },
+  "electrode_mapping": {
+    "fnirs": {}
+  },
+  "metadata": {
+    "total_channels": {
+      "fnirs": 22
+    },
+    "configuration_timestamp": "周三 9月 10 15:08:02 2025",
+    "enabled_sensors": [
+      "fnirs"
+    ],
+    "version": "2.0",
+    "has_electrode_positions": true,
+    "has_valid_channels": true
+  },
+  "fnirs_pairs": {
+    "S1-D1": {
+      "node_pair": "FC1-C1",
+      "distance": 33.74907406137241,
+      "source_node": "FC1",
+      "detector_node": "C1"
+    },
+    "S1-D2": {
+      "node_pair": "FC1-FC3",
+      "distance": 31.68595903550972,
+      "source_node": "FC1",
+      "detector_node": "FC3"
+    },
+    "S2-D1": {
+      "node_pair": "CP1-C1",
+      "distance": 33.74907406137241,
+      "source_node": "CP1",
+      "detector_node": "C1"
+    },
+    "S2-D3": {
+      "node_pair": "CP1-CP3",
+      "distance": 31.68595903550972,
+      "source_node": "CP1",
+      "detector_node": "CP3"
+    },
+    "S3-D1": {
+      "node_pair": "C3-C1",
+      "distance": 35.22782990761707,
+      "source_node": "C3",
+      "detector_node": "C1"
+    },
+    "S3-D2": {
+      "node_pair": "C3-FC3",
+      "distance": 31.654383582688826,
+      "source_node": "C3",
+      "detector_node": "FC3"
+    },
+    "S3-D3": {
+      "node_pair": "C3-CP3",
+      "distance": 31.654383582688826,
+      "source_node": "C3",
+      "detector_node": "CP3"
+    },
+    "S3-D4": {
+      "node_pair": "C3-C5",
+      "distance": 35.510561809129406,
+      "source_node": "C3",
+      "detector_node": "C5"
+    },
+    "S4-D2": {
+      "node_pair": "FC5-FC3",
+      "distance": 34.68429039204925,
+      "source_node": "FC5",
+      "detector_node": "FC3"
+    },
+    "S4-D4": {
+      "node_pair": "FC5-C5",
+      "distance": 30.528675044947494,
+      "source_node": "FC5",
+      "detector_node": "C5"
+    },
+    "S5-D5": {
+      "node_pair": "FC2-C2",
+      "distance": 33.74907406137241,
+      "source_node": "FC2",
+      "detector_node": "C2"
+    },
+    "S5-D6": {
+      "node_pair": "FC2-FC4",
+      "distance": 31.68595903550972,
+      "source_node": "FC2",
+      "detector_node": "FC4"
+    },
+    "S6-D5": {
+      "node_pair": "CP2-C2",
+      "distance": 33.74907406137241,
+      "source_node": "CP2",
+      "detector_node": "C2"
+    },
+    "S6-D7": {
+      "node_pair": "CP2-CP4",
+      "distance": 31.68595903550972,
+      "source_node": "CP2",
+      "detector_node": "CP4"
+    },
+    "S7-D5": {
+      "node_pair": "C4-C2",
+      "distance": 35.22782990761707,
+      "source_node": "C4",
+      "detector_node": "C2"
+    },
+    "S7-D6": {
+      "node_pair": "C4-FC4",
+      "distance": 31.654383582688826,
+      "source_node": "C4",
+      "detector_node": "FC4"
+    },
+    "S7-D7": {
+      "node_pair": "C4-CP4",
+      "distance": 31.654383582688826,
+      "source_node": "C4",
+      "detector_node": "CP4"
+    },
+    "S7-D8": {
+      "node_pair": "C4-C6",
+      "distance": 35.510561809129406,
+      "source_node": "C4",
+      "detector_node": "C6"
+    },
+    "S8-D6": {
+      "node_pair": "FC6-FC4",
+      "distance": 34.68429039204925,
+      "source_node": "FC6",
+      "detector_node": "FC4"
+    },
+    "S8-D8": {
+      "node_pair": "FC6-C6",
+      "distance": 30.528675044947494,
+      "source_node": "FC6",
+      "detector_node": "C6"
+    },
+    "S9-D3": {
+      "node_pair": "CP5-CP3",
+      "distance": 34.68429039204925,
+      "source_node": "CP5",
+      "detector_node": "CP3"
+    },
+    "S9-D4": {
+      "node_pair": "CP5-C5",
+      "distance": 30.528675044947494,
+      "source_node": "CP5",
+      "detector_node": "C5"
+    }
+  },
+  "sources": {
+    "1": "FC1",
+    "2": "CP1",
+    "3": "C3",
+    "4": "FC5",
+    "5": "FC2",
+    "6": "CP2",
+    "7": "C4",
+    "8": "FC6",
+    "9": "CP5"
+  },
+  "detectors": {
+    "1": "C1",
+    "2": "FC3",
+    "3": "CP3",
+    "4": "C5",
+    "5": "C2",
+    "6": "FC4",
+    "7": "CP4",
+    "8": "C6"
+  }
+}

@@ -1,0 +1,371 @@
+{
+  "enabled_sensor_types": [
+    "eeg",
+    "fnirs"
+  ],
+  "sampling_rates": {
+    "eeg": 1000,
+    "fnirs": 10
+  },
+  "channel_counts": {
+    "eeg": 16,
+    "fnirs_sources": 8,
+    "fnirs_detectors": 8
+  },
+  "enabled_channels": {
+    "eeg": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "fnirs": {
+      "S1-D1": "F1_FC1-FC1_C1",
+      "S1-D2": "F1_FC1-FC3_F3",
+      "S2-D1": "CP1_C1-FC1_C1",
+      "S2-D3": "CP1_C1-C3_CP3",
+      "S3-D1": "FC3_C3-FC1_C1",
+      "S3-D2": "FC3_C3-FC3_F3",
+      "S3-D3": "FC3_C3-C3_CP3",
+      "S3-D4": "FC3_C3-FC5_C5",
+      "S5-D5": "F2_FC2-FC2_C2",
+      "S5-D6": "F2_FC2-F4_FC4",
+      "S6-D5": "C2_CP2-FC2_C2",
+      "S6-D7": "C2_CP2-C4_CP4",
+      "S7-D5": "FC4_C4-FC2_C2",
+      "S7-D6": "FC4_C4-F4_FC4",
+      "S7-D7": "FC4_C4-C4_CP4",
+      "S7-D8": "FC4_C4-FC6_C6"
+    },
+    "fnirssource": [
+      "F1_FC1",
+      "CP1_C1",
+      "FC3_C3",
+      "custom_104_163",
+      "F2_FC2",
+      "C2_CP2",
+      "FC4_C4",
+      "custom_432_167"
+    ],
+    "fnirsdetect": [
+      "FC1_C1",
+      "FC3_F3",
+      "C3_CP3",
+      "FC5_C5",
+      "FC2_C2",
+      "F4_FC4",
+      "C4_CP4",
+      "FC6_C6"
+    ]
+  },
+  "sensor_configs": {
+    "eeg": {
+      "color": "#2196F3",
+      "prefix": "EEG",
+      "max_channels": 64,
+      "min_channels": 1,
+      "channels_per_row": 8,
+      "max_sources": null,
+      "max_detectors": null,
+      "min_sources": null,
+      "min_detectors": null
+    },
+    "fnirs": {
+      "color": [
+        "#E91E63",
+        "#1040ff"
+      ],
+      "prefix": [
+        "S",
+        "D"
+      ],
+      "max_channels": 0,
+      "min_channels": 0,
+      "channels_per_row": 8,
+      "max_sources": 32,
+      "max_detectors": 32,
+      "min_sources": 1,
+      "min_detectors": 1
+    }
+  },
+  "electrode_mapping": {
+    "eeg": {},
+    "fnirs": {}
+  },
+  "metadata": {
+    "total_channels": {
+      "eeg": 16,
+      "fnirs": 16
+    },
+    "configuration_timestamp": "周四 9月 11 11:08:28 2025",
+    "enabled_sensors": [
+      "eeg",
+      "fnirs"
+    ],
+    "version": "2.0",
+    "has_electrode_positions": true,
+    "has_valid_channels": true
+  },
+  "fnirs_pairs": {
+    "S1-D1": {
+      "node_pair": "F1_FC1-FC1_C1",
+      "distance": 33.726843908080106,
+      "source_node": "F1_FC1",
+      "detector_node": "FC1_C1"
+    },
+    "S1-D2": {
+      "node_pair": "F1_FC1-FC3_F3",
+      "distance": 28.83574171059243,
+      "source_node": "F1_FC1",
+      "detector_node": "FC3_F3"
+    },
+    "S2-D1": {
+      "node_pair": "CP1_C1-FC1_C1",
+      "distance": 33.0,
+      "source_node": "CP1_C1",
+      "detector_node": "FC1_C1"
+    },
+    "S2-D3": {
+      "node_pair": "CP1_C1-C3_CP3",
+      "distance": 33.44024521441193,
+      "source_node": "CP1_C1",
+      "detector_node": "C3_CP3"
+    },
+    "S3-D1": {
+      "node_pair": "FC3_C3-FC1_C1",
+      "distance": 33.44024521441193,
+      "source_node": "FC3_C3",
+      "detector_node": "FC1_C1"
+    },
+    "S3-D2": {
+      "node_pair": "FC3_C3-FC3_F3",
+      "distance": 31.603006186120965,
+      "source_node": "FC3_C3",
+      "detector_node": "FC3_F3"
+    },
+    "S3-D3": {
+      "node_pair": "FC3_C3-C3_CP3",
+      "distance": 31.0,
+      "source_node": "FC3_C3",
+      "detector_node": "C3_CP3"
+    },
+    "S3-D4": {
+      "node_pair": "FC3_C3-FC5_C5",
+      "distance": 35.092734290733176,
+      "source_node": "FC3_C3",
+      "detector_node": "FC5_C5"
+    },
+    "S5-D5": {
+      "node_pair": "F2_FC2-FC2_C2",
+      "distance": 33.726843908080106,
+      "source_node": "F2_FC2",
+      "detector_node": "FC2_C2"
+    },
+    "S5-D6": {
+      "node_pair": "F2_FC2-F4_FC4",
+      "distance": 28.83574171059243,
+      "source_node": "F2_FC2",
+      "detector_node": "F4_FC4"
+    },
+    "S6-D5": {
+      "node_pair": "C2_CP2-FC2_C2",
+      "distance": 33.0,
+      "source_node": "C2_CP2",
+      "detector_node": "FC2_C2"
+    },
+    "S6-D7": {
+      "node_pair": "C2_CP2-C4_CP4",
+      "distance": 33.44024521441193,
+      "source_node": "C2_CP2",
+      "detector_node": "C4_CP4"
+    },
+    "S7-D5": {
+      "node_pair": "FC4_C4-FC2_C2",
+      "distance": 33.44024521441193,
+      "source_node": "FC4_C4",
+      "detector_node": "FC2_C2"
+    },
+    "S7-D6": {
+      "node_pair": "FC4_C4-F4_FC4",
+      "distance": 31.603006186120965,
+      "source_node": "FC4_C4",
+      "detector_node": "F4_FC4"
+    },
+    "S7-D7": {
+      "node_pair": "FC4_C4-C4_CP4",
+      "distance": 31.0,
+      "source_node": "FC4_C4",
+      "detector_node": "C4_CP4"
+    },
+    "S7-D8": {
+      "node_pair": "FC4_C4-FC6_C6",
+      "distance": 35.092734290733176,
+      "source_node": "FC4_C4",
+      "detector_node": "FC6_C6"
+    }
+  },
+  "sources": {
+    "1": "F1_FC1",
+    "2": "CP1_C1",
+    "3": "FC3_C3",
+    "4": "custom_104_163",
+    "5": "F2_FC2",
+    "6": "C2_CP2",
+    "7": "FC4_C4",
+    "8": "custom_432_167"
+  },
+  "detectors": {
+    "1": "FC1_C1",
+    "2": "FC3_F3",
+    "3": "C3_CP3",
+    "4": "FC5_C5",
+    "5": "FC2_C2",
+    "6": "F4_FC4",
+    "7": "C4_CP4",
+    "8": "FC6_C6"
+  },
+  "eeg_pairs": {
+    "EEG1": {
+      "node": "C1",
+      "position": [
+        207,
+        267
+      ]
+    },
+    "EEG2": {
+      "node": "FC1",
+      "position": [
+        209,
+        206
+      ]
+    },
+    "EEG3": {
+      "node": "FC3",
+      "position": [
+        149,
+        204
+      ]
+    },
+    "EEG4": {
+      "node": "C3",
+      "position": [
+        147,
+        267
+      ]
+    },
+    "EEG5": {
+      "node": "CP1",
+      "position": [
+        209,
+        328
+      ]
+    },
+    "EEG6": {
+      "node": "CP3",
+      "position": [
+        149,
+        330
+      ]
+    },
+    "EEG7": {
+      "node": "FC5",
+      "position": [
+        92,
+        200
+      ]
+    },
+    "EEG8": {
+      "node": "C5",
+      "position": [
+        87,
+        267
+      ]
+    },
+    "EEG9": {
+      "node": "FC2",
+      "position": [
+        325,
+        206
+      ]
+    },
+    "EEG10": {
+      "node": "C2",
+      "position": [
+        327,
+        267
+      ]
+    },
+    "EEG11": {
+      "node": "CP2",
+      "position": [
+        325,
+        328
+      ]
+    },
+    "EEG12": {
+      "node": "FC4",
+      "position": [
+        385,
+        204
+      ]
+    },
+    "EEG13": {
+      "node": "C4",
+      "position": [
+        387,
+        267
+      ]
+    },
+    "EEG14": {
+      "node": "CP4",
+      "position": [
+        385,
+        330
+      ]
+    },
+    "EEG15": {
+      "node": "FC6",
+      "position": [
+        442,
+        200
+      ]
+    },
+    "EEG16": {
+      "node": "C6",
+      "position": [
+        447,
+        267
+      ]
+    }
+  },
+  "eeg_electrodes": {
+    "1": "C1",
+    "2": "FC1",
+    "3": "FC3",
+    "4": "C3",
+    "5": "CP1",
+    "6": "CP3",
+    "7": "FC5",
+    "8": "C5",
+    "9": "FC2",
+    "10": "C2",
+    "11": "CP2",
+    "12": "FC4",
+    "13": "C4",
+    "14": "CP4",
+    "15": "FC6",
+    "16": "C6"
+  }
+}

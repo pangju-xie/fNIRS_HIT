@@ -1,0 +1,1634 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>564</width>
+    <height>580</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>EEG Electrode Interface</string>
+  </property>
+  <widget class="QLabel" name="headCircle">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>40</y>
+     <width>480</width>
+     <height>480</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLabel {
+    border: 2px solid rgba(0, 0, 0, 0);
+    border-radius: 240px;
+    background-color: white;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 500px;
+    max-height: 500px;
+}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_FPz">
+   <property name="geometry">
+    <rect>
+     <x>267</x>
+     <y>27</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>FPz</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_AFz">
+   <property name="geometry">
+    <rect>
+     <x>267</x>
+     <y>87</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>AFz</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_Fz">
+   <property name="geometry">
+    <rect>
+     <x>267</x>
+     <y>147</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>Fz</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_FCz">
+   <property name="geometry">
+    <rect>
+     <x>267</x>
+     <y>207</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>FCz</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_Cz">
+   <property name="geometry">
+    <rect>
+     <x>267</x>
+     <y>267</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>Cz</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_CPz">
+   <property name="geometry">
+    <rect>
+     <x>267</x>
+     <y>327</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>CPz</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_Pz">
+   <property name="geometry">
+    <rect>
+     <x>267</x>
+     <y>387</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>Pz</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_POz">
+   <property name="geometry">
+    <rect>
+     <x>267</x>
+     <y>447</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>POz</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_Fp1">
+   <property name="geometry">
+    <rect>
+     <x>199</x>
+     <y>39</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>Fp1</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_AF7">
+   <property name="geometry">
+    <rect>
+     <x>134</x>
+     <y>67</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>AF7</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_AF3">
+   <property name="geometry">
+    <rect>
+     <x>200</x>
+     <y>82</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>AF3</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_F7">
+   <property name="geometry">
+    <rect>
+     <x>76</x>
+     <y>121</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>F7</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_F5">
+   <property name="geometry">
+    <rect>
+     <x>114</x>
+     <y>132</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>F5</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_F3">
+   <property name="geometry">
+    <rect>
+     <x>164</x>
+     <y>141</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>F3</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_F1">
+   <property name="geometry">
+    <rect>
+     <x>214</x>
+     <y>146</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>F1</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_FT7">
+   <property name="geometry">
+    <rect>
+     <x>39</x>
+     <y>196</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>FT7</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_FC5">
+   <property name="geometry">
+    <rect>
+     <x>94</x>
+     <y>200</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>FC5</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_FC3">
+   <property name="geometry">
+    <rect>
+     <x>149</x>
+     <y>204</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>FC3</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_FC1">
+   <property name="geometry">
+    <rect>
+     <x>209</x>
+     <y>206</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>FC1</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_T7">
+   <property name="geometry">
+    <rect>
+     <x>27</x>
+     <y>267</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>T7</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_C5">
+   <property name="geometry">
+    <rect>
+     <x>87</x>
+     <y>267</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>C5</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_C3">
+   <property name="geometry">
+    <rect>
+     <x>147</x>
+     <y>267</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>C3</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_C1">
+   <property name="geometry">
+    <rect>
+     <x>207</x>
+     <y>267</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>C1</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_TP7">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>340</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>TP7</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_CP5">
+   <property name="geometry">
+    <rect>
+     <x>94</x>
+     <y>334</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>CP5</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_CP3">
+   <property name="geometry">
+    <rect>
+     <x>149</x>
+     <y>330</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>CP3</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_CP1">
+   <property name="geometry">
+    <rect>
+     <x>209</x>
+     <y>328</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>CP1</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_P7">
+   <property name="geometry">
+    <rect>
+     <x>76</x>
+     <y>413</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>P7</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_P5">
+   <property name="geometry">
+    <rect>
+     <x>116</x>
+     <y>402</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>P5</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_P3">
+   <property name="geometry">
+    <rect>
+     <x>164</x>
+     <y>393</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>P3</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_P1">
+   <property name="geometry">
+    <rect>
+     <x>214</x>
+     <y>388</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>P1</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_PO7">
+   <property name="geometry">
+    <rect>
+     <x>134</x>
+     <y>467</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>PO7</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_PO3">
+   <property name="geometry">
+    <rect>
+     <x>200</x>
+     <y>452</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>PO3</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_O1">
+   <property name="geometry">
+    <rect>
+     <x>199</x>
+     <y>496</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>O1</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_Fp2">
+   <property name="geometry">
+    <rect>
+     <x>335</x>
+     <y>39</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>Fp2</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_AF8">
+   <property name="geometry">
+    <rect>
+     <x>400</x>
+     <y>67</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>AF8</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_AF4">
+   <property name="geometry">
+    <rect>
+     <x>334</x>
+     <y>82</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>AF4</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_F8">
+   <property name="geometry">
+    <rect>
+     <x>458</x>
+     <y>121</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>F8</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_F6">
+   <property name="geometry">
+    <rect>
+     <x>416</x>
+     <y>132</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>F6</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_F4">
+   <property name="geometry">
+    <rect>
+     <x>370</x>
+     <y>141</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>F4</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_F2">
+   <property name="geometry">
+    <rect>
+     <x>320</x>
+     <y>146</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>F2</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_FT8">
+   <property name="geometry">
+    <rect>
+     <x>495</x>
+     <y>196</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>FT8</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_FC6">
+   <property name="geometry">
+    <rect>
+     <x>442</x>
+     <y>200</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>FC6</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_FC4">
+   <property name="geometry">
+    <rect>
+     <x>385</x>
+     <y>204</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>FC4</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_FC2">
+   <property name="geometry">
+    <rect>
+     <x>325</x>
+     <y>206</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>FC2</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_T10">
+   <property name="geometry">
+    <rect>
+     <x>507</x>
+     <y>267</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>T10</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_C6">
+   <property name="geometry">
+    <rect>
+     <x>447</x>
+     <y>267</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>C6</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_C4">
+   <property name="geometry">
+    <rect>
+     <x>387</x>
+     <y>267</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>C4</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_C2">
+   <property name="geometry">
+    <rect>
+     <x>327</x>
+     <y>267</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>C2</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_TP8">
+   <property name="geometry">
+    <rect>
+     <x>495</x>
+     <y>340</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>TP8</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_CP6">
+   <property name="geometry">
+    <rect>
+     <x>440</x>
+     <y>334</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>CP6</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_CP4">
+   <property name="geometry">
+    <rect>
+     <x>385</x>
+     <y>330</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>CP4</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_CP2">
+   <property name="geometry">
+    <rect>
+     <x>325</x>
+     <y>328</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>CP2</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_P8">
+   <property name="geometry">
+    <rect>
+     <x>458</x>
+     <y>413</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>P8</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_P6">
+   <property name="geometry">
+    <rect>
+     <x>418</x>
+     <y>402</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>P6</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_P4">
+   <property name="geometry">
+    <rect>
+     <x>370</x>
+     <y>393</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>P4</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_P2">
+   <property name="geometry">
+    <rect>
+     <x>320</x>
+     <y>388</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>P2</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_PO8">
+   <property name="geometry">
+    <rect>
+     <x>400</x>
+     <y>467</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>PO8</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_PO4">
+   <property name="geometry">
+    <rect>
+     <x>334</x>
+     <y>452</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>PO4</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_O2">
+   <property name="geometry">
+    <rect>
+     <x>335</x>
+     <y>496</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>O2</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="electrode_Oz">
+   <property name="geometry">
+    <rect>
+     <x>267</x>
+     <y>507</y>
+     <width>26</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border: 2px solid rgba(0, 0, 0, 1);
+    border-radius: 13px;
+    background-color: transparent;
+    color: gray;
+    font: bold 12px;
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 40px;
+    max-height: 40px;
+}</string>
+   </property>
+   <property name="text">
+    <string>Oz</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

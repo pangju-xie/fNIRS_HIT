@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="EEG10_20">
+    <file>EEG10_20.ico</file>
+  </qresource>
+</RCC>

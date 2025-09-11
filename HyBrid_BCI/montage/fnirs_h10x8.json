@@ -1,0 +1,264 @@
+{
+  "enabled_sensor_types": [
+    "fnirs"
+  ],
+  "sampling_rates": {
+    "fnirs": 10
+  },
+  "channel_counts": {
+    "fnirs_sources": 10,
+    "fnirs_detectors": 8
+  },
+  "enabled_channels": {
+    "fnirs": {
+      "S1-D1": "F1_FC1-FC1_C1",
+      "S1-D2": "F1_FC1-F3_FC3",
+      "S2-D1": "C1_CP1-FC1_C1",
+      "S2-D3": "C1_CP1-C3_CP3",
+      "S3-D1": "FC3_C3-FC1_C1",
+      "S3-D2": "FC3_C3-F3_FC3",
+      "S3-D3": "FC3_C3-C3_CP3",
+      "S3-D4": "FC3_C3-C5_FC5",
+      "S4-D2": "F5_FC5-F3_FC3",
+      "S4-D4": "F5_FC5-C5_FC5",
+      "S5-D5": "FC2_F2-C2_FC2",
+      "S5-D6": "FC2_F2-F4_FC4",
+      "S6-D5": "C2_CP2-C2_FC2",
+      "S6-D7": "C2_CP2-C4_CP4",
+      "S7-D5": "C4_FC4-C2_FC2",
+      "S7-D6": "C4_FC4-F4_FC4",
+      "S7-D7": "C4_FC4-C4_CP4",
+      "S7-D8": "C4_FC4-FC6_C6",
+      "S8-D6": "FC6_F6-F4_FC4",
+      "S8-D8": "FC6_F6-FC6_C6",
+      "S9-D3": "C5_CP5-C3_CP3",
+      "S9-D4": "C5_CP5-C5_FC5",
+      "S10-D7": "C6_CP6-C4_CP4",
+      "S10-D8": "C6_CP6-FC6_C6"
+    },
+    "fnirssource": [
+      "F1_FC1",
+      "C1_CP1",
+      "FC3_C3",
+      "F5_FC5",
+      "FC2_F2",
+      "C2_CP2",
+      "C4_FC4",
+      "FC6_F6",
+      "C5_CP5",
+      "C6_CP6"
+    ],
+    "fnirsdetect": [
+      "FC1_C1",
+      "F3_FC3",
+      "C3_CP3",
+      "C5_FC5",
+      "C2_FC2",
+      "F4_FC4",
+      "C4_CP4",
+      "FC6_C6"
+    ]
+  },
+  "sensor_configs": {
+    "fnirs": {
+      "color": [
+        "#E91E63",
+        "#1040ff"
+      ],
+      "prefix": [
+        "S",
+        "D"
+      ],
+      "max_channels": 0,
+      "min_channels": 0,
+      "channels_per_row": 8,
+      "max_sources": 32,
+      "max_detectors": 32,
+      "min_sources": 1,
+      "min_detectors": 1
+    }
+  },
+  "electrode_mapping": {
+    "fnirs": {}
+  },
+  "metadata": {
+    "total_channels": {
+      "fnirs": 24
+    },
+    "configuration_timestamp": "周四 9月 11 12:04:34 2025",
+    "enabled_sensors": [
+      "fnirs"
+    ],
+    "version": "2.0",
+    "has_electrode_positions": true,
+    "has_valid_channels": true
+  },
+  "fnirs_pairs": {
+    "S1-D1": {
+      "node_pair": "F1_FC1-FC1_C1",
+      "distance": 33.726843908080106,
+      "source_node": "F1_FC1",
+      "detector_node": "FC1_C1"
+    },
+    "S1-D2": {
+      "node_pair": "F1_FC1-F3_FC3",
+      "distance": 28.83574171059243,
+      "source_node": "F1_FC1",
+      "detector_node": "F3_FC3"
+    },
+    "S2-D1": {
+      "node_pair": "C1_CP1-FC1_C1",
+      "distance": 33.0,
+      "source_node": "C1_CP1",
+      "detector_node": "FC1_C1"
+    },
+    "S2-D3": {
+      "node_pair": "C1_CP1-C3_CP3",
+      "distance": 33.44024521441193,
+      "source_node": "C1_CP1",
+      "detector_node": "C3_CP3"
+    },
+    "S3-D1": {
+      "node_pair": "FC3_C3-FC1_C1",
+      "distance": 33.44024521441193,
+      "source_node": "FC3_C3",
+      "detector_node": "FC1_C1"
+    },
+    "S3-D2": {
+      "node_pair": "FC3_C3-F3_FC3",
+      "distance": 31.603006186120965,
+      "source_node": "FC3_C3",
+      "detector_node": "F3_FC3"
+    },
+    "S3-D3": {
+      "node_pair": "FC3_C3-C3_CP3",
+      "distance": 31.0,
+      "source_node": "FC3_C3",
+      "detector_node": "C3_CP3"
+    },
+    "S3-D4": {
+      "node_pair": "FC3_C3-C5_FC5",
+      "distance": 35.092734290733176,
+      "source_node": "FC3_C3",
+      "detector_node": "C5_FC5"
+    },
+    "S4-D2": {
+      "node_pair": "F5_FC5-F3_FC3",
+      "distance": 30.618621784789728,
+      "source_node": "F5_FC5",
+      "detector_node": "F3_FC3"
+    },
+    "S4-D4": {
+      "node_pair": "F5_FC5-C5_FC5",
+      "distance": 29.21044333795706,
+      "source_node": "F5_FC5",
+      "detector_node": "C5_FC5"
+    },
+    "S5-D5": {
+      "node_pair": "FC2_F2-C2_FC2",
+      "distance": 33.726843908080106,
+      "source_node": "FC2_F2",
+      "detector_node": "C2_FC2"
+    },
+    "S5-D6": {
+      "node_pair": "FC2_F2-F4_FC4",
+      "distance": 28.83574171059243,
+      "source_node": "FC2_F2",
+      "detector_node": "F4_FC4"
+    },
+    "S6-D5": {
+      "node_pair": "C2_CP2-C2_FC2",
+      "distance": 33.0,
+      "source_node": "C2_CP2",
+      "detector_node": "C2_FC2"
+    },
+    "S6-D7": {
+      "node_pair": "C2_CP2-C4_CP4",
+      "distance": 33.44024521441193,
+      "source_node": "C2_CP2",
+      "detector_node": "C4_CP4"
+    },
+    "S7-D5": {
+      "node_pair": "C4_FC4-C2_FC2",
+      "distance": 33.44024521441193,
+      "source_node": "C4_FC4",
+      "detector_node": "C2_FC2"
+    },
+    "S7-D6": {
+      "node_pair": "C4_FC4-F4_FC4",
+      "distance": 31.603006186120965,
+      "source_node": "C4_FC4",
+      "detector_node": "F4_FC4"
+    },
+    "S7-D7": {
+      "node_pair": "C4_FC4-C4_CP4",
+      "distance": 31.0,
+      "source_node": "C4_FC4",
+      "detector_node": "C4_CP4"
+    },
+    "S7-D8": {
+      "node_pair": "C4_FC4-FC6_C6",
+      "distance": 35.092734290733176,
+      "source_node": "C4_FC4",
+      "detector_node": "FC6_C6"
+    },
+    "S8-D6": {
+      "node_pair": "FC6_F6-F4_FC4",
+      "distance": 30.618621784789728,
+      "source_node": "FC6_F6",
+      "detector_node": "F4_FC4"
+    },
+    "S8-D8": {
+      "node_pair": "FC6_F6-FC6_C6",
+      "distance": 29.21044333795706,
+      "source_node": "FC6_F6",
+      "detector_node": "FC6_C6"
+    },
+    "S9-D3": {
+      "node_pair": "C5_CP5-C3_CP3",
+      "distance": 35.092734290733176,
+      "source_node": "C5_CP5",
+      "detector_node": "C3_CP3"
+    },
+    "S9-D4": {
+      "node_pair": "C5_CP5-C5_FC5",
+      "distance": 30.0,
+      "source_node": "C5_CP5",
+      "detector_node": "C5_FC5"
+    },
+    "S10-D7": {
+      "node_pair": "C6_CP6-C4_CP4",
+      "distance": 35.092734290733176,
+      "source_node": "C6_CP6",
+      "detector_node": "C4_CP4"
+    },
+    "S10-D8": {
+      "node_pair": "C6_CP6-FC6_C6",
+      "distance": 30.0,
+      "source_node": "C6_CP6",
+      "detector_node": "FC6_C6"
+    }
+  },
+  "sources": {
+    "1": "F1_FC1",
+    "2": "C1_CP1",
+    "3": "FC3_C3",
+    "4": "F5_FC5",
+    "5": "FC2_F2",
+    "6": "C2_CP2",
+    "7": "C4_FC4",
+    "8": "FC6_F6",
+    "9": "C5_CP5",
+    "10": "C6_CP6"
+  },
+  "detectors": {
+    "1": "FC1_C1",
+    "2": "F3_FC3",
+    "3": "C3_CP3",
+    "4": "C5_FC5",
+    "5": "C2_FC2",
+    "6": "F4_FC4",
+    "7": "C4_CP4",
+    "8": "FC6_C6"
+  }
+}

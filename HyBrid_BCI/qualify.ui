@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1200</width>
+    <height>800</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>fNIRS Channel Quality Assessment</string>
+  </property>
+  <property name="styleSheet">
+   <string>QWidget {
+    background-color: #f5f5f5;
+    font-family: Arial, sans-serif;
+}
+
+QLabel {
+    color: #333;
+    font-weight: bold;
+}
+
+QComboBox {
+    background-color: white;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    padding: 2px 8px;
+}
+
+QComboBox::drop-down {
+    border: none;
+}
+
+QComboBox::down-arrow {
+    image: url(down_arrow.png);
+    width: 12px;
+    height: 12px;
+}
+
+QPushButton {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-weight: bold;
+}
+
+QPushButton:hover {
+    background-color: #45a049;
+}
+
+QPushButton:pressed {
+    background-color: #3d8b40;
+}
+
+QLineEdit {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    padding: 2px 5px;
+    font-family: monospace;
+}
+
+QGroupBox {
+    font-weight: bold;
+    border: 2px solid #cccccc;
+    border-radius: 5px;
+    margin-top: 1ex;
+    padding-top: 10px;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 10px;
+    padding: 0 5px 0 5px;
+}</string>
+  </property>
+  
+  <!-- Header Section -->
+  <widget class="QGroupBox" name="headerGroup">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>20</y>
+     <width>1160</width>
+     <height>80</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Assessment Configuration</string>
+   </property>
+   
+   <widget class="QLabel" name="methodLabel">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>30</y>
+      <width>100</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>评估方法：</string>
+    </property>
+   </widget>
+   
+   <widget class="QComboBox" name="methodComboBox">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>28</y>
+      <width>200</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text">
+      <string>光电信号强度</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>头皮耦合指数(SCI)</string>
+     </property>
+    </item>
+   </widget>
+   
+   <widget class="QLabel" name="statusLabel">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>30</y>
+      <width>120</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>更新状态：准备中</string>
+    </property>
+    <property name="styleSheet">
+     <string>color: #666;</string>
+    </property>
+   </widget>
+   
+   <widget class="QPushButton" name="startButton">
+    <property name="geometry">
+     <rect>
+      <x>900</x>
+      <y>25</y>
+      <width>80</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>开始</string>
+    </property>
+   </widget>
+   
+   <widget class="QPushButton" name="stopButton">
+    <property name="geometry">
+     <rect>
+      <x>990</x>
+      <y>25</y>
+      <width>80</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>停止</string>
+    </property>
+    <property name="styleSheet">
+     <string>background-color: #f44336;</string>
+    </property>
+   </widget>
+  </widget>
+  
+  <!-- Channel Quality Display Section -->
+  <widget class="QGroupBox" name="channelGroup">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>120</y>
+     <width>1160</width>
+     <height>600</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Channel Quality Assessment</string>
+   </property>
+   
+   <!-- Column Headers -->
+   <widget class="QLabel" name="channelHeaderLabel">
+    <property name="geometry">
+     <rect>
+      <x>25</x>
+      <y>30</y>
+      <width>80</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Channel</string>
+    </property>
+    <property name="styleSheet">
+     <string>background-color: #e0e0e0; border: 1px solid #ccc; padding: 5px;</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   
+   <widget class="QLabel" name="nm750HeaderLabel">
+    <property name="geometry">
+     <rect>
+      <x>105</x>
+      <y>30</y>
+      <width>120</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>750nm Signal</string>
+    </property>
+    <property name="styleSheet">
+     <string>background-color: #e0e0e0; border: 1px solid #ccc; padding: 5px;</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   
+   <widget class="QLabel" name="nm850HeaderLabel">
+    <property name="geometry">
+     <rect>
+      <x>225</x>
+      <y>30</y>
+      <width>120</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>850nm Signal</string>
+    </property>
+    <property name="styleSheet">
+     <string>background-color: #e0e0e0; border: 1px solid #ccc; padding: 5px;</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   
+   <widget class="QLabel" name="qualityHeaderLabel">
+    <property name="geometry">
+     <rect>
+      <x>345</x>
+      <y>30</y>
+      <width>100</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Quality Status</string>
+    </property>
+    <property name="styleSheet">
+     <string>background-color: #e0e0e0; border: 1px solid #ccc; padding: 5px;</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   
+   <widget class="QLabel" name="unitLabel">
+    <property name="geometry">
+     <rect>
+      <x>445</x>
+      <y>30</y>
+      <width>50</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Unit</string>
+    </property>
+    <property name="styleSheet">
+     <string>background-color: #e0e0e0; border: 1px solid #ccc; padding: 5px;</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   
+   <!-- Scrollable area for channel data -->
+   <widget class="QScrollArea" name="channelScrollArea">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>60</y>
+      <width>1120</width>
+      <height>520</height>
+     </rect>
+    </property>
+    <property name="widgetResizable">
+     <bool>true</bool>
+    </property>
+    <property name="styleSheet">
+     <string>QScrollArea {
+      border: 1px solid #ccc;
+      background-color: white;
+     }</string>
+    </property>
+    <widget class="QWidget" name="scrollAreaWidgetContents">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>1118</width>
+       <height>518</height>
+      </rect>
+     </property>
+    </widget>
+   </widget>
+  </widget>
+  
+  <!-- Control Buttons -->
+  <widget class="QPushButton" name="completeButton">
+   <property name="geometry">
+    <rect>
+     <x>1050</x>
+     <y>740</y>
+     <width>100</width>
+     <height>35</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>完成</string>
+   </property>
+  </widget>
+  
+  <widget class="QPushButton" name="resetButton">
+   <property name="geometry">
+    <rect>
+     <x>930</x>
+     <y>740</y>
+     <width>100</width>
+     <height>35</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>重置</string>
+   </property>
+   <property name="styleSheet">
+    <string>background-color: #ff9800;</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

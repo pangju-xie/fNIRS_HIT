@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>UserInfoForm</class>
+ <widget class="QWidget" name="UserInfoForm">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>500</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>患者信息管理系统</string>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>800</width>
+    <height>500</height>
+   </size>
+  </property>
+  <layout class="QVBoxLayout" name="mainLayout">
+   <property name="margin">
+    <number>20</number>
+   </property>
+   <property name="spacing">
+    <number>15</number>
+   </property>
+   
+   <!-- Title -->
+   <item>
+    <widget class="QLabel" name="titleLabel">
+     <property name="text">
+      <string>患者信息录入</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="styleSheet">
+      <string>QLabel { font-size: 18px; font-weight: bold; color: #2c3e50; padding: 10px; }</string>
+     </property>
+    </widget>
+   </item>
+   
+   <!-- Main Content Group -->
+   <item>
+    <widget class="QGroupBox" name="patientInfoGroup">
+     <property name="title">
+      <string>基本信息</string>
+     </property>
+     <property name="styleSheet">
+      <string>QGroupBox { font-weight: bold; font-size: 14px; }</string>
+     </property>
+     <layout class="QGridLayout" name="infoGridLayout">
+      <property name="horizontalSpacing">
+       <number>20</number>
+      </property>
+      <property name="verticalSpacing">
+       <number>15</number>
+      </property>
+      
+      <!-- Row 1: Name and Gender -->
+      <item row="0" column="0">
+       <widget class="QLabel" name="nameLabel">
+        <property name="text">
+         <string>姓名：</string>
+        </property>
+        <property name="minimumWidth">
+         <number>80</number>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="nameLineEdit">
+        <property name="placeholderText">
+         <string>请输入患者姓名</string>
+        </property>
+        <property name="minimumWidth">
+         <number>150</number>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="genderLabel">
+        <property name="text">
+         <string>性别：</string>
+        </property>
+        <property name="minimumWidth">
+         <number>80</number>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QComboBox" name="genderComboBox">
+        <property name="minimumWidth">
+         <number>100</number>
+        </property>
+        <item>
+         <property name="text">
+          <string>男</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>女</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      
+      <!-- Row 2: Age and Stroke Type -->
+      <item row="1" column="0">
+       <widget class="QLabel" name="ageLabel">
+        <property name="text">
+         <string>年龄：</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QSpinBox" name="ageSpinBox">
+        <property name="minimum">
+         <number>0</number>
+        </property>
+        <property name="maximum">
+         <number>150</number>
+        </property>
+        <property name="suffix">
+         <string> 岁</string>
+        </property>
+        <property name="minimumWidth">
+         <number>100</number>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="strokeTypeLabel">
+        <property name="text">
+         <string>卒中类型：</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QComboBox" name="strokeTypeComboBox">
+        <property name="minimumWidth">
+         <number>120</number>
+        </property>
+        <item>
+         <property name="text">
+          <string>出血型</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>缺血型</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>无卒中</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      
+      <!-- Row 3: Duration and Paralysis Side -->
+      <item row="2" column="0">
+       <widget class="QLabel" name="durationLabel">
+        <property name="text">
+         <string>卒中时长：</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QSpinBox" name="durationSpinBox">
+        <property name="minimum">
+         <number>0</number>
+        </property>
+        <property name="maximum">
+         <number>999</number>
+        </property>
+        <property name="suffix">
+         <string> 个月</string>
+        </property>
+        <property name="minimumWidth">
+         <number>100</number>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QLabel" name="paralysisSideLabel">
+        <property name="text">
+         <string>偏瘫侧：</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3">
+       <widget class="QComboBox" name="paralysisSideComboBox">
+        <property name="minimumWidth">
+         <number>100</number>
+        </property>
+        <item>
+         <property name="text">
+          <string>左侧</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>右侧</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>无</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      
+      <!-- Row 4: Additional Notes (spans all columns) -->
+      <item row="3" column="0">
+       <widget class="QLabel" name="notesLabel">
+        <property name="text">
+         <string>其他说明：</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1" colspan="3">
+       <widget class="QTextEdit" name="notesTextEdit">
+        <property name="maximumHeight">
+         <number>80</number>
+        </property>
+        <property name="placeholderText">
+         <string>请输入其他相关说明信息...</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   
+   <!-- Spacer -->
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint">
+      <size>
+       <width>20</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   
+   <!-- Button Layout -->
+   <item>
+    <layout class="QHBoxLayout" name="buttonLayout">
+     <item>
+      <spacer name="buttonSpacer1">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="saveButton">
+       <property name="text">
+        <string>保存</string>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>35</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string>QPushButton { 
+         background-color: #3498db; 
+         color: white; 
+         border: none; 
+         border-radius: 5px; 
+         font-size: 14px; 
+         font-weight: bold; 
+        }
+        QPushButton:hover { 
+         background-color: #2980b9; 
+        }
+        QPushButton:pressed { 
+         background-color: #21618c; 
+        }</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="clearButton">
+       <property name="text">
+        <string>清空</string>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>35</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string>QPushButton { 
+         background-color: #e74c3c; 
+         color: white; 
+         border: none; 
+         border-radius: 5px; 
+         font-size: 14px; 
+         font-weight: bold; 
+        }
+        QPushButton:hover { 
+         background-color: #c0392b; 
+        }
+        QPushButton:pressed { 
+         background-color: #a93226; 
+        }</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="cancelButton">
+       <property name="text">
+        <string>取消</string>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>35</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string>QPushButton { 
+         background-color: #95a5a6; 
+         color: white; 
+         border: none; 
+         border-radius: 5px; 
+         font-size: 14px; 
+         font-weight: bold; 
+        }
+        QPushButton:hover { 
+         background-color: #7f8c8d; 
+        }
+        QPushButton:pressed { 
+         background-color: #6c7b7d; 
+        }</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="buttonSpacer2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
