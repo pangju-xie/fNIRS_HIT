@@ -8,7 +8,7 @@ Handles EEG, sEMG, and fNIRS device configuration with improved error handling a
 import sys
 import json
 import os
-from typing import List, Dict, Set, Any, Optional, Tuple, Union
+from typing import List, Dict, Set, Any, Optional, Tuple, Union, Callable
 from enum import Enum
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -35,26 +35,25 @@ logger = logging.getLogger(__name__)
 
 # Import UI and locate modules with error handling
 try:
-    from ui_config import Ui_ConfigForm
+    from ui_config import Ui_ConfigForm # type: ignore
     logger.info("Successfully imported ui_config module")
 except ImportError as e:
     logger.error(f"Failed to import ui_config: {e}")
-    # Create a dummy class to prevent crashes
     class Ui_ConfigForm:
         def setupUi(self, widget): pass
 
 try:
-    import locate
+    import locate # pyright: ignore[reportAssignmentType]
     logger.info("Successfully imported locate module")
 except ImportError as e:
     logger.error(f"Failed to import locate module: {e}")
-    # Create a dummy class
     class locate:
         class Locate(QtWidgets.QWidget):
             def __init__(self): super().__init__()
 
+
 class SensorTypes:
-    """Define sensor types"""
+    """Define sensor types as bit flags"""
     NotInit = 0
     EEG = 1
     SEMG = 2
@@ -64,26 +63,6 @@ class SensorTypes:
     SEMG_FNIRS = 6
     EEG_SEMG_FNIRS = 7
 
-def parse_sensor_types(sensor_type_int: int) -> List[str]:
-    """Convert integer sensor type to list of sensor strings"""
-    sensor_list = []
-    
-    if sensor_type_int == SensorTypes.NotInit:
-        return sensor_list
-    
-    # Check for EEG
-    if sensor_type_int & SensorTypes.EEG:
-        sensor_list.append(SensorType.EEG.value)
-    
-    # Check for SEMG
-    if sensor_type_int & SensorTypes.SEMG:
-        sensor_list.append(SensorType.SEMG.value)
-    
-    # Check for FNIRS
-    if sensor_type_int & SensorTypes.FNIRS:
-        sensor_list.append(SensorType.FNIRS.value)
-    
-    return sensor_list
 
 class SensorType(Enum):
     """Enum for sensor types with validation"""
@@ -93,12 +72,10 @@ class SensorType(Enum):
     
     @classmethod
     def get_all_types(cls) -> List[str]:
-        """Get all sensor type values"""
         return [sensor.value for sensor in cls]
     
     @classmethod
     def validate_sensor_type(cls, sensor_type: str) -> bool:
-        """Validate if sensor type is supported"""
         return sensor_type in cls.get_all_types()
 
 
@@ -115,34 +92,6 @@ class SensorConfig:
     min_sources: Optional[int] = None
     min_detectors: Optional[int] = None
 
-def get_montage_directory() -> Path:
-    """Get or create the montage directory in the current working directory"""
-    try:
-        current_dir = Path.cwd()
-        montage_dir = current_dir / "montage"
-        
-        # Create directory if it doesn't exist
-        montage_dir.mkdir(exist_ok=True)
-        
-        logger.info(f"Montage directory: {montage_dir}")
-        return montage_dir
-        
-    except Exception as e:
-        logger.error(f"Failed to create montage directory: {e}")
-        # Fall back to current directory
-        return Path.cwd()
-
-
-def get_default_config_path(filename: str = "device_config.json") -> str:
-    """Get default configuration file path in montage directory"""
-    try:
-        montage_dir = get_montage_directory()
-        config_path = montage_dir / filename
-        return str(config_path)
-    except Exception as e:
-        logger.error(f"Failed to get default config path: {e}")
-        return filename
-    
 
 @dataclass
 class DeviceConfiguration:
@@ -150,7 +99,7 @@ class DeviceConfiguration:
     enabled_sensors: Set[str] = field(default_factory=set)
     sampling_rates: Dict[str, int] = field(default_factory=dict)
     channel_counts: Dict[str, int] = field(default_factory=dict)
-    enabled_channels: Dict[str, Union[List[int] , Dict]] = field(default_factory=dict)
+    enabled_channels: Dict[str, Union[List[int], Dict]] = field(default_factory=dict)
     enabled_channel_pairs: Dict[str, Dict] = field(default_factory=dict)
     current_checkbox: Dict[str, Any] = field(default_factory=dict)
     
@@ -164,75 +113,59 @@ class DeviceConfiguration:
         """Initialize sensor-specific configurations"""
         self.sensor_configs = {
             SensorType.EEG.value: SensorConfig(
-                color='#2196F3',
-                prefix='EEG',
-                max_channels=64,
-                min_channels=1,
-                channels_per_row=8
+                color='#2196F3', prefix='EEG', max_channels=64, min_channels=1, channels_per_row=8
             ),
             SensorType.SEMG.value: SensorConfig(
-                color='#FF9800',
-                prefix='EMG',
-                max_channels=16,
-                min_channels=1,
-                channels_per_row=4
+                color='#FF9800', prefix='EMG', max_channels=16, min_channels=1, channels_per_row=4
             ),
             SensorType.FNIRS.value: SensorConfig(
-                color=['#E91E63', '#1040ff'],
-                prefix=['S', 'D'],
-                max_channels=0,  # Not applicable for fNIRS
-                min_channels=0,  # Not applicable for fNIRS
-                channels_per_row=8,
-                max_sources=32,
-                max_detectors=32,
-                min_sources=1,
-                min_detectors=1
+                color=['#E91E63', '#1040ff'], prefix=['S', 'D'], max_channels=0, min_channels=0,
+                channels_per_row=8, max_sources=32, max_detectors=32, min_sources=1, min_detectors=1
             )
         }
         logger.debug("Sensor configurations initialized")
     
     def _initialize_default_settings(self):
         """Initialize default sampling rates and channel counts"""
-        # Default sampling rates
-        default_sampling_rates = {
-            SensorType.EEG.value: 1000,
-            SensorType.FNIRS.value: 10,
-            SensorType.SEMG.value: 1000
+        defaults = {
+            'sampling_rates': {
+                SensorType.EEG.value: 1000,
+                SensorType.FNIRS.value: 10,
+                SensorType.SEMG.value: 1000
+            },
+            'channel_counts': {
+                SensorType.EEG.value: 32,
+                SensorType.SEMG.value: 8,
+                'fnirs_sources': 16,
+                'fnirs_detectors': 16
+            }
         }
         
-        # Default channel counts
-        default_channel_counts = {
-            SensorType.EEG.value: 32,
-            SensorType.SEMG.value: 8,
-            'fnirs_sources': 16,
-            'fnirs_detectors': 16
-        }
-        
-        # Initialize only for enabled sensors
         for sensor in self.enabled_sensors:
-            if sensor in default_sampling_rates:
-                self.sampling_rates[sensor] = default_sampling_rates[sensor]
-                logger.debug(f"Set default sampling rate for {sensor}: {default_sampling_rates[sensor]}")
+            if sensor in defaults['sampling_rates']:
+                self.sampling_rates[sensor] = defaults['sampling_rates'][sensor]
+                logger.debug(f"Set default sampling rate for {sensor}: {defaults['sampling_rates'][sensor]}")
             
             if sensor == SensorType.FNIRS.value:
-                self.channel_counts['fnirs_sources'] = default_channel_counts['fnirs_sources']
-                self.channel_counts['fnirs_detectors'] = default_channel_counts['fnirs_detectors']
-                self.enabled_channels[sensor] = {}
-                self.enabled_channels[sensor + 'source'] = []
-                self.enabled_channels[sensor + 'detect'] = []
-                logger.debug(f"Initialized fNIRS channels: sources={default_channel_counts['fnirs_sources']}, detectors={default_channel_counts['fnirs_detectors']}")
+                self.channel_counts.update({
+                    'fnirs_sources': defaults['channel_counts']['fnirs_sources'],
+                    'fnirs_detectors': defaults['channel_counts']['fnirs_detectors']
+                })
+                self.enabled_channels.update({
+                    sensor: {},
+                    sensor + 'source': [],
+                    sensor + 'detect': []
+                })
             else:
-                if sensor in default_channel_counts:
-                    self.channel_counts[sensor] = default_channel_counts[sensor]
-                    logger.debug(f"Set default channel count for {sensor}: {default_channel_counts[sensor]}")
+                if sensor in defaults['channel_counts']:
+                    self.channel_counts[sensor] = defaults['channel_counts'][sensor]
                 self.enabled_channels[sensor] = []
             
             self.enabled_channel_pairs[sensor] = {}
     
     def validate_configuration(self) -> Dict[str, List[str]]:
         """Validate current configuration and return any issues"""
-        errors = []
-        warnings = []
+        errors, warnings = [], []
         
         try:
             # Validate sampling rates
@@ -249,12 +182,12 @@ class DeviceConfiguration:
                     continue
                 
                 if sensor == SensorType.FNIRS.value:
-                    sources = self.channel_counts.get('fnirs_sources', 0)
-                    detectors = self.channel_counts.get('fnirs_detectors', 0)
-                    if sources < config.min_sources or sources > config.max_sources:
-                        errors.append(f"fNIRS sources out of range: {sources} (valid: {config.min_sources}-{config.max_sources})")
-                    if detectors < config.min_detectors or detectors > config.max_detectors:
-                        errors.append(f"fNIRS detectors out of range: {detectors} (valid: {config.min_detectors}-{config.max_detectors})")
+                    for component, key in [('sources', 'fnirs_sources'), ('detectors', 'fnirs_detectors')]:
+                        count = self.channel_counts.get(key, 0)
+                        min_val = getattr(config, f'min_{component}')
+                        max_val = getattr(config, f'max_{component}')
+                        if count < min_val or count > max_val:
+                            errors.append(f"fNIRS {component} out of range: {count} (valid: {min_val}-{max_val})")
                 else:
                     count = self.channel_counts.get(sensor, 0)
                     if count < config.min_channels or count > config.max_channels:
@@ -269,6 +202,65 @@ class DeviceConfiguration:
         return {'errors': errors, 'warnings': warnings}
 
 
+class UIConstants:
+    """Constants for UI configuration"""
+    SENSOR_CONTROL_MAPPINGS = {
+        'sampling': {
+            SensorType.EEG.value: ['eegSamplingLabel', 'eegSamplingCombo'],
+            SensorType.FNIRS.value: ['fnirsSamplingLabel', 'fnirsSamplingCombo'],
+            SensorType.SEMG.value: ['semgSamplingLabel', 'semgSamplingCombo']
+        },
+        'channels': {
+            SensorType.EEG.value: ['eegChannelsLabel_2', 'eegChannelsSpinBox_2'],
+            SensorType.SEMG.value: ['semgChannelsLabel_2', 'semgChannelsSpinBox_2'],
+            SensorType.FNIRS.value: ['fnirsSourcesLabel_2', 'fnirsSourcesSpinBox_2', 
+                                   'fnirsDetectorsLabel_2', 'fnirsDetectorsSpinBox_2']
+        }
+    }
+    
+    SAMPLING_CONFIG = {
+        SensorType.EEG.value: {'control': 'eegSamplingCombo', 'rates': [500, 1000, 2000]},
+        SensorType.FNIRS.value: {'control': 'fnirsSamplingCombo', 'rates': [10, 20]},
+        SensorType.SEMG.value: {'control': 'semgSamplingCombo', 'rates': [500, 1000, 2000]}
+    }
+
+
+def parse_sensor_types(sensor_type_int: int) -> List[str]:
+    """Convert integer sensor type to list of sensor strings"""
+    sensor_list = []
+    if sensor_type_int == SensorTypes.NotInit:
+        return sensor_list
+    
+    for sensor_bit, sensor_type in [(SensorTypes.EEG, SensorType.EEG.value),
+                                    (SensorTypes.SEMG, SensorType.SEMG.value),
+                                    (SensorTypes.FNIRS, SensorType.FNIRS.value)]:
+        if sensor_type_int & sensor_bit:
+            sensor_list.append(sensor_type)
+    
+    return sensor_list
+
+
+def get_montage_directory() -> Path:
+    """Get or create the montage directory in the current working directory"""
+    try:
+        montage_dir = Path.cwd() / "montage"
+        montage_dir.mkdir(exist_ok=True)
+        logger.info(f"Montage directory: {montage_dir}")
+        return montage_dir
+    except Exception as e:
+        logger.error(f"Failed to create montage directory: {e}")
+        return Path.cwd()
+
+
+def get_default_config_path(filename: str = "device_config.json") -> str:
+    """Get default configuration file path in montage directory"""
+    try:
+        return str(get_montage_directory() / filename)
+    except Exception as e:
+        logger.error(f"Failed to get default config path: {e}")
+        return filename
+
+
 class ConfigurationManager(QWidget, Ui_ConfigForm):
     """Main configuration management class with enhanced error handling"""
     
@@ -279,54 +271,31 @@ class ConfigurationManager(QWidget, Ui_ConfigForm):
         super().__init__(parent)
         
         logger.info("Initializing ConfigurationManager")
-        
-        # Ensure montage directory exists
         self.montage_dir = get_montage_directory()
-        logger.info(f"Using montage directory: {self.montage_dir}")
-        
         self.sensor_types = sensor_types
-         # Handle different sensor_types input formats
+        
+        # Process sensor types
         if sensor_types is None:
-            # Default to fNIRS only
             sensor_types_list = [SensorType.FNIRS.value]
-            logger.info("No sensor types provided, defaulting to fNIRS")
         elif isinstance(sensor_types, int):
-            # Convert integer sensor type to list of strings
             sensor_types_list = parse_sensor_types(sensor_types)
-            logger.info(f"Converted integer sensor type {sensor_types} to: {sensor_types_list}")
         else:
-            raise ValueError(f"Invalid sensor_types format: {type(sensor_types)}. Expected int, List[str], or None")
+            raise ValueError(f"Invalid sensor_types format: {type(sensor_types)}. Expected int or None")
         
-        # Validate and filter sensor types
         self.enabled_sensor_types = self._validate_sensor_types(sensor_types_list)
-        logger.info(f"Enabled sensor types: {self.enabled_sensor_types}")
         
-        # Initialize UI and configuration
-        try:
-            self._initialize_ui()
-            self._initialize_configuration()
-            self._setup_connections()
-            logger.info("ConfigurationManager initialization completed successfully")
-        except Exception as e:
-            logger.error(f"Failed to initialize ConfigurationManager: {e}")
-            logger.error(traceback.format_exc())
-            raise
+        # Initialize components
+        self._initialize_ui()
+        self._initialize_configuration()
+        self._setup_connections()
+        logger.info("ConfigurationManager initialization completed successfully")
     
     def _validate_sensor_types(self, sensor_types: List[str]) -> Set[str]:
         """Validate and filter sensor types"""
-        valid_sensors = set()
-        
-        for sensor in sensor_types:
-            if SensorType.validate_sensor_type(sensor):
-                valid_sensors.add(sensor)
-                logger.debug(f"Validated sensor type: {sensor}")
-            else:
-                logger.warning(f"Invalid sensor type ignored: {sensor}")
+        valid_sensors = {sensor for sensor in sensor_types if SensorType.validate_sensor_type(sensor)}
         
         if not valid_sensors:
-            error_msg = "At least one valid sensor type must be provided"
-            logger.error(error_msg)
-            raise ValueError(error_msg)
+            raise ValueError("At least one valid sensor type must be provided")
         
         return valid_sensors
     
@@ -334,19 +303,16 @@ class ConfigurationManager(QWidget, Ui_ConfigForm):
         """Initialize UI components with error handling"""
         try:
             self.setupUi(self)
-            logger.debug("UI setup completed")
             
             # Initialize sensor checkboxes storage
             self.sensor_checkboxes = {}
             for sensor in self.enabled_sensor_types:
                 if sensor == SensorType.FNIRS.value:
-                    self.sensor_checkboxes['Source'] = []
-                    self.sensor_checkboxes['Detect'] = []
+                    self.sensor_checkboxes.update({'Source': [], 'Detect': []})
                 else:
                     self.sensor_checkboxes[sensor] = []
             
-            logger.debug("Sensor checkboxes storage initialized")
-            
+            logger.debug("UI setup completed")
         except Exception as e:
             logger.error(f"UI initialization failed: {e}")
             raise
@@ -365,137 +331,84 @@ class ConfigurationManager(QWidget, Ui_ConfigForm):
     def _setup_connections(self):
         """Setup signal connections with error handling"""
         try:
-            # Configuration controls
-            if hasattr(self, 'generateConfigBtn'):
-                self.generateConfigBtn.clicked.connect(self._safe_apply_channel_config)
-            if hasattr(self, 'loadConfigBtn'):
-                self.loadConfigBtn.clicked.connect(self._safe_load_configuration)
-            if hasattr(self, 'createConfigBtn'):
-                self.createConfigBtn.clicked.connect(self._safe_create_configuration)
-            if hasattr(self, 'saveConfigBtn'):
-                self.saveConfigBtn.clicked.connect(self._safe_save_configuration)
-            if hasattr(self, 'resetConfigBtn'):
-                self.resetConfigBtn.clicked.connect(self._safe_reset_configuration)
+            # Button connections
+            button_mappings = {
+                'generateConfigBtn': self._safe_apply_channel_config,
+                'loadConfigBtn': self._safe_load_configuration,
+                'createConfigBtn': self._safe_create_configuration,
+                'saveConfigBtn': self._safe_save_configuration,
+                'resetConfigBtn': self._safe_reset_configuration
+            }
             
-            # Channel count changes
+            for button_name, callback in button_mappings.items():
+                if hasattr(self, button_name):
+                    getattr(self, button_name).clicked.connect(callback)
+            
             self._connect_channel_controls()
-            
             logger.debug("Signal connections established")
-            
         except Exception as e:
             logger.error(f"Failed to setup connections: {e}")
             raise
     
     def _connect_channel_controls(self):
         """Connect channel control signals"""
-        try:
-            if SensorType.EEG.value in self.enabled_sensor_types and hasattr(self, 'eegChannelsSpinBox_2'):
-                self.eegChannelsSpinBox_2.valueChanged.connect(
-                    lambda: self._safe_update_channel_configuration(SensorType.EEG.value))
-            
-            if SensorType.SEMG.value in self.enabled_sensor_types and hasattr(self, 'semgChannelsSpinBox_2'):
-                self.semgChannelsSpinBox_2.valueChanged.connect(
-                    lambda: self._safe_update_channel_configuration(SensorType.SEMG.value))
-            
-            if SensorType.FNIRS.value in self.enabled_sensor_types:
-                if hasattr(self, 'fnirsSourcesSpinBox_2'):
-                    self.fnirsSourcesSpinBox_2.valueChanged.connect(
+        channel_controls = {
+            SensorType.EEG.value: 'eegChannelsSpinBox_2',
+            SensorType.SEMG.value: 'semgChannelsSpinBox_2'
+        }
+        
+        for sensor, control_name in channel_controls.items():
+            if sensor in self.enabled_sensor_types and hasattr(self, control_name):
+                getattr(self, control_name).valueChanged.connect(
+                    lambda sensor=sensor: self._safe_update_channel_configuration(sensor))
+        
+        # fNIRS special handling
+        if SensorType.FNIRS.value in self.enabled_sensor_types:
+            for control_name in ['fnirsSourcesSpinBox_2', 'fnirsDetectorsSpinBox_2']:
+                if hasattr(self, control_name):
+                    getattr(self, control_name).valueChanged.connect(
                         lambda: self._safe_update_channel_configuration(SensorType.FNIRS.value))
-                if hasattr(self, 'fnirsDetectorsSpinBox_2'):
-                    self.fnirsDetectorsSpinBox_2.valueChanged.connect(
-                        lambda: self._safe_update_channel_configuration(SensorType.FNIRS.value))
-            
-            logger.debug("Channel control connections established")
-            
-        except Exception as e:
-            logger.error(f"Failed to connect channel controls: {e}")
     
-    def _safe_wrapper(self, func, *args, **kwargs):
+    def _safe_wrapper(self, func: Callable, *args, **kwargs):
         """Safe wrapper for method calls with error handling"""
         try:
-            logger.debug(f"Executing {func.__name__} with args={args}, kwargs={kwargs}")
+            logger.debug(f"Executing {func.__name__}")
             result = func(*args, **kwargs)
             logger.debug(f"{func.__name__} completed successfully")
             return result
         except Exception as e:
             logger.error(f"Error in {func.__name__}: {e}")
-            logger.error(traceback.format_exc())
-            self._show_error_message(f"操作失败 Operation Failed", 
-                                   f"执行 {func.__name__} 时出错：{str(e)}\nError in {func.__name__}: {str(e)}")
+            self._show_error_message("操作失败 Operation Failed", 
+                                   f"执行 {func.__name__} 时出错：{str(e)}")
             return None
     
-    def _safe_apply_channel_config(self):
-        """Safe wrapper for apply_channel_config"""
-        return self._safe_wrapper(self.apply_channel_config)
-    
-    def _safe_load_configuration(self):
-        """Safe wrapper for load_configuration"""
-        return self._safe_wrapper(self.load_configuration)
-    
-    def _safe_create_configuration(self):
-        """Safe wrapper for create_configuration"""
-        return self._safe_wrapper(self.create_configuration)
-    
-    def _safe_save_configuration(self):
-        """Safe wrapper for save_configuration"""
-        return self._safe_wrapper(self.save_configuration)
-    
-    def _safe_reset_configuration(self):
-        """Safe wrapper for reset_configuration"""
-        return self._safe_wrapper(self.reset_configuration)
-    
-    def _safe_update_channel_configuration(self, sensor_type):
-        """Safe wrapper for update_channel_configuration"""
+    # Safe wrapper methods
+    def _safe_apply_channel_config(self): return self._safe_wrapper(self.apply_channel_config)
+    def _safe_load_configuration(self): return self._safe_wrapper(self.load_configuration)
+    def _safe_create_configuration(self): return self._safe_wrapper(self.create_configuration)
+    def _safe_save_configuration(self): return self._safe_wrapper(self.save_configuration)
+    def _safe_reset_configuration(self): return self._safe_wrapper(self.reset_configuration)
+    def _safe_update_channel_configuration(self, sensor_type): 
         return self._safe_wrapper(self.update_channel_configuration, sensor_type)
     
     def _customize_ui_for_sensors(self):
         """Customize UI to show only enabled sensor controls"""
         logger.info("Customizing UI for enabled sensors")
         
-        try:
-            self._customize_sampling_rate_controls()
-            self._customize_device_parameter_controls() 
-            self._customize_tab_widget()
-            logger.debug("UI customization completed")
-        except Exception as e:
-            logger.error(f"UI customization failed: {e}")
-            raise
-    
-    def _customize_sampling_rate_controls(self):
-        """Show/hide sampling rate controls based on enabled sensors"""
-        controls_map = {
-            SensorType.EEG.value: ['eegSamplingLabel', 'eegSamplingCombo'],
-            SensorType.FNIRS.value: ['fnirsSamplingLabel', 'fnirsSamplingCombo'],
-            SensorType.SEMG.value: ['semgSamplingLabel', 'semgSamplingCombo']
-        }
+        # Show/hide controls based on enabled sensors
+        for control_type, mappings in UIConstants.SENSOR_CONTROL_MAPPINGS.items():
+            for sensor, controls in mappings.items():
+                visible = sensor in self.enabled_sensor_types
+                for control_name in controls:
+                    if hasattr(self, control_name):
+                        getattr(self, control_name).setVisible(visible)
         
-        for sensor, controls in controls_map.items():
-            visible = sensor in self.enabled_sensor_types
-            for control_name in controls:
-                if hasattr(self, control_name):
-                    getattr(self, control_name).setVisible(visible)
-                    logger.debug(f"Set {control_name} visibility to {visible} for sensor {sensor}")
-    
-    def _customize_device_parameter_controls(self):
-        """Show/hide device parameter controls based on enabled sensors"""
-        controls_map = {
-            SensorType.EEG.value: ['eegChannelsLabel_2', 'eegChannelsSpinBox_2'],
-            SensorType.SEMG.value: ['semgChannelsLabel_2', 'semgChannelsSpinBox_2'],
-            SensorType.FNIRS.value: ['fnirsSourcesLabel_2', 'fnirsSourcesSpinBox_2', 
-                                   'fnirsDetectorsLabel_2', 'fnirsDetectorsSpinBox_2']
-        }
-        
-        for sensor, controls in controls_map.items():
-            visible = sensor in self.enabled_sensor_types
-            for control_name in controls:
-                if hasattr(self, control_name):
-                    getattr(self, control_name).setVisible(visible)
-                    logger.debug(f"Set {control_name} visibility to {visible} for sensor {sensor}")
+        self._customize_tab_widget()
+        logger.debug("UI customization completed")
     
     def _customize_tab_widget(self):
         """Customize tab widget based on sensor associations"""
         if not hasattr(self, 'configTabWidget'):
-            logger.warning("configTabWidget not found, skipping tab customization")
             return
         
         # Clear existing tabs
@@ -506,16 +419,12 @@ class ConfigurationManager(QWidget, Ui_ConfigForm):
         brain_sensors = {SensorType.EEG.value, SensorType.FNIRS.value}
         if brain_sensors.intersection(self.enabled_sensor_types):
             self._add_brain_configuration_tab()
-            logger.debug("Added brain configuration tab")
         
         if SensorType.SEMG.value in self.enabled_sensor_types:
             self._add_trunk_configuration_tab()
-            logger.debug("Added trunk configuration tab")
         
-        # Add placeholder if no tabs
         if self.configTabWidget.count() == 0:
             self._add_placeholder_tab()
-            logger.debug("Added placeholder tab")
     
     def _add_brain_configuration_tab(self):
         """Add Brain Configuration tab for EEG and fNIRS"""
@@ -528,57 +437,47 @@ class ConfigurationManager(QWidget, Ui_ConfigForm):
             self.brainScrollArea = QtWidgets.QScrollArea(self.brainTab)
             self.brainScrollArea.setGeometry(QtCore.QRect(5, 5, 560, 560))
             self.brainScrollArea.setWidgetResizable(True)
-            self.brainScrollArea.setObjectName("brainScrollArea")
 
             self.brainScrollWidget = QtWidgets.QWidget()
-            self.brainScrollWidget.setGeometry(QtCore.QRect(0, 0, 558, 558))
-            self.brainScrollWidget.setObjectName("brainScrollWidget")
             self.brainScrollArea.setWidget(self.brainScrollWidget)
 
             self.brainMainLayout = QtWidgets.QVBoxLayout(self.brainScrollWidget)
-            self.brainMainLayout.setObjectName("brainMainLayout")
 
             # Add sensor sections
             if SensorType.EEG.value in self.enabled_sensor_types:
-                self._add_eeg_section_to_brain_tab()
+                self._add_sensor_group_box("EEG", "EEG通道配置", "#2196F3")
             
             if SensorType.FNIRS.value in self.enabled_sensor_types:
-                self._add_fnirs_section_to_brain_tab()
+                self._add_fnirs_section()
             
-            # Add right widget (locator)
             self._add_brain_locator_widget()
             
             logger.debug("Brain configuration tab created successfully")
-            
         except Exception as e:
             logger.error(f"Failed to create brain configuration tab: {e}")
             raise
     
-    def _add_eeg_section_to_brain_tab(self):
-        """Add EEG section to brain configuration tab"""
-        self.eegGroupBox = QGroupBox("EEG通道配置")
-        self.eegGroupBox.setStyleSheet("QGroupBox { font-weight: bold; color: #2196F3; }")
+    def _add_sensor_group_box(self, sensor_key: str, title: str, color: str):
+        """Add a generic sensor group box"""
+        group_box = QGroupBox(title)
+        group_box.setStyleSheet(f"QGroupBox {{ font-weight: bold; color: {color}; }}")
         
-        self.eegGridLayout = QtWidgets.QGridLayout(self.eegGroupBox)
-        self.eegGridLayout.setObjectName("eegGridLayout")
+        grid_layout = QtWidgets.QGridLayout(group_box)
+        setattr(self, f"{sensor_key.lower()}GroupBox", group_box)
+        setattr(self, f"{sensor_key.lower()}GridLayout", grid_layout)
         
-        self.brainMainLayout.addWidget(self.eegGroupBox)
-        logger.debug("EEG section added to brain tab")
+        self.brainMainLayout.addWidget(group_box)
     
-    def _add_fnirs_section_to_brain_tab(self):
+    def _add_fnirs_section(self):
         """Add fNIRS section to brain configuration tab"""
         self.fnirsGroupBox = QGroupBox("fNIRS通道配置")
         self.fnirsGroupBox.setStyleSheet("QGroupBox { font-weight: bold; color: #E91E63; }")
         
         self.fnirsMainLayout = QtWidgets.QVBoxLayout(self.fnirsGroupBox)
-        self.fnirsMainLayout.setObjectName("fnirsMainLayout")
-
         self.fnirsGridLayout = QtWidgets.QGridLayout()
-        self.fnirsGridLayout.setObjectName("fnirsGridLayout")
         self.fnirsMainLayout.addLayout(self.fnirsGridLayout)
         
         self.brainMainLayout.addWidget(self.fnirsGroupBox)
-        logger.debug("fNIRS section added to brain tab")
     
     def _add_brain_locator_widget(self):
         """Add brain electrode locator widget"""
@@ -586,17 +485,16 @@ class ConfigurationManager(QWidget, Ui_ConfigForm):
             self.brain_config_right = locate.Locate()
             self.brain_config_right.setParent(self.brainTab)
             self.brain_config_right.setGeometry(QtCore.QRect(570, 5, 560, 560))
-            self.brain_config_right.setObjectName("brain_electrode_locator")
-            logger.debug("Brain locator widget added")
         except Exception as e:
             logger.error(f"Failed to add brain locator widget: {e}")
-            # Create placeholder widget
-            self.brain_config_right = QtWidgets.QWidget(self.brainTab)
-            self.brain_config_right.setGeometry(QtCore.QRect(570, 5, 560, 560))
-            placeholder_label = QLabel("Locator not available")
-            placeholder_label.setAlignment(Qt.AlignCenter)
-            layout = QVBoxLayout(self.brain_config_right)
-            layout.addWidget(placeholder_label)
+            self._create_placeholder_locator_widget()
+    
+    def _create_placeholder_locator_widget(self):
+        """Create placeholder widget when locator is unavailable"""
+        self.brain_config_right = QtWidgets.QWidget(self.brainTab)
+        self.brain_config_right.setGeometry(QtCore.QRect(570, 5, 560, 560))
+        layout = QVBoxLayout(self.brain_config_right)
+        layout.addWidget(QLabel("Locator not available"))
     
     def _add_trunk_configuration_tab(self):
         """Add Trunk Configuration tab for sEMG"""
@@ -605,34 +503,27 @@ class ConfigurationManager(QWidget, Ui_ConfigForm):
             self.trunkTab.setObjectName("trunkTab")
             self.configTabWidget.addTab(self.trunkTab, "躯干配置")
 
+            # Create scroll area and content
             self.trunkScrollArea = QtWidgets.QScrollArea(self.trunkTab)
             self.trunkScrollArea.setGeometry(QtCore.QRect(5, 5, 560, 560))
             self.trunkScrollArea.setWidgetResizable(True)
-            self.trunkScrollArea.setObjectName("trunkScrollArea")
 
             self.trunkScrollWidget = QtWidgets.QWidget()
-            self.trunkScrollWidget.setGeometry(QtCore.QRect(0, 0, 558, 558))
-            self.trunkScrollWidget.setObjectName("trunkScrollWidget")
             self.trunkScrollArea.setWidget(self.trunkScrollWidget)
 
-            # sEMG Group Box
+            # Add sEMG group box
             self.semgGroupBox = QGroupBox("sEMG通道配置")
             self.semgGroupBox.setStyleSheet("QGroupBox { font-weight: bold; color: #FF9800; }")
             
             self.semgGridLayout = QtWidgets.QGridLayout(self.semgGroupBox)
-            self.semgGridLayout.setObjectName("semgGridLayout")
             
-            # Add to scroll widget
-            semg_layout = QVBoxLayout(self.trunkScrollWidget)
-            semg_layout.addWidget(self.semgGroupBox)
-            semg_layout.addStretch()
+            layout = QVBoxLayout(self.trunkScrollWidget)
+            layout.addWidget(self.semgGroupBox)
+            layout.addStretch()
             
             # Right widget placeholder
             self.widget_trunk_right = QtWidgets.QWidget(self.trunkTab)
             self.widget_trunk_right.setGeometry(QtCore.QRect(570, 5, 560, 560))
-            self.widget_trunk_right.setObjectName("widget_trunk_right")
-            
-            logger.debug("Trunk configuration tab created successfully")
             
         except Exception as e:
             logger.error(f"Failed to create trunk configuration tab: {e}")
@@ -642,172 +533,122 @@ class ConfigurationManager(QWidget, Ui_ConfigForm):
         """Add placeholder tab when no sensors are configured"""
         placeholder_tab = QtWidgets.QWidget()
         placeholder_label = QLabel("No sensor types enabled for configuration")
-        placeholder_label.setAlignment(Qt.AlignCenter)
-        placeholder_layout = QVBoxLayout(placeholder_tab)
-        placeholder_layout.addWidget(placeholder_label)
+        placeholder_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout = QVBoxLayout(placeholder_tab)
+        layout.addWidget(placeholder_label)
         self.configTabWidget.addTab(placeholder_tab, "No Configuration")
     
     def _initialize_ui_values(self):
         """Initialize UI with default values"""
         try:
-            # Set default sampling rates
-            sampling_controls = {
-                SensorType.EEG.value: 'eegSamplingCombo',
-                SensorType.FNIRS.value: 'fnirsSamplingCombo', 
-                SensorType.SEMG.value: 'semgSamplingCombo'
-            }
-            
-            for sensor, control_name in sampling_controls.items():
-                if sensor in self.enabled_sensor_types and hasattr(self, control_name):
-                    control = getattr(self, control_name)
-                    rate = self.config.sampling_rates[sensor]
-                    control.setCurrentText(str(rate))
-                    control.currentIndexChanged.connect(self.modify_sample_rate)
-                    logger.debug(f"Set {sensor} sampling rate to {rate}")
-            
-            # Set default channel counts
-            channel_controls = {
-                SensorType.EEG.value: ('eegChannelsSpinBox_2', 'generate_eeg_configuration'),
-                SensorType.SEMG.value: ('semgChannelsSpinBox_2', 'generate_semg_configuration'),
-            }
-            
-            for sensor, (control_name, callback_name) in channel_controls.items():
-                if sensor in self.enabled_sensor_types and hasattr(self, control_name):
-                    control = getattr(self, control_name)
-                    count = self.config.channel_counts[sensor]
-                    control.setValue(count)
-                    if hasattr(self, callback_name):
-                        control.valueChanged.connect(getattr(self, callback_name))
-                    logger.debug(f"Set {sensor} channel count to {count}")
-            
-            # Special handling for fNIRS
-            if SensorType.FNIRS.value in self.enabled_sensor_types:
-                if hasattr(self, 'fnirsSourcesSpinBox_2'):
-                    self.fnirsSourcesSpinBox_2.setValue(self.config.channel_counts['fnirs_sources'])
-                    self.fnirsSourcesSpinBox_2.valueChanged.connect(self.generate_fnirs_configuration)
-                if hasattr(self, 'fnirsDetectorsSpinBox_2'):
-                    self.fnirsDetectorsSpinBox_2.setValue(self.config.channel_counts['fnirs_detectors'])
-                    self.fnirsDetectorsSpinBox_2.valueChanged.connect(self.generate_fnirs_configuration)
-                logger.debug("fNIRS channel counts initialized")
-            
+            self._initialize_sampling_rates()
+            self._initialize_channel_counts()
             logger.info("UI values initialization completed")
-            
         except Exception as e:
             logger.error(f"UI values initialization failed: {e}")
             raise
     
-    def _show_error_message(self, title: str, message: str):
-        """Show error message to user"""
-        try:
-            QMessageBox.critical(self, title, message)
-            logger.debug(f"Showed error message: {title}")
-        except Exception as e:
-            logger.error(f"Failed to show error message: {e}")
+    def _initialize_sampling_rates(self):
+        """Initialize sampling rate controls"""
+        for sensor, control_name in [
+            (SensorType.EEG.value, 'eegSamplingCombo'),
+            (SensorType.FNIRS.value, 'fnirsSamplingCombo'),
+            (SensorType.SEMG.value, 'semgSamplingCombo')
+        ]:
+            if sensor in self.enabled_sensor_types and hasattr(self, control_name):
+                control = getattr(self, control_name)
+                rate = self.config.sampling_rates[sensor]
+                control.setCurrentText(str(rate))
+                control.currentIndexChanged.connect(self.modify_sample_rate)
     
-    def _show_info_message(self, title: str, message: str):
-        """Show info message to user"""
-        try:
-            QMessageBox.information(self, title, message)
-            logger.debug(f"Showed info message: {title}")
-        except Exception as e:
-            logger.error(f"Failed to show info message: {e}")
+    def _initialize_channel_counts(self):
+        """Initialize channel count controls"""
+        channel_controls = [
+            (SensorType.EEG.value, 'eegChannelsSpinBox_2', 'generate_eeg_configuration'),
+            (SensorType.SEMG.value, 'semgChannelsSpinBox_2', 'generate_semg_configuration')
+        ]
+        
+        for sensor, control_name, callback_name in channel_controls:
+            if sensor in self.enabled_sensor_types and hasattr(self, control_name):
+                control = getattr(self, control_name)
+                count = self.config.channel_counts[sensor]
+                control.setValue(count)
+                if hasattr(self, callback_name):
+                    control.valueChanged.connect(getattr(self, callback_name))
+        
+        # fNIRS special handling
+        if SensorType.FNIRS.value in self.enabled_sensor_types:
+            fnirs_controls = [
+                ('fnirsSourcesSpinBox_2', 'fnirs_sources'),
+                ('fnirsDetectorsSpinBox_2', 'fnirs_detectors')
+            ]
+            for control_name, count_key in fnirs_controls:
+                if hasattr(self, control_name):
+                    control = getattr(self, control_name)
+                    control.setValue(self.config.channel_counts[count_key])
+                    control.valueChanged.connect(self.generate_fnirs_configuration)
     
-    def _show_warning_message(self, title: str, message: str) -> int:
-        """Show warning message to user and return response"""
+    def _show_message(self, msg_type: str, title: str, message: str) -> int:
+        """Generic message display method"""
         try:
-            response = QMessageBox.warning(self, title, message, QMessageBox.Yes | QMessageBox.No)
-            logger.debug(f"Showed warning message: {title}, response: {response}")
-            return response
+            if msg_type == "error":
+                QMessageBox.critical(self, title, message)
+                return QMessageBox.Ok
+            elif msg_type == "info":
+                QMessageBox.information(self, title, message)
+                return QMessageBox.Ok
+            elif msg_type == "warning":
+                return QMessageBox.warning(self, title, message, QMessageBox.Yes | QMessageBox.No)
         except Exception as e:
-            logger.error(f"Failed to show warning message: {e}")
+            logger.error(f"Failed to show {msg_type} message: {e}")
             return QMessageBox.No
     
+    def _show_error_message(self, title: str, message: str):
+        self._show_message("error", title, message)
+    
+    def _show_info_message(self, title: str, message: str):
+        self._show_message("info", title, message)
+    
+    def _show_warning_message(self, title: str, message: str) -> int:
+        return self._show_message("warning", title, message)
     
     def apply_channel_config(self):
-        """Apply channel configuration (placeholder for future implementation)"""
+        """Apply channel configuration"""
         logger.info("Apply channel config called")
         
         try:
-            self._generate_sample_rate_order()
-            
-            self._generate_config_order()
-                
+            sample_rate_order = self._generate_sample_rate_order()
+            config_order = self._generate_config_order()
+            return self.sensor_types, sample_rate_order
         except Exception as e:
             logger.error(f"Failed to apply sampling rates: {e}")
-            self._show_error_message("Error", 
-                f"无效的采样率值：{str(e)}\nInvalid sampling rate values: {str(e)}")
+            self._show_error_message("Error", f"无效的采样率值：{str(e)}")
     
     def _generate_sample_rate_order(self):
-        """Generate sample rate order for enabled sensor types."""
-        
-        # Configuration mapping for sensors
-        SENSOR_CONFIG = {
-            SensorType.EEG.value: {
-                'control': 'eegSamplingCombo',
-                'rates': [500, 1000, 2000]
-            },
-            SensorType.FNIRS.value: {
-                'control': 'fnirsSamplingCombo', 
-                'rates': [10, 20]
-            },
-            SensorType.SEMG.value: {
-                'control': 'semgSamplingCombo',
-                'rates': [500, 1000, 2000]
-            }
-        }
-        
-        updated_sensors = []
-        
-        for sensor_type in self.enabled_sensor_types:
-            if sensor_type not in SENSOR_CONFIG:
-                continue
-                
-            config = SENSOR_CONFIG[sensor_type]
-            control_name = config['control']
-            valid_rates = config['rates']
-            
-            # Skip if control doesn't exist
-            if not hasattr(self, control_name):
-                continue
-                
-            try:
-                control = getattr(self, control_name)
-                rate = int(control.currentText())
-                
-                # Validate rate is in allowed list
-                if rate not in valid_rates:
-                    raise ValueError(f"Rate {rate}Hz not in allowed rates {valid_rates}")
-                
-                # # Update configuration
-                # self.config.sampling_rates[sensor_type] = rate
-                
-                # Add sensor identifier and rate index
-                updated_sensors.append(1)  # Sensor identifier
-                rate_index = valid_rates.index(rate) + 1
-                updated_sensors.append(rate_index)
-                
-                logger.info(f"Updated {sensor_type} sampling rate to {rate}Hz")
-                
-            except (ValueError, AttributeError) as e:
-                error_msg = f"Failed to set sampling rate for {sensor_type}: {e}"
-                logger.error(error_msg)
-                raise ValueError(f"Invalid sampling rate for {sensor_type}: {e}")
-        
-        return self.sensor_types, updated_sensors
+        """Generate sample rate order for enabled sensor types"""
+        return self._process_sensor_configurations(UIConstants.SAMPLING_CONFIG, "sampling rate")
     
     def _generate_config_order(self):
-        """Generate config order for enabled sensor types."""
+        """Generate config order for enabled sensor types"""
+        return self._process_sensor_configurations(UIConstants.SAMPLING_CONFIG, "config")
+    
+    def _process_sensor_configurations(self, config_mapping: Dict, operation_type: str):
+        """Generic method to process sensor configurations"""
         updated_sensors = []
+        sensor_id_map = {
+            SensorType.EEG.value: 1,
+            SensorType.SEMG.value: 2,
+            SensorType.FNIRS.value: 4
+        }
         
         for sensor_type in self.enabled_sensor_types:
-            if sensor_type not in SENSOR_CONFIG:
+            if sensor_type not in config_mapping:
                 continue
                 
-            config = SENSOR_CONFIG[sensor_type]
+            config = config_mapping[sensor_type]
             control_name = config['control']
             valid_rates = config['rates']
             
-            # Skip if control doesn't exist
             if not hasattr(self, control_name):
                 continue
                 
@@ -815,69 +656,61 @@ class ConfigurationManager(QWidget, Ui_ConfigForm):
                 control = getattr(self, control_name)
                 rate = int(control.currentText())
                 
-                # Validate rate is in allowed list
                 if rate not in valid_rates:
                     raise ValueError(f"Rate {rate}Hz not in allowed rates {valid_rates}")
                 
-                # # Update configuration
-                # self.config.sampling_rates[sensor_type] = rate
+                updated_sensors.extend([
+                    sensor_id_map[sensor_type],
+                    valid_rates.index(rate) + 1
+                ])
                 
-                # Add sensor identifier and rate index
-                updated_sensors.append(1)  # Sensor identifier
-                rate_index = valid_rates.index(rate) + 1
-                updated_sensors.append(rate_index)
-                
-                logger.info(f"Updated {sensor_type} sampling rate to {rate}Hz")
+                logger.info(f"Updated {sensor_type} {operation_type} to {rate}Hz")
                 
             except (ValueError, AttributeError) as e:
-                error_msg = f"Failed to set sampling rate for {sensor_type}: {e}"
-                logger.error(error_msg)
-                raise ValueError(f"Invalid sampling rate for {sensor_type}: {e}")
+                raise ValueError(f"Invalid {operation_type} for {sensor_type}: {e}")
         
-        return self.sensor_types, updated_sensors
+        return updated_sensors
     
     def create_configuration(self):
         """Generate channel configuration based on current settings"""
         logger.info("Creating configuration")
         
         try:
-            # Update channel counts from UI
             self._update_channel_counts_from_ui()
             
-            # Add control buttons for brain configuration
             if hasattr(self, 'brainTab'):
                 self._add_brain_control_buttons()
             
-            # Generate UI for each enabled sensor type
             for sensor_type in self.enabled_sensor_types:
-                logger.info(f"Generating configuration for {sensor_type}")
                 self.generate_sensor_configuration(sensor_type)
             
             logger.info("Configuration creation completed successfully")
-            
         except Exception as e:
             logger.error(f"Configuration creation failed: {e}")
-            self._show_error_message("Error", f"配置生成失败：{str(e)}\nConfiguration generation failed: {str(e)}")
+            self._show_error_message("Error", f"配置生成失败：{str(e)}")
     
     def _update_channel_counts_from_ui(self):
         """Update channel counts from UI spinboxes"""
         try:
-            if SensorType.EEG.value in self.enabled_sensor_types and hasattr(self, 'eegChannelsSpinBox_2'):
-                self.config.channel_counts[SensorType.EEG.value] = self.eegChannelsSpinBox_2.value()
-                logger.debug(f"Updated EEG channel count: {self.eegChannelsSpinBox_2.value()}")
+            channel_mappings = [
+                (SensorType.EEG.value, 'eegChannelsSpinBox_2'),
+                (SensorType.SEMG.value, 'semgChannelsSpinBox_2')
+            ]
             
-            if SensorType.SEMG.value in self.enabled_sensor_types and hasattr(self, 'semgChannelsSpinBox_2'):
-                self.config.channel_counts[SensorType.SEMG.value] = self.semgChannelsSpinBox_2.value()
-                logger.debug(f"Updated sEMG channel count: {self.semgChannelsSpinBox_2.value()}")
+            for sensor, control_name in channel_mappings:
+                if sensor in self.enabled_sensor_types and hasattr(self, control_name):
+                    self.config.channel_counts[sensor] = getattr(self, control_name).value()
             
+            # fNIRS special handling
             if SensorType.FNIRS.value in self.enabled_sensor_types:
-                if hasattr(self, 'fnirsSourcesSpinBox_2'):
-                    self.config.channel_counts['fnirs_sources'] = self.fnirsSourcesSpinBox_2.value()
-                    logger.debug(f"Updated fNIRS sources count: {self.fnirsSourcesSpinBox_2.value()}")
-                if hasattr(self, 'fnirsDetectorsSpinBox_2'):
-                    self.config.channel_counts['fnirs_detectors'] = self.fnirsDetectorsSpinBox_2.value()
-                    logger.debug(f"Updated fNIRS detectors count: {self.fnirsDetectorsSpinBox_2.value()}")
-                    
+                fnirs_mappings = [
+                    ('fnirsSourcesSpinBox_2', 'fnirs_sources'),
+                    ('fnirsDetectorsSpinBox_2', 'fnirs_detectors')
+                ]
+                for control_name, count_key in fnirs_mappings:
+                    if hasattr(self, control_name):
+                        self.config.channel_counts[count_key] = getattr(self, control_name).value()
+                        
         except Exception as e:
             logger.error(f"Failed to update channel counts from UI: {e}")
             raise
@@ -885,215 +718,159 @@ class ConfigurationManager(QWidget, Ui_ConfigForm):
     def _add_brain_control_buttons(self):
         """Add control buttons for brain configuration"""
         try:
-            # Check if brainTab exists
-            if not hasattr(self, 'brainTab') or self.brainTab is None:
-                logger.warning("brainTab not available, cannot create control buttons")
+            if not hasattr(self, 'brainTab') or not hasattr(self, 'brain_config_right'):
+                logger.warning("Brain tab or config widget not available")
                 return
             
-            # Check if brain_config_right exists
-            if not hasattr(self, 'brain_config_right'):
-                logger.warning("Brain config widget not available, skipping control buttons")
-                return
-            
-            # Remove existing buttons if they exist to prevent duplicates
             self._remove_existing_control_buttons()
             
-            # Create reset button
-            try:
-                self.reset_locator_btn = QtWidgets.QPushButton(self.brainTab)
-                self.reset_locator_btn.setObjectName("reset_locator_btn")
-                
-                # Set geometry - ensure coordinates are within parent bounds
-                parent_width = self.brainTab.width() if self.brainTab.width() > 0 else 1140
-                parent_height = self.brainTab.height() if self.brainTab.height() > 0 else 570
-                
-                # Position reset button in top-right area
-                reset_x = min(parent_width - 90, 1050)  # 90 = button width + margin
-                reset_y = 10
-                self.reset_locator_btn.setGeometry(QtCore.QRect(reset_x, reset_y, 80, 30))
-                
-                self.reset_locator_btn.setText("重置")
-                self.reset_locator_btn.setStyleSheet("""
-                    QPushButton { 
-                        background-color: #f44336; 
-                        color: white; 
-                        border: none; 
-                        border-radius: 4px;
-                        font-weight: bold;
-                    }
-                    QPushButton:hover { 
-                        background-color: #d32f2f; 
-                    }
-                    QPushButton:pressed { 
-                        background-color: #b71c1c; 
-                    }
-                """)
-                
-                # Connect signal if method exists
-                if hasattr(self.brain_config_right, 'reset_all_electrodes'):
-                    self.reset_locator_btn.clicked.connect(self.brain_config_right.reset_all_electrodes)
-                    logger.debug("Connected reset button to reset_all_electrodes method")
-                else:
-                    # Provide fallback functionality
-                    self.reset_locator_btn.clicked.connect(self._fallback_reset_electrodes)
-                    logger.warning("reset_all_electrodes method not found, using fallback")
-                
-                # Make button visible
-                self.reset_locator_btn.show()
-                self.reset_locator_btn.raise_()
-                
-                logger.info(f"Created reset button at position ({reset_x}, {reset_y})")
-                
-            except Exception as e:
-                logger.error(f"Failed to create reset button: {e}")
+            # Create buttons with common styling
+            button_configs = [
+                ('reset_locator_btn', '重置', '#f44336', self._get_reset_callback()),
+                ('finish_locator_btn', '完成', '#4CAF50', self._get_finish_callback())
+            ]
             
-            # Create finish button
-            try:
-                self.finish_locator_btn = QtWidgets.QPushButton(self.brainTab)
-                self.finish_locator_btn.setObjectName("finish_locator_btn")
-                
-                # Position finish button in top area, left of reset button
-                finish_x = min(parent_width - 180, 580)  # Leave space for reset button
-                finish_y = 10
-                self.finish_locator_btn.setGeometry(QtCore.QRect(finish_x, finish_y, 80, 30))
-                
-                self.finish_locator_btn.setText("完成")
-                self.finish_locator_btn.setStyleSheet("""
-                    QPushButton { 
-                        background-color: #4CAF50; 
-                        color: white; 
-                        border: none; 
-                        border-radius: 4px;
-                        font-weight: bold;
-                    }
-                    QPushButton:hover { 
-                        background-color: #45a049; 
-                    }
-                    QPushButton:pressed { 
-                        background-color: #3d8b40; 
-                    }
-                """)
-                
-                # Connect signal if method exists
-                if hasattr(self.brain_config_right, 'get_channel_pairs_summary'):
-                    self.finish_locator_btn.clicked.connect(self._get_config_summary)
-                    logger.debug("Connected finish button to get_channel_pairs_summary method")
-                else:
-                    # Provide fallback functionality
-                    self.finish_locator_btn.clicked.connect(self._fallback_show_summary)
-                    logger.warning("get_channel_pairs_summary method not found, using fallback")
-                
-                # Make button visible
-                self.finish_locator_btn.show()
-                self.finish_locator_btn.raise_()
-                
-                logger.info(f"Created finish button at position ({finish_x}, {finish_y})")
-                
-            except Exception as e:
-                logger.error(f"Failed to create finish button: {e}")
+            parent_width = self.brainTab.width() if self.brainTab.width() > 0 else 1140
             
-            # Force layout update
+            for i, (name, text, color, callback) in enumerate(button_configs):
+                button = QtWidgets.QPushButton(self.brainTab)
+                button.setObjectName(name)
+                button.setText(text)
+                button.setStyleSheet(self._get_button_style(color))
+                
+                # Position buttons
+                x_pos = min(parent_width - (180 - i * 90), 580 + i * 90)
+                button.setGeometry(QtCore.QRect(x_pos, 10, 80, 30))
+                
+                button.clicked.connect(callback)
+                button.show()
+                button.raise_()
+                
+                setattr(self, name, button)
+                logger.info(f"Created {name} at position ({x_pos}, 10)")
+            
             if hasattr(self.brainTab, 'update'):
                 self.brainTab.update()
-            
-            logger.info("Brain control buttons creation completed")
                 
         except Exception as e:
             logger.error(f"Failed to add brain control buttons: {e}")
-            logger.error(f"Exception details: {traceback.format_exc()}")
+    
+    def _get_button_style(self, color: str) -> str:
+        """Get button style string"""
+        return f"""
+            QPushButton {{ 
+                background-color: {color}; 
+                color: white; 
+                border: none; 
+                border-radius: 4px;
+                font-weight: bold;
+            }}
+            QPushButton:hover {{ 
+                background-color: {self._darken_color(color)}; 
+            }}
+            QPushButton:pressed {{ 
+                background-color: {self._darken_color(color, 0.8)}; 
+            }}
+        """
+    
+    def _darken_color(self, hex_color: str, factor: float = 0.9) -> str:
+        """Darken a hex color by a factor"""
+        try:
+            hex_color = hex_color.lstrip('#')
+            rgb = tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
+            darkened = tuple(int(c * factor) for c in rgb)
+            return f"#{darkened[0]:02x}{darkened[1]:02x}{darkened[2]:02x}"
+        except:
+            return hex_color
+    
+    def _get_reset_callback(self):
+        """Get reset button callback"""
+        if hasattr(self.brain_config_right, 'reset_all_electrodes'):
+            return self.brain_config_right.reset_all_electrodes
+        return self._fallback_reset_electrodes
+    
+    def _get_finish_callback(self):
+        """Get finish button callback"""
+        if hasattr(self.brain_config_right, 'get_channel_pairs_summary'):
+            return self._get_config_summary
+        return self._fallback_show_summary
     
     def _get_config_summary(self):
+        """Get configuration summary from brain locator"""
         self.brain_config_right.get_channel_pairs_summary()
         
-        source_config = self.brain_config_right.get_sources()
-        self.config.enabled_channels[SensorType.FNIRS.value +'source'] = [electrode_name for _, electrode_name in source_config.items()]
+        if hasattr(self.brain_config_right, 'get_sources'):
+            source_config = self.brain_config_right.get_sources()
+            self.config.enabled_channels[SensorType.FNIRS.value + 'source'] = [
+                electrode_name for _, electrode_name in source_config.items()
+            ]
         
-        detect_config = self.brain_config_right.get_detectors()
-        self.config.enabled_channels[SensorType.FNIRS.value +'detect'] = [electrode_name for _, electrode_name in detect_config.items()]
+        if hasattr(self.brain_config_right, 'get_detectors'):
+            detect_config = self.brain_config_right.get_detectors()
+            self.config.enabled_channels[SensorType.FNIRS.value + 'detect'] = [
+                electrode_name for _, electrode_name in detect_config.items()
+            ]
         
-        fnirs_config = self.brain_config_right.get_fnirs_pairs()
-        for chn_name, node_info in fnirs_config.items():
-            self.config.enabled_channels[SensorType.FNIRS.value][chn_name] = node_info['node_pair']
-        
-
+        if hasattr(self.brain_config_right, 'get_fnirs_pairs'):
+            fnirs_config = self.brain_config_right.get_fnirs_pairs()
+            for chn_name, node_info in fnirs_config.items():
+                self.config.enabled_channels[SensorType.FNIRS.value][chn_name] = node_info['node_pair']
+    
     def _remove_existing_control_buttons(self):
         """Remove existing control buttons to prevent duplicates"""
-        try:
-            # Remove reset button if it exists
-            if hasattr(self, 'reset_locator_btn') and self.reset_locator_btn is not None:
-                self.reset_locator_btn.deleteLater()
-                self.reset_locator_btn = None
-                logger.debug("Removed existing reset button")
-            
-            # Remove finish button if it exists
-            if hasattr(self, 'finish_locator_btn') and self.finish_locator_btn is not None:
-                self.finish_locator_btn.deleteLater()
-                self.finish_locator_btn = None
-                logger.debug("Removed existing finish button")
-                
-        except Exception as e:
-            logger.warning(f"Error removing existing buttons: {e}")
+        for button_name in ['reset_locator_btn', 'finish_locator_btn']:
+            if hasattr(self, button_name):
+                button = getattr(self, button_name)
+                if button is not None:
+                    button.deleteLater()
+                    setattr(self, button_name, None)
     
     def _fallback_reset_electrodes(self):
-        """Fallback method for reset functionality when brain_config_right method is unavailable"""
+        """Fallback method for reset functionality"""
         try:
             logger.info("Executing fallback reset electrode functionality")
             
-            # Reset internal configuration
             if hasattr(self.config, 'enabled_channel_pairs'):
                 self.config.enabled_channel_pairs.clear()
             
-            # Clear checkbox selections for fNIRS
-            if 'Source' in self.sensor_checkboxes:
-                for checkbox in self.sensor_checkboxes['Source']:
-                    checkbox.setChecked(False)
+            # Clear checkbox selections
+            checkbox_groups = ['Source', 'Detect'] + list(self.enabled_sensor_types)
+            for group in checkbox_groups:
+                if group in self.sensor_checkboxes:
+                    for checkbox in self.sensor_checkboxes[group]:
+                        checkbox.setChecked(False)
             
-            if 'Detect' in self.sensor_checkboxes:
-                for checkbox in self.sensor_checkboxes['Detect']:
-                    checkbox.setChecked(False)
-            
-            # Clear EEG selections if present
-            if SensorType.EEG.value in self.sensor_checkboxes:
-                for checkbox in self.sensor_checkboxes[SensorType.EEG.value]:
-                    checkbox.setChecked(False)
-            
-            self._show_info_message("Reset Complete", "电极配置已重置\nElectrode configuration has been reset")
-            logger.info("Fallback reset completed successfully")
+            self._show_info_message("Reset Complete", "电极配置已重置")
             
         except Exception as e:
             logger.error(f"Fallback reset failed: {e}")
-            self._show_error_message("Reset Failed", f"重置失败：{str(e)}\nReset failed: {str(e)}")
+            self._show_error_message("Reset Failed", f"重置失败：{str(e)}")
     
     def _fallback_show_summary(self):
-        """Fallback method for showing summary when brain_config_right method is unavailable"""
+        """Fallback method for showing summary"""
         try:
-            logger.info("Executing fallback show summary functionality")
-            
             summary = self.get_channel_summary()
-            
-            # Create a simple summary dialog
             msg = QtWidgets.QMessageBox(self)
             msg.setWindowTitle("Channel Configuration Summary")
-            msg.setText("通道配置摘要 Channel Configuration Summary")
+            msg.setText("通道配置摘要")
             msg.setDetailedText(summary)
             msg.setIcon(QtWidgets.QMessageBox.Information)
             msg.exec_()
-            
-            logger.info("Fallback summary display completed")
-            
         except Exception as e:
             logger.error(f"Fallback summary failed: {e}")
-            self._show_error_message("Summary Failed", f"显示摘要失败：{str(e)}\nShow summary failed: {str(e)}")
+            self._show_error_message("Summary Failed", f"显示摘要失败：{str(e)}")
     
     def generate_sensor_configuration(self, sensor_type: str):
         """Generate configuration for specific sensor type"""
         try:
-            if sensor_type == SensorType.EEG.value:
-                self.generate_eeg_configuration()
-            elif sensor_type == SensorType.SEMG.value:
-                self.generate_semg_configuration()
-            elif sensor_type == SensorType.FNIRS.value:
-                self.generate_fnirs_configuration()
+            config_methods = {
+                SensorType.EEG.value: self.generate_eeg_configuration,
+                SensorType.SEMG.value: self.generate_semg_configuration,
+                SensorType.FNIRS.value: self.generate_fnirs_configuration
+            }
+            
+            if sensor_type in config_methods:
+                config_methods[sensor_type]()
             else:
                 logger.warning(f"Unknown sensor type: {sensor_type}")
                 
@@ -1103,95 +880,44 @@ class ConfigurationManager(QWidget, Ui_ConfigForm):
     
     def generate_eeg_configuration(self):
         """Generate EEG channel configuration"""
-        logger.info("Generating EEG configuration")
-        
-        try:
-            if not hasattr(self, 'eegGridLayout'):
-                logger.warning("EEG grid layout not available")
-                return
-            
-            # Clear existing layout
-            self._clear_layout(self.eegGridLayout)
-            self.sensor_checkboxes[SensorType.EEG.value].clear()
-            
-            # Get configuration
-            sensor_config = self.config.sensor_configs[SensorType.EEG.value]
-            channel_count = self.config.channel_counts[SensorType.EEG.value]
-            channels_per_row = sensor_config.channels_per_row
-            
-            logger.debug(f"Creating {channel_count} EEG checkboxes, {channels_per_row} per row")
-            
-            # Create channel checkboxes
-            for i in range(channel_count):
-                row = i // channels_per_row
-                col = i % channels_per_row
-                
-                # Create checkbox with channel label
-                checkbox = QCheckBox(f"{sensor_config.prefix}{i+1:02d}")
-                checkbox.setStyleSheet(f"QCheckBox {{ color: {sensor_config.color}; font-weight: bold; }}")
-                checkbox.stateChanged.connect(
-                    lambda state, idx=i: self.update_sensor_channels(SensorType.EEG.value, idx, state))
-                
-                self.eegGridLayout.addWidget(checkbox, row, col)
-                self.sensor_checkboxes[SensorType.EEG.value].append(checkbox)
-            
-            logger.info(f"Generated {channel_count} EEG channel checkboxes")
-            
-        except Exception as e:
-            logger.error(f"Failed to generate EEG configuration: {e}")
-            raise
+        self._generate_standard_sensor_config(SensorType.EEG.value, 'eegGridLayout')
     
     def generate_semg_configuration(self):
         """Generate sEMG channel configuration"""
-        logger.info("Generating sEMG configuration")
+        self._generate_standard_sensor_config(SensorType.SEMG.value, 'semgGridLayout')
+    
+    def _generate_standard_sensor_config(self, sensor_type: str, layout_name: str):
+        """Generate standard sensor configuration (EEG/sEMG)"""
+        logger.info(f"Generating {sensor_type} configuration")
         
         try:
-            if not hasattr(self, 'semgGridLayout'):
-                logger.warning("sEMG grid layout not available")
+            if not hasattr(self, layout_name):
+                logger.warning(f"{sensor_type} grid layout not available")
                 return
             
-            # Clear existing layout
-            self._clear_layout(self.semgGridLayout)
-            self.sensor_checkboxes[SensorType.SEMG.value].clear()
+            layout = getattr(self, layout_name)
+            self._clear_layout(layout)
+            self.sensor_checkboxes[sensor_type].clear()
             
-            # Get configuration
-            sensor_config = self.config.sensor_configs[SensorType.SEMG.value]
-            channel_count = self.config.channel_counts[SensorType.SEMG.value]
-            channels_per_row = sensor_config.channels_per_row
+            sensor_config = self.config.sensor_configs[sensor_type]
+            channel_count = self.config.channel_counts[sensor_type]
             
-            logger.debug(f"Creating {channel_count} sEMG checkboxes, {channels_per_row} per row")
-            
-            # Create channel checkboxes
             for i in range(channel_count):
-                row = i // channels_per_row
-                col = i % channels_per_row
+                row, col = divmod(i, sensor_config.channels_per_row)
                 
-                # Create checkbox with channel label
                 checkbox = QCheckBox(f"{sensor_config.prefix}{i+1:02d}")
                 checkbox.setStyleSheet(f"QCheckBox {{ color: {sensor_config.color}; font-weight: bold; }}")
                 checkbox.stateChanged.connect(
-                    lambda state, idx=i: self.update_sensor_channels(SensorType.SEMG.value, idx, state))
+                    lambda state, idx=i: self.update_sensor_channels(sensor_type, idx, state))
                 
-                self.semgGridLayout.addWidget(checkbox, row, col)
-                self.sensor_checkboxes[SensorType.SEMG.value].append(checkbox)
+                layout.addWidget(checkbox, row, col)
+                self.sensor_checkboxes[sensor_type].append(checkbox)
             
-            logger.info(f"Generated {channel_count} sEMG channel checkboxes")
+            logger.info(f"Generated {channel_count} {sensor_type} channel checkboxes")
             
         except Exception as e:
-            logger.error(f"Failed to generate sEMG configuration: {e}")
+            logger.error(f"Failed to generate {sensor_type} configuration: {e}")
             raise
-    
-    def modify_sample_rate(self):
-        # Update channel counts from UI
-        if SensorType.EEG.value in self.enabled_sensor_types:
-            if hasattr(self, 'eegSamplingCombo'):
-                self.config.sampling_rates[SensorType.EEG.value] = int(self.eegSamplingCombo.currentText())
-        if SensorType.SEMG.value in self.enabled_sensor_types:
-            if hasattr(self, 'semgSamplingCombo'):
-                self.config.sampling_rates[SensorType.SEMG.value] = int(self.semgSamplingCombo.currentText())
-        if SensorType.FNIRS.value in self.enabled_sensor_types:
-            if hasattr(self, 'fnirsSamplingCombo'):
-                self.config.sampling_rates[SensorType.FNIRS.value] = int(self.fnirsSamplingCombo.currentText())
     
     def generate_fnirs_configuration(self):
         """Generate fNIRS source-detector matrix configuration"""
@@ -1202,52 +928,21 @@ class ConfigurationManager(QWidget, Ui_ConfigForm):
                 logger.warning("fNIRS grid layout not available")
                 return
             
-            # Clear existing layout
             self._clear_layout(self.fnirsGridLayout)
             self.sensor_checkboxes['Source'].clear()
             self.sensor_checkboxes['Detect'].clear()
             
-            # Update channel counts from UI
-            if SensorType.FNIRS.value in self.enabled_sensor_types:
-                if hasattr(self, 'fnirsSourcesSpinBox_2'):
-                    self.config.channel_counts['fnirs_sources'] = self.fnirsSourcesSpinBox_2.value()
-                if hasattr(self, 'fnirsDetectorsSpinBox_2'):
-                    self.config.channel_counts['fnirs_detectors'] = self.fnirsDetectorsSpinBox_2.value()
+            # Update counts from UI
+            self._update_fnirs_counts_from_ui()
             
             sensor_config = self.config.sensor_configs[SensorType.FNIRS.value]
             source_count = self.config.channel_counts['fnirs_sources']
             detector_count = self.config.channel_counts['fnirs_detectors']
-            channels_per_row = sensor_config.channels_per_row
             
-            logger.debug(f"Creating {source_count} sources and {detector_count} detectors, {channels_per_row} per row")
-            
-            # Create source checkboxes
-            for i in range(source_count):
-                row = i // channels_per_row
-                col = i % channels_per_row
-                
-                checkbox = QCheckBox(f"{sensor_config.prefix[0]}{i+1:02d}")
-                checkbox.setStyleSheet(f"QCheckBox {{ color: {sensor_config.color[0]}; font-weight: bold; }}")
-                checkbox.stateChanged.connect(
-                    lambda state, idx=i: self.update_sensor_channels('Source', idx, state))
-                
-                self.fnirsGridLayout.addWidget(checkbox, row, col)
-                self.sensor_checkboxes['Source'].append(checkbox)
-            
-            # Create detector checkboxes (offset by source rows)
-            source_rows = int(np.ceil(source_count / channels_per_row))
-            
-            for i in range(detector_count):
-                row = i // channels_per_row + source_rows
-                col = i % channels_per_row
-                
-                checkbox = QCheckBox(f"{sensor_config.prefix[1]}{i+1:02d}")
-                checkbox.setStyleSheet(f"QCheckBox {{ color: {sensor_config.color[1]}; font-weight: bold; }}")
-                checkbox.stateChanged.connect(
-                    lambda state, idx=i: self.update_sensor_channels('Detect', idx, state))
-                
-                self.fnirsGridLayout.addWidget(checkbox, row, col)
-                self.sensor_checkboxes['Detect'].append(checkbox)
+            # Generate sources and detectors
+            self._generate_fnirs_components('Source', source_count, sensor_config, 0)
+            source_rows = int(np.ceil(source_count / sensor_config.channels_per_row))
+            self._generate_fnirs_components('Detect', detector_count, sensor_config, source_rows)
             
             logger.info(f"Generated {source_count} source and {detector_count} detector checkboxes")
             
@@ -1255,27 +950,52 @@ class ConfigurationManager(QWidget, Ui_ConfigForm):
             logger.error(f"Failed to generate fNIRS configuration: {e}")
             raise
     
+    def _update_fnirs_counts_from_ui(self):
+        """Update fNIRS counts from UI"""
+        if SensorType.FNIRS.value in self.enabled_sensor_types:
+            for control_name, count_key in [
+                ('fnirsSourcesSpinBox_2', 'fnirs_sources'),
+                ('fnirsDetectorsSpinBox_2', 'fnirs_detectors')
+            ]:
+                if hasattr(self, control_name):
+                    self.config.channel_counts[count_key] = getattr(self, control_name).value()
+    
+    def _generate_fnirs_components(self, component_type: str, count: int, sensor_config: SensorConfig, row_offset: int):
+        """Generate fNIRS components (sources or detectors)"""
+        color_idx = 0 if component_type == 'Source' else 1
+        prefix_idx = 0 if component_type == 'Source' else 1
+        
+        for i in range(count):
+            row = i // sensor_config.channels_per_row + row_offset
+            col = i % sensor_config.channels_per_row
+            
+            checkbox = QCheckBox(f"{sensor_config.prefix[prefix_idx]}{i+1:02d}")
+            checkbox.setStyleSheet(f"QCheckBox {{ color: {sensor_config.color[color_idx]}; font-weight: bold; }}")
+            checkbox.stateChanged.connect(
+                lambda state, idx=i: self.update_sensor_channels(component_type, idx, state))
+            
+            self.fnirsGridLayout.addWidget(checkbox, row, col)
+            self.sensor_checkboxes[component_type].append(checkbox)
+    
     def update_sensor_channels(self, sensor_type: str, channel_idx: int, state: int):
         """Update sensor channel configuration"""
         try:
             logger.debug(f"Updating {sensor_type} channel {channel_idx} to state {state}")
             
             # Update brain locator if available
-            if hasattr(self, 'brain_config_right') and hasattr(self.brain_config_right, 'set_current_node_info'):
+            if (hasattr(self, 'brain_config_right') and 
+                hasattr(self.brain_config_right, 'set_current_node_info')):
                 try:
                     self.brain_config_right.set_current_node_info(sensor_type, channel_idx + 1, state)
-                    logger.debug(f"Updated brain locator for {sensor_type} channel {channel_idx + 1}")
                 except Exception as e:
                     logger.warning(f"Failed to update brain locator: {e}")
             
             # Update enabled channels list
-            if sensor_type in self.sensor_checkboxes:
+            if sensor_type in self.sensor_checkboxes and sensor_type in self.config.enabled_channels:
                 checkboxes = self.sensor_checkboxes[sensor_type]
-                if sensor_type in self.config.enabled_channels:
-                    self.config.enabled_channels[sensor_type] = [
-                        i for i, checkbox in enumerate(checkboxes) if checkbox.isChecked()
-                    ]
-                    logger.debug(f"Updated enabled channels for {sensor_type}: {self.config.enabled_channels[sensor_type]}")
+                self.config.enabled_channels[sensor_type] = [
+                    i for i, checkbox in enumerate(checkboxes) if checkbox.isChecked()
+                ]
             
         except Exception as e:
             logger.error(f"Failed to update sensor channels for {sensor_type}: {e}")
@@ -1283,23 +1003,32 @@ class ConfigurationManager(QWidget, Ui_ConfigForm):
     def update_channel_configuration(self, sensor_type: str):
         """Update channel configuration when counts change"""
         try:
-            logger.debug(f"Updating channel configuration for {sensor_type}")
-            
             # Check if configuration exists
-            has_config = False
-            if sensor_type in self.sensor_checkboxes:
-                has_config = bool(self.sensor_checkboxes[sensor_type])
-            elif sensor_type == SensorType.FNIRS.value:
+            has_config = (sensor_type in self.sensor_checkboxes and 
+                         bool(self.sensor_checkboxes[sensor_type]))
+            
+            if sensor_type == SensorType.FNIRS.value:
                 has_config = bool(self.sensor_checkboxes.get('Source', []))
             
             if has_config:
                 self.generate_sensor_configuration(sensor_type)
                 logger.info(f"Regenerated configuration for {sensor_type}")
-            else:
-                logger.debug(f"No existing configuration found for {sensor_type}")
                 
         except Exception as e:
             logger.error(f"Failed to update channel configuration for {sensor_type}: {e}")
+    
+    def modify_sample_rate(self):
+        """Update sampling rates from UI controls"""
+        sampling_controls = [
+            (SensorType.EEG.value, 'eegSamplingCombo'),
+            (SensorType.SEMG.value, 'semgSamplingCombo'),
+            (SensorType.FNIRS.value, 'fnirsSamplingCombo')
+        ]
+        
+        for sensor, control_name in sampling_controls:
+            if sensor in self.enabled_sensor_types and hasattr(self, control_name):
+                control = getattr(self, control_name)
+                self.config.sampling_rates[sensor] = int(control.currentText())
     
     def _clear_layout(self, layout):
         """Clear all widgets from a layout"""
@@ -1308,7 +1037,6 @@ class ConfigurationManager(QWidget, Ui_ConfigForm):
                 child = layout.takeAt(0)
                 if child.widget():
                     child.widget().deleteLater()
-            logger.debug("Layout cleared successfully")
         except Exception as e:
             logger.error(f"Failed to clear layout: {e}")
     
@@ -1326,118 +1054,114 @@ class ConfigurationManager(QWidget, Ui_ConfigForm):
                                  for k, v in self.config.sensor_configs.items() 
                                  if k in self.enabled_sensor_types},
                 'electrode_mapping': self.config.enabled_channel_pairs.copy(),
-                'metadata': {
-                    'total_channels': {sensor: len(self.config.enabled_channels.get(sensor, [])) 
-                                     for sensor in self.enabled_sensor_types},
-                    'configuration_timestamp': QtCore.QDateTime.currentDateTime().toString(),
-                    'enabled_sensors': list(self.enabled_sensor_types),
-                    'version': '2.0',
-                    'has_electrode_positions': bool(self.config.enabled_channel_pairs),
-                    'has_valid_channels': bool(self.config.enabled_channel_pairs)
-                }
+                'metadata': self._generate_metadata()
             }
             
-            # Add electrode positions if available
+            # Add electrode position data if available
             if hasattr(self, 'brain_config_right'):
-                try:
-                    if SensorType.FNIRS.value in self.enabled_sensor_types:
-                        if hasattr(self.brain_config_right, 'get_fnirs_pairs'):
-                            config_dict['fnirs_pairs'] = self.brain_config_right.get_fnirs_pairs()
-                        if hasattr(self.brain_config_right, 'get_sources'):
-                            config_dict['sources'] = self.brain_config_right.get_sources()
-                        if hasattr(self.brain_config_right, 'get_detectors'):
-                            config_dict['detectors'] = self.brain_config_right.get_detectors()
-                    
-                    if SensorType.EEG.value in self.enabled_sensor_types:
-                        if hasattr(self.brain_config_right, 'get_eeg_pairs'):
-                            config_dict['eeg_pairs'] = self.brain_config_right.get_eeg_pairs()
-                        if hasattr(self.brain_config_right, 'get_eeg_electrodes'):
-                            config_dict['eeg_electrodes'] = self.brain_config_right.get_eeg_electrodes()
-                    
-                    logger.debug("Added electrode position data to configuration")
-                except Exception as e:
-                    logger.warning(f"Failed to get electrode data: {e}")
+                self._add_electrode_position_data(config_dict)
             
-            logger.info("Configuration dictionary created successfully")
             return config_dict
             
         except Exception as e:
             logger.error(f"Failed to create configuration dictionary: {e}")
             raise
     
+    def _generate_metadata(self) -> Dict[str, Any]:
+        """Generate metadata for configuration"""
+        return {
+            'total_channels': {sensor: len(self.config.enabled_channels.get(sensor, [])) 
+                             for sensor in self.enabled_sensor_types},
+            'configuration_timestamp': QtCore.QDateTime.currentDateTime().toString(),
+            'enabled_sensors': list(self.enabled_sensor_types),
+            'version': '2.0',
+            'has_electrode_positions': bool(self.config.enabled_channel_pairs),
+            'has_valid_channels': bool(self.config.enabled_channel_pairs)
+        }
+    
+    def _add_electrode_position_data(self, config_dict: Dict[str, Any]):
+        """Add electrode position data to configuration dictionary"""
+        try:
+            electrode_methods = [
+                ('fnirs_pairs', 'get_fnirs_pairs', SensorType.FNIRS.value),
+                ('sources', 'get_sources', SensorType.FNIRS.value),
+                ('detectors', 'get_detectors', SensorType.FNIRS.value),
+                ('eeg_pairs', 'get_eeg_pairs', SensorType.EEG.value),
+                ('eeg_electrodes', 'get_eeg_electrodes', SensorType.EEG.value)
+            ]
+            
+            for key, method_name, required_sensor in electrode_methods:
+                if (required_sensor in self.enabled_sensor_types and 
+                    hasattr(self.brain_config_right, method_name)):
+                    config_dict[key] = getattr(self.brain_config_right, method_name)()
+            
+        except Exception as e:
+            logger.warning(f"Failed to get electrode data: {e}")
+    
     def save_configuration(self):
         """Save current configuration to JSON file"""
         logger.info("Starting configuration save")
         
         try:
-            # Get default file path in montage directory
             default_path = get_default_config_path("device_config.json")
-            
-            # Get save file path with montage directory as starting location
             file_path, _ = QFileDialog.getSaveFileName(
                 self, "保存配置 Save Configuration", 
-                default_path,  # Start in montage directory with default filename
-                "JSON files (*.json);;All files (*)")
+                default_path, "JSON files (*.json);;All files (*)")
+            
             if not file_path:
-                logger.info("Save cancelled by user")
                 return
             
             config_dict = self.get_configuration_dict()
-            
-            # Validate configuration before saving
             validation_result = self._validate_configuration_for_save(config_dict)
+            
             if not validation_result['valid']:
-                response = self._show_warning_message(
-                    "Configuration Validation",
-                    f"配置验证发现问题：\n{chr(10).join(validation_result['warnings'])}\n\n"
-                    f"是否仍然保存？\n\n"
-                    f"Configuration validation found issues:\n{chr(10).join(validation_result['warnings'])}\n\n"
-                    f"Save anyway?"
-                )
-                if response != QMessageBox.Yes:
-                    logger.info("Save cancelled due to validation issues")
+                if self._show_warning_message("Configuration Validation",
+                    self._format_validation_message(validation_result['warnings'])) != QMessageBox.Yes:
                     return
             
-            # Save to file
+            # Save configuration
             with open(file_path, 'w', encoding='utf-8') as f:
                 json.dump(config_dict, f, indent=2, ensure_ascii=False)
             
-            enabled_sensors_str = ", ".join([s.upper() for s in self.enabled_sensor_types])
             summary = self._get_save_summary(config_dict)
+            enabled_sensors_str = ", ".join([s.upper() for s in self.enabled_sensor_types])
             
             self._show_info_message("Success", 
-                f"配置保存成功！\nConfiguration saved successfully for {enabled_sensors_str}\n\n"
+                f"配置保存成功！\nConfiguration saved for {enabled_sensors_str}\n\n"
                 f"Summary:\n{summary}\n\nFile: {file_path}")
-            
-            logger.info(f"Configuration saved successfully to {file_path}")
             
         except Exception as e:
             logger.error(f"Failed to save configuration: {e}")
-            self._show_error_message("Error", 
-                f"配置保存失败：{str(e)}\nFailed to save configuration:\n{str(e)}")
+            self._show_error_message("Error", f"配置保存失败：{str(e)}")
+    
+    def _format_validation_message(self, warnings: List[str]) -> str:
+        """Format validation warnings message"""
+        warning_text = "\n".join(warnings)
+        return (f"配置验证发现问题：\n{warning_text}\n\n是否仍然保存？\n\n"
+                f"Configuration validation found issues:\n{warning_text}\n\nSave anyway?")
     
     def _validate_configuration_for_save(self, config_dict: Dict[str, Any]) -> Dict[str, Any]:
         """Validate configuration before saving"""
         warnings = []
         
         try:
-            # Check electrode positions
-            if not config_dict.get('electrode_mapping') and SensorType.FNIRS.value in self.enabled_sensor_types:
-                warnings.append("No electrode positions defined for fNIRS")
+            validation_checks = [
+                (not config_dict.get('electrode_mapping') and SensorType.FNIRS.value in self.enabled_sensor_types,
+                 "No electrode positions defined for fNIRS"),
+                (not config_dict.get('fnirs_pairs') and SensorType.FNIRS.value in self.enabled_sensor_types,
+                 "No valid fNIRS channel pairs found")
+            ]
             
-            # Check valid channels
-            if not config_dict.get('fnirs_pairs') and SensorType.FNIRS.value in self.enabled_sensor_types:
-                warnings.append("No valid fNIRS channel pairs found")
+            for condition, message in validation_checks:
+                if condition:
+                    warnings.append(message)
             
             # Check sampling rates
             for sensor in self.enabled_sensor_types:
                 if sensor not in config_dict.get('sampling_rates', {}):
                     warnings.append(f"No sampling rate defined for {sensor.upper()}")
             
-            logger.debug(f"Configuration validation: {len(warnings)} warnings")
-            
         except Exception as e:
-            logger.error(f"Configuration validation failed: {e}")
             warnings.append(f"Validation error: {str(e)}")
         
         return {'valid': len(warnings) == 0, 'warnings': warnings}
@@ -1446,24 +1170,21 @@ class ConfigurationManager(QWidget, Ui_ConfigForm):
         """Get summary of saved configuration"""
         lines = []
         
-        try:
-            if 'fnirs_pairs' in config_dict:
-                lines.append(f"fNIRS Channels: {len(config_dict['fnirs_pairs'])}")
-            if 'sources' in config_dict:
-                lines.append(f"Sources: {len(config_dict['sources'])}")
-            if 'detectors' in config_dict:
-                lines.append(f"Detectors: {len(config_dict['detectors'])}")
-            if 'eeg_electrodes' in config_dict:
-                lines.append(f"EEG Electrodes: {len(config_dict['eeg_electrodes'])}")
-            
-            # Add sampling rates summary
-            if 'sampling_rates' in config_dict:
-                for sensor, rate in config_dict['sampling_rates'].items():
-                    lines.append(f"{sensor.upper()} Rate: {rate}Hz")
-            
-        except Exception as e:
-            logger.error(f"Failed to generate save summary: {e}")
-            lines.append("Summary generation failed")
+        summary_mappings = [
+            ('fnirs_pairs', lambda x: f"fNIRS Channels: {len(x)}"),
+            ('sources', lambda x: f"Sources: {len(x)}"),
+            ('detectors', lambda x: f"Detectors: {len(x)}"),
+            ('eeg_electrodes', lambda x: f"EEG Electrodes: {len(x)}")
+        ]
+        
+        for key, formatter in summary_mappings:
+            if key in config_dict:
+                lines.append(formatter(config_dict[key]))
+        
+        # Add sampling rates
+        if 'sampling_rates' in config_dict:
+            for sensor, rate in config_dict['sampling_rates'].items():
+                lines.append(f"{sensor.upper()} Rate: {rate}Hz")
         
         return '\n'.join(lines) if lines else "Basic configuration saved"
     
@@ -1472,101 +1193,73 @@ class ConfigurationManager(QWidget, Ui_ConfigForm):
         logger.info("Starting configuration load")
         
         try:
-            # Start file dialog in montage directory
-            montage_dir_str = str(self.montage_dir)
-            
-            # Get load file path
             file_path, _ = QFileDialog.getOpenFileName(
                 self, "加载配置 Load Configuration", 
-                montage_dir_str,  # Start in montage directory
-                "JSON files (*.json);;All files (*)")
+                str(self.montage_dir), "JSON files (*.json);;All files (*)")
             
             if not file_path or not os.path.exists(file_path):
-                logger.info("Load cancelled or file not found")
                 return
             
-            # Load configuration from file
             with open(file_path, 'r', encoding='utf-8') as f:
                 config_dict = json.load(f)
             
-            logger.info(f"Loaded configuration from {file_path}")
-            
-            # Validate compatibility
             if not self._validate_loaded_config(config_dict):
                 return
             
-            # Apply loaded configuration
             self._apply_loaded_configuration(config_dict)
-            
-            self._show_info_message("Success", 
-                f"配置加载成功！\nConfiguration loaded successfully from:\n{file_path}")
-            
-            logger.info("Configuration loaded and applied successfully")
+            self._show_info_message("Success", f"配置加载成功！\nConfiguration loaded from:\n{file_path}")
             
         except Exception as e:
             logger.error(f"Failed to load configuration: {e}")
-            self._show_error_message("Error", 
-                f"配置加载失败：{str(e)}\nFailed to load configuration:\n{str(e)}")
+            self._show_error_message("Error", f"配置加载失败：{str(e)}")
     
     def _validate_loaded_config(self, config_dict: Dict[str, Any]) -> bool:
         """Validate that loaded configuration is compatible"""
         try:
             if 'enabled_sensor_types' not in config_dict:
-                self._show_error_message("Error", 
-                    "配置文件格式不兼容\nLoaded configuration format is not compatible")
+                self._show_error_message("Error", "配置文件格式不兼容")
                 return False
             
             loaded_sensors = set(config_dict['enabled_sensor_types'])
-            current_sensors = self.enabled_sensor_types
+            incompatible_sensors = loaded_sensors - self.enabled_sensor_types
             
-            # Check compatibility
-            incompatible_sensors = loaded_sensors - current_sensors
             if incompatible_sensors:
-                incompatible_str = ", ".join([s.upper() for s in incompatible_sensors])
-                current_str = ", ".join([s.upper() for s in current_sensors])
-                
-                response = self._show_warning_message("Sensor Type Mismatch",
-                    f"配置文件包含当前未启用的传感器类型：{incompatible_str}\n"
-                    f"当前启用的传感器：{current_str}\n\n"
-                    f"是否继续加载兼容部分？\n\n"
-                    f"Loaded config contains sensors not currently enabled: {incompatible_str}\n"
-                    f"Currently enabled sensors: {current_str}\n\n"
-                    f"Continue loading compatible parts?"
-                )
-                
-                if response != QMessageBox.Yes:
-                    logger.info("Load cancelled due to sensor mismatch")
+                if self._show_warning_message("Sensor Type Mismatch",
+                    self._format_sensor_mismatch_message(incompatible_sensors)) != QMessageBox.Yes:
                     return False
             
-            logger.debug("Loaded configuration validation passed")
             return True
             
         except Exception as e:
-            logger.error(f"Configuration validation failed: {e}")
             self._show_error_message("Error", f"Configuration validation failed: {str(e)}")
             return False
+    
+    def _format_sensor_mismatch_message(self, incompatible_sensors: Set[str]) -> str:
+        """Format sensor mismatch message"""
+        incompatible_str = ", ".join([s.upper() for s in incompatible_sensors])
+        current_str = ", ".join([s.upper() for s in self.enabled_sensor_types])
+        
+        return (f"配置文件包含当前未启用的传感器类型：{incompatible_str}\n"
+                f"当前启用的传感器：{current_str}\n\n是否继续加载兼容部分？\n\n"
+                f"Loaded config contains sensors not enabled: {incompatible_str}\n"
+                f"Currently enabled: {current_str}\n\nContinue loading compatible parts?")
     
     def _apply_loaded_configuration(self, config_dict: Dict[str, Any]):
         """Apply loaded configuration to UI"""
         logger.info("Applying loaded configuration")
         
         try:
-            # Apply sampling rates
-            if 'sampling_rates' in config_dict:
-                self._apply_loaded_sampling_rates(config_dict['sampling_rates'])
+            config_sections = [
+                ('sampling_rates', self._apply_loaded_sampling_rates),
+                ('channel_counts', self._apply_loaded_channel_counts),
+                ('enabled_channels', self._apply_loaded_enabled_channels)
+            ]
             
-            # Apply channel counts
-            if 'channel_counts' in config_dict:
-                self._apply_loaded_channel_counts(config_dict['channel_counts'])
+            for section_key, apply_method in config_sections:
+                if section_key in config_dict:
+                    apply_method(config_dict[section_key])
             
-            # Apply enabled channels
-            if 'enabled_channels' in config_dict:
-                self._apply_loaded_enabled_channels(config_dict['enabled_channels'])
-            
-            # Apply electrode positions if available
-            self._apply_loaded_electrode_positions(config_dict['enabled_channels'])
-            
-            logger.info("Loaded configuration applied successfully")
+            self._apply_loaded_electrode_positions(config_dict.get('enabled_channels', {}))
             
         except Exception as e:
             logger.error(f"Failed to apply loaded configuration: {e}")
@@ -1588,41 +1281,36 @@ class ConfigurationManager(QWidget, Ui_ConfigForm):
                         control = getattr(self, control_name)
                         control.setCurrentText(str(sampling_rates[sensor]))
                         self.config.sampling_rates[sensor] = sampling_rates[sensor]
-                        logger.debug(f"Applied {sensor} sampling rate: {sampling_rates[sensor]}")
                     except Exception as e:
                         logger.warning(f"Failed to set {sensor} sampling rate: {e}")
     
     def _apply_loaded_channel_counts(self, channel_counts: Dict[str, int]):
         """Apply loaded channel counts"""
         try:
-            # EEG channels
-            if (SensorType.EEG.value in self.enabled_sensor_types and 
-                SensorType.EEG.value in channel_counts and 
-                hasattr(self, 'eegChannelsSpinBox_2')):
-                self.eegChannelsSpinBox_2.setValue(channel_counts[SensorType.EEG.value])
-                self.config.channel_counts[SensorType.EEG.value] = channel_counts[SensorType.EEG.value]
-                logger.debug(f"Applied EEG channel count: {channel_counts[SensorType.EEG.value]}")
+            # Standard sensors
+            channel_mappings = [
+                (SensorType.EEG.value, 'eegChannelsSpinBox_2'),
+                (SensorType.SEMG.value, 'semgChannelsSpinBox_2')
+            ]
             
-            # sEMG channels
-            if (SensorType.SEMG.value in self.enabled_sensor_types and 
-                SensorType.SEMG.value in channel_counts and 
-                hasattr(self, 'semgChannelsSpinBox_2')):
-                self.semgChannelsSpinBox_2.setValue(channel_counts[SensorType.SEMG.value])
-                self.config.channel_counts[SensorType.SEMG.value] = channel_counts[SensorType.SEMG.value]
-                logger.debug(f"Applied sEMG channel count: {channel_counts[SensorType.SEMG.value]}")
+            for sensor, control_name in channel_mappings:
+                if (sensor in self.enabled_sensor_types and 
+                    sensor in channel_counts and hasattr(self, control_name)):
+                    getattr(self, control_name).setValue(channel_counts[sensor])
+                    self.config.channel_counts[sensor] = channel_counts[sensor]
             
-            # fNIRS channels
+            # fNIRS special handling
             if SensorType.FNIRS.value in self.enabled_sensor_types:
-                if 'fnirs_sources' in channel_counts and hasattr(self, 'fnirsSourcesSpinBox_2'):
-                    self.fnirsSourcesSpinBox_2.setValue(channel_counts['fnirs_sources'])
-                    self.config.channel_counts['fnirs_sources'] = channel_counts['fnirs_sources']
-                    logger.debug(f"Applied fNIRS sources count: {channel_counts['fnirs_sources']}")
+                fnirs_mappings = [
+                    ('fnirs_sources', 'fnirsSourcesSpinBox_2'),
+                    ('fnirs_detectors', 'fnirsDetectorsSpinBox_2')
+                ]
                 
-                if 'fnirs_detectors' in channel_counts and hasattr(self, 'fnirsDetectorsSpinBox_2'):
-                    self.fnirsDetectorsSpinBox_2.setValue(channel_counts['fnirs_detectors'])
-                    self.config.channel_counts['fnirs_detectors'] = channel_counts['fnirs_detectors']
-                    logger.debug(f"Applied fNIRS detectors count: {channel_counts['fnirs_detectors']}")
-                    
+                for count_key, control_name in fnirs_mappings:
+                    if count_key in channel_counts and hasattr(self, control_name):
+                        getattr(self, control_name).setValue(channel_counts[count_key])
+                        self.config.channel_counts[count_key] = channel_counts[count_key]
+                        
         except Exception as e:
             logger.error(f"Failed to apply loaded channel counts: {e}")
             raise
@@ -1632,95 +1320,45 @@ class ConfigurationManager(QWidget, Ui_ConfigForm):
         try:
             for sensor in self.enabled_sensor_types:
                 if sensor in enabled_channels and sensor in self.sensor_checkboxes:
-                    sensor_channels = enabled_channels[sensor]
-                    checkboxes = self.sensor_checkboxes[sensor]
-                    
-                    if isinstance(sensor_channels, list):
-                        for i in range(len(sensor_channels)):
-                            if 0 <= i < len(checkboxes):
-                                checkboxes[i].setChecked(True)
-                                logger.debug(f"Enabled {sensor} channel {i}")
-                    
-                elif sensor == SensorType.FNIRS.value:
-                    # Handle fNIRS source/detector channels
-                    if 'Source' in self.sensor_checkboxes and 'fnirssource' in enabled_channels:
-                        for i in range(len(enabled_channels['fnirssource'])):
-                            if 0 <= i < len(self.sensor_checkboxes['Source']):
-                                self.sensor_checkboxes['Source'][i].setChecked(True)
-                                logger.debug(f"Enabled fNIRS source {i:02d}")
-                    
-                    if 'Detect' in self.sensor_checkboxes and 'fnirsdetect' in enabled_channels:
-                        for i in range(len(enabled_channels['fnirsdetect'])):
-                            if 0 <= i < len(self.sensor_checkboxes['Detect']):
-                                self.sensor_checkboxes['Detect'][i].setChecked(True)
-                                logger.debug(f"Enabled fNIRS detector {i:02d}")
+                    self._apply_sensor_channels(sensor, enabled_channels[sensor])
             
-            logger.debug("Applied loaded enabled channels")
+            # Handle fNIRS components
+            if SensorType.FNIRS.value in self.enabled_sensor_types:
+                fnirs_mappings = [
+                    ('fnirssource', 'Source'),
+                    ('fnirsdetect', 'Detect')
+                ]
+                
+                for key, checkbox_key in fnirs_mappings:
+                    if key in enabled_channels and checkbox_key in self.sensor_checkboxes:
+                        channels = enabled_channels[key]
+                        for i in range(len(channels)):
+                            if i < len(self.sensor_checkboxes[checkbox_key]):
+                                self.sensor_checkboxes[checkbox_key][i].setChecked(True)
             
         except Exception as e:
             logger.error(f"Failed to apply loaded enabled channels: {e}")
     
-    def _apply_loaded_electrode_positions(self, config_dict: Dict[str, Any]):
+    def _apply_sensor_channels(self, sensor: str, sensor_channels: List[int]):
+        """Apply enabled channels for a specific sensor"""
+        if isinstance(sensor_channels, list):
+            checkboxes = self.sensor_checkboxes[sensor]
+            for i in range(len(sensor_channels)):
+                if i < len(checkboxes):
+                    checkboxes[i].setChecked(True)
+    
+    def _apply_loaded_electrode_positions(self, enabled_channels: Dict[str, Any]):
         """Apply loaded electrode positions to the locator"""
         if not hasattr(self, 'brain_config_right'):
-            logger.warning("Brain config widget not available for electrode positions")
             return
         
         try:
-            self.brain_config_right.load_pairs_info(config_dict)
-            # Reset locator first
-            # if hasattr(self.brain_config_right, 'reset_all_electrodes'):
-            #     self.brain_config_right.reset_all_electrodes()
-            #     logger.debug("Reset electrode locator")
-            
-            # # Apply sources
-            # if 'sources' in config_dict:
-            #     for source_num, electrode_name in config_dict['sources'].items():
-            #         self._simulate_electrode_assignment(electrode_name, 'Source', int(source_num))
-            
-            # # Apply detectors
-            # if 'detectors' in config_dict:
-            #     for detector_num, electrode_name in config_dict['detectors'].items():
-            #         self._simulate_electrode_assignment(electrode_name, 'Detect', int(detector_num))
-            
-            # # Apply EEG electrodes
-            # if 'eeg_electrodes' in config_dict:
-            #     for eeg_num, electrode_name in config_dict['eeg_electrodes'].items():
-            #         self._simulate_electrode_assignment(electrode_name, 'eeg', int(eeg_num))
-            
-            logger.info("Applied electrode positions from loaded configuration")
-            
+            if hasattr(self.brain_config_right, 'load_pairs_info'):
+                self.brain_config_right.load_pairs_info(enabled_channels)
+                logger.info("Applied electrode positions from loaded configuration")
         except Exception as e:
             logger.error(f"Failed to apply electrode positions: {e}")
-            self._show_warning_message("Warning", 
-                f"重建电极位置时出错：{str(e)}\n"
-                f"Failed to recreate electrode positions: {str(e)}")
-    
-    def _simulate_electrode_assignment(self, electrode_name: str, electrode_type: str, electrode_number: int):
-        """Simulate electrode assignment in the locator"""
-        try:
-            # Update brain config if possible
-            if hasattr(self.brain_config_right, 'set_current_node_info'):
-                self.brain_config_right.set_current_node_info(electrode_type, electrode_number, True)
-            
-            # Store mapping for later use
-            if not hasattr(self.config, 'electrode_mapping'):
-                self.config.electrode_mapping = {}
-            
-            self.config.electrode_mapping[electrode_name] = {
-                'type': electrode_type,
-                'number': electrode_number
-            }
-            
-            # Try to simulate electrode button click if available
-            if hasattr(self.brain_config_right, '_on_electrode_left_click'):
-                self.brain_config_right._on_electrode_left_click(electrode_name)
-                logger.debug(f"Assigned {electrode_name} as {electrode_type} #{electrode_number}")
-            else:
-                logger.warning(f"Cannot simulate electrode assignment for {electrode_name}")
-                
-        except Exception as e:
-            logger.error(f"Failed to assign electrode {electrode_name}: {e}")
+            self._show_warning_message("Warning", f"重建电极位置时出错：{str(e)}")
     
     def reset_configuration(self):
         """Reset all configuration to default values"""
@@ -1728,40 +1366,32 @@ class ConfigurationManager(QWidget, Ui_ConfigForm):
         
         try:
             enabled_sensors_str = ", ".join([s.upper() for s in self.enabled_sensor_types])
-            response = self._show_warning_message("重置配置 Reset Configuration", 
+            
+            if self._show_warning_message("重置配置 Reset Configuration", 
                 f"确定要将所有配置重置为默认值吗？\n传感器类型：{enabled_sensors_str}\n\n"
                 f"Are you sure you want to reset all configuration to default values?\n"
-                f"Sensor types: {enabled_sensors_str}")
-            
-            if response == QMessageBox.Yes:
+                f"Sensor types: {enabled_sensors_str}") == QMessageBox.Yes:
+                
                 # Reset configuration
                 self.config = DeviceConfiguration(enabled_sensors=self.enabled_sensor_types)
                 self._initialize_ui_values()
-                
-                # Clear generated configurations
-                self._clear_all_sensor_layouts()
-                
-                # Clear checkbox references
-                self._clear_checkbox_references()
+                self._clear_all_configurations()
                 
                 # Reset brain locator if available
-                if hasattr(self, 'brain_config_right') and hasattr(self.brain_config_right, 'reset_all_electrodes'):
+                if (hasattr(self, 'brain_config_right') and 
+                    hasattr(self.brain_config_right, 'reset_all_electrodes')):
                     self.brain_config_right.reset_all_electrodes()
                 
                 self._show_info_message("Success", 
-                    f"配置已重置为默认值！\n传感器类型：{enabled_sensors_str}\n\n"
-                    f"Configuration reset to default values!\nSensor types: {enabled_sensors_str}")
-                
-                logger.info("Configuration reset completed successfully")
-            else:
-                logger.info("Configuration reset cancelled by user")
+                    f"配置已重置为默认值！\n传感器类型：{enabled_sensors_str}")
                 
         except Exception as e:
             logger.error(f"Failed to reset configuration: {e}")
-            self._show_error_message("Error", f"重置配置失败：{str(e)}\nFailed to reset configuration: {str(e)}")
+            self._show_error_message("Error", f"重置配置失败：{str(e)}")
     
-    def _clear_all_sensor_layouts(self):
-        """Clear all sensor layout configurations"""
+    def _clear_all_configurations(self):
+        """Clear all sensor configurations"""
+        # Clear layouts
         layout_mappings = {
             SensorType.EEG.value: 'eegGridLayout',
             SensorType.SEMG.value: 'semgGridLayout',
@@ -1770,26 +1400,11 @@ class ConfigurationManager(QWidget, Ui_ConfigForm):
         
         for sensor, layout_name in layout_mappings.items():
             if sensor in self.enabled_sensor_types and hasattr(self, layout_name):
-                try:
-                    layout = getattr(self, layout_name)
-                    self._clear_layout(layout)
-                    logger.debug(f"Cleared {sensor} layout")
-                except Exception as e:
-                    logger.warning(f"Failed to clear {sensor} layout: {e}")
-    
-    def _clear_checkbox_references(self):
-        """Clear all checkbox references"""
-        try:
-            for sensor_type in self.sensor_checkboxes:
-                if sensor_type in [SensorType.EEG.value, SensorType.SEMG.value]:
-                    self.sensor_checkboxes[sensor_type].clear()
-                elif sensor_type in ['Source', 'Detect']:
-                    self.sensor_checkboxes[sensor_type].clear()
-            
-            logger.debug("Cleared all checkbox references")
-            
-        except Exception as e:
-            logger.error(f"Failed to clear checkbox references: {e}")
+                self._clear_layout(getattr(self, layout_name))
+        
+        # Clear checkbox references
+        for sensor_type in self.sensor_checkboxes:
+            self.sensor_checkboxes[sensor_type].clear()
     
     def get_sensor_summary(self) -> Dict[str, Any]:
         """Get a summary of current sensor configuration"""
@@ -1806,14 +1421,8 @@ class ConfigurationManager(QWidget, Ui_ConfigForm):
             for sensor in self.enabled_sensor_types:
                 if sensor in self.config.enabled_channels:
                     channels = self.config.enabled_channels[sensor]
-                    if isinstance(channels, list):
-                        summary['total_channels'][sensor] = len(channels)
-                    elif isinstance(channels, dict):
-                        summary['total_channels'][sensor] = len(channels)
-                    else:
-                        summary['total_channels'][sensor] = 0
+                    summary['total_channels'][sensor] = len(channels) if isinstance(channels, (list, dict)) else 0
             
-            logger.debug("Generated sensor summary")
             return summary
             
         except Exception as e:
@@ -1841,7 +1450,7 @@ class ConfigurationManager(QWidget, Ui_ConfigForm):
         try:
             summary_lines = []
             
-            # Add basic sensor info
+            # Basic sensor info
             for sensor in self.enabled_sensor_types:
                 if sensor == SensorType.FNIRS.value:
                     sources = self.config.channel_counts.get('fnirs_sources', 0)
@@ -1857,47 +1466,42 @@ class ConfigurationManager(QWidget, Ui_ConfigForm):
             
             # Add electrode position info if available
             if hasattr(self, 'brain_config_right'):
-                try:
-                    if SensorType.FNIRS.value in self.enabled_sensor_types:
-                        if hasattr(self.brain_config_right, 'get_fnirs_pairs'):
-                            pairs = self.brain_config_right.get_fnirs_pairs()
-                            summary_lines.append(f"fNIRS Valid Pairs: {len(pairs)}")
-                    
-                    if SensorType.EEG.value in self.enabled_sensor_types:
-                        if hasattr(self.brain_config_right, 'get_eeg_electrodes'):
-                            electrodes = self.brain_config_right.get_eeg_electrodes()
-                            summary_lines.append(f"EEG Positioned Electrodes: {len(electrodes)}")
-                            
-                except Exception as e:
-                    logger.warning(f"Failed to get electrode summary: {e}")
+                self._add_electrode_summary_info(summary_lines)
             
             return '\n'.join(summary_lines) if summary_lines else "No configuration available"
             
         except Exception as e:
             logger.error(f"Failed to generate channel summary: {e}")
             return f"Summary generation failed: {str(e)}"
+    
+    def _add_electrode_summary_info(self, summary_lines: List[str]):
+        """Add electrode summary information"""
+        try:
+            electrode_info = [
+                (SensorType.FNIRS.value, 'get_fnirs_pairs', 'fNIRS Valid Pairs'),
+                (SensorType.EEG.value, 'get_eeg_electrodes', 'EEG Positioned Electrodes')
+            ]
+            
+            for sensor, method_name, label in electrode_info:
+                if (sensor in self.enabled_sensor_types and 
+                    hasattr(self.brain_config_right, method_name)):
+                    data = getattr(self.brain_config_right, method_name)()
+                    summary_lines.append(f"{label}: {len(data)}")
+                    
+        except Exception as e:
+            logger.warning(f"Failed to get electrode summary: {e}")
 
 
 def create_configuration_manager(sensor_types: Union[List[str], int], parent=None) -> ConfigurationManager:
-    """Factory function to create configuration manager with specific sensor types
-    
-    Args:
-        sensor_types: Either an integer from SensorTypes class or list of sensor strings
-        parent: Parent widget
-    
-    Returns:
-        ConfigurationManager instance
-    """
-    if isinstance(sensor_types, int):
-        logger.info(f"Creating configuration manager with integer sensor type: {sensor_types}")
-    else:
-        logger.info(f"Creating configuration manager with sensor list: {sensor_types}")
+    """Factory function to create configuration manager with specific sensor types"""
+    logger.info(f"Creating configuration manager with sensor types: {sensor_types}")
     
     try:
         return ConfigurationManager(sensor_types, parent)
     except Exception as e:
         logger.error(f"Failed to create configuration manager: {e}")
         raise
+
 
 def main():
     """Main application entry point with enhanced error handling"""
