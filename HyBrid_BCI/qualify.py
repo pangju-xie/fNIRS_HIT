@@ -26,8 +26,14 @@ import locate
 
 class ChannelData:
     """Data structure to hold channel information"""
-    def __init__(self, channel_name):
-        self.name = channel_name
+    def __init__(self, sensor_id=1, sensor_channel="C3", detector_id=1, detector_channel="C1"):
+        self.name = "S" + str(sensor_id) + "-D" + str(detector_id)
+
+        self.sensor_id = sensor_id
+        self.sensor_channel = sensor_channel
+        self.detector_id = detector_id
+        self.detector_channel = detector_channel
+
         self.signal_750nm = 0.0
         self.signal_850nm = 0.0
         self.quality_status = "Unknown"
@@ -146,8 +152,7 @@ class ChannelWidget(QWidget):
         
         self.quality_label.setText(status)
         self.quality_label.setStyleSheet(f"border: 1px solid #ddd; padding: 5px; background-color: {color}; color: white; font-weight: bold;")
-
-
+        return status, color
 class QualifyApp(QWidget):
     """Main application class for fNIRS channel quality assessment"""
     
@@ -171,8 +176,11 @@ class QualifyApp(QWidget):
         # Setup UI connections
         self.setup_connections()
         
-        # Initialize channels (default 16 channels for demonstration)
-        self.initialize_channels(16)
+        # Initialize channels
+        # 测试用通道
+        node_pairs = {'fnirs': {'S1-D1': 'FC1-C1', 'S1-D2': 'FC1-FC3', 'S2-D1': 'CP1-C1', 'S2-D3': 'CP1-CP3', 'S3-D1': 'C3-C1', 'S3-D2': 'C3-FC3', 'S3-D3': 'C3-CP3', 'S3-D4': 'C3-C5', 'S4-D2': 'FC5-FC3', 'S4-D4': 'FC5-C5', 'S5-D5': 'FC2-C2', 'S5-D6': 'FC2-FC4', 'S6-D5': 'CP2-C2', 'S6-D7': 'CP2-CP4', 'S7-D5': 'C4-C2', 'S7-D6': 'C4-FC4', 'S7-D7': 'C4-CP4', 'S7-D8': 'C4-C6', 'S8-D6': 'FC6-FC4', 'S8-D8': 'FC6-C6', 'S9-D3': 'CP5-CP3', 'S9-D4': 'CP5-C5'}, 'fnirssource': ['FC1', 'CP1', 'C3', 'FC5', 'FC2', 'CP2', 'C4', 'FC6', 'CP5'], 'fnirsdetect': ['C1', 'FC3', 'CP3', 'C5', 'C2', 'FC4', 'CP4', 'C6']}
+
+        self.initialize_channels(node_pairs)
 
     def _add_brain_locator_widget(self):
         """Add brain electrode locator widget"""
@@ -191,16 +199,22 @@ class QualifyApp(QWidget):
         self.ui.completeButton.clicked.connect(self.complete_assessment)
         self.ui.methodComboBox.currentIndexChanged.connect(self.change_assessment_method)
     
-    def initialize_channels(self, num_channels):
+    def initialize_channels(self, node_pairs):
         """Initialize channel data and widgets"""
         # Clear existing channels
         self.channels.clear()
         self.clear_channel_widgets()
         
         # Create channel data
-        for i in range(1, num_channels + 1):
-            channel_name = f"S{i}-D{i}"
-            self.channels.append(ChannelData(channel_name))
+        self.brain_locate.load_pairs_info(node_pairs)
+        for key, value in node_pairs['fnirs'].items():
+            # "S1-D1": "FC1-C1"
+            sensor_id = key.split('-')[0].strip('S')
+            detector_id = key.split('-')[1].strip('D')
+            sensor_channel = value.split('-')[0]
+            detector_channel = value.split('-')[1]
+
+            self.channels.append(ChannelData(sensor_id=sensor_id, detector_id=detector_id, sensor_channel=sensor_channel, detector_channel=detector_channel))
         
         # Create channel widgets
         self.create_channel_widgets()
@@ -346,6 +360,8 @@ class QualifyApp(QWidget):
         """Update signal values for all channels (called every second)"""
         if not self.is_running:
             return
+
+        self.brain_locate.clear_all_channel_quality()
         
         for i, channel in enumerate(self.channels):
             # Generate new signal values
@@ -358,7 +374,9 @@ class QualifyApp(QWidget):
             
             # Update corresponding widget
             if i < len(self.channel_widgets):
-                self.channel_widgets[i].update_data(signal_750, signal_850, self.assessment_method)
+                status, color = self.channel_widgets[i].update_data(signal_750, signal_850, self.assessment_method)
+                self.brain_locate.add_channel_quality([channel.sensor_channel, channel.detector_channel, color])
+        self.brain_locate.paint_channel_quality()
         
         # Update status to show last update time
         from datetime import datetime

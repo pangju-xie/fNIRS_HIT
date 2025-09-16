@@ -9,6 +9,8 @@ import logging
 from pathlib import Path
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import Qt, QPoint
+from PyQt5.QtGui import QPainter, QPen, QColor
 from ui_locate import Ui_Locate
 
 # ===================== LOGGING CONFIGURATION =====================
@@ -428,6 +430,7 @@ class Locate(QtWidgets.QWidget):
         # Channel data
         self.fnirs_node_pairs: Dict[str, Dict] = {}
         self.eeg_node_pairs: Dict[str, Dict] = {}
+        self.fnirs_channel_quality = []
         
         logger.debug("Components initialized")
     
@@ -883,6 +886,37 @@ class Locate(QtWidgets.QWidget):
             logger.error(f"Error generating channel summary: {e}")
             # UIUtilities.show_error(self, f"Error generating summary: {str(e)}")
     
+    # ===================== PAINT METHODS =====================
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+
+        # 绘制底圆
+        painter.drawEllipse(QPoint(self.ui.HEAD_CIRCLE_OFFSET + self.ui.HEAD_CIRCLE_SIZE // 2, self.ui.HEAD_CIRCLE_OFFSET + self.ui.HEAD_CIRCLE_SIZE // 2), 
+                            self.ui.HEAD_CIRCLE_SIZE // 2, self.ui.HEAD_CIRCLE_SIZE // 2)
+        
+        # 绘制通道
+        positions = self._get_all_electrode_positions()
+        for sch, dch, color in self.fnirs_channel_quality:
+            pen = QPen(QColor(color))
+            pen.setWidth(10)
+            painter.setPen(pen)
+            painter.drawLine(QPoint(positions[sch][0] + self.ui.ELECTRODE_SIZE // 2, positions[sch][1] + self.ui.ELECTRODE_SIZE // 2), 
+            QPoint(positions[dch][0] + self.ui.ELECTRODE_SIZE // 2, positions[dch][1] + self.ui.ELECTRODE_SIZE // 2))
+
+        # 绘制通道对
+        
+    def clear_all_channel_quality(self):
+        self.fnirs_channel_quality = []
+
+    def add_channel_quality(self, quality):
+        "添加一个通道信号质量, 格式为[Sch, Dch, color]"
+        self.fnirs_channel_quality.append(quality)
+
+    def paint_channel_quality(self):
+        "在Widget上绘制各通道信号质量"
+        self.repaint()
+
     # ===================== GETTER METHODS =====================
     
     def get_fnirs_pairs(self) -> Dict[str, Dict]:

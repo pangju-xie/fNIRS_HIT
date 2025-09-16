@@ -308,7 +308,7 @@ class Ui_Locate(object):
         Form.setWindowTitle("EEG Electrode Interface")
         
         # Create components in logical order
-        self._create_head_circle(Form)
+        # self._create_head_circle(Form)
         self._create_electrode_groups(Form)
         
         logger.info("UI setup completed successfully")
@@ -318,7 +318,7 @@ class Ui_Locate(object):
         logger.debug("Creating head circle background")
         
         self.headCircle = QtWidgets.QLabel(Form)
-        self.headCircle.setEnabled(False)
+        # self.headCircle.setEnabled(False)
         self.headCircle.setGeometry(QtCore.QRect(
             self.HEAD_CIRCLE_OFFSET, 
             self.HEAD_CIRCLE_OFFSET, 
