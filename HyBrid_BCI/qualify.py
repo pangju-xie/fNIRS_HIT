@@ -21,6 +21,7 @@ from PyQt5.QtCore import QTimer, pyqtSignal
 from PyQt5.QtGui import QFont, QColor
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLineEdit, QLabel
 from ui_qualify import Ui_Form
+import locate
 
 
 class ChannelData:
@@ -164,12 +165,23 @@ class QualifyApp(QWidget):
         # Setup timer for 1-second updates
         self.update_timer = QTimer()
         self.update_timer.timeout.connect(self.update_signals)
+
+        self._add_brain_locator_widget()
         
         # Setup UI connections
         self.setup_connections()
         
         # Initialize channels (default 16 channels for demonstration)
         self.initialize_channels(16)
+
+    def _add_brain_locator_widget(self):
+        """Add brain electrode locator widget"""
+        try:
+            self.brain_locate = locate.Locate()
+            self.brain_locate.setParent(self.ui.channelGroup)
+            self.brain_locate.setGeometry(QtCore.QRect(600, 20, 560, 560))
+        except Exception as e:
+            pass
     
     def setup_connections(self):
         """Setup signal-slot connections"""

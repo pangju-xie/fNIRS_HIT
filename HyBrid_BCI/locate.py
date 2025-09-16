@@ -881,7 +881,7 @@ class Locate(QtWidgets.QWidget):
             
         except Exception as e:
             logger.error(f"Error generating channel summary: {e}")
-            UIUtilities.show_error(self, f"Error generating summary: {str(e)}")
+            # UIUtilities.show_error(self, f"Error generating summary: {str(e)}")
     
     # ===================== GETTER METHODS =====================
     

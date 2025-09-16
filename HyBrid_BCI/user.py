@@ -355,7 +355,7 @@ class UserInfoManager(QtWidgets.QWidget):
         else:
             # New user
             self.ui.saveButton.setText("设置")
-            onUserSet.emit(self.current_patient.initials)
+            self.onUserSet.emit(self.current_patient.initials)
     
     def collect_form_data(self) -> PatientData:
         """Collect data from form fields"""
