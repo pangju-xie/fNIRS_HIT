@@ -1,0 +1,286 @@
+{
+  "enabled_sensor_types": [
+    "fnirs"
+  ],
+  "sampling_rates": {
+    "fnirs": 10
+  },
+  "channel_counts": {
+    "fnirs_sources": 8,
+    "fnirs_detectors": 8
+  },
+  "enabled_channels": {
+    "fnirs": {
+      "S1-D1": {
+        "node_pair": "FC1_C1_FCz_Cz-FC1",
+        "distance": 24.02342606707045
+      },
+      "S1-D2": {
+        "node_pair": "FC1_C1_FCz_Cz-FC3_C3_FC1_C1",
+        "distance": 33.16342111423368
+      },
+      "S1-D4": {
+        "node_pair": "FC1_C1_FCz_Cz-C1_CP1_Cz_CPz",
+        "distance": 33.5
+      },
+      "S1-D5": {
+        "node_pair": "FC1_C1_FCz_Cz-Cz",
+        "distance": 24.700708491863143
+      },
+      "S1-D6": {
+        "node_pair": "FC1_C1_FCz_Cz-F1_FC1_Fz_FCz",
+        "distance": 33.92086378617148
+      },
+      "S2-D1": {
+        "node_pair": "C1-FC1",
+        "distance": 33.74907406137241
+      },
+      "S2-D2": {
+        "node_pair": "C1-FC3_C3_FC1_C1",
+        "distance": 24.506376721171982
+      },
+      "S2-D3": {
+        "node_pair": "C1-C3_CP3_C1_CP1",
+        "distance": 24.506376721171982
+      },
+      "S2-D4": {
+        "node_pair": "C1-C1_CP1_Cz_CPz",
+        "distance": 24.044230077089182
+      },
+      "S2-D5": {
+        "node_pair": "C1-Cz",
+        "distance": 34.713109915419565
+      },
+      "S3-D2": {
+        "node_pair": "C3-FC3_C3_FC1_C1",
+        "distance": 23.517280880237834
+      },
+      "S3-D3": {
+        "node_pair": "C3-C3_CP3_C1_CP1",
+        "distance": 23.517280880237834
+      },
+      "S4-D1": {
+        "node_pair": "FC3-FC1",
+        "distance": 31.68595903550972
+      },
+      "S4-D2": {
+        "node_pair": "FC3-FC3_C3_FC1_C1",
+        "distance": 22.518048316850198
+      },
+      "S4-D8": {
+        "node_pair": "FC3-F3_FC3",
+        "distance": 16.194134740701646
+      },
+      "S5-D1": {
+        "node_pair": "F3_FC3_F1_FC1-FC1",
+        "distance": 22.71288180746776
+      },
+      "S5-D2": {
+        "node_pair": "F3_FC3_F1_FC1-FC3_C3_FC1_C1",
+        "distance": 32.57779151507972
+      },
+      "S5-D6": {
+        "node_pair": "F3_FC3_F1_FC1-F1_FC1_Fz_FCz",
+        "distance": 28.790189301218565
+      },
+      "S5-D8": {
+        "node_pair": "F3_FC3_F1_FC1-F3_FC3",
+        "distance": 14.417870855296215
+      },
+      "S6-D1": {
+        "node_pair": "FCz-FC1",
+        "distance": 33.74907406137241
+      },
+      "S6-D5": {
+        "node_pair": "FCz-Cz",
+        "distance": 34.713109915419565
+      },
+      "S6-D6": {
+        "node_pair": "FCz-F1_FC1_Fz_FCz",
+        "distance": 23.984369910422913
+      },
+      "S6-D7": {
+        "node_pair": "FCz-Fz_FCz_F2_FC2",
+        "distance": 23.984369910422913
+      },
+      "S7-D6": {
+        "node_pair": "Fz-F1_FC1_Fz_FCz",
+        "distance": 22.005681084665387
+      },
+      "S7-D7": {
+        "node_pair": "Fz-Fz_FCz_F2_FC2",
+        "distance": 22.005681084665387
+      },
+      "S8-D4": {
+        "node_pair": "Cz_CPz-C1_CP1_Cz_CPz",
+        "distance": 17.11359109012483
+      },
+      "S8-D5": {
+        "node_pair": "Cz_CPz-Cz",
+        "distance": 17.356554957709783
+      }
+    },
+    "fnirssource": {
+      "1": {
+        "node_name": "FC1_C1_FCz_Cz",
+        "position_3d": [
+          -16.75,
+          16.75,
+          81.0
+        ]
+      },
+      "2": {
+        "node_name": "C1",
+        "position_3d": [
+          -34,
+          0,
+          81
+        ]
+      },
+      "3": {
+        "node_name": "C3",
+        "position_3d": [
+          -63,
+          0,
+          61
+        ]
+      },
+      "4": {
+        "node_name": "FC3",
+        "position_3d": [
+          -59,
+          31,
+          56
+        ]
+      },
+      "5": {
+        "node_name": "F3_FC3_F1_FC1",
+        "position_3d": [
+          -41.25,
+          46.25,
+          57.5
+        ]
+      },
+      "6": {
+        "node_name": "FCz",
+        "position_3d": [
+          0,
+          34,
+          81
+        ]
+      },
+      "7": {
+        "node_name": "Fz",
+        "position_3d": [
+          0,
+          63,
+          61
+        ]
+      },
+      "8": {
+        "node_name": "Cz_CPz",
+        "position_3d": [
+          0.0,
+          -17.0,
+          84.5
+        ]
+      }
+    },
+    "fnirsdetect": {
+      "1": {
+        "node_name": "FC1",
+        "position_3d": [
+          -33,
+          33,
+          74
+        ]
+      },
+      "2": {
+        "node_name": "FC3_C3_FC1_C1",
+        "position_3d": [
+          -47.25,
+          16.0,
+          68.0
+        ]
+      },
+      "3": {
+        "node_name": "C3_CP3_C1_CP1",
+        "position_3d": [
+          -47.25,
+          -16.0,
+          68.0
+        ]
+      },
+      "4": {
+        "node_name": "C1_CP1_Cz_CPz",
+        "position_3d": [
+          -16.75,
+          -16.75,
+          81.0
+        ]
+      },
+      "5": {
+        "node_name": "Cz",
+        "position_3d": [
+          0,
+          0,
+          88
+        ]
+      },
+      "6": {
+        "node_name": "F1_FC1_Fz_FCz",
+        "position_3d": [
+          -14.5,
+          48.0,
+          68.0
+        ]
+      },
+      "7": {
+        "node_name": "Fz_FCz_F2_FC2",
+        "position_3d": [
+          14.5,
+          48.0,
+          68.0
+        ]
+      },
+      "8": {
+        "node_name": "F3_FC3",
+        "position_3d": [
+          -53.5,
+          45.0,
+          50.0
+        ]
+      }
+    },
+    "eeg": {}
+  },
+  "sensor_configs": {
+    "fnirs": {
+      "color": [
+        "#E91E63",
+        "#1040ff"
+      ],
+      "prefix": [
+        "S",
+        "D"
+      ],
+      "max_channels": 0,
+      "min_channels": 0,
+      "channels_per_row": 8,
+      "max_sources": 32,
+      "max_detectors": 32,
+      "min_sources": 1,
+      "min_detectors": 1
+    }
+  },
+  "metadata": {
+    "total_channels": {
+      "fnirs": 27
+    },
+    "configuration_timestamp": "周三 9月 17 10:54:11 2025",
+    "enabled_sensors": [
+      "fnirs"
+    ],
+    "version": "2.0"
+  }
+}

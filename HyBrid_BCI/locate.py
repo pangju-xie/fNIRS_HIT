@@ -1,19 +1,18 @@
 # -*- coding: utf-8 -*-
 
 import sys
-import math
-from typing import Dict, List, Tuple, Optional, Union, Any
-from dataclasses import dataclass, field
+from typing import Dict, List, Optional, Any, Tuple
+from dataclasses import dataclass 
 from enum import Enum
 import logging
 from pathlib import Path
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from ui_locate import Ui_Locate
+from ui_locate import Ui_Locate, Position3D
 
 # ===================== LOGGING CONFIGURATION =====================
 
-def setup_logging(log_level: str = "DEBUG") -> logging.Logger:
+def setup_logging(log_level: str = "INFO") -> logging.Logger:
     """Setup comprehensive logging configuration."""
     log_format = (
         '%(asctime)s.%(msecs)03d - %(name)s - %(levelname)s - '
@@ -99,7 +98,7 @@ class ElectrodeState:
     number: int
     type: ElectrodeType
     original_name: str
-    position: Optional[Tuple[int, int]] = None
+    position_3d: Optional[Position3D] = None
     
     def __post_init__(self):
         """Validate electrode state after initialization."""
@@ -112,48 +111,53 @@ class ElectrodeState:
             raise ValueError("Electrode name cannot be empty")
         
         logger.debug(f"Created ElectrodeState: {self}")
+        
+    def get_position_tuple(self) -> Optional[tuple]:
+        """Get position as tuple for backwards compatibility."""
+        if self.position_3d:
+            return self.position_3d.to_tuple()
+        return None
 
-@dataclass
-class Position3D:
-    """3D position with validation."""
-    x: float
-    y: float
-    z: float
-    
-    def distance_to(self, other: 'Position3D') -> float:
-        """Calculate 3D distance to another position."""
-        distance = math.sqrt(
-            (self.x - other.x)**2 + 
-            (self.y - other.y)**2 + 
-            (self.z - other.z)**2
-        )
-        logger.debug(f"3D Distance from {self} to {other}: {distance:.2f}")
-        return distance
+
 
 # ===================== CORE MANAGERS =====================
 
 class ElectrodeManager:
     """Manages electrode states and operations."""
     
-    def __init__(self):
+    def __init__(self, position_manager=None):
         self.states: Dict[str, ElectrodeState] = {}
+        self.position_manager = position_manager
         logger.info("ElectrodeManager initialized")
+        
+    def set_position_manager(self, position_manager):
+        """set the position manager for 3D coordinate"""
+        self.position_manager = position_manager
+        logger.info("position manager set for ElectrondeManager")
     
     def add_electrode(self, name: str, electrode_type: ElectrodeType, 
-                     number: int, position: Optional[Tuple[int, int]] = None) -> bool:
+                     number: int) -> bool:
         """Add or update electrode state with validation."""
-        logger.info(f"Adding electrode: {name}, type={electrode_type.value}, "
-                   f"number={number}, position={position}")
+        logger.info(f"Adding electrode: {name}, type={electrode_type.value}, number={number}")
         
         try:
             if name in self.states:
                 logger.info(f"Updating existing electrode: {name}")
             
+            # Get 3D position from position manager
+            position_3d = None
+            if self.position_manager:
+                position_3d = self.position_manager.get_3d_position(name)
+                if position_3d:
+                    logger.debug(f"Retrieved 3D position for {name}: {position_3d}")
+                else:
+                    logger.warning(f"No 3D position available for electrode: {name}")
+            
             self.states[name] = ElectrodeState(
                 number=number,
                 type=electrode_type,
                 original_name=name,
-                position=position
+                position_3d=position_3d.to_tuple() # type: ignore
             )
             logger.info(f"Successfully added/updated electrode: {name}")
             return True
@@ -183,12 +187,15 @@ class ElectrodeManager:
             logger.debug(f"No state found for electrode: {name}")
         return state
     
-    def get_electrodes_by_type(self, electrode_type: ElectrodeType) -> Dict[int, str]:
+    def get_electrodes_by_type(self, electrode_type: ElectrodeType) -> Dict[int, Dict[str, Any]]:
         """Get all electrodes of a specific type."""
         result = {}
-        for name, state in self.states.items():
+        for _, state in self.states.items():
             if state.type == electrode_type:
-                result[state.number] = state.original_name
+                result[state.number] = {
+                    'node_name': state.original_name,
+                    'position_3d': state.position_3d
+                }
         
         logger.debug(f"Found {len(result)} electrodes of type {electrode_type.value}")
         return result
@@ -199,99 +206,24 @@ class ElectrodeManager:
         self.states.clear()
         logger.info(f"Cleared {count} electrode states")
         return count
+    
+    def get_all_positions_3d(self) -> Dict[str, Position3D]:
+        """Get all electrode 3d positions."""
+        positions = {}
+        for name, state in self.states.items():
+            if state.position_3d:
+                positions[name] = state.position_3d
+        
+        logger.debug(f"Received {len(positions)} electrode 3d positions")
+        return positions
 
-class PositionManager:
-    """Manages position calculations and conversions."""
-    
-    def __init__(self):
-        self.ui_positions: Dict[str, Tuple[int, int]] = {}
-        self.positions_3d: Dict[str, Tuple[int, int, int]] = {}
-        logger.info("PositionManager initialized")
-    
-    def set_position_data(self, ui_positions: Dict, positions_3d: Dict):
-        """Set position data for calculations."""
-        self.ui_positions = ui_positions or {}
-        self.positions_3d = positions_3d or {}
-        logger.info(f"Position data set: {len(self.ui_positions)} 2D positions, "
-                   f"{len(self.positions_3d)} 3D positions")
-    
-    def get_3d_position(self, node: str) -> Optional[Position3D]:
-        """Get 3D position with composite node handling."""
-        logger.debug(f"Getting 3D position for node: {node}")
-        
-        try:
-            if '_' in node:
-                return self._get_composite_3d_position(node)
-            elif node in self.positions_3d:
-                pos = self.positions_3d[node]
-                return Position3D(pos[0], pos[1], pos[2])
-            else:
-                logger.warning(f"Node {node} not found in 3D positions")
-                return None
-                
-        except Exception as e:
-            logger.error(f"Error getting 3D position for {node}: {e}")
-            return None
-    
-    def _get_composite_3d_position(self, composite_node: str) -> Optional[Position3D]:
-        """Calculate average position for composite nodes."""
-        logger.debug(f"Calculating composite 3D position for: {composite_node}")
-        
-        components = composite_node.split('_')
-        valid_positions = []
-        
-        for component in components:
-            if component in self.positions_3d:
-                pos = self.positions_3d[component]
-                valid_positions.append(Position3D(pos[0], pos[1], pos[2]))
-                logger.debug(f"Added component {component} position: {pos}")
-            else:
-                logger.warning(f"Component {component} not found in 3D positions")
-        
-        if not valid_positions:
-            logger.error(f"No valid positions found for composite node {composite_node}")
-            return None
-        
-        # Calculate average
-        avg_x = sum(pos.x for pos in valid_positions) / len(valid_positions)
-        avg_y = sum(pos.y for pos in valid_positions) / len(valid_positions)
-        avg_z = sum(pos.z for pos in valid_positions) / len(valid_positions)
-        
-        result = Position3D(avg_x, avg_y, avg_z)
-        logger.debug(f"Composite position for {composite_node}: {result}")
-        return result
-    
-    def calculate_3d_distance(self, node1: str, node2: str) -> float:
-        """Calculate 3D distance between two nodes with error handling."""
-        logger.debug(f"Calculating 3D distance between {node1} and {node2}")
-        
-        try:
-            pos1 = self.get_3d_position(node1)
-            pos2 = self.get_3d_position(node2)
-            
-            if pos1 is None or pos2 is None:
-                logger.warning(f"Could not get 3D positions for {node1} or {node2}")
-                return float('inf')
-            
-            distance = pos1.distance_to(pos2)
-            logger.debug(f"3D distance {node1}-{node2}: {distance:.2f}mm")
-            return distance
-            
-        except Exception as e:
-            logger.error(f"Error calculating 3D distance {node1}-{node2}: {e}")
-            return float('inf')
 
 class ChannelCalculator:
     """Handles channel pair calculations and validations."""
     
     def __init__(self, distance_threshold: float = 40.0):
         self.distance_threshold = distance_threshold
-        self.position_manager = PositionManager()
         logger.info(f"ChannelCalculator initialized with threshold: {distance_threshold}mm")
-    
-    def set_position_data(self, ui_positions: Dict, positions_3d: Dict):
-        """Set position data for calculations."""
-        self.position_manager.set_position_data(ui_positions, positions_3d)
     
     def calculate_fnirs_pairs(self, electrode_manager: ElectrodeManager) -> Dict[str, Dict]:
         """Calculate valid fNIRS channel pairs."""
@@ -301,51 +233,34 @@ class ChannelCalculator:
         detectors = electrode_manager.get_electrodes_by_type(ElectrodeType.DETECT)
         
         logger.info(f"Found {len(sources)} sources and {len(detectors)} detectors")
-        
+         
         valid_pairs = {}
         
-        for source_num, source_node in sources.items():
-            for detector_num, detector_node in detectors.items():
+        for source_num, source_info in sources.items():
+            for detector_num, detector_info in detectors.items():
                 try:
-                    distance = self.position_manager.calculate_3d_distance(source_node, detector_node)
+                    s_pos = Position3D.from_tuple(source_info['position_3d'])
+                    d_pos = Position3D.from_tuple(detector_info['position_3d'])
+                    if s_pos and d_pos:
+                        distance = s_pos.distance_to(d_pos)
                     
-                    if distance <= self.distance_threshold:
-                        channel_name = f'S{source_num}-D{detector_num}'
-                        valid_pairs[channel_name] = {
-                            'node_pair': f"{source_node}-{detector_node}",
-                            'distance': distance,
-                            'source_node': source_node,
-                            'detector_node': detector_node
-                        }
-                        logger.info(f"Valid fNIRS pair: {channel_name}, "
-                                   f"distance: {distance:.2f}mm")
-                    else:
-                        logger.debug(f"Distance {distance:.2f}mm exceeds threshold "
-                                    f"for S{source_num}-D{detector_num}")
-                        
+                        if distance <= self.distance_threshold:
+                            channel_name = f'S{source_num}-D{detector_num}'
+                            valid_pairs[channel_name] = {
+                                'node_pair': f"{source_info['node_name']}-{detector_info['node_name']}",
+                                'distance': distance,
+                            }
+                            logger.info(f"Valid fNIRS pair: {channel_name}, "
+                                    f"distance: {distance:.2f}mm")
+                        else:
+                            logger.debug(f"Distance {distance:.2f}mm exceeds threshold "
+                                        f"for S{source_num}-D{detector_num}")
+                            
                 except Exception as e:
                     logger.error(f"Error calculating distance for S{source_num}-D{detector_num}: {e}")
         
         logger.info(f"Found {len(valid_pairs)} valid fNIRS channel pairs")
         return valid_pairs
-    
-    def calculate_eeg_pairs(self, electrode_manager: ElectrodeManager) -> Dict[str, Dict]:
-        """Calculate EEG channel pairs."""
-        logger.info("Calculating EEG channel pairs")
-        
-        eeg_electrodes = electrode_manager.get_electrodes_by_type(ElectrodeType.EEG)
-        
-        eeg_pairs = {}
-        for number, node_name in eeg_electrodes.items():
-            channel_name = f'EEG{number}'
-            eeg_pairs[channel_name] = {
-                'node': node_name,
-                'position': self.position_manager.ui_positions.get(node_name)
-            }
-            logger.debug(f"EEG pair: {channel_name} -> {node_name}")
-        
-        logger.info(f"Found {len(eeg_pairs)} EEG channel pairs")
-        return eeg_pairs
 
 # ===================== UI UTILITIES =====================
 
@@ -356,7 +271,7 @@ class UIUtilities:
     def show_message(parent: QtWidgets.QWidget, message: str, title: str = "Information", 
                     icon: QtWidgets.QMessageBox.Icon = QtWidgets.QMessageBox.Information):
         """Show message dialog with error handling."""
-        logger.info(f"Showing {icon.name} message: {message}")
+        logger.info(f"Showing message: {message}") # type: ignore
         
         try:
             msg_box = QtWidgets.QMessageBox(parent)
@@ -417,6 +332,9 @@ class Locate(QtWidgets.QWidget):
         """Initialize all components."""
         logger.debug("Initializing components")
         
+        #Setup UI first to get position manager
+        self.ui = Ui_Locate()
+        
         # Core components
         self.electrode_manager = ElectrodeManager()
         self.channel_calculator = ChannelCalculator(self.Config.DISTANCE_THRESHOLD)
@@ -427,7 +345,6 @@ class Locate(QtWidgets.QWidget):
         
         # Channel data
         self.fnirs_node_pairs: Dict[str, Dict] = {}
-        self.eeg_node_pairs: Dict[str, Dict] = {}
         
         logger.debug("Components initialized")
     
@@ -436,8 +353,15 @@ class Locate(QtWidgets.QWidget):
         logger.debug("Setting up UI")
         
         try:
-            self.ui = Ui_Locate()
             self.ui.setupUi(self)
+            # Set position manager after UI is fully initialized
+            position_manager = self.ui.get_position_manager()
+            if position_manager is None:
+                logger.error("Failed to get position manager from UI")
+                raise ValueError("Position manager not available from UI")
+            
+            self.electrode_manager.set_position_manager(position_manager)
+            logger.debug("Position manager set for electrode manager")
             logger.debug("UI setup completed")
             
         except Exception as e:
@@ -518,13 +442,12 @@ class Locate(QtWidgets.QWidget):
             # Add to electrode manager
             success = self.electrode_manager.add_electrode(
                 electrode_name, 
-                self.current_node_info.type, 
+                self.current_node_info.type,  # type: ignore
                 self.current_node_info.number,
-                self._get_electrode_2d_position(electrode_name)
             )
             
             if success:
-                self._update_button_appearance(button, self.current_node_info.type, self.current_node_info.number)
+                self._update_button_appearance(button, self.current_node_info.type, self.current_node_info.number) # type: ignore
                 logger.info(f"Successfully updated electrode {electrode_name}")
             else:
                 logger.error(f"Failed to add electrode {electrode_name}")
@@ -592,135 +515,34 @@ class Locate(QtWidgets.QWidget):
         except Exception as e:
             logger.error(f"Error restoring button appearance for {electrode_name}: {e}")
     
-    # ===================== POSITION METHODS =====================
-    
-    def _get_all_electrode_positions(self) -> Dict[str, Tuple[int, int]]:
-        """Get all electrode positions with error handling."""
-        logger.debug("Getting all electrode positions")
-        
-        try:
-            # Get all position types for comprehensive coverage
-            positions = {}
-            
-            # Base electrode positions
-            if hasattr(self.ui, '_get_electrode_positions'):
-                positions.update(self.ui._get_electrode_positions())
-            
-            # Mid electrode positions  
-            if hasattr(self.ui, '_get_mid_electrode_positions'):
-                positions.update(self.ui._get_mid_electrode_positions())
-                
-            # Center electrode positions
-            if hasattr(self.ui, '_get_center_electrode_positions'):
-                positions.update(self.ui._get_center_electrode_positions())
-                
-            logger.debug(f"Retrieved {len(positions)} total electrode positions")
-            return positions
-            
-        except Exception as e:
-            logger.error(f"Error getting electrode positions: {e}")
-            return {}
-    
-    def _get_electrode_2d_position(self, electrode_name: str) -> Optional[Tuple[int, int]]:
-        """Get 2D position of specific electrode."""
-        logger.debug(f"Getting 2D position for electrode: {electrode_name}")
-        
-        try:
-            positions = self._get_all_electrode_positions()
-            position = positions.get(electrode_name)
-            
-            if position:
-                logger.debug(f"Position for {electrode_name}: {position}")
-            else:
-                logger.warning(f"No position found for electrode: {electrode_name}")
-            
-            return position
-            
-        except Exception as e:
-            logger.error(f"Error getting electrode position for {electrode_name}: {e}")
-            return None
-    
-    def _update_position_data(self):
-        """Update position data for channel calculator."""
-        logger.debug("Updating position data for channel calculator")
-        
-        try:
-            ui_positions = self._get_all_electrode_positions()
-            positions_3d = {}
-            
-            if hasattr(self.ui, '_get_electrode_3d_positions'):
-                positions_3d = self.ui._get_electrode_3d_positions()
-                logger.debug(f"Retrieved {len(positions_3d)} 3D positions")
-            else:
-                logger.warning("UI does not have _get_electrode_3d_positions method")
-            
-            self.channel_calculator.set_position_data(ui_positions, positions_3d)
-            
-        except Exception as e:
-            logger.error(f"Error updating position data: {e}")
-    
     # ===================== DATA LOADING METHODS =====================
     
-    def _load_fnirs_electrodes(self):
-        """Load fNIRS electrodes from pairs data."""
-        logger.info("Loading fNIRS electrodes")
-        
-        try:
-            for channel_name, channel_info in self.fnirs_node_pairs.items():
-                if '-' not in channel_info:
-                    logger.warning(f"Invalid node pair format: {channel_info}")
-                    continue
-                
-                source_node, detector_node = channel_info.split('-',1)
-                
-                try:
-                    parts = channel_name.split('-',1)
-                    source_num = int(parts[0][1:])  # Remove 'S' prefix
-                    detector_num = int(parts[1][1:])  # Remove 'D' prefix
-                    
-                    # Add electrodes
-                    self.set_current_node_info('Source', source_num, True)
-                    self._on_electrode_left_click(source_node)
-                    
-                    self.set_current_node_info('Detect', detector_num, True)
-                    self._on_electrode_left_click(detector_node)
-                    
-                    logger.debug(f"Loaded fNIRS pair: {channel_name}")
-                    
-                except (ValueError, IndexError) as e:
-                    logger.error(f"Error parsing channel name {channel_name}: {e}")
-            
-            logger.info(f"Loaded {len(self.fnirs_node_pairs)} fNIRS electrode pairs")
-            
-        except Exception as e:
-            logger.error(f"Error loading fNIRS electrodes: {e}")
-    
-    def _load_eeg_electrodes(self):
+    def _load_electrodes(self, node_pairs: Dict[str, Dict], electrode_type: ElectrodeType):
         """Load EEG electrodes from pairs data."""
         logger.info("Loading EEG electrodes")
         
         try:
-            for channel_name, channel_info in self.eeg_node_pairs.items():
-                node_name = channel_info.get('node', '')
+            for channel_name, channel_info in node_pairs.items():
+                node_name = channel_info.get('node_name', '')
                 
                 if not node_name:
-                    logger.warning(f"No node name for EEG channel: {channel_name}")
+                    logger.warning(f"No node name for {electrode_type} channel: {channel_name}")
                     continue
                 
                 try:
-                    eeg_num = int(channel_name[3:])  # Remove 'EEG' prefix
+                    node_num = int(channel_name)
                     
-                    self.electrode_manager.add_electrode(
-                        node_name, ElectrodeType.EEG, eeg_num,
-                        self._get_electrode_2d_position(node_name)
-                    )
+                    # Add electrodes
+                    type_name = {ElectrodeType.EEG: "EEG", ElectrodeType.SOURCE: "Source", ElectrodeType.DETECT:"Detect"}
+                    self.set_current_node_info(type_name[electrode_type], node_num, True)
+                    self._on_electrode_left_click(node_name)
                     
                     logger.debug(f"Loaded EEG electrode: {channel_name}")
                     
                 except ValueError as e:
                     logger.error(f"Error parsing EEG channel name {channel_name}: {e}")
             
-            logger.info(f"Loaded {len(self.eeg_node_pairs)} EEG electrodes")
+            logger.info(f"Loaded {len(node_pairs)} {electrode_type} electrodes")
             
         except Exception as e:
             logger.error(f"Error loading EEG electrodes: {e}")
@@ -756,18 +578,20 @@ class Locate(QtWidgets.QWidget):
         
         try:
             self.reset_all_electrodes()
-            self._update_position_data()
             
             for electrode_type_key, pairs in node_pairs.items():
                 logger.info(f"Processing {electrode_type_key}: {len(pairs)} pairs")
                 
                 try:
-                    if 'fnirs' == electrode_type_key: 
+                    if 'fnirssource' == electrode_type_key: 
+                        self._load_electrodes(pairs, ElectrodeType.SOURCE)
+                        # self._load_fnirs_electrodes()
+                    elif 'fnirsdetect' == electrode_type_key:
+                        self._load_electrodes(pairs, ElectrodeType.DETECT)
+                    elif 'fnirs' == electrode_type_key:
                         self.fnirs_node_pairs = pairs
-                        self._load_fnirs_electrodes()
                     elif 'eeg' in electrode_type_key:
-                        self.eeg_node_pairs = pairs
-                        self._load_eeg_electrodes()
+                        self._load_electrodes(pairs, ElectrodeType.EEG)
                     else:
                         logger.warning(f"Unknown electrode type: {electrode_type_key}")
                         
@@ -810,7 +634,6 @@ class Locate(QtWidgets.QWidget):
             self.electrode_manager.clear_all()
             self.dynamic_buttons.clear()
             self.fnirs_node_pairs.clear()
-            self.eeg_node_pairs.clear()
             
             logger.info(f"Reset complete: {reset_count} regular electrodes, "
                        f"{dynamic_count} dynamic buttons removed")
@@ -824,25 +647,15 @@ class Locate(QtWidgets.QWidget):
         logger.info("Calculating channel pairs")
         
         try:
-            self._update_position_data()
-            
             # Calculate fNIRS pairs
-            calculated_fnirs = self.channel_calculator.calculate_fnirs_pairs(self.electrode_manager)
-            
-            # Calculate EEG pairs  
-            calculated_eeg = self.channel_calculator.calculate_eeg_pairs(self.electrode_manager)
-            
-            # Update internal data
-            self.fnirs_node_pairs = calculated_fnirs
-            self.eeg_node_pairs = calculated_eeg
+            self.fnirs_node_pairs = self.channel_calculator.calculate_fnirs_pairs(self.electrode_manager)
             
             summary = {
                 'sources': len(self.get_sources()),
                 'detectors': len(self.get_detectors()),
                 'eeg_channels': len(self.get_eeg_electrodes()),
-                'fnirs_channels': len(calculated_fnirs),
-                'valid_fnirs_pairs': list(calculated_fnirs.keys()),
-                'eeg_pairs': list(calculated_eeg.keys()),
+                'fnirs_channels': len(self.fnirs_node_pairs),
+                'valid_fnirs_pairs': list(self.fnirs_node_pairs.keys()),
                 'calculation_timestamp': logger.name  # Simple timestamp placeholder
             }
             
@@ -873,7 +686,6 @@ class Locate(QtWidgets.QWidget):
                 f"EEG Channels: {summary['eeg_channels']}\n"
                 f"Valid fNIRS Channels: {summary['fnirs_channels']}\n\n"
                 f"fNIRS Pairs:\n{UIUtilities.format_pairs_list(summary['valid_fnirs_pairs'])}\n\n"
-                f"EEG Pairs:\n{UIUtilities.format_pairs_list(summary['eeg_pairs'])}"
             )
             
             logger.info("Displaying channel summary to user")
@@ -890,28 +702,23 @@ class Locate(QtWidgets.QWidget):
         logger.debug(f"Returning {len(self.fnirs_node_pairs)} fNIRS pairs")
         return self.fnirs_node_pairs.copy()
     
-    def get_eeg_pairs(self) -> Dict[str, Dict]:
-        """Get EEG channel pairs."""
-        logger.debug(f"Returning {len(self.eeg_node_pairs)} EEG pairs")
-        return self.eeg_node_pairs.copy()
-    
     def get_sources(self) -> Dict[int, str]:
         """Get all source electrodes."""
         sources = self.electrode_manager.get_electrodes_by_type(ElectrodeType.SOURCE)
         logger.debug(f"Returning {len(sources)} source electrodes")
-        return sources
+        return sources # type: ignore
     
     def get_detectors(self) -> Dict[int, str]:
         """Get all detector electrodes."""
         detectors = self.electrode_manager.get_electrodes_by_type(ElectrodeType.DETECT)
         logger.debug(f"Returning {len(detectors)} detector electrodes")
-        return detectors
+        return detectors # type: ignore
     
     def get_eeg_electrodes(self) -> Dict[int, str]:
         """Get all EEG electrodes."""
         eeg = self.electrode_manager.get_electrodes_by_type(ElectrodeType.EEG)
-        logger.debug(f"Returning {len(eeg)} EEG electrodes")
-        return eeg
+        logger.debug(f"Returning {len(eeg)} EEG electrodes") 
+        return eeg # type: ignore
     
     def get_electrode_state(self, electrode_name: str) -> Optional[ElectrodeState]:
         """Get electrode state."""
@@ -922,3 +729,10 @@ class Locate(QtWidgets.QWidget):
             logger.debug(f"No state found for electrode: {electrode_name}")
         return state
     
+    def get_all_3d_positions(self) -> Dict[str, Position3D]:
+        """Get all electrode 3D positions."""
+        return self.electrode_manager.get_all_positions_3d()
+    
+    def get_position_manager(self):
+        """Get the position manager instance."""
+        return self.ui.get_position_manager()
