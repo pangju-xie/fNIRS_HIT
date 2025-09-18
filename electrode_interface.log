@@ -44271,3 +44271,1022 @@
 2025-09-16 17:03:31.538 - locate - DEBUG - _get_all_electrode_positions:620 - Retrieved 213 total electrode positions
 2025-09-16 17:03:31.588 - locate - DEBUG - _get_all_electrode_positions:602 - Getting all electrode positions
 2025-09-16 17:03:31.589 - locate - DEBUG - _get_all_electrode_positions:620 - Retrieved 213 total electrode positions
+2025-09-18 17:21:30.329 - locate - INFO - setup_logging:37 - Logging initialized with level: DEBUG
+2025-09-18 17:21:30.333 - config - INFO - <module>:47 - Successfully imported locate module
+2025-09-18 17:21:30.601 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-18 17:21:30.601 - network - INFO - _setup_network:119 - Network ready: 10.250.132.180:1227 -> 10.250.255.255:2227
+2025-09-18 17:21:30.601 - mainwindow - INFO - initialize_network:96 - Network module initialized successfully
+2025-09-18 17:21:31.061 - mainwindow - INFO - initialize_user_widget:115 - User widget integrated into home tab successfully
+2025-09-18 17:21:31.063 - mainwindow - DEBUG - restore_window_state:769 - Window state restored
+2025-09-18 17:21:31.063 - mainwindow - INFO - __init__:89 - MainWindow initialized successfully with UI structure from XML
+2025-09-18 17:21:31.254 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-18 17:21:31.254 - network - INFO - _setup_network:119 - Network ready: 10.250.132.180:1227 -> 10.250.255.255:2227
+2025-09-18 17:21:35.233 - mainwindow - INFO - shutdown_cleanup:789 - Starting shutdown cleanup...
+2025-09-18 17:21:35.247 - mainwindow - DEBUG - save_window_state:743 - Window state saved
+2025-09-18 17:21:35.249 - network - INFO - close:591 - Network closed
+2025-09-18 17:21:35.249 - mainwindow - INFO - shutdown_cleanup:821 - Network closed successfully
+2025-09-18 17:21:35.249 - mainwindow - INFO - shutdown_cleanup:825 - Shutdown cleanup completed
+2025-09-18 17:21:35.250 - mainwindow - INFO - closeEvent:832 - Application closed successfully
+2025-09-18 17:23:27.320 - locate - INFO - setup_logging:37 - Logging initialized with level: DEBUG
+2025-09-18 17:23:27.322 - config - INFO - <module>:47 - Successfully imported locate module
+2025-09-18 17:23:27.426 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-18 17:23:27.426 - network - INFO - _setup_network:119 - Network ready: 10.250.132.180:1227 -> 10.250.255.255:2227
+2025-09-18 17:23:27.426 - mainwindow - INFO - initialize_network:96 - Network module initialized successfully
+2025-09-18 17:23:27.796 - mainwindow - INFO - initialize_user_widget:115 - User widget integrated into home tab successfully
+2025-09-18 17:23:27.797 - mainwindow - DEBUG - restore_window_state:792 - Window state restored
+2025-09-18 17:23:27.797 - mainwindow - INFO - __init__:89 - MainWindow initialized successfully with UI structure from XML
+2025-09-18 17:23:28.088 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-18 17:23:28.088 - network - INFO - _setup_network:119 - Network ready: 10.250.132.180:1227 -> 10.250.255.255:2227
+2025-09-18 17:34:13.421 - locate - INFO - setup_logging:37 - Logging initialized with level: DEBUG
+2025-09-18 17:34:13.424 - config - INFO - <module>:47 - Successfully imported locate module
+2025-09-18 17:34:13.534 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-18 17:34:13.535 - network - INFO - _setup_network:119 - Network ready: 10.250.132.180:1227 -> 10.250.255.255:2227
+2025-09-18 17:34:13.535 - __main__ - INFO - initialize_network:96 - Network module initialized successfully
+2025-09-18 17:34:13.924 - __main__ - INFO - initialize_user_widget:115 - User widget integrated into home tab successfully
+2025-09-18 17:34:13.925 - __main__ - DEBUG - restore_window_state:769 - Window state restored
+2025-09-18 17:34:13.925 - __main__ - INFO - __init__:89 - MainWindow initialized successfully with UI structure from XML
+2025-09-18 17:34:14.170 - __main__ - INFO - main:857 - Application started successfully with XML-based UI structure
+2025-09-18 17:34:26.007 - __main__ - INFO - shutdown_cleanup:789 - Starting shutdown cleanup...
+2025-09-18 17:34:26.022 - __main__ - DEBUG - save_window_state:743 - Window state saved
+2025-09-18 17:34:26.023 - network - INFO - close:591 - Network closed
+2025-09-18 17:34:26.023 - __main__ - INFO - shutdown_cleanup:821 - Network closed successfully
+2025-09-18 17:34:26.023 - __main__ - INFO - shutdown_cleanup:825 - Shutdown cleanup completed
+2025-09-18 17:34:26.023 - __main__ - INFO - closeEvent:832 - Application closed successfully
+2025-09-18 17:37:18.810 - locate - INFO - setup_logging:37 - Logging initialized with level: DEBUG
+2025-09-18 17:37:18.812 - config - INFO - <module>:47 - Successfully imported locate module
+2025-09-18 17:37:18.903 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-18 17:37:18.903 - network - INFO - _setup_network:119 - Network ready: 10.250.132.180:1227 -> 10.250.255.255:2227
+2025-09-18 17:37:18.903 - __main__ - INFO - initialize_network:96 - Network module initialized successfully
+2025-09-18 17:37:19.279 - __main__ - INFO - initialize_user_widget:115 - User widget integrated into home tab successfully
+2025-09-18 17:37:19.280 - __main__ - DEBUG - restore_window_state:769 - Window state restored
+2025-09-18 17:37:19.280 - __main__ - INFO - __init__:89 - MainWindow initialized successfully with UI structure from XML
+2025-09-18 17:37:19.535 - __main__ - INFO - main:857 - Application started successfully with XML-based UI structure
+2025-09-18 17:37:34.077 - user - INFO - getNameInitials:92 - Generated initials for : _0
+2025-09-18 17:37:38.607 - __main__ - INFO - shutdown_cleanup:789 - Starting shutdown cleanup...
+2025-09-18 17:37:38.607 - __main__ - DEBUG - save_window_state:743 - Window state saved
+2025-09-18 17:37:40.910 - network - INFO - close:591 - Network closed
+2025-09-18 17:37:40.910 - __main__ - INFO - shutdown_cleanup:821 - Network closed successfully
+2025-09-18 17:37:40.910 - __main__ - INFO - shutdown_cleanup:825 - Shutdown cleanup completed
+2025-09-18 17:37:40.910 - __main__ - INFO - closeEvent:832 - Application closed successfully
+2025-09-18 17:37:45.181 - locate - INFO - setup_logging:37 - Logging initialized with level: DEBUG
+2025-09-18 17:37:45.184 - config - INFO - <module>:47 - Successfully imported locate module
+2025-09-18 17:37:45.264 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-18 17:37:45.264 - network - INFO - _setup_network:119 - Network ready: 10.250.132.180:1227 -> 10.250.255.255:2227
+2025-09-18 17:37:45.264 - __main__ - INFO - initialize_network:96 - Network module initialized successfully
+2025-09-18 17:37:45.672 - __main__ - INFO - initialize_user_widget:115 - User widget integrated into home tab successfully
+2025-09-18 17:37:45.673 - __main__ - DEBUG - restore_window_state:769 - Window state restored
+2025-09-18 17:37:45.673 - __main__ - INFO - __init__:89 - MainWindow initialized successfully with UI structure from XML
+2025-09-18 17:37:45.964 - __main__ - INFO - main:857 - Application started successfully with XML-based UI structure
+2025-09-18 17:38:01.206 - __main__ - INFO - shutdown_cleanup:789 - Starting shutdown cleanup...
+2025-09-18 17:38:01.221 - __main__ - DEBUG - save_window_state:743 - Window state saved
+2025-09-18 17:38:01.222 - network - INFO - close:591 - Network closed
+2025-09-18 17:38:01.222 - __main__ - INFO - shutdown_cleanup:821 - Network closed successfully
+2025-09-18 17:38:01.222 - __main__ - INFO - shutdown_cleanup:825 - Shutdown cleanup completed
+2025-09-18 17:38:01.222 - __main__ - INFO - closeEvent:832 - Application closed successfully
+2025-09-18 17:38:26.170 - locate - INFO - setup_logging:37 - Logging initialized with level: DEBUG
+2025-09-18 17:38:26.172 - config - INFO - <module>:47 - Successfully imported locate module
+2025-09-18 17:38:26.262 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-18 17:38:26.262 - network - INFO - _setup_network:119 - Network ready: 10.250.132.180:1227 -> 10.250.255.255:2227
+2025-09-18 17:38:26.262 - __main__ - INFO - initialize_network:96 - Network module initialized successfully
+2025-09-18 17:38:26.687 - __main__ - INFO - initialize_user_widget:115 - User widget integrated into home tab successfully
+2025-09-18 17:38:26.688 - __main__ - DEBUG - restore_window_state:769 - Window state restored
+2025-09-18 17:38:26.688 - __main__ - INFO - __init__:89 - MainWindow initialized successfully with UI structure from XML
+2025-09-18 17:38:26.960 - __main__ - INFO - main:857 - Application started successfully with XML-based UI structure
+2025-09-18 17:38:27.799 - __main__ - DEBUG - on_tab_changed:181 - Tab changed to: configuration (index: 1)
+2025-09-18 17:38:28.725 - __main__ - DEBUG - on_tab_changed:181 - Tab changed to: home (index: 0)
+2025-09-18 17:38:29.283 - __main__ - DEBUG - on_tab_changed:181 - Tab changed to: configuration (index: 1)
+2025-09-18 17:38:29.654 - __main__ - DEBUG - on_tab_changed:181 - Tab changed to: home (index: 0)
+2025-09-18 17:41:13.265 - locate - INFO - setup_logging:37 - Logging initialized with level: DEBUG
+2025-09-18 17:41:13.267 - config - INFO - <module>:47 - Successfully imported locate module
+2025-09-18 17:41:13.390 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-18 17:41:13.390 - network - INFO - _setup_network:119 - Network ready: 10.250.132.180:1227 -> 10.250.255.255:2227
+2025-09-18 17:41:13.390 - __main__ - INFO - initialize_network:96 - Network module initialized successfully
+2025-09-18 17:41:13.772 - __main__ - INFO - initialize_user_widget:115 - User widget integrated into home tab successfully
+2025-09-18 17:41:13.773 - __main__ - DEBUG - restore_window_state:769 - Window state restored
+2025-09-18 17:41:13.773 - __main__ - INFO - __init__:89 - MainWindow initialized successfully with UI structure from XML
+2025-09-18 17:41:14.020 - __main__ - INFO - main:857 - Application started successfully with XML-based UI structure
+2025-09-18 17:41:29.563 - network - DEBUG - _send_packet:433 - Command CONNECT:(0, 0, 0)_CONNECT sent to [0, 0, 0], waiting for acknowledgment
+2025-09-18 17:41:29.563 - network - INFO - sendConnect:513 - Connection broadcast sent
+2025-09-18 17:41:31.572 - network - WARNING - _check_retries:492 - Retrying command CONNECT
+2025-09-18 17:41:33.573 - network - WARNING - _check_retries:492 - Retrying command CONNECT
+2025-09-18 17:41:37.569 - network - WARNING - _check_retries:492 - Retrying command CONNECT
+2025-09-18 17:41:39.568 - __main__ - WARNING - on_connection_timeout:302 - Connection attempt timed out
+2025-09-18 17:41:41.560 - network - DEBUG - _check_retries:504 - No pending commands, stopping retry timer
+2025-09-18 17:42:24.969 - network - DEBUG - _send_packet:433 - Command CONNECT:(0, 0, 0)_CONNECT sent to [0, 0, 0], waiting for acknowledgment
+2025-09-18 17:42:24.969 - network - INFO - sendConnect:513 - Connection broadcast sent
+2025-09-18 17:42:26.802 - __main__ - INFO - shutdown_cleanup:789 - Starting shutdown cleanup...
+2025-09-18 17:42:26.817 - __main__ - DEBUG - save_window_state:743 - Window state saved
+2025-09-18 17:42:26.818 - network - INFO - close:591 - Network closed
+2025-09-18 17:42:26.818 - __main__ - INFO - shutdown_cleanup:821 - Network closed successfully
+2025-09-18 17:42:26.818 - __main__ - INFO - shutdown_cleanup:825 - Shutdown cleanup completed
+2025-09-18 17:42:26.818 - __main__ - INFO - closeEvent:832 - Application closed successfully
+2025-09-18 17:51:01.951 - locate - INFO - setup_logging:37 - Logging initialized with level: DEBUG
+2025-09-18 17:51:01.955 - config - INFO - <module>:47 - Successfully imported locate module
+2025-09-18 17:51:02.078 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-18 17:51:02.078 - network - INFO - _setup_network:119 - Network ready: 192.168.115.9:1227 -> 192.168.115.255:2227
+2025-09-18 17:51:02.078 - __main__ - INFO - initialize_network:96 - Network module initialized successfully
+2025-09-18 17:51:02.461 - __main__ - INFO - initialize_user_widget:115 - User widget integrated into home tab successfully
+2025-09-18 17:51:02.462 - __main__ - DEBUG - restore_window_state:769 - Window state restored
+2025-09-18 17:51:02.462 - __main__ - INFO - __init__:89 - MainWindow initialized successfully with UI structure from XML
+2025-09-18 17:51:02.521 - __main__ - INFO - main:857 - Application started successfully with XML-based UI structure
+2025-09-18 17:51:05.485 - network - DEBUG - _send_packet:433 - Command CONNECT:(0, 0, 0)_CONNECT sent to [0, 0, 0], waiting for acknowledgment
+2025-09-18 17:51:05.485 - network - INFO - sendConnect:513 - Connection broadcast sent
+2025-09-18 17:51:05.591 - network - DEBUG - _process_packet:239 - Received: cmd=0xCONNECT from ::ffff:192.168.115.253
+2025-09-18 17:51:05.592 - network - INFO - _handle_connect:315 - Device connected: [164, 52, 200] at 192.168.115.253
+2025-09-18 17:51:05.592 - network - INFO - _handle_connect:319 - Single device connected, commands will target this device
+2025-09-18 17:51:05.592 - __main__ - INFO - init_sensor:550 - Sensor initialized with 1 types: ['fNIRS']
+2025-09-18 17:51:05.593 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 17:51:05.593 - __main__ - DEBUG - query_battery:449 - Battery query sent
+2025-09-18 17:51:05.593 - __main__ - DEBUG - start_battery_monitoring:434 - Battery monitoring started
+2025-09-18 17:51:05.594 - __main__ - INFO - on_device_connected:347 - Device connected successfully: ID=[164, 52, 200], Type=4
+2025-09-18 17:51:05.594 - network - INFO - _acknowledge_pending_command:287 - Command CONNECT acknowledged by device [164, 52, 200]
+2025-09-18 17:51:05.594 - network - DEBUG - _acknowledge_pending_command:305 - All commands acknowledged, stopping retry timer
+2025-09-18 17:51:05.708 - network - DEBUG - _process_packet:239 - Received: cmd=0xBATTERY_QUERY from ::ffff:192.168.115.253
+2025-09-18 17:51:05.710 - network - INFO - _handle_battery_query:351 - device battery level:70
+2025-09-18 17:51:05.711 - __main__ - DEBUG - update_battery_display:480 - Battery level updated: 70%
+2025-09-18 17:51:13.852 - user - INFO - getNameInitials:92 - Generated initials for : _0
+2025-09-18 17:51:15.594 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 17:51:15.594 - __main__ - DEBUG - query_battery:449 - Battery query sent
+2025-09-18 17:51:15.908 - network - DEBUG - _process_packet:239 - Received: cmd=0xBATTERY_QUERY from ::ffff:192.168.115.253
+2025-09-18 17:51:15.909 - network - INFO - _handle_battery_query:351 - device battery level:70
+2025-09-18 17:51:15.909 - __main__ - DEBUG - update_battery_display:480 - Battery level updated: 70%
+2025-09-18 17:51:21.399 - user - INFO - getNameInitials:92 - Generated initials for : _0
+2025-09-18 17:51:25.595 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 17:51:25.595 - __main__ - DEBUG - query_battery:449 - Battery query sent
+2025-09-18 17:51:25.739 - network - DEBUG - _process_packet:239 - Received: cmd=0xBATTERY_QUERY from ::ffff:192.168.115.253
+2025-09-18 17:51:25.739 - network - INFO - _handle_battery_query:351 - device battery level:70
+2025-09-18 17:51:25.740 - __main__ - DEBUG - update_battery_display:480 - Battery level updated: 70%
+2025-09-18 17:51:35.602 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 17:51:35.602 - __main__ - DEBUG - query_battery:449 - Battery query sent
+2025-09-18 17:51:35.778 - network - DEBUG - _process_packet:239 - Received: cmd=0xBATTERY_QUERY from ::ffff:192.168.115.253
+2025-09-18 17:51:35.779 - network - INFO - _handle_battery_query:351 - device battery level:70
+2025-09-18 17:51:35.779 - __main__ - DEBUG - update_battery_display:480 - Battery level updated: 70%
+2025-09-18 17:51:45.597 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 17:51:45.597 - __main__ - DEBUG - query_battery:449 - Battery query sent
+2025-09-18 17:51:45.808 - network - DEBUG - _process_packet:239 - Received: cmd=0xBATTERY_QUERY from ::ffff:192.168.115.253
+2025-09-18 17:51:45.808 - network - INFO - _handle_battery_query:351 - device battery level:70
+2025-09-18 17:51:45.809 - __main__ - DEBUG - update_battery_display:480 - Battery level updated: 70%
+2025-09-18 17:51:55.609 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 17:51:55.609 - __main__ - DEBUG - query_battery:449 - Battery query sent
+2025-09-18 17:51:55.859 - network - DEBUG - _process_packet:239 - Received: cmd=0xBATTERY_QUERY from ::ffff:192.168.115.253
+2025-09-18 17:51:55.860 - network - INFO - _handle_battery_query:351 - device battery level:70
+2025-09-18 17:51:55.861 - __main__ - DEBUG - update_battery_display:480 - Battery level updated: 70%
+2025-09-18 17:52:05.614 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 17:52:05.614 - __main__ - DEBUG - query_battery:449 - Battery query sent
+2025-09-18 17:52:05.880 - network - DEBUG - _process_packet:239 - Received: cmd=0xBATTERY_QUERY from ::ffff:192.168.115.253
+2025-09-18 17:52:05.880 - network - INFO - _handle_battery_query:351 - device battery level:70
+2025-09-18 17:52:05.880 - __main__ - DEBUG - update_battery_display:480 - Battery level updated: 70%
+2025-09-18 17:52:15.620 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 17:52:15.621 - __main__ - DEBUG - query_battery:449 - Battery query sent
+2025-09-18 17:52:15.924 - network - DEBUG - _process_packet:239 - Received: cmd=0xBATTERY_QUERY from ::ffff:192.168.115.253
+2025-09-18 17:52:15.925 - network - INFO - _handle_battery_query:351 - device battery level:70
+2025-09-18 17:52:15.925 - __main__ - DEBUG - update_battery_display:480 - Battery level updated: 70%
+2025-09-18 17:52:25.651 - locate - INFO - setup_logging:37 - Logging initialized with level: DEBUG
+2025-09-18 17:52:25.653 - config - INFO - <module>:47 - Successfully imported locate module
+2025-09-18 17:52:25.737 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-18 17:52:25.737 - network - INFO - _setup_network:119 - Network ready: 192.168.115.9:1227 -> 192.168.115.255:2227
+2025-09-18 17:52:25.737 - __main__ - INFO - initialize_network:96 - Network module initialized successfully
+2025-09-18 17:52:26.119 - __main__ - INFO - initialize_user_widget:115 - User widget integrated into home tab successfully
+2025-09-18 17:52:26.120 - __main__ - DEBUG - restore_window_state:771 - Window state restored
+2025-09-18 17:52:26.120 - __main__ - INFO - __init__:89 - MainWindow initialized successfully with UI structure from XML
+2025-09-18 17:52:26.193 - __main__ - INFO - main:859 - Application started successfully with XML-based UI structure
+2025-09-18 17:52:43.942 - user - INFO - getNameInitials:92 - Generated initials for aa: AA_1
+2025-09-18 17:52:50.642 - user - INFO - getNameInitials:92 - Generated initials for aa: AA_1
+2025-09-18 17:52:51.469 - network - DEBUG - _send_packet:433 - Command CONNECT:(0, 0, 0)_CONNECT sent to [0, 0, 0], waiting for acknowledgment
+2025-09-18 17:52:51.469 - network - INFO - sendConnect:513 - Connection broadcast sent
+2025-09-18 17:52:51.669 - network - DEBUG - _process_packet:239 - Received: cmd=0xCONNECT from ::ffff:192.168.115.253
+2025-09-18 17:52:51.670 - network - INFO - _handle_connect:315 - Device connected: [164, 52, 200] at 192.168.115.253
+2025-09-18 17:52:51.671 - network - INFO - _handle_connect:319 - Single device connected, commands will target this device
+2025-09-18 17:52:51.671 - __main__ - INFO - init_sensor:550 - Sensor initialized with 1 types: ['fNIRS']
+2025-09-18 17:52:51.671 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 17:52:51.671 - __main__ - DEBUG - query_battery:449 - Battery query sent
+2025-09-18 17:52:51.671 - __main__ - DEBUG - start_battery_monitoring:434 - Battery monitoring started
+2025-09-18 17:52:51.672 - __main__ - INFO - on_device_connected:347 - Device connected successfully: ID=[164, 52, 200], Type=4
+2025-09-18 17:52:51.672 - network - INFO - _acknowledge_pending_command:287 - Command CONNECT acknowledged by device [164, 52, 200]
+2025-09-18 17:52:51.672 - network - DEBUG - _acknowledge_pending_command:305 - All commands acknowledged, stopping retry timer
+2025-09-18 17:52:51.787 - network - DEBUG - _process_packet:239 - Received: cmd=0xBATTERY_QUERY from ::ffff:192.168.115.253
+2025-09-18 17:52:51.788 - network - INFO - _handle_battery_query:351 - device battery level:70
+2025-09-18 17:52:51.789 - __main__ - DEBUG - update_battery_display:480 - Battery level updated: 70%
+2025-09-18 17:52:55.378 - __main__ - DEBUG - on_tab_changed:181 - Tab changed to: configuration (index: 1)
+2025-09-18 17:52:56.883 - __main__ - INFO - complete_configuration:579 - Configuration workflow step completed
+2025-09-18 17:53:02.504 - locate - INFO - setup_logging:37 - Logging initialized with level: DEBUG
+2025-09-18 17:53:02.506 - config - INFO - <module>:47 - Successfully imported locate module
+2025-09-18 17:53:02.597 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-18 17:53:02.597 - network - INFO - _setup_network:119 - Network ready: 192.168.115.9:1227 -> 192.168.115.255:2227
+2025-09-18 17:53:02.597 - __main__ - INFO - initialize_network:96 - Network module initialized successfully
+2025-09-18 17:53:03.005 - __main__ - INFO - initialize_user_widget:115 - User widget integrated into home tab successfully
+2025-09-18 17:53:03.006 - __main__ - DEBUG - restore_window_state:771 - Window state restored
+2025-09-18 17:53:03.006 - __main__ - INFO - __init__:89 - MainWindow initialized successfully with UI structure from XML
+2025-09-18 17:53:03.288 - __main__ - INFO - main:859 - Application started successfully with XML-based UI structure
+2025-09-18 17:53:05.235 - network - DEBUG - _send_packet:433 - Command CONNECT:(0, 0, 0)_CONNECT sent to [0, 0, 0], waiting for acknowledgment
+2025-09-18 17:53:05.235 - network - INFO - sendConnect:513 - Connection broadcast sent
+2025-09-18 17:53:05.383 - network - DEBUG - _process_packet:239 - Received: cmd=0xCONNECT from ::ffff:192.168.115.253
+2025-09-18 17:53:05.383 - network - INFO - _handle_connect:315 - Device connected: [164, 52, 200] at 192.168.115.253
+2025-09-18 17:53:05.383 - network - INFO - _handle_connect:319 - Single device connected, commands will target this device
+2025-09-18 17:53:05.384 - __main__ - INFO - init_sensor:550 - Sensor initialized with 1 types: ['fNIRS']
+2025-09-18 17:53:05.385 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 17:53:05.385 - __main__ - DEBUG - query_battery:449 - Battery query sent
+2025-09-18 17:53:05.385 - __main__ - DEBUG - start_battery_monitoring:434 - Battery monitoring started
+2025-09-18 17:53:05.385 - __main__ - INFO - on_device_connected:347 - Device connected successfully: ID=[164, 52, 200], Type=4
+2025-09-18 17:53:05.385 - network - INFO - _acknowledge_pending_command:287 - Command CONNECT acknowledged by device [164, 52, 200]
+2025-09-18 17:53:05.386 - network - DEBUG - _acknowledge_pending_command:305 - All commands acknowledged, stopping retry timer
+2025-09-18 17:53:05.506 - network - DEBUG - _process_packet:239 - Received: cmd=0xBATTERY_QUERY from ::ffff:192.168.115.253
+2025-09-18 17:53:05.506 - network - INFO - _handle_battery_query:351 - device battery level:70
+2025-09-18 17:53:05.507 - __main__ - DEBUG - update_battery_display:480 - Battery level updated: 70%
+2025-09-18 17:53:15.383 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 17:53:15.383 - __main__ - DEBUG - query_battery:449 - Battery query sent
+2025-09-18 17:53:15.398 - user - INFO - getNameInitials:92 - Generated initials for aa: AA_1
+2025-09-18 17:53:15.516 - network - DEBUG - _process_packet:239 - Received: cmd=0xBATTERY_QUERY from ::ffff:192.168.115.253
+2025-09-18 17:53:15.516 - network - INFO - _handle_battery_query:351 - device battery level:70
+2025-09-18 17:53:15.516 - __main__ - DEBUG - update_battery_display:480 - Battery level updated: 70%
+2025-09-18 17:53:22.883 - user - INFO - getNameInitials:92 - Generated initials for aa: AA_1
+2025-09-18 17:53:25.378 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 17:53:25.378 - __main__ - DEBUG - query_battery:449 - Battery query sent
+2025-09-18 17:53:25.757 - network - DEBUG - _process_packet:239 - Received: cmd=0xBATTERY_QUERY from ::ffff:192.168.115.253
+2025-09-18 17:53:25.762 - network - INFO - _handle_battery_query:351 - device battery level:70
+2025-09-18 17:53:25.763 - __main__ - DEBUG - update_battery_display:480 - Battery level updated: 70%
+2025-09-18 17:53:28.582 - __main__ - INFO - shutdown_cleanup:791 - Starting shutdown cleanup...
+2025-09-18 17:53:28.598 - __main__ - DEBUG - save_window_state:745 - Window state saved
+2025-09-18 17:53:29.591 - network - DEBUG - _send_packet:433 - Command DISCONNECT:(164, 52, 200)_DISCONNECT sent to [164, 52, 200], waiting for acknowledgment
+2025-09-18 17:53:29.591 - network - INFO - sendDisconnect:520 - Disconnect sent to all devices
+2025-09-18 17:53:30.116 - network - DEBUG - _send_packet:433 - Command DISCONNECT:(164, 52, 200)_DISCONNECT sent to [164, 52, 200], waiting for acknowledgment
+2025-09-18 17:53:30.116 - network - INFO - sendDisconnect:520 - Disconnect sent to all devices
+2025-09-18 17:53:30.116 - network - INFO - close:591 - Network closed
+2025-09-18 17:53:30.117 - __main__ - INFO - shutdown_cleanup:823 - Network closed successfully
+2025-09-18 17:53:30.117 - __main__ - INFO - shutdown_cleanup:827 - Shutdown cleanup completed
+2025-09-18 17:53:30.117 - __main__ - INFO - closeEvent:834 - Application closed successfully
+2025-09-18 18:11:33.245 - locate - INFO - setup_logging:37 - Logging initialized with level: DEBUG
+2025-09-18 18:11:33.247 - config - INFO - <module>:47 - Successfully imported locate module
+2025-09-18 18:11:33.329 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-18 18:11:33.330 - network - INFO - _setup_network:119 - Network ready: 192.168.115.9:1227 -> 192.168.115.255:2227
+2025-09-18 18:11:33.330 - __main__ - INFO - initialize_network:96 - Network module initialized successfully
+2025-09-18 18:11:33.756 - __main__ - INFO - initialize_user_widget:115 - User widget integrated into home tab successfully
+2025-09-18 18:11:33.756 - __main__ - ERROR - initialize_user_widget:120 - Failed to initialize user widget: argument 1 has unexpected type 'NoneType'
+2025-09-18 18:11:33.757 - __main__ - DEBUG - restore_window_state:771 - Window state restored
+2025-09-18 18:11:33.757 - __main__ - INFO - __init__:89 - MainWindow initialized successfully with UI structure from XML
+2025-09-18 18:11:34.021 - __main__ - INFO - main:859 - Application started successfully with XML-based UI structure
+2025-09-18 18:11:40.165 - network - DEBUG - _send_packet:433 - Command CONNECT:(0, 0, 0)_CONNECT sent to [0, 0, 0], waiting for acknowledgment
+2025-09-18 18:11:40.165 - network - INFO - sendConnect:513 - Connection broadcast sent
+2025-09-18 18:11:40.316 - network - DEBUG - _process_packet:239 - Received: cmd=0xCONNECT from ::ffff:192.168.115.253
+2025-09-18 18:11:40.316 - network - INFO - _handle_connect:315 - Device connected: [164, 52, 200] at 192.168.115.253
+2025-09-18 18:11:40.316 - network - INFO - _handle_connect:319 - Single device connected, commands will target this device
+2025-09-18 18:11:40.316 - __main__ - INFO - init_sensor:552 - Sensor initialized with 1 types: ['fNIRS']
+2025-09-18 18:11:40.317 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 18:11:40.317 - __main__ - DEBUG - query_battery:451 - Battery query sent
+2025-09-18 18:11:40.317 - __main__ - DEBUG - start_battery_monitoring:436 - Battery monitoring started
+2025-09-18 18:11:40.317 - __main__ - INFO - on_device_connected:349 - Device connected successfully: ID=[164, 52, 200], Type=4
+2025-09-18 18:11:40.317 - network - INFO - _acknowledge_pending_command:287 - Command CONNECT acknowledged by device [164, 52, 200]
+2025-09-18 18:11:40.317 - network - DEBUG - _acknowledge_pending_command:305 - All commands acknowledged, stopping retry timer
+2025-09-18 18:11:40.433 - network - DEBUG - _process_packet:239 - Received: cmd=0xBATTERY_QUERY from ::ffff:192.168.115.253
+2025-09-18 18:11:40.433 - network - INFO - _handle_battery_query:351 - device battery level:70
+2025-09-18 18:11:40.434 - __main__ - DEBUG - update_battery_display:482 - Battery level updated: 70%
+2025-09-18 18:11:44.102 - user - INFO - getNameInitials:92 - Generated initials for aa: AA_1
+2025-09-18 18:11:50.310 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 18:11:50.310 - __main__ - DEBUG - query_battery:451 - Battery query sent
+2025-09-18 18:11:50.630 - network - DEBUG - _process_packet:239 - Received: cmd=0xBATTERY_QUERY from ::ffff:192.168.115.253
+2025-09-18 18:11:50.631 - network - INFO - _handle_battery_query:351 - device battery level:70
+2025-09-18 18:11:50.631 - __main__ - DEBUG - update_battery_display:482 - Battery level updated: 70%
+2025-09-18 18:12:00.314 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 18:12:00.314 - __main__ - DEBUG - query_battery:451 - Battery query sent
+2025-09-18 18:12:00.463 - network - DEBUG - _process_packet:239 - Received: cmd=0xBATTERY_QUERY from ::ffff:192.168.115.253
+2025-09-18 18:12:00.463 - network - INFO - _handle_battery_query:351 - device battery level:70
+2025-09-18 18:12:00.463 - __main__ - DEBUG - update_battery_display:482 - Battery level updated: 70%
+2025-09-18 18:12:10.325 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 18:12:10.326 - __main__ - DEBUG - query_battery:451 - Battery query sent
+2025-09-18 18:12:10.492 - network - DEBUG - _process_packet:239 - Received: cmd=0xBATTERY_QUERY from ::ffff:192.168.115.253
+2025-09-18 18:12:10.492 - network - INFO - _handle_battery_query:351 - device battery level:70
+2025-09-18 18:12:10.493 - __main__ - DEBUG - update_battery_display:482 - Battery level updated: 70%
+2025-09-18 18:12:24.941 - locate - INFO - setup_logging:37 - Logging initialized with level: DEBUG
+2025-09-18 18:12:24.943 - config - INFO - <module>:47 - Successfully imported locate module
+2025-09-18 18:12:25.037 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-18 18:12:25.037 - network - INFO - _setup_network:119 - Network ready: 192.168.115.9:1227 -> 192.168.115.255:2227
+2025-09-18 18:12:25.037 - __main__ - INFO - initialize_network:96 - Network module initialized successfully
+2025-09-18 18:12:25.409 - __main__ - INFO - initialize_user_widget:115 - User widget integrated into home tab successfully
+2025-09-18 18:12:25.409 - __main__ - ERROR - initialize_user_widget:120 - Failed to initialize user widget: argument 1 has unexpected type 'NoneType'
+2025-09-18 18:12:25.410 - __main__ - DEBUG - restore_window_state:771 - Window state restored
+2025-09-18 18:12:25.410 - __main__ - INFO - __init__:89 - MainWindow initialized successfully with UI structure from XML
+2025-09-18 18:12:25.670 - __main__ - INFO - main:859 - Application started successfully with XML-based UI structure
+2025-09-18 18:13:21.861 - locate - INFO - setup_logging:37 - Logging initialized with level: DEBUG
+2025-09-18 18:13:21.863 - config - INFO - <module>:47 - Successfully imported locate module
+2025-09-18 18:13:21.966 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-18 18:13:21.966 - network - INFO - _setup_network:119 - Network ready: 192.168.115.9:1227 -> 192.168.115.255:2227
+2025-09-18 18:13:21.966 - __main__ - INFO - initialize_network:96 - Network module initialized successfully
+2025-09-18 18:13:22.353 - __main__ - INFO - initialize_user_widget:115 - User widget integrated into home tab successfully
+2025-09-18 18:13:22.353 - __main__ - DEBUG - restore_window_state:771 - Window state restored
+2025-09-18 18:13:22.353 - __main__ - INFO - __init__:89 - MainWindow initialized successfully with UI structure from XML
+2025-09-18 18:13:22.615 - __main__ - INFO - main:859 - Application started successfully with XML-based UI structure
+2025-09-18 18:13:25.257 - network - DEBUG - _send_packet:433 - Command CONNECT:(0, 0, 0)_CONNECT sent to [0, 0, 0], waiting for acknowledgment
+2025-09-18 18:13:25.257 - network - INFO - sendConnect:513 - Connection broadcast sent
+2025-09-18 18:13:25.359 - network - DEBUG - _process_packet:239 - Received: cmd=0xCONNECT from ::ffff:192.168.115.253
+2025-09-18 18:13:25.360 - network - INFO - _handle_connect:315 - Device connected: [164, 52, 200] at 192.168.115.253
+2025-09-18 18:13:25.360 - network - INFO - _handle_connect:319 - Single device connected, commands will target this device
+2025-09-18 18:13:25.360 - __main__ - INFO - init_sensor:552 - Sensor initialized with 1 types: ['fNIRS']
+2025-09-18 18:13:25.362 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 18:13:25.362 - __main__ - DEBUG - query_battery:451 - Battery query sent
+2025-09-18 18:13:25.362 - __main__ - DEBUG - start_battery_monitoring:436 - Battery monitoring started
+2025-09-18 18:13:25.362 - __main__ - INFO - on_device_connected:349 - Device connected successfully: ID=[164, 52, 200], Type=4
+2025-09-18 18:13:25.362 - network - INFO - _acknowledge_pending_command:287 - Command CONNECT acknowledged by device [164, 52, 200]
+2025-09-18 18:13:25.363 - network - DEBUG - _acknowledge_pending_command:305 - All commands acknowledged, stopping retry timer
+2025-09-18 18:13:25.484 - network - DEBUG - _process_packet:239 - Received: cmd=0xBATTERY_QUERY from ::ffff:192.168.115.253
+2025-09-18 18:13:25.485 - network - INFO - _handle_battery_query:351 - device battery level:70
+2025-09-18 18:13:25.487 - __main__ - DEBUG - update_battery_display:482 - Battery level updated: 70%
+2025-09-18 18:13:32.976 - user - INFO - getNameInitials:92 - Generated initials for aa: AA_1
+2025-09-18 18:13:35.363 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 18:13:35.363 - __main__ - DEBUG - query_battery:451 - Battery query sent
+2025-09-18 18:13:35.491 - network - DEBUG - _process_packet:239 - Received: cmd=0xBATTERY_QUERY from ::ffff:192.168.115.253
+2025-09-18 18:13:35.491 - network - INFO - _handle_battery_query:351 - device battery level:70
+2025-09-18 18:13:35.492 - __main__ - DEBUG - update_battery_display:482 - Battery level updated: 70%
+2025-09-18 18:13:51.129 - locate - INFO - setup_logging:37 - Logging initialized with level: DEBUG
+2025-09-18 18:13:51.131 - config - INFO - <module>:47 - Successfully imported locate module
+2025-09-18 18:13:51.213 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-18 18:13:51.213 - network - INFO - _setup_network:119 - Network ready: 192.168.115.9:1227 -> 192.168.115.255:2227
+2025-09-18 18:13:51.213 - __main__ - INFO - initialize_network:96 - Network module initialized successfully
+2025-09-18 18:13:51.604 - __main__ - INFO - initialize_user_widget:115 - User widget integrated into home tab successfully
+2025-09-18 18:13:51.606 - __main__ - DEBUG - restore_window_state:771 - Window state restored
+2025-09-18 18:13:51.606 - __main__ - INFO - __init__:89 - MainWindow initialized successfully with UI structure from XML
+2025-09-18 18:13:51.874 - __main__ - INFO - main:859 - Application started successfully with XML-based UI structure
+2025-09-18 18:13:59.704 - user - INFO - getNameInitials:92 - Generated initials for aa: AA_1
+2025-09-18 18:14:00.588 - network - DEBUG - _send_packet:433 - Command CONNECT:(0, 0, 0)_CONNECT sent to [0, 0, 0], waiting for acknowledgment
+2025-09-18 18:14:00.588 - network - INFO - sendConnect:513 - Connection broadcast sent
+2025-09-18 18:14:04.578 - network - WARNING - _check_retries:492 - Retrying command CONNECT
+2025-09-18 18:14:04.679 - network - DEBUG - _process_packet:239 - Received: cmd=0xCONNECT from ::ffff:192.168.115.253
+2025-09-18 18:14:04.679 - network - INFO - _handle_connect:315 - Device connected: [164, 52, 200] at 192.168.115.253
+2025-09-18 18:14:04.679 - network - INFO - _handle_connect:319 - Single device connected, commands will target this device
+2025-09-18 18:14:04.679 - __main__ - INFO - init_sensor:552 - Sensor initialized with 1 types: ['fNIRS']
+2025-09-18 18:14:04.680 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 18:14:04.680 - __main__ - DEBUG - query_battery:451 - Battery query sent
+2025-09-18 18:14:04.680 - __main__ - DEBUG - start_battery_monitoring:436 - Battery monitoring started
+2025-09-18 18:14:04.680 - __main__ - INFO - on_device_connected:349 - Device connected successfully: ID=[164, 52, 200], Type=4
+2025-09-18 18:14:04.680 - network - INFO - _acknowledge_pending_command:287 - Command CONNECT acknowledged by device [164, 52, 200]
+2025-09-18 18:14:04.680 - network - DEBUG - _acknowledge_pending_command:305 - All commands acknowledged, stopping retry timer
+2025-09-18 18:14:05.001 - network - DEBUG - _process_packet:239 - Received: cmd=0xBATTERY_QUERY from ::ffff:192.168.115.253
+2025-09-18 18:14:05.001 - network - INFO - _handle_battery_query:351 - device battery level:70
+2025-09-18 18:14:05.002 - __main__ - DEBUG - update_battery_display:482 - Battery level updated: 70%
+2025-09-18 18:14:06.476 - __main__ - DEBUG - on_tab_changed:183 - Tab changed to: configuration (index: 1)
+2025-09-18 18:14:07.979 - __main__ - INFO - complete_configuration:581 - Configuration workflow step completed
+2025-09-18 18:14:12.293 - __main__ - DEBUG - on_tab_changed:183 - Tab changed to: test (index: 2)
+2025-09-18 18:14:13.079 - __main__ - DEBUG - on_tab_changed:183 - Tab changed to: configuration (index: 1)
+2025-09-18 18:14:13.565 - __main__ - DEBUG - on_tab_changed:183 - Tab changed to: home (index: 0)
+2025-09-18 18:14:13.795 - __main__ - INFO - complete_test:591 - Test workflow step completed
+2025-09-18 18:14:14.668 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 18:14:14.668 - __main__ - DEBUG - query_battery:451 - Battery query sent
+2025-09-18 18:14:14.814 - network - DEBUG - _process_packet:239 - Received: cmd=0xBATTERY_QUERY from ::ffff:192.168.115.253
+2025-09-18 18:14:14.814 - network - INFO - _handle_battery_query:351 - device battery level:70
+2025-09-18 18:14:14.815 - __main__ - DEBUG - update_battery_display:482 - Battery level updated: 70%
+2025-09-18 18:16:56.482 - locate - INFO - setup_logging:37 - Logging initialized with level: DEBUG
+2025-09-18 18:16:56.484 - config - INFO - <module>:47 - Successfully imported locate module
+2025-09-18 18:16:56.571 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-18 18:16:56.571 - network - INFO - _setup_network:119 - Network ready: 192.168.115.9:1227 -> 192.168.115.255:2227
+2025-09-18 18:16:56.571 - __main__ - INFO - initialize_network:96 - Network module initialized successfully
+2025-09-18 18:16:56.967 - __main__ - INFO - initialize_user_widget:115 - User widget integrated into home tab successfully
+2025-09-18 18:16:56.968 - __main__ - DEBUG - restore_window_state:774 - Window state restored
+2025-09-18 18:16:56.968 - __main__ - INFO - __init__:89 - MainWindow initialized successfully with UI structure from XML
+2025-09-18 18:16:57.252 - __main__ - INFO - main:862 - Application started successfully with XML-based UI structure
+2025-09-18 18:17:11.028 - network - DEBUG - _send_packet:433 - Command CONNECT:(0, 0, 0)_CONNECT sent to [0, 0, 0], waiting for acknowledgment
+2025-09-18 18:17:11.029 - network - INFO - sendConnect:513 - Connection broadcast sent
+2025-09-18 18:17:11.261 - network - DEBUG - _process_packet:239 - Received: cmd=0xCONNECT from ::ffff:192.168.115.253
+2025-09-18 18:17:11.262 - network - INFO - _handle_connect:315 - Device connected: [164, 52, 200] at 192.168.115.253
+2025-09-18 18:17:11.262 - network - INFO - _handle_connect:319 - Single device connected, commands will target this device
+2025-09-18 18:17:11.262 - __main__ - INFO - init_sensor:552 - Sensor initialized with 1 types: ['fNIRS']
+2025-09-18 18:17:11.262 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 18:17:11.263 - __main__ - DEBUG - query_battery:451 - Battery query sent
+2025-09-18 18:17:11.263 - __main__ - DEBUG - start_battery_monitoring:436 - Battery monitoring started
+2025-09-18 18:17:11.263 - __main__ - INFO - on_device_connected:349 - Device connected successfully: ID=[164, 52, 200], Type=4
+2025-09-18 18:17:11.263 - network - INFO - _acknowledge_pending_command:287 - Command CONNECT acknowledged by device [164, 52, 200]
+2025-09-18 18:17:11.263 - network - DEBUG - _acknowledge_pending_command:305 - All commands acknowledged, stopping retry timer
+2025-09-18 18:17:11.375 - network - DEBUG - _process_packet:239 - Received: cmd=0xBATTERY_QUERY from ::ffff:192.168.115.253
+2025-09-18 18:17:11.375 - network - INFO - _handle_battery_query:351 - device battery level:70
+2025-09-18 18:17:11.378 - __main__ - DEBUG - update_battery_display:482 - Battery level updated: 70%
+2025-09-18 18:17:19.757 - network - DEBUG - _send_packet:433 - Command DISCONNECT:(164, 52, 200)_DISCONNECT sent to [164, 52, 200], waiting for acknowledgment
+2025-09-18 18:17:19.757 - network - INFO - sendDisconnect:520 - Disconnect sent to all devices
+2025-09-18 18:17:19.848 - network - DEBUG - _process_packet:239 - Received: cmd=0xDISCONNECT from ::ffff:192.168.115.253
+2025-09-18 18:17:19.848 - network - INFO - _handle_disconnect:328 - Device disconnected: [164, 52, 200] at 192.168.115.253
+2025-09-18 18:17:19.851 - __main__ - INFO - on_device_disconnected:387 - Device disconnected successfully
+2025-09-18 18:17:19.851 - network - INFO - _acknowledge_pending_command:299 - Command DISCONNECT acknowledged by device [164, 52, 200]
+2025-09-18 18:17:19.851 - network - DEBUG - _acknowledge_pending_command:305 - All commands acknowledged, stopping retry timer
+2025-09-18 18:17:22.752 - __main__ - WARNING - force_disconnect:281 - Forcing disconnection due to timeout
+2025-09-18 18:17:22.753 - __main__ - INFO - on_device_disconnected:387 - Device disconnected successfully
+2025-09-18 18:17:26.922 - network - DEBUG - _send_packet:433 - Command CONNECT:(0, 0, 0)_CONNECT sent to [0, 0, 0], waiting for acknowledgment
+2025-09-18 18:17:26.922 - network - INFO - sendConnect:513 - Connection broadcast sent
+2025-09-18 18:17:27.017 - network - DEBUG - _process_packet:239 - Received: cmd=0xCONNECT from ::ffff:192.168.115.253
+2025-09-18 18:17:27.017 - network - INFO - _handle_connect:315 - Device connected: [164, 52, 200] at 192.168.115.253
+2025-09-18 18:17:27.017 - network - INFO - _handle_connect:319 - Single device connected, commands will target this device
+2025-09-18 18:17:27.018 - __main__ - INFO - init_sensor:552 - Sensor initialized with 1 types: ['fNIRS']
+2025-09-18 18:17:27.018 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 18:17:27.019 - __main__ - DEBUG - query_battery:451 - Battery query sent
+2025-09-18 18:17:27.019 - __main__ - DEBUG - start_battery_monitoring:436 - Battery monitoring started
+2025-09-18 18:17:27.019 - __main__ - INFO - on_device_connected:349 - Device connected successfully: ID=[164, 52, 200], Type=4
+2025-09-18 18:17:27.019 - network - INFO - _acknowledge_pending_command:287 - Command CONNECT acknowledged by device [164, 52, 200]
+2025-09-18 18:17:27.019 - network - DEBUG - _acknowledge_pending_command:305 - All commands acknowledged, stopping retry timer
+2025-09-18 18:17:27.141 - network - DEBUG - _process_packet:239 - Received: cmd=0xBATTERY_QUERY from ::ffff:192.168.115.253
+2025-09-18 18:17:27.141 - network - INFO - _handle_battery_query:351 - device battery level:70
+2025-09-18 18:17:27.142 - __main__ - DEBUG - update_battery_display:482 - Battery level updated: 70%
+2025-09-18 18:17:37.014 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 18:17:37.014 - __main__ - DEBUG - query_battery:451 - Battery query sent
+2025-09-18 18:17:37.350 - network - DEBUG - _process_packet:239 - Received: cmd=0xBATTERY_QUERY from ::ffff:192.168.115.253
+2025-09-18 18:17:37.350 - network - INFO - _handle_battery_query:351 - device battery level:70
+2025-09-18 18:17:37.350 - __main__ - DEBUG - update_battery_display:482 - Battery level updated: 70%
+2025-09-18 18:17:47.022 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 18:17:47.022 - __main__ - DEBUG - query_battery:451 - Battery query sent
+2025-09-18 18:17:47.178 - network - DEBUG - _process_packet:239 - Received: cmd=0xBATTERY_QUERY from ::ffff:192.168.115.253
+2025-09-18 18:17:47.179 - network - INFO - _handle_battery_query:351 - device battery level:70
+2025-09-18 18:17:47.179 - __main__ - DEBUG - update_battery_display:482 - Battery level updated: 70%
+2025-09-18 18:17:56.453 - user - INFO - getNameInitials:92 - Generated initials for aa: AA_1
+2025-09-18 18:17:57.021 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 18:17:57.021 - __main__ - DEBUG - query_battery:451 - Battery query sent
+2025-09-18 18:17:57.219 - network - DEBUG - _process_packet:239 - Received: cmd=0xBATTERY_QUERY from ::ffff:192.168.115.253
+2025-09-18 18:17:57.219 - network - INFO - _handle_battery_query:351 - device battery level:70
+2025-09-18 18:17:57.220 - __main__ - DEBUG - update_battery_display:482 - Battery level updated: 70%
+2025-09-18 18:18:07.017 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 18:18:07.018 - __main__ - DEBUG - query_battery:451 - Battery query sent
+2025-09-18 18:18:07.249 - network - DEBUG - _process_packet:239 - Received: cmd=0xBATTERY_QUERY from ::ffff:192.168.115.253
+2025-09-18 18:18:07.250 - network - INFO - _handle_battery_query:351 - device battery level:70
+2025-09-18 18:18:07.250 - __main__ - DEBUG - update_battery_display:482 - Battery level updated: 70%
+2025-09-18 18:18:17.025 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 18:18:17.025 - __main__ - DEBUG - query_battery:451 - Battery query sent
+2025-09-18 18:18:17.290 - network - DEBUG - _process_packet:239 - Received: cmd=0xBATTERY_QUERY from ::ffff:192.168.115.253
+2025-09-18 18:18:17.291 - network - INFO - _handle_battery_query:351 - device battery level:70
+2025-09-18 18:18:17.291 - __main__ - DEBUG - update_battery_display:482 - Battery level updated: 70%
+2025-09-18 18:18:27.020 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 18:18:27.021 - __main__ - DEBUG - query_battery:451 - Battery query sent
+2025-09-18 18:18:27.225 - network - DEBUG - _process_packet:239 - Received: cmd=0xBATTERY_QUERY from ::ffff:192.168.115.253
+2025-09-18 18:18:27.226 - network - INFO - _handle_battery_query:351 - device battery level:70
+2025-09-18 18:18:27.227 - __main__ - DEBUG - update_battery_display:482 - Battery level updated: 70%
+2025-09-18 18:18:37.017 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 18:18:37.017 - __main__ - DEBUG - query_battery:451 - Battery query sent
+2025-09-18 18:18:47.024 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 18:18:47.024 - __main__ - DEBUG - query_battery:451 - Battery query sent
+2025-09-18 18:18:57.016 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 18:18:57.016 - __main__ - DEBUG - query_battery:451 - Battery query sent
+2025-09-18 18:19:07.020 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 18:19:07.021 - __main__ - DEBUG - query_battery:451 - Battery query sent
+2025-09-18 18:19:17.023 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 18:19:17.023 - __main__ - DEBUG - query_battery:451 - Battery query sent
+2025-09-18 18:19:27.019 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 18:19:27.019 - __main__ - DEBUG - query_battery:451 - Battery query sent
+2025-09-18 18:19:37.018 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 18:19:37.018 - __main__ - DEBUG - query_battery:451 - Battery query sent
+2025-09-18 18:19:47.017 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 18:19:47.017 - __main__ - DEBUG - query_battery:451 - Battery query sent
+2025-09-18 18:19:57.020 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 18:19:57.020 - __main__ - DEBUG - query_battery:451 - Battery query sent
+2025-09-18 18:20:07.022 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 18:20:07.023 - __main__ - DEBUG - query_battery:451 - Battery query sent
+2025-09-18 18:20:17.017 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 18:20:17.017 - __main__ - DEBUG - query_battery:451 - Battery query sent
+2025-09-18 18:20:27.016 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 18:20:27.017 - __main__ - DEBUG - query_battery:451 - Battery query sent
+2025-09-18 18:20:37.024 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 18:20:37.024 - __main__ - DEBUG - query_battery:451 - Battery query sent
+2025-09-18 18:20:51.106 - locate - INFO - setup_logging:37 - Logging initialized with level: DEBUG
+2025-09-18 18:20:51.108 - config - INFO - <module>:47 - Successfully imported locate module
+2025-09-18 18:20:51.193 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-18 18:20:51.193 - network - INFO - _setup_network:119 - Network ready: 192.168.115.9:1227 -> 192.168.115.255:2227
+2025-09-18 18:20:51.193 - __main__ - INFO - initialize_network:96 - Network module initialized successfully
+2025-09-18 18:20:51.576 - __main__ - INFO - initialize_user_widget:118 - User widget integrated into home tab successfully
+2025-09-18 18:20:51.577 - __main__ - DEBUG - restore_window_state:772 - Window state restored
+2025-09-18 18:20:51.577 - __main__ - INFO - __init__:89 - MainWindow initialized successfully with UI structure from XML
+2025-09-18 18:20:51.838 - __main__ - INFO - main:860 - Application started successfully with XML-based UI structure
+2025-09-18 18:22:42.882 - locate - INFO - setup_logging:37 - Logging initialized with level: DEBUG
+2025-09-18 18:22:42.884 - config - INFO - <module>:47 - Successfully imported locate module
+2025-09-18 18:22:42.961 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-18 18:22:42.961 - network - INFO - _setup_network:119 - Network ready: 192.168.115.9:1227 -> 192.168.115.255:2227
+2025-09-18 18:22:42.962 - __main__ - INFO - initialize_network:96 - Network module initialized successfully
+2025-09-18 18:22:43.347 - __main__ - INFO - initialize_user_widget:115 - User widget integrated into home tab successfully
+2025-09-18 18:22:43.348 - __main__ - DEBUG - restore_window_state:770 - Window state restored
+2025-09-18 18:22:43.348 - __main__ - INFO - __init__:89 - MainWindow initialized successfully with UI structure from XML
+2025-09-18 18:22:43.615 - __main__ - INFO - main:858 - Application started successfully with XML-based UI structure
+2025-09-18 18:22:48.358 - network - DEBUG - _send_packet:433 - Command CONNECT:(0, 0, 0)_CONNECT sent to [0, 0, 0], waiting for acknowledgment
+2025-09-18 18:22:48.358 - network - INFO - sendConnect:513 - Connection broadcast sent
+2025-09-18 18:22:48.567 - network - DEBUG - _process_packet:239 - Received: cmd=0xCONNECT from ::ffff:192.168.115.253
+2025-09-18 18:22:48.568 - network - INFO - _handle_connect:315 - Device connected: [164, 52, 200] at 192.168.115.253
+2025-09-18 18:22:48.568 - network - INFO - _handle_connect:319 - Single device connected, commands will target this device
+2025-09-18 18:22:48.568 - __main__ - INFO - init_sensor:550 - Sensor initialized with 1 types: ['fNIRS']
+2025-09-18 18:22:48.569 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 18:22:48.569 - __main__ - DEBUG - query_battery:449 - Battery query sent
+2025-09-18 18:22:48.569 - __main__ - DEBUG - start_battery_monitoring:434 - Battery monitoring started
+2025-09-18 18:22:48.570 - __main__ - INFO - on_device_connected:347 - Device connected successfully: ID=[164, 52, 200], Type=4
+2025-09-18 18:22:48.570 - network - INFO - _acknowledge_pending_command:287 - Command CONNECT acknowledged by device [164, 52, 200]
+2025-09-18 18:22:48.570 - network - DEBUG - _acknowledge_pending_command:305 - All commands acknowledged, stopping retry timer
+2025-09-18 18:22:48.689 - network - DEBUG - _process_packet:239 - Received: cmd=0xBATTERY_QUERY from ::ffff:192.168.115.253
+2025-09-18 18:22:48.689 - network - INFO - _handle_battery_query:351 - device battery level:70
+2025-09-18 18:22:48.693 - __main__ - DEBUG - update_battery_display:480 - Battery level updated: 70%
+2025-09-18 18:22:57.886 - user - INFO - getNameInitials:92 - Generated initials for aa: AA_1
+2025-09-18 18:22:58.563 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 18:22:58.563 - __main__ - DEBUG - query_battery:449 - Battery query sent
+2025-09-18 18:22:58.882 - network - DEBUG - _process_packet:239 - Received: cmd=0xBATTERY_QUERY from ::ffff:192.168.115.253
+2025-09-18 18:22:58.882 - network - INFO - _handle_battery_query:351 - device battery level:70
+2025-09-18 18:22:58.882 - __main__ - DEBUG - update_battery_display:480 - Battery level updated: 70%
+2025-09-18 18:23:08.564 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 18:23:08.565 - __main__ - DEBUG - query_battery:449 - Battery query sent
+2025-09-18 18:23:08.706 - network - DEBUG - _process_packet:239 - Received: cmd=0xBATTERY_QUERY from ::ffff:192.168.115.253
+2025-09-18 18:23:08.706 - network - INFO - _handle_battery_query:351 - device battery level:70
+2025-09-18 18:23:08.707 - __main__ - DEBUG - update_battery_display:480 - Battery level updated: 70%
+2025-09-18 18:31:18.576 - locate - INFO - setup_logging:37 - Logging initialized with level: DEBUG
+2025-09-18 18:31:18.578 - config - INFO - <module>:47 - Successfully imported locate module
+2025-09-18 18:31:18.679 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-18 18:31:18.679 - network - INFO - _setup_network:119 - Network ready: 192.168.115.9:1227 -> 192.168.115.255:2227
+2025-09-18 18:31:18.679 - mainwindow - INFO - initialize_network:96 - Network module initialized successfully
+2025-09-18 18:31:19.042 - mainwindow - INFO - initialize_user_widget:115 - User widget integrated into home tab successfully
+2025-09-18 18:31:19.043 - mainwindow - DEBUG - restore_window_state:769 - Window state restored
+2025-09-18 18:31:19.044 - mainwindow - INFO - __init__:89 - MainWindow initialized successfully with UI structure from XML
+2025-09-18 18:31:19.318 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-18 18:31:19.318 - network - INFO - _setup_network:119 - Network ready: 192.168.115.9:1227 -> 192.168.115.255:2227
+2025-09-18 18:31:21.491 - network - DEBUG - _send_packet:433 - Command CONNECT:(0, 0, 0)_CONNECT sent to [0, 0, 0], waiting for acknowledgment
+2025-09-18 18:31:21.491 - network - INFO - sendConnect:513 - Connection broadcast sent
+2025-09-18 18:31:21.591 - network - DEBUG - _process_packet:239 - Received: cmd=0xCONNECT from ::ffff:192.168.115.253
+2025-09-18 18:31:21.591 - network - INFO - _handle_connect:315 - Device connected: [164, 52, 200] at 192.168.115.253
+2025-09-18 18:31:21.591 - network - INFO - _handle_connect:319 - Single device connected, commands will target this device
+2025-09-18 18:31:21.592 - mainwindow - INFO - init_sensor:550 - Sensor initialized with 1 types: ['fNIRS']
+2025-09-18 18:31:21.593 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 18:31:21.593 - mainwindow - DEBUG - query_battery:449 - Battery query sent
+2025-09-18 18:31:21.593 - mainwindow - DEBUG - start_battery_monitoring:434 - Battery monitoring started
+2025-09-18 18:31:21.593 - mainwindow - INFO - on_device_connected:347 - Device connected successfully: ID=[164, 52, 200], Type=4
+2025-09-18 18:31:21.593 - network - INFO - _acknowledge_pending_command:287 - Command CONNECT acknowledged by device [164, 52, 200]
+2025-09-18 18:31:21.593 - network - DEBUG - _acknowledge_pending_command:305 - All commands acknowledged, stopping retry timer
+2025-09-18 18:31:21.714 - network - DEBUG - _process_packet:239 - Received: cmd=0xBATTERY_QUERY from ::ffff:192.168.115.253
+2025-09-18 18:31:21.714 - network - INFO - _handle_battery_query:351 - device battery level:70
+2025-09-18 18:31:21.716 - mainwindow - DEBUG - update_battery_display:480 - Battery level updated: 70%
+2025-09-18 18:31:25.435 - mainwindow - DEBUG - on_patient_changed:645 - Patient information changed, UI state updated
+2025-09-18 18:31:28.295 - user - INFO - getNameInitials:92 - Generated initials for aa: AA_2
+2025-09-18 18:31:31.596 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 18:31:31.596 - mainwindow - DEBUG - query_battery:449 - Battery query sent
+2025-09-18 18:31:31.909 - network - DEBUG - _process_packet:239 - Received: cmd=0xBATTERY_QUERY from ::ffff:192.168.115.253
+2025-09-18 18:31:31.910 - network - INFO - _handle_battery_query:351 - device battery level:70
+2025-09-18 18:31:31.910 - mainwindow - DEBUG - update_battery_display:480 - Battery level updated: 70%
+2025-09-18 18:31:34.302 - mainwindow - INFO - shutdown_cleanup:789 - Starting shutdown cleanup...
+2025-09-18 18:31:34.318 - mainwindow - DEBUG - save_window_state:743 - Window state saved
+2025-09-18 18:31:34.318 - network - DEBUG - _send_packet:433 - Command DISCONNECT:(164, 52, 200)_DISCONNECT sent to [164, 52, 200], waiting for acknowledgment
+2025-09-18 18:31:34.319 - network - INFO - sendDisconnect:520 - Disconnect sent to all devices
+2025-09-18 18:31:34.823 - network - DEBUG - _send_packet:433 - Command DISCONNECT:(164, 52, 200)_DISCONNECT sent to [164, 52, 200], waiting for acknowledgment
+2025-09-18 18:31:34.823 - network - INFO - sendDisconnect:520 - Disconnect sent to all devices
+2025-09-18 18:31:34.823 - network - INFO - close:591 - Network closed
+2025-09-18 18:31:34.824 - mainwindow - INFO - shutdown_cleanup:821 - Network closed successfully
+2025-09-18 18:31:34.824 - mainwindow - INFO - shutdown_cleanup:825 - Shutdown cleanup completed
+2025-09-18 18:31:34.824 - mainwindow - INFO - closeEvent:832 - Application closed successfully
+2025-09-18 18:31:41.600 - locate - INFO - setup_logging:37 - Logging initialized with level: DEBUG
+2025-09-18 18:31:41.602 - config - INFO - <module>:47 - Successfully imported locate module
+2025-09-18 18:31:41.696 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-18 18:31:41.697 - network - INFO - _setup_network:119 - Network ready: 192.168.115.9:1227 -> 192.168.115.255:2227
+2025-09-18 18:31:41.697 - mainwindow - INFO - initialize_network:96 - Network module initialized successfully
+2025-09-18 18:31:42.050 - mainwindow - INFO - initialize_user_widget:115 - User widget integrated into home tab successfully
+2025-09-18 18:31:42.051 - mainwindow - DEBUG - restore_window_state:769 - Window state restored
+2025-09-18 18:31:42.051 - mainwindow - INFO - __init__:89 - MainWindow initialized successfully with UI structure from XML
+2025-09-18 18:31:42.357 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-18 18:31:42.357 - network - INFO - _setup_network:119 - Network ready: 192.168.115.9:1227 -> 192.168.115.255:2227
+2025-09-18 18:31:45.512 - mainwindow - DEBUG - on_patient_changed:645 - Patient information changed, UI state updated
+2025-09-18 18:31:49.046 - user - INFO - getNameInitials:92 - Generated initials for aa: AA_2
+2025-09-18 18:31:49.785 - network - DEBUG - _send_packet:433 - Command CONNECT:(0, 0, 0)_CONNECT sent to [0, 0, 0], waiting for acknowledgment
+2025-09-18 18:31:49.785 - network - INFO - sendConnect:513 - Connection broadcast sent
+2025-09-18 18:31:49.831 - network - DEBUG - _process_packet:239 - Received: cmd=0xCONNECT from ::ffff:192.168.115.253
+2025-09-18 18:31:49.831 - network - INFO - _handle_connect:315 - Device connected: [164, 52, 200] at 192.168.115.253
+2025-09-18 18:31:49.831 - network - INFO - _handle_connect:319 - Single device connected, commands will target this device
+2025-09-18 18:31:49.831 - mainwindow - INFO - init_sensor:550 - Sensor initialized with 1 types: ['fNIRS']
+2025-09-18 18:31:49.832 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 18:31:49.832 - mainwindow - DEBUG - query_battery:449 - Battery query sent
+2025-09-18 18:31:49.832 - mainwindow - DEBUG - start_battery_monitoring:434 - Battery monitoring started
+2025-09-18 18:31:49.832 - mainwindow - INFO - on_device_connected:347 - Device connected successfully: ID=[164, 52, 200], Type=4
+2025-09-18 18:31:49.832 - network - INFO - _acknowledge_pending_command:287 - Command CONNECT acknowledged by device [164, 52, 200]
+2025-09-18 18:31:49.832 - network - DEBUG - _acknowledge_pending_command:305 - All commands acknowledged, stopping retry timer
+2025-09-18 18:31:49.953 - network - DEBUG - _process_packet:239 - Received: cmd=0xBATTERY_QUERY from ::ffff:192.168.115.253
+2025-09-18 18:31:49.953 - network - INFO - _handle_battery_query:351 - device battery level:70
+2025-09-18 18:31:49.955 - mainwindow - DEBUG - update_battery_display:480 - Battery level updated: 70%
+2025-09-18 18:31:58.345 - locate - INFO - setup_logging:37 - Logging initialized with level: DEBUG
+2025-09-18 18:31:58.346 - config - INFO - <module>:47 - Successfully imported locate module
+2025-09-18 18:31:58.438 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-18 18:31:58.438 - network - INFO - _setup_network:119 - Network ready: 192.168.115.9:1227 -> 192.168.115.255:2227
+2025-09-18 18:31:58.439 - mainwindow - INFO - initialize_network:96 - Network module initialized successfully
+2025-09-18 18:31:58.813 - mainwindow - INFO - initialize_user_widget:115 - User widget integrated into home tab successfully
+2025-09-18 18:31:58.814 - mainwindow - DEBUG - restore_window_state:769 - Window state restored
+2025-09-18 18:31:58.814 - mainwindow - INFO - __init__:89 - MainWindow initialized successfully with UI structure from XML
+2025-09-18 18:31:59.139 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-18 18:31:59.139 - network - INFO - _setup_network:119 - Network ready: 192.168.115.9:1227 -> 192.168.115.255:2227
+2025-09-18 18:32:15.218 - locate - INFO - setup_logging:37 - Logging initialized with level: DEBUG
+2025-09-18 18:32:15.221 - config - INFO - <module>:47 - Successfully imported locate module
+2025-09-18 18:32:15.318 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-18 18:32:15.318 - network - INFO - _setup_network:119 - Network ready: 192.168.115.9:1227 -> 192.168.115.255:2227
+2025-09-18 18:32:15.318 - mainwindow - INFO - initialize_network:96 - Network module initialized successfully
+2025-09-18 18:32:15.693 - mainwindow - INFO - initialize_user_widget:115 - User widget integrated into home tab successfully
+2025-09-18 18:32:15.694 - mainwindow - DEBUG - restore_window_state:769 - Window state restored
+2025-09-18 18:32:15.694 - mainwindow - INFO - __init__:89 - MainWindow initialized successfully with UI structure from XML
+2025-09-18 18:32:15.792 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-18 18:32:15.792 - network - INFO - _setup_network:119 - Network ready: 192.168.115.9:1227 -> 192.168.115.255:2227
+2025-09-18 18:32:17.989 - network - DEBUG - _send_packet:433 - Command CONNECT:(0, 0, 0)_CONNECT sent to [0, 0, 0], waiting for acknowledgment
+2025-09-18 18:32:17.989 - network - INFO - sendConnect:513 - Connection broadcast sent
+2025-09-18 18:32:18.096 - network - DEBUG - _process_packet:239 - Received: cmd=0xCONNECT from ::ffff:192.168.115.253
+2025-09-18 18:32:18.096 - network - INFO - _handle_connect:315 - Device connected: [164, 52, 200] at 192.168.115.253
+2025-09-18 18:32:18.096 - network - INFO - _handle_connect:319 - Single device connected, commands will target this device
+2025-09-18 18:32:18.096 - mainwindow - INFO - init_sensor:550 - Sensor initialized with 1 types: ['fNIRS']
+2025-09-18 18:32:18.097 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 18:32:18.097 - mainwindow - DEBUG - query_battery:449 - Battery query sent
+2025-09-18 18:32:18.097 - mainwindow - DEBUG - start_battery_monitoring:434 - Battery monitoring started
+2025-09-18 18:32:18.097 - mainwindow - INFO - on_device_connected:347 - Device connected successfully: ID=[164, 52, 200], Type=4
+2025-09-18 18:32:18.098 - network - INFO - _acknowledge_pending_command:287 - Command CONNECT acknowledged by device [164, 52, 200]
+2025-09-18 18:32:18.098 - network - DEBUG - _acknowledge_pending_command:305 - All commands acknowledged, stopping retry timer
+2025-09-18 18:32:18.222 - network - DEBUG - _process_packet:239 - Received: cmd=0xBATTERY_QUERY from ::ffff:192.168.115.253
+2025-09-18 18:32:18.222 - network - INFO - _handle_battery_query:351 - device battery level:70
+2025-09-18 18:32:18.224 - mainwindow - DEBUG - update_battery_display:480 - Battery level updated: 70%
+2025-09-18 18:32:23.311 - mainwindow - DEBUG - on_patient_changed:645 - Patient information changed, UI state updated
+2025-09-18 18:32:28.092 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 18:32:28.092 - mainwindow - DEBUG - query_battery:449 - Battery query sent
+2025-09-18 18:32:28.233 - network - DEBUG - _process_packet:239 - Received: cmd=0xBATTERY_QUERY from ::ffff:192.168.115.253
+2025-09-18 18:32:28.233 - network - INFO - _handle_battery_query:351 - device battery level:70
+2025-09-18 18:32:28.234 - mainwindow - DEBUG - update_battery_display:480 - Battery level updated: 70%
+2025-09-18 18:32:31.555 - user - INFO - getNameInitials:92 - Generated initials for aa: AA_2
+2025-09-18 18:33:10.959 - locate - INFO - setup_logging:37 - Logging initialized with level: DEBUG
+2025-09-18 18:33:10.961 - config - INFO - <module>:47 - Successfully imported locate module
+2025-09-18 18:33:11.055 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-18 18:33:11.055 - network - INFO - _setup_network:119 - Network ready: 192.168.115.9:1227 -> 192.168.115.255:2227
+2025-09-18 18:33:11.055 - mainwindow - INFO - initialize_network:96 - Network module initialized successfully
+2025-09-18 18:33:11.413 - mainwindow - INFO - initialize_user_widget:115 - User widget integrated into home tab successfully
+2025-09-18 18:33:11.413 - mainwindow - DEBUG - restore_window_state:769 - Window state restored
+2025-09-18 18:33:11.413 - mainwindow - INFO - __init__:89 - MainWindow initialized successfully with UI structure from XML
+2025-09-18 18:33:11.507 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-18 18:33:11.507 - network - INFO - _setup_network:119 - Network ready: 192.168.115.9:1227 -> 192.168.115.255:2227
+2025-09-18 18:33:14.599 - network - DEBUG - _send_packet:433 - Command CONNECT:(0, 0, 0)_CONNECT sent to [0, 0, 0], waiting for acknowledgment
+2025-09-18 18:33:14.599 - network - INFO - sendConnect:513 - Connection broadcast sent
+2025-09-18 18:33:14.823 - network - DEBUG - _process_packet:239 - Received: cmd=0xCONNECT from ::ffff:192.168.115.253
+2025-09-18 18:33:14.823 - network - INFO - _handle_connect:315 - Device connected: [164, 52, 200] at 192.168.115.253
+2025-09-18 18:33:14.823 - network - INFO - _handle_connect:319 - Single device connected, commands will target this device
+2025-09-18 18:33:14.823 - mainwindow - INFO - init_sensor:550 - Sensor initialized with 1 types: ['fNIRS']
+2025-09-18 18:33:14.824 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 18:33:14.824 - mainwindow - DEBUG - query_battery:449 - Battery query sent
+2025-09-18 18:33:14.824 - mainwindow - DEBUG - start_battery_monitoring:434 - Battery monitoring started
+2025-09-18 18:33:14.824 - mainwindow - INFO - on_device_connected:347 - Device connected successfully: ID=[164, 52, 200], Type=4
+2025-09-18 18:33:14.824 - network - INFO - _acknowledge_pending_command:287 - Command CONNECT acknowledged by device [164, 52, 200]
+2025-09-18 18:33:14.824 - network - DEBUG - _acknowledge_pending_command:305 - All commands acknowledged, stopping retry timer
+2025-09-18 18:33:14.938 - network - DEBUG - _process_packet:239 - Received: cmd=0xBATTERY_QUERY from ::ffff:192.168.115.253
+2025-09-18 18:33:14.938 - network - INFO - _handle_battery_query:351 - device battery level:70
+2025-09-18 18:33:14.939 - mainwindow - DEBUG - update_battery_display:480 - Battery level updated: 70%
+2025-09-18 18:33:18.315 - mainwindow - DEBUG - on_patient_changed:645 - Patient information changed, UI state updated
+2025-09-18 18:33:21.731 - user - INFO - getNameInitials:92 - Generated initials for 啊啊: AA_1
+2025-09-18 18:33:22.781 - mainwindow - INFO - shutdown_cleanup:789 - Starting shutdown cleanup...
+2025-09-18 18:33:22.800 - mainwindow - DEBUG - save_window_state:743 - Window state saved
+2025-09-18 18:33:23.771 - network - DEBUG - _send_packet:433 - Command DISCONNECT:(164, 52, 200)_DISCONNECT sent to [164, 52, 200], waiting for acknowledgment
+2025-09-18 18:33:23.771 - network - INFO - sendDisconnect:520 - Disconnect sent to all devices
+2025-09-18 18:33:24.283 - network - DEBUG - _send_packet:433 - Command DISCONNECT:(164, 52, 200)_DISCONNECT sent to [164, 52, 200], waiting for acknowledgment
+2025-09-18 18:33:24.283 - network - INFO - sendDisconnect:520 - Disconnect sent to all devices
+2025-09-18 18:33:24.283 - network - INFO - close:591 - Network closed
+2025-09-18 18:33:24.283 - mainwindow - INFO - shutdown_cleanup:821 - Network closed successfully
+2025-09-18 18:33:24.283 - mainwindow - INFO - shutdown_cleanup:825 - Shutdown cleanup completed
+2025-09-18 18:33:24.283 - mainwindow - INFO - closeEvent:832 - Application closed successfully
+2025-09-18 18:34:36.956 - locate - INFO - setup_logging:37 - Logging initialized with level: DEBUG
+2025-09-18 18:34:36.958 - config - INFO - <module>:47 - Successfully imported locate module
+2025-09-18 18:34:37.049 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-18 18:34:37.049 - network - INFO - _setup_network:119 - Network ready: 192.168.115.9:1227 -> 192.168.115.255:2227
+2025-09-18 18:34:37.050 - __main__ - INFO - initialize_network:96 - Network module initialized successfully
+2025-09-18 18:34:37.452 - __main__ - INFO - initialize_user_widget:115 - User widget integrated into home tab successfully
+2025-09-18 18:34:37.453 - __main__ - DEBUG - restore_window_state:771 - Window state restored
+2025-09-18 18:34:37.453 - __main__ - INFO - __init__:89 - MainWindow initialized successfully with UI structure from XML
+2025-09-18 18:34:37.726 - __main__ - INFO - main:859 - Application started successfully with XML-based UI structure
+2025-09-18 18:34:40.092 - network - DEBUG - _send_packet:433 - Command CONNECT:(0, 0, 0)_CONNECT sent to [0, 0, 0], waiting for acknowledgment
+2025-09-18 18:34:40.092 - network - INFO - sendConnect:513 - Connection broadcast sent
+2025-09-18 18:34:40.234 - network - DEBUG - _process_packet:239 - Received: cmd=0xCONNECT from ::ffff:192.168.115.253
+2025-09-18 18:34:40.235 - network - INFO - _handle_connect:315 - Device connected: [164, 52, 200] at 192.168.115.253
+2025-09-18 18:34:40.235 - network - INFO - _handle_connect:319 - Single device connected, commands will target this device
+2025-09-18 18:34:40.236 - __main__ - INFO - init_sensor:550 - Sensor initialized with 1 types: ['fNIRS']
+2025-09-18 18:34:40.236 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 18:34:40.237 - __main__ - DEBUG - query_battery:449 - Battery query sent
+2025-09-18 18:34:40.237 - __main__ - DEBUG - start_battery_monitoring:434 - Battery monitoring started
+2025-09-18 18:34:40.237 - __main__ - INFO - on_device_connected:347 - Device connected successfully: ID=[164, 52, 200], Type=4
+2025-09-18 18:34:40.237 - network - INFO - _acknowledge_pending_command:287 - Command CONNECT acknowledged by device [164, 52, 200]
+2025-09-18 18:34:40.237 - network - DEBUG - _acknowledge_pending_command:305 - All commands acknowledged, stopping retry timer
+2025-09-18 18:34:40.359 - network - DEBUG - _process_packet:239 - Received: cmd=0xBATTERY_QUERY from ::ffff:192.168.115.253
+2025-09-18 18:34:40.359 - network - INFO - _handle_battery_query:351 - device battery level:70
+2025-09-18 18:34:40.360 - __main__ - DEBUG - update_battery_display:480 - Battery level updated: 70%
+2025-09-18 18:34:44.107 - __main__ - DEBUG - on_patient_changed:647 - Patient information changed, UI state updated
+2025-09-18 18:34:50.232 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 18:34:50.232 - __main__ - DEBUG - query_battery:449 - Battery query sent
+2025-09-18 18:34:50.562 - network - DEBUG - _process_packet:239 - Received: cmd=0xBATTERY_QUERY from ::ffff:192.168.115.253
+2025-09-18 18:34:50.563 - network - INFO - _handle_battery_query:351 - device battery level:70
+2025-09-18 18:34:50.563 - __main__ - DEBUG - update_battery_display:480 - Battery level updated: 70%
+2025-09-18 18:34:50.689 - user - INFO - getNameInitials:92 - Generated initials for aa: AA_2
+2025-09-18 19:12:41.982 - locate - INFO - setup_logging:37 - Logging initialized with level: DEBUG
+2025-09-18 19:12:41.984 - config - INFO - <module>:47 - Successfully imported locate module
+2025-09-18 19:12:42.081 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-18 19:12:42.081 - network - INFO - _setup_network:119 - Network ready: 192.168.115.9:1227 -> 192.168.115.255:2227
+2025-09-18 19:12:42.082 - mainwindow - INFO - initialize_network:96 - Network module initialized successfully
+2025-09-18 19:12:42.474 - mainwindow - INFO - initialize_user_widget:115 - User widget integrated into home tab successfully
+2025-09-18 19:12:42.475 - mainwindow - DEBUG - restore_window_state:771 - Window state restored
+2025-09-18 19:12:42.475 - mainwindow - INFO - __init__:89 - MainWindow initialized successfully with UI structure from XML
+2025-09-18 19:12:42.791 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-18 19:12:42.791 - network - INFO - _setup_network:119 - Network ready: 192.168.115.9:1227 -> 192.168.115.255:2227
+2025-09-18 19:12:46.728 - mainwindow - DEBUG - on_patient_changed:647 - Patient information changed, UI state updated
+2025-09-18 19:15:39.886 - locate - INFO - setup_logging:37 - Logging initialized with level: DEBUG
+2025-09-18 19:15:39.889 - config - INFO - <module>:47 - Successfully imported locate module
+2025-09-18 19:15:39.997 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-18 19:15:39.997 - network - INFO - _setup_network:119 - Network ready: 192.168.115.9:1227 -> 192.168.115.255:2227
+2025-09-18 19:15:39.997 - __main__ - INFO - initialize_network:96 - Network module initialized successfully
+2025-09-18 19:15:40.395 - __main__ - INFO - initialize_user_widget:115 - User widget integrated into home tab successfully
+2025-09-18 19:15:40.396 - __main__ - DEBUG - restore_window_state:771 - Window state restored
+2025-09-18 19:15:40.396 - __main__ - INFO - __init__:89 - MainWindow initialized successfully with UI structure from XML
+2025-09-18 19:15:40.457 - __main__ - INFO - main:859 - Application started successfully with XML-based UI structure
+2025-09-18 19:15:53.040 - network - DEBUG - _send_packet:433 - Command CONNECT:(0, 0, 0)_CONNECT sent to [0, 0, 0], waiting for acknowledgment
+2025-09-18 19:15:53.040 - network - INFO - sendConnect:513 - Connection broadcast sent
+2025-09-18 19:15:53.292 - network - DEBUG - _process_packet:239 - Received: cmd=0xCONNECT from ::ffff:192.168.115.253
+2025-09-18 19:15:53.293 - network - INFO - _handle_connect:315 - Device connected: [164, 52, 200] at 192.168.115.253
+2025-09-18 19:15:53.293 - network - INFO - _handle_connect:319 - Single device connected, commands will target this device
+2025-09-18 19:15:53.293 - __main__ - INFO - init_sensor:550 - Sensor initialized with 1 types: ['fNIRS']
+2025-09-18 19:15:53.293 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 19:15:53.293 - __main__ - DEBUG - query_battery:449 - Battery query sent
+2025-09-18 19:15:53.293 - __main__ - DEBUG - start_battery_monitoring:434 - Battery monitoring started
+2025-09-18 19:15:53.293 - __main__ - INFO - on_device_connected:347 - Device connected successfully: ID=[164, 52, 200], Type=4
+2025-09-18 19:15:53.293 - network - INFO - _acknowledge_pending_command:287 - Command CONNECT acknowledged by device [164, 52, 200]
+2025-09-18 19:15:53.294 - network - DEBUG - _acknowledge_pending_command:305 - All commands acknowledged, stopping retry timer
+2025-09-18 19:15:57.647 - user - INFO - getNameInitials:92 - Generated initials for aa: AA_2
+2025-09-18 19:15:57.647 - __main__ - DEBUG - on_patient_changed:647 - Patient information changed, UI state updated
+2025-09-18 19:15:58.616 - __main__ - DEBUG - on_tab_changed:181 - Tab changed to: configuration (index: 1)
+2025-09-18 19:15:59.601 - __main__ - INFO - shutdown_cleanup:791 - Starting shutdown cleanup...
+2025-09-18 19:15:59.617 - __main__ - DEBUG - save_window_state:745 - Window state saved
+2025-09-18 19:16:00.678 - network - DEBUG - _send_packet:433 - Command DISCONNECT:(164, 52, 200)_DISCONNECT sent to [164, 52, 200], waiting for acknowledgment
+2025-09-18 19:16:00.678 - network - INFO - sendDisconnect:520 - Disconnect sent to all devices
+2025-09-18 19:16:01.187 - network - DEBUG - _send_packet:433 - Command DISCONNECT:(164, 52, 200)_DISCONNECT sent to [164, 52, 200], waiting for acknowledgment
+2025-09-18 19:16:01.187 - network - INFO - sendDisconnect:520 - Disconnect sent to all devices
+2025-09-18 19:16:01.187 - network - INFO - close:591 - Network closed
+2025-09-18 19:16:01.187 - __main__ - INFO - shutdown_cleanup:823 - Network closed successfully
+2025-09-18 19:16:01.187 - __main__ - INFO - shutdown_cleanup:827 - Shutdown cleanup completed
+2025-09-18 19:16:01.187 - __main__ - INFO - closeEvent:834 - Application closed successfully
+2025-09-18 19:16:22.937 - locate - INFO - setup_logging:37 - Logging initialized with level: DEBUG
+2025-09-18 19:16:22.939 - __main__ - INFO - <module>:47 - Successfully imported locate module
+2025-09-18 19:16:22.957 - __main__ - INFO - main:1515 - Starting Device Configuration Manager v2.0.0
+2025-09-18 19:16:22.957 - __main__ - INFO - __init__:273 - Initializing ConfigurationManager
+2025-09-18 19:16:22.957 - __main__ - INFO - get_montage_directory:248 - Montage directory: d:\Unfinished\fNIRS_HIT\montage
+2025-09-18 19:16:23.362 - __main__ - DEBUG - _initialize_ui:315 - UI setup completed
+2025-09-18 19:16:23.362 - __main__ - INFO - __post_init__:108 - Initializing DeviceConfiguration with sensors: {'fnirs'}
+2025-09-18 19:16:23.362 - __main__ - DEBUG - _initialize_sensor_configs:126 - Sensor configurations initialized
+2025-09-18 19:16:23.362 - __main__ - DEBUG - _initialize_default_settings:147 - Set default sampling rate for fnirs: 10
+2025-09-18 19:16:23.362 - __main__ - INFO - _customize_ui_for_sensors:396 - Customizing UI for enabled sensors
+2025-09-18 19:16:23.365 - locate - INFO - __init__:406 - Initializing Locate application
+2025-09-18 19:16:23.365 - locate - DEBUG - _initialize_components:420 - Initializing components
+2025-09-18 19:16:23.365 - locate - INFO - __init__:142 - ElectrodeManager initialized
+2025-09-18 19:16:23.365 - locate - INFO - __init__:211 - PositionManager initialized
+2025-09-18 19:16:23.365 - locate - INFO - __init__:292 - ChannelCalculator initialized with threshold: 40.0mm
+2025-09-18 19:16:23.365 - locate - DEBUG - _initialize_components:435 - Components initialized
+2025-09-18 19:16:23.365 - locate - DEBUG - _setup_ui:439 - Setting up UI
+2025-09-18 19:16:23.365 - ui_locate - INFO - setupUi:304 - Setting up UI components
+2025-09-18 19:16:23.366 - ui_locate - INFO - _create_electrode_buttons:349 - Creating default electrode buttons
+2025-09-18 19:16:23.371 - ui_locate - INFO - _create_electrode_buttons:374 - Successfully created 61 default electrode buttons
+2025-09-18 19:16:23.371 - ui_locate - INFO - _create_electrode_buttons:349 - Creating middle electrode buttons
+2025-09-18 19:16:23.378 - ui_locate - INFO - _create_electrode_buttons:374 - Successfully created 104 middle electrode buttons
+2025-09-18 19:16:23.378 - ui_locate - INFO - _create_electrode_buttons:349 - Creating center electrode buttons
+2025-09-18 19:16:23.381 - ui_locate - INFO - _create_electrode_buttons:374 - Successfully created 48 center electrode buttons
+2025-09-18 19:16:23.381 - ui_locate - INFO - setupUi:314 - UI setup completed successfully
+2025-09-18 19:16:23.381 - locate - DEBUG - _setup_ui:444 - UI setup completed
+2025-09-18 19:16:23.381 - locate - DEBUG - _connect_signals:452 - Connecting signals
+2025-09-18 19:16:23.381 - locate - DEBUG - _connect_electrode_signals:464 - Connecting electrode signals
+2025-09-18 19:16:23.382 - locate - INFO - _connect_electrode_signals:468 - Connecting signals for 213 electrodes
+2025-09-18 19:16:23.383 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: AF7
+2025-09-18 19:16:23.383 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: AF3
+2025-09-18 19:16:23.383 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: Fp1
+2025-09-18 19:16:23.383 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: F7
+2025-09-18 19:16:23.383 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: F5
+2025-09-18 19:16:23.383 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: F3
+2025-09-18 19:16:23.383 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: F1
+2025-09-18 19:16:23.383 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: FT7
+2025-09-18 19:16:23.384 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: FC5
+2025-09-18 19:16:23.384 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: FC3
+2025-09-18 19:16:23.384 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: FC1
+2025-09-18 19:16:23.384 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: T7
+2025-09-18 19:16:23.384 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: C5
+2025-09-18 19:16:23.384 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: C3
+2025-09-18 19:16:23.384 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: C1
+2025-09-18 19:16:23.384 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: TP7
+2025-09-18 19:16:23.385 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: CP5
+2025-09-18 19:16:23.385 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: CP3
+2025-09-18 19:16:23.385 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: CP1
+2025-09-18 19:16:23.385 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: P7
+2025-09-18 19:16:23.385 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: P5
+2025-09-18 19:16:23.385 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: P3
+2025-09-18 19:16:23.385 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: P1
+2025-09-18 19:16:23.385 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: PO7
+2025-09-18 19:16:23.385 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: PO3
+2025-09-18 19:16:23.385 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: O1
+2025-09-18 19:16:23.386 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: Fpz
+2025-09-18 19:16:23.386 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: AFz
+2025-09-18 19:16:23.386 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: Fz
+2025-09-18 19:16:23.386 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: FCz
+2025-09-18 19:16:23.386 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: Cz
+2025-09-18 19:16:23.386 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: CPz
+2025-09-18 19:16:23.386 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: Pz
+2025-09-18 19:16:23.386 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: POz
+2025-09-18 19:16:23.386 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: Oz
+2025-09-18 19:16:23.386 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: AF8
+2025-09-18 19:16:23.386 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: AF4
+2025-09-18 19:16:23.387 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: Fp2
+2025-09-18 19:16:23.387 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: F8
+2025-09-18 19:16:23.387 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: F6
+2025-09-18 19:16:23.387 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: F4
+2025-09-18 19:16:23.387 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: F2
+2025-09-18 19:16:23.387 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: FT8
+2025-09-18 19:16:23.387 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: FC6
+2025-09-18 19:16:23.387 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: FC4
+2025-09-18 19:16:23.387 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: FC2
+2025-09-18 19:16:23.387 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: T8
+2025-09-18 19:16:23.388 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: C6
+2025-09-18 19:16:23.388 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: C4
+2025-09-18 19:16:23.388 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: C2
+2025-09-18 19:16:23.388 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: TP8
+2025-09-18 19:16:23.388 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: CP6
+2025-09-18 19:16:23.388 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: CP4
+2025-09-18 19:16:23.388 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: CP2
+2025-09-18 19:16:23.388 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: P8
+2025-09-18 19:16:23.388 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: P6
+2025-09-18 19:16:23.389 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: P4
+2025-09-18 19:16:23.389 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: P2
+2025-09-18 19:16:23.390 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: PO8
+2025-09-18 19:16:23.390 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: PO4
+2025-09-18 19:16:23.390 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: O2
+2025-09-18 19:16:23.390 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: Fp1_Fpz
+2025-09-18 19:16:23.390 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: Fpz_Fp2
+2025-09-18 19:16:23.390 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: AF7_AF3
+2025-09-18 19:16:23.390 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: AF3_AFz
+2025-09-18 19:16:23.390 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: AFz_AF4
+2025-09-18 19:16:23.390 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: AF4_AF8
+2025-09-18 19:16:23.390 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: F7_F5
+2025-09-18 19:16:23.390 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: F5_F3
+2025-09-18 19:16:23.391 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: F3_F1
+2025-09-18 19:16:23.391 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: F1_Fz
+2025-09-18 19:16:23.391 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: Fz_F2
+2025-09-18 19:16:23.391 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: F2_F4
+2025-09-18 19:16:23.391 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: F4_F6
+2025-09-18 19:16:23.391 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: F6_F8
+2025-09-18 19:16:23.391 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: FT7_FC5
+2025-09-18 19:16:23.391 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: FC5_FC3
+2025-09-18 19:16:23.391 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: FC3_FC1
+2025-09-18 19:16:23.391 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: FC1_FCz
+2025-09-18 19:16:23.391 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: FCz_FC2
+2025-09-18 19:16:23.391 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: FC2_FC4
+2025-09-18 19:16:23.391 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: FC4_FC6
+2025-09-18 19:16:23.391 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: FC6_FT8
+2025-09-18 19:16:23.391 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: T7_C5
+2025-09-18 19:16:23.391 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: C5_C3
+2025-09-18 19:16:23.391 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: C3_C1
+2025-09-18 19:16:23.392 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: C1_Cz
+2025-09-18 19:16:23.392 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: Cz_C2
+2025-09-18 19:16:23.392 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: C2_C4
+2025-09-18 19:16:23.392 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: C4_C6
+2025-09-18 19:16:23.392 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: C6_T8
+2025-09-18 19:16:23.392 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: TP7_CP5
+2025-09-18 19:16:23.392 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: CP5_CP3
+2025-09-18 19:16:23.392 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: CP3_CP1
+2025-09-18 19:16:23.392 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: CP1_CPz
+2025-09-18 19:16:23.392 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: CPz_CP2
+2025-09-18 19:16:23.392 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: CP2_CP4
+2025-09-18 19:16:23.392 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: CP4_CP6
+2025-09-18 19:16:23.392 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: CP6_TP8
+2025-09-18 19:16:23.392 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: P7_P5
+2025-09-18 19:16:23.393 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: P5_P3
+2025-09-18 19:16:23.393 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: P3_P1
+2025-09-18 19:16:23.393 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: P1_Pz
+2025-09-18 19:16:23.393 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: Pz_P2
+2025-09-18 19:16:23.393 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: P2_P4
+2025-09-18 19:16:23.393 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: P4_P6
+2025-09-18 19:16:23.393 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: P6_P8
+2025-09-18 19:16:23.393 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: PO7_PO3
+2025-09-18 19:16:23.393 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: PO3_POz
+2025-09-18 19:16:23.393 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: POz_PO4
+2025-09-18 19:16:23.393 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: PO4_PO8
+2025-09-18 19:16:23.393 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: O1_Oz
+2025-09-18 19:16:23.393 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: Oz_O2
+2025-09-18 19:16:23.394 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: AF7_F7
+2025-09-18 19:16:23.394 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: F7_FT7
+2025-09-18 19:16:23.394 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: FT7_T7
+2025-09-18 19:16:23.394 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: T7_TP7
+2025-09-18 19:16:23.394 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: TP7_P7
+2025-09-18 19:16:23.394 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: P7_PO7
+2025-09-18 19:16:23.394 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: F5_FC5
+2025-09-18 19:16:23.394 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: FC5_C5
+2025-09-18 19:16:23.394 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: C5_CP5
+2025-09-18 19:16:23.394 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: CP5_P5
+2025-09-18 19:16:23.394 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: F3_FC3
+2025-09-18 19:16:23.394 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: FC3_C3
+2025-09-18 19:16:23.394 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: C3_CP3
+2025-09-18 19:16:23.394 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: CP3_P3
+2025-09-18 19:16:23.395 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: Fp1_AF3
+2025-09-18 19:16:23.395 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: AF3_F1
+2025-09-18 19:16:23.395 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: F1_FC1
+2025-09-18 19:16:23.395 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: FC1_C1
+2025-09-18 19:16:23.395 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: C1_CP1
+2025-09-18 19:16:23.395 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: CP1_P1
+2025-09-18 19:16:23.395 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: P1_PO3
+2025-09-18 19:16:23.395 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: PO3_O1
+2025-09-18 19:16:23.395 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: Fpz_AFz
+2025-09-18 19:16:23.395 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: AFz_Fz
+2025-09-18 19:16:23.395 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: Fz_FCz
+2025-09-18 19:16:23.395 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: FCz_Cz
+2025-09-18 19:16:23.395 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: Cz_CPz
+2025-09-18 19:16:23.395 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: CPz_Pz
+2025-09-18 19:16:23.396 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: Pz_POz
+2025-09-18 19:16:23.396 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: POz_Oz
+2025-09-18 19:16:23.396 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: Fp2_AF4
+2025-09-18 19:16:23.396 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: AF4_F2
+2025-09-18 19:16:23.396 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: F2_FC2
+2025-09-18 19:16:23.396 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: FC2_C2
+2025-09-18 19:16:23.396 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: C2_CP2
+2025-09-18 19:16:23.396 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: CP2_P2
+2025-09-18 19:16:23.396 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: P2_PO4
+2025-09-18 19:16:23.396 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: PO4_O2
+2025-09-18 19:16:23.396 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: F4_FC4
+2025-09-18 19:16:23.396 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: FC4_C4
+2025-09-18 19:16:23.396 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: C4_CP4
+2025-09-18 19:16:23.396 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: CP4_P4
+2025-09-18 19:16:23.396 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: F6_FC6
+2025-09-18 19:16:23.396 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: FC6_C6
+2025-09-18 19:16:23.397 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: C6_CP6
+2025-09-18 19:16:23.397 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: CP6_P6
+2025-09-18 19:16:23.397 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: AF8_F8
+2025-09-18 19:16:23.397 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: F8_FT8
+2025-09-18 19:16:23.397 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: FT8_T8
+2025-09-18 19:16:23.397 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: T8_TP8
+2025-09-18 19:16:23.397 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: TP8_P8
+2025-09-18 19:16:23.397 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: P8_PO8
+2025-09-18 19:16:23.397 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: F7_FT7_F5_FC5
+2025-09-18 19:16:23.397 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: FT7_T7_FC5_C5
+2025-09-18 19:16:23.397 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: T7_TP7_C5_CP5
+2025-09-18 19:16:23.397 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: TP7_P7_CP5_P5
+2025-09-18 19:16:23.397 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: F5_FC5_F3_FC3
+2025-09-18 19:16:23.397 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: FC5_C5_FC3_C3
+2025-09-18 19:16:23.398 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: C5_CP5_C3_CP3
+2025-09-18 19:16:23.398 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: CP5_P5_CP3_P3
+2025-09-18 19:16:23.398 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: F3_FC3_F1_FC1
+2025-09-18 19:16:23.398 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: FC3_C3_FC1_C1
+2025-09-18 19:16:23.398 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: C3_CP3_C1_CP1
+2025-09-18 19:16:23.398 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: CP3_P3_CP1_P1
+2025-09-18 19:16:23.398 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: F1_FC1_Fz_FCz
+2025-09-18 19:16:23.398 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: FC1_C1_FCz_Cz
+2025-09-18 19:16:23.398 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: C1_CP1_Cz_CPz
+2025-09-18 19:16:23.399 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: CP1_P1_CPz_Pz
+2025-09-18 19:16:23.399 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: Fz_FCz_F2_FC2
+2025-09-18 19:16:23.399 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: FCz_Cz_FC2_C2
+2025-09-18 19:16:23.399 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: Cz_CPz_C2_CP2
+2025-09-18 19:16:23.399 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: CPz_Pz_CP2_P2
+2025-09-18 19:16:23.399 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: F2_FC2_F4_FC4
+2025-09-18 19:16:23.399 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: FC2_C2_FC4_C4
+2025-09-18 19:16:23.399 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: C2_CP2_C4_CP4
+2025-09-18 19:16:23.399 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: CP2_P2_CP4_P4
+2025-09-18 19:16:23.399 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: F4_FC4_F6_FC6
+2025-09-18 19:16:23.399 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: FC4_C4_FC6_C6
+2025-09-18 19:16:23.400 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: C4_CP4_C6_CP6
+2025-09-18 19:16:23.400 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: CP4_P4_CP6_P6
+2025-09-18 19:16:23.400 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: F6_FC6_F8_FT8
+2025-09-18 19:16:23.400 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: FC6_C6_FT8_T8
+2025-09-18 19:16:23.400 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: C6_CP6_T8_TP8
+2025-09-18 19:16:23.400 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: CP6_P6_TP8_P8
+2025-09-18 19:16:23.400 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: Fp1_Fpz_AF3_AFz
+2025-09-18 19:16:23.400 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: Fpz_Fp2_AFz_AF4
+2025-09-18 19:16:23.400 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: O1_Oz_PO3_POz
+2025-09-18 19:16:23.400 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: Oz_O2_POz_PO4
+2025-09-18 19:16:23.400 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: AF3_AFz_F1_Fz
+2025-09-18 19:16:23.400 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: AFz_AF4_Fz_F2
+2025-09-18 19:16:23.400 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: P1_Pz_PO3_POz
+2025-09-18 19:16:23.401 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: Pz_P2_POz_PO4
+2025-09-18 19:16:23.401 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: AF7_AF3_F7_F5
+2025-09-18 19:16:23.401 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: AF4_AF8_F6_F8
+2025-09-18 19:16:23.401 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: P7_P5_PO7_PO3
+2025-09-18 19:16:23.401 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: P6_P8_PO4_PO8
+2025-09-18 19:16:23.401 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: AF7_AF3_F5_F3
+2025-09-18 19:16:23.401 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: AF4_AF8_F4_F6
+2025-09-18 19:16:23.401 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: P5_P3_PO3_PO7
+2025-09-18 19:16:23.401 - locate - DEBUG - _connect_electrode_signals:491 - Connected signals for electrode: P4_P6_PO4_PO8
+2025-09-18 19:16:23.401 - locate - INFO - _connect_electrode_signals:497 - Signal connection complete: 213 success, 0 failed
+2025-09-18 19:16:23.401 - locate - DEBUG - _connect_signals:456 - All signals connected successfully
+2025-09-18 19:16:23.401 - locate - INFO - __init__:412 - Locate application initialized successfully
+2025-09-18 19:16:23.456 - __main__ - DEBUG - _add_brain_configuration_tab:455 - Brain configuration tab created successfully
+2025-09-18 19:16:23.457 - __main__ - DEBUG - _customize_ui_for_sensors:407 - UI customization completed
+2025-09-18 19:16:23.457 - __main__ - INFO - _initialize_ui_values:546 - UI values initialization completed
+2025-09-18 19:16:23.457 - __main__ - INFO - _initialize_configuration:326 - Configuration initialization completed
+2025-09-18 19:16:23.457 - __main__ - DEBUG - _setup_connections:348 - Signal connections established
+2025-09-18 19:16:23.457 - __main__ - INFO - __init__:291 - ConfigurationManager initialization completed successfully
+2025-09-18 19:16:23.709 - __main__ - INFO - main:1529 - Configuration Manager started successfully with sensors: FNIRS
+2025-09-18 19:16:23.710 - __main__ - INFO - main:1531 - Initial configuration: {'enabled_sensors': ['fnirs'], 'sampling_rates': {'fnirs': 10}, 'total_channels': {'fnirs': 0}, 'channel_counts': {'fnirs_sources': 16, 'fnirs_detectors': 16}, 'enabled_channels': {'fnirs': {}, 'fnirssource': [], 'fnirsdetect': []}}
+2025-09-18 19:16:23.744 - locate - DEBUG - _get_all_electrode_positions:602 - Getting all electrode positions
+2025-09-18 19:16:23.745 - locate - DEBUG - _get_all_electrode_positions:620 - Retrieved 213 total electrode positions
+2025-09-18 19:16:25.180 - __main__ - INFO - main:1535 - Application exited with code: 0
+2025-09-18 19:16:30.811 - locate - INFO - setup_logging:37 - Logging initialized with level: DEBUG
+2025-09-18 19:16:30.813 - config - INFO - <module>:47 - Successfully imported locate module
+2025-09-18 19:16:30.893 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-18 19:16:30.894 - network - INFO - _setup_network:119 - Network ready: 192.168.115.9:1227 -> 192.168.115.255:2227
+2025-09-18 19:16:30.894 - __main__ - INFO - initialize_network:96 - Network module initialized successfully
+2025-09-18 19:16:31.290 - __main__ - INFO - initialize_user_widget:115 - User widget integrated into home tab successfully
+2025-09-18 19:16:31.291 - __main__ - DEBUG - on_tab_changed:181 - Tab changed to: configuration (index: 1)
+2025-09-18 19:16:31.291 - __main__ - DEBUG - restore_window_state:771 - Window state restored
+2025-09-18 19:16:31.291 - __main__ - INFO - __init__:89 - MainWindow initialized successfully with UI structure from XML
+2025-09-18 19:16:31.578 - __main__ - INFO - main:859 - Application started successfully with XML-based UI structure
+2025-09-18 19:16:33.248 - __main__ - DEBUG - on_tab_changed:181 - Tab changed to: home (index: 0)
+2025-09-18 19:16:36.592 - network - DEBUG - _send_packet:433 - Command CONNECT:(0, 0, 0)_CONNECT sent to [0, 0, 0], waiting for acknowledgment
+2025-09-18 19:16:36.592 - network - INFO - sendConnect:513 - Connection broadcast sent
+2025-09-18 19:16:36.716 - network - DEBUG - _process_packet:239 - Received: cmd=0xCONNECT from ::ffff:192.168.115.253
+2025-09-18 19:16:36.716 - network - INFO - _handle_connect:315 - Device connected: [164, 52, 200] at 192.168.115.253
+2025-09-18 19:16:36.716 - network - INFO - _handle_connect:319 - Single device connected, commands will target this device
+2025-09-18 19:16:36.716 - __main__ - INFO - init_sensor:550 - Sensor initialized with 1 types: ['fNIRS']
+2025-09-18 19:16:36.718 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 19:16:36.718 - __main__ - DEBUG - query_battery:449 - Battery query sent
+2025-09-18 19:16:36.718 - __main__ - DEBUG - start_battery_monitoring:434 - Battery monitoring started
+2025-09-18 19:16:36.718 - __main__ - INFO - on_device_connected:347 - Device connected successfully: ID=[164, 52, 200], Type=4
+2025-09-18 19:16:36.718 - network - INFO - _acknowledge_pending_command:287 - Command CONNECT acknowledged by device [164, 52, 200]
+2025-09-18 19:16:36.718 - network - DEBUG - _acknowledge_pending_command:305 - All commands acknowledged, stopping retry timer
+2025-09-18 19:16:44.853 - user - INFO - getNameInitials:92 - Generated initials for : _0
+2025-09-18 19:16:44.853 - __main__ - DEBUG - on_patient_changed:647 - Patient information changed, UI state updated
+2025-09-18 19:16:45.837 - __main__ - DEBUG - on_tab_changed:181 - Tab changed to: configuration (index: 1)
+2025-09-18 19:16:46.717 - network - INFO - sendBatteryQuery:541 - Battery query sent to all devices
+2025-09-18 19:16:46.717 - __main__ - DEBUG - query_battery:449 - Battery query sent

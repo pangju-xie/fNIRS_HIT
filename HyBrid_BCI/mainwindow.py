@@ -121,7 +121,7 @@ class MainWindow(QMainWindow):
             placeholder.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
             placeholder.setStyleSheet("QLabel { color: #f44336; font-style: italic; }")
             self.ui.homeLayout.addWidget(placeholder)
-    
+
     def setup_timers(self):
         """Setup all timers with proper configuration"""
         # Connection timeout timer
@@ -619,6 +619,8 @@ class MainWindow(QMainWindow):
             has_patient = (hasattr(self, 'user_widget') and 
                           hasattr(self.user_widget, 'current_patient') and
                           getattr(self.user_widget.current_patient, 'initials', '') != '')
+            print("cdiu")
+            print(getattr(self.user_widget.current_patient, 'initials', ''))
             
             # Home tab is always enabled
             self.ui.tabWidget.setTabEnabled(0, True)

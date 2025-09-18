@@ -220,6 +220,7 @@ class CSVManager:
 class UserInfoManager(QtWidgets.QWidget):
     """Main application class for patient information management"""
     onUserSet = QtCore.pyqtSignal(str)  # Signal emitted when a user is set with initials
+    patientChanged = QtCore.pyqtSignal()
     
     def __init__(self, data_directory: str = "./用户信息"):
         super().__init__()
@@ -498,6 +499,7 @@ class UserInfoManager(QtWidgets.QWidget):
             
             # offer a file name to save data
             self.current_patient.getNameInitials()
+            self.patientChanged.emit()  
         
         except Exception as e:
             QtWidgets.QMessageBox.critical(
