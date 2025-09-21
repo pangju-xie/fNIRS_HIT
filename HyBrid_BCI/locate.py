@@ -180,7 +180,8 @@ class ElectrodeManager:
         """Get electrode state safely."""
         state = self.states.get(name)
         if state:
-            logger.debug(f"Retrieved electrode state for: {name}")
+            # logger.debug(f"Retrieved electrode state for: {name}")
+            pass
         else:
             logger.debug(f"No state found for electrode: {name}")
         return state
@@ -599,7 +600,7 @@ class Locate(QtWidgets.QWidget):
     
     def _get_all_electrode_positions(self) -> Dict[str, Tuple[int, int]]:
         """Get all electrode positions with error handling."""
-        logger.debug("Getting all electrode positions")
+        # logger.debug("Getting all electrode positions")
         
         try:
             # Get all position types for comprehensive coverage
@@ -617,7 +618,7 @@ class Locate(QtWidgets.QWidget):
             if hasattr(self.ui, '_get_center_electrode_positions'):
                 positions.update(self.ui._get_center_electrode_positions())
                 
-            logger.debug(f"Retrieved {len(positions)} total electrode positions")
+            # logger.debug(f"Retrieved {len(positions)} total electrode positions")
             return positions
             
         except Exception as e:
@@ -653,7 +654,7 @@ class Locate(QtWidgets.QWidget):
             
             if hasattr(self.ui, '_get_electrode_3d_positions'):
                 positions_3d = self.ui._get_electrode_3d_positions()
-                logger.debug(f"Retrieved {len(positions_3d)} 3D positions")
+                # logger.debug(f"Retrieved {len(positions_3d)} 3D positions")
             else:
                 logger.warning("UI does not have _get_electrode_3d_positions method")
             
@@ -951,7 +952,8 @@ class Locate(QtWidgets.QWidget):
         """Get electrode state."""
         state = self.electrode_manager.get_electrode(electrode_name)
         if state:
-            logger.debug(f"Retrieved state for electrode: {electrode_name}")
+            # logger.debug(f"Retrieved state for electrode: {electrode_name}")
+            pass
         else:
             logger.debug(f"No state found for electrode: {electrode_name}")
         return state

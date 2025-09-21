@@ -267,6 +267,8 @@ class ConfigurationManager(QWidget, Ui_ConfigForm):
     OnSampleRateSet = pyqtSignal(int, int)
     OnChannelConfigSet = pyqtSignal(int, list)
     
+    OnConfigApplied = pyqtSignal(dict)
+
     def __init__(self, sensor_types: Optional[int] = None, parent=None):
         super().__init__(parent)
         
@@ -615,6 +617,8 @@ class ConfigurationManager(QWidget, Ui_ConfigForm):
     def apply_channel_config(self):
         """Apply channel configuration"""
         logger.info("Apply channel config called")
+
+        self.OnConfigApplied.emit(self.get_sensor_summary())
         
         try:
             sample_rate_order = self._generate_sample_rate_order()

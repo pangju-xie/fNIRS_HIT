@@ -13,6 +13,7 @@ import network
 import user
 import fNIRS
 import config
+import qualify
 
 os.environ['NUMEXPR_MAX_THREADS'] = '16'  # Limit numexpr threads to prevent oversubscription
 
@@ -81,10 +82,14 @@ class MainWindow(QMainWindow):
         # Initialize components in proper order
         self.initialize_network()
         self.initialize_user_widget()
+        self.initialize_config_widget()
+        self.initialize_qualify_widget()
         self.setup_ui_connections()
         self.setup_timers()
         self.update_ui_state()
         self.restore_window_state()
+
+        self.ui.tabWidget.setCurrentIndex(0)
         
         logger.info("MainWindow initialized successfully with UI structure from XML")
     
@@ -121,6 +126,43 @@ class MainWindow(QMainWindow):
             placeholder.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
             placeholder.setStyleSheet("QLabel { color: #f44336; font-style: italic; }")
             self.ui.homeLayout.addWidget(placeholder)
+
+    def initialize_config_widget(self):
+        """Initialize and integrate config widget into home tab"""
+        try:
+            self.config_widget = config.ConfigurationManager()
+            
+            self.ui.configLayout.addWidget(self.config_widget)
+
+            # if hasattr(self.config_widget, 'OnConfigApplied'):
+            #     self.config_widget.OnConfigApplied.connect(self.qualify_widget.initialize_channels)
+            
+            logger.info("COnfig widget integrated into home tab successfully")
+                
+        except Exception as e:
+            logger.error(f"Failed to initialize config widget: {e}")
+            # Add placeholder to home tab if user widget fails
+            placeholder = QtWidgets.QLabel("Config widget could not be loaded")
+            placeholder.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+            placeholder.setStyleSheet("QLabel { color: #f44336; font-style: italic; }")
+            self.ui.configLayout.addWidget(placeholder)
+
+    def initialize_qualify_widget(self):
+        """Initialize and integrate config widget into home tab"""
+        try:
+            self.qualify_widget = qualify.QualifyApp()
+            
+            self.ui.testLayout.addWidget(self.qualify_widget)
+            
+            logger.info("Qualify widget integrated into home tab successfully")
+                
+        except Exception as e:
+            logger.error(f"Failed to initialize config widget: {e}")
+            # Add placeholder to home tab if qyalify widget fails
+            placeholder = QtWidgets.QLabel("Qualify widget could not be loaded")
+            placeholder.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+            placeholder.setStyleSheet("QLabel { color: #f44336; font-style: italic; }")
+            self.ui.testLayout.addWidget(placeholder)
 
     def setup_timers(self):
         """Setup all timers with proper configuration"""
@@ -168,7 +210,10 @@ class MainWindow(QMainWindow):
         self.deviceConnectionChanged.connect(self.on_device_connection_changed)
         self.workflowStateChanged.connect(self.on_workflow_state_changed)
         self.batteryLevelChanged.connect(self.update_battery_display)
-    
+
+        # Connect module signals
+        self.config_widget.OnConfigApplied.connect(self.qualify_widget.initialize_channels)
+
     def on_tab_changed(self, index):
         """Handle tab change events and workflow progression"""
         if self.is_shutting_down:
@@ -619,7 +664,6 @@ class MainWindow(QMainWindow):
             has_patient = (hasattr(self, 'user_widget') and 
                           hasattr(self.user_widget, 'current_patient') and
                           getattr(self.user_widget.current_patient, 'initials', '') != '')
-            print("cdiu")
             print(getattr(self.user_widget.current_patient, 'initials', ''))
             
             # Home tab is always enabled

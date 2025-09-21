@@ -176,11 +176,17 @@ class QualifyApp(QWidget):
         # Setup UI connections
         self.setup_connections()
         
-        # Initialize channels
-        # 测试用通道
-        node_pairs = {'fnirs': {'S1-D1': 'FC1-C1', 'S1-D2': 'FC1-FC3', 'S2-D1': 'CP1-C1', 'S2-D3': 'CP1-CP3', 'S3-D1': 'C3-C1', 'S3-D2': 'C3-FC3', 'S3-D3': 'C3-CP3', 'S3-D4': 'C3-C5', 'S4-D2': 'FC5-FC3', 'S4-D4': 'FC5-C5', 'S5-D5': 'FC2-C2', 'S5-D6': 'FC2-FC4', 'S6-D5': 'CP2-C2', 'S6-D7': 'CP2-CP4', 'S7-D5': 'C4-C2', 'S7-D6': 'C4-FC4', 'S7-D7': 'C4-CP4', 'S7-D8': 'C4-C6', 'S8-D6': 'FC6-FC4', 'S8-D8': 'FC6-C6', 'S9-D3': 'CP5-CP3', 'S9-D4': 'CP5-C5'}, 'fnirssource': ['FC1', 'CP1', 'C3', 'FC5', 'FC2', 'CP2', 'C4', 'FC6', 'CP5'], 'fnirsdetect': ['C1', 'FC3', 'CP3', 'C5', 'C2', 'FC4', 'CP4', 'C6']}
+        # # Initialize channels
+        # # 测试用通道
+        # node_config =   {'enabled_sensors': ['fnirs'], 
+        # 'sampling_rates': {'fnirs': 10}, 
+        # 'total_channels': {'fnirs': 2}, 
+        # 'channel_counts': {'fnirs_sources': 16, 'fnirs_detectors': 16}, 
+        # 'enabled_channels': {'fnirs': {'S1-D1': 'F5-F3', 'S1-D2': 'F5-FC5'}, 
+        # 'fnirssource': ['F5'], 
+        # 'fnirsdetect': ['F3', 'FC5']}}
 
-        self.initialize_channels(node_pairs)
+        # self.initialize_channels(node_config)
 
     def _add_brain_locator_widget(self):
         """Add brain electrode locator widget"""
@@ -199,15 +205,15 @@ class QualifyApp(QWidget):
         self.ui.completeButton.clicked.connect(self.complete_assessment)
         self.ui.methodComboBox.currentIndexChanged.connect(self.change_assessment_method)
     
-    def initialize_channels(self, node_pairs):
+    def initialize_channels(self, node_config):
         """Initialize channel data and widgets"""
         # Clear existing channels
         self.channels.clear()
         self.clear_channel_widgets()
         
         # Create channel data
-        self.brain_locate.load_pairs_info(node_pairs)
-        for key, value in node_pairs['fnirs'].items():
+        self.brain_locate.load_pairs_info(node_config['enabled_channels'])
+        for key, value in node_config['enabled_channels']['fnirs'].items():
             # "S1-D1": "FC1-C1"
             sensor_id = key.split('-')[0].strip('S')
             detector_id = key.split('-')[1].strip('D')

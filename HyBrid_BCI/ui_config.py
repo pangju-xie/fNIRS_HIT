@@ -121,7 +121,7 @@ class Ui_ConfigForm(object):
         self.controlButtonsLayout.addWidget(self.resetConfigBtn)
 
         # Control spacer
-        controlSpacer = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        controlSpacer = QtWidgets.QSpacerItem(0, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.controlButtonsLayout.addItem(controlSpacer)
 
         self.generateConfigBtn = QtWidgets.QPushButton(self.controlButtonsWidget)
