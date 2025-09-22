@@ -2,8 +2,10 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 import logging
-from typing import Dict, Tuple, List, Callable
+from typing import Dict, Tuple, List, Optional
 from enum import Enum
+import math
+from dataclasses import dataclass
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +25,33 @@ class ElectrodeSize(Enum):
     NORMAL = "normal"
     SMALL = "small"
 
-
+@dataclass
+class Position3D:
+    """3D position with validation."""
+    x: float
+    y: float
+    z: float
+    
+    def distance_to(self, other: 'Position3D') -> float:
+        """Calculate 3D distance to another position."""
+        distance = math.sqrt(
+            (self.x - other.x)**2 + 
+            (self.y - other.y)**2 + 
+            (self.z - other.z)**2
+        )
+        logger.debug(f"3D Distance from {self} to {other}: {distance:.2f}")
+        return distance
+    
+    def to_tuple(self) -> Tuple[float, float, float]:
+        """Convert to tuple format."""
+        return (self.x, self.y, self.z)
+    
+    @classmethod
+    def from_tuple(cls, position: Tuple[float, float, float]) -> 'Position3D':
+        """Create Position3D from tuple."""
+        return cls(position[0], position[1], position[2])
+    
+    
 class StyleConfig:
     """样式配置类，统一管理所有样式"""
     
@@ -287,6 +315,120 @@ class ElectrodeCalculator:
         return center_positions
 
 
+class PositionManager:
+    """Manages position calculations and conversions."""
+    
+    def __init__(self):
+        self.electrode_positions = ElectrodePositions()
+        self._base_positions = self.electrode_positions.get_base_positions()
+        self._base_3d_positions = self.electrode_positions.get_3d_positions()
+        
+        #计算所有类型的电极位置
+        node_names = list(self._base_positions.keys())
+        calculator = ElectrodeCalculator(self._base_positions, node_names)
+        
+        self._mid_positions = calculator.calculate_mid_positions()
+        self._center_positions = calculator.calculate_center_positions()
+        
+        #合并所有2D位置
+        self.all_2d_positions = {}
+        self.all_2d_positions.update(self._base_positions)
+        self.all_2d_positions.update(self._mid_positions)
+        self.all_2d_positions.update(self._center_positions)
+        
+        logger.info(f"PositionManager initialized with {len(self.all_2d_positions)} 2D positions "
+                   f"and {len(self._base_3d_positions)} 3D positions")
+    
+    def get_2d_positio(self, node_name: str) -> Optional[Tuple[int,int]]:
+        position = self.all_2d_positions.get(node_name)
+        if position:
+            logger.debug(f"2D Position for {node_name}: {position}")
+        else:
+            logger.warning(f"No 2D position found for node: {node_name}")
+        return position
+    
+    def get_3d_position(self, node: str) -> Optional[Position3D]:
+        """Get 3D position with composite node handling."""
+        logger.debug(f"Getting 3D position for node: {node}")
+        
+        try:
+            if '_' in node:
+                return self._get_composite_3d_position(node)
+            elif node in self._base_3d_positions:
+                pos = self._base_3d_positions[node]
+                return Position3D.from_tuple(pos)
+            else:
+                logger.warning(f"Node {node} not found in 3D positions")
+                return None
+                
+        except Exception as e:
+            logger.error(f"Error getting 3D position for {node}: {e}")
+            return None
+    
+    def _get_composite_3d_position(self, composite_node: str) -> Optional[Position3D]:
+        """Calculate average position for composite nodes."""
+        logger.debug(f"Calculating composite 3D position for: {composite_node}")
+        
+        components = composite_node.split('_')
+        valid_positions = []
+        
+        for component in components:
+            if component in self._base_3d_positions:
+                pos = self._base_3d_positions[component]
+                valid_positions.append(Position3D.from_tuple(pos))
+                logger.debug(f"Added component {component} position: {pos}")
+            else:
+                logger.warning(f"Component {component} not found in 3D positions")
+        
+        if not valid_positions:
+            logger.error(f"No valid positions found for composite node {composite_node}")
+            return None
+        
+        # Calculate average
+        avg_x = sum(pos.x for pos in valid_positions) / len(valid_positions)
+        avg_y = sum(pos.y for pos in valid_positions) / len(valid_positions)
+        avg_z = sum(pos.z for pos in valid_positions) / len(valid_positions)
+        
+        result = Position3D(avg_x, avg_y, avg_z)
+        logger.debug(f"Composite position for {composite_node}: {result}")
+        return result
+    
+    def calculate_3d_distance(self, node1: str, node2: str) -> float:
+        """Calculate 3D distance between two nodes with error handling."""
+        logger.debug(f"Calculating 3D distance between {node1} and {node2}")
+        
+        try:
+            pos1 = self.get_3d_position(node1)
+            pos2 = self.get_3d_position(node2)
+            
+            if pos1 is None or pos2 is None:
+                logger.warning(f"Could not get 3D positions for {node1} or {node2}")
+                return float('inf')
+            
+            distance = pos1.distance_to(pos2)
+            logger.debug(f"3D distance {node1}-{node2}: {distance:.2f}mm")
+            return distance
+            
+        except Exception as e:
+            logger.error(f"Error calculating 3D distance {node1}-{node2}: {e}")
+            return float('inf')
+
+    def get_all_electrode_names(self) -> List[str]:
+        """获取所有电极名称"""
+        return list(self.all_2d_positions.keys())
+    
+    def get_base_electrode_names(self) -> List[str]:
+        """获取基础电极名称"""
+        return list(self._base_positions.keys())
+    
+    def get_mid_electrode_names(self) -> List[str]:
+        """获取中间电极名称"""
+        return list(self._mid_positions.keys())
+    
+    def get_center_electrode_names(self) -> List[str]:
+        """获取中心电极名称"""
+        return list(self._center_positions.keys())
+
 class Ui_Locate(object):
     """UI class for EEG Electrode Interface with improved organization and consistency."""
     
@@ -297,7 +439,7 @@ class Ui_Locate(object):
     
     def __init__(self):
         self.dynamic_buttons = []
-        self.electrode_positions = ElectrodePositions()
+        self.position_manager = PositionManager()
         
     def setupUi(self, Form):
         """Setup the main UI components."""
@@ -334,9 +476,9 @@ class Ui_Locate(object):
     def _create_electrode_groups(self, Form):
         """Create all electrode groups."""
         electrode_configs = [
-            (self._get_electrode_positions(), ElectrodeType.DEFAULT, ElectrodeSize.NORMAL, 0, 0),
-            (self._get_mid_electrode_positions(), ElectrodeType.MIDDLE, ElectrodeSize.SMALL, 2, 2),
-            (self._get_center_electrode_positions(), ElectrodeType.CENTER, ElectrodeSize.SMALL, 2, 2),
+            (self.position_manager._base_positions, ElectrodeType.DEFAULT, ElectrodeSize.NORMAL, 0, 0),
+            (self.position_manager._mid_positions, ElectrodeType.MIDDLE, ElectrodeSize.SMALL, 2, 2),
+            (self.position_manager._center_positions, ElectrodeType.CENTER, ElectrodeSize.SMALL, 2, 2),
         ]
         
         for positions, electrode_type, size, offset_x, offset_y in electrode_configs:
@@ -373,28 +515,6 @@ class Ui_Locate(object):
         
         logger.info(f"Successfully created {created_count} {electrode_type.value} electrode buttons")
     
-    def _get_electrode_positions(self) -> Dict[str, Tuple[int, int]]:
-        """获取基础电极位置"""
-        return ElectrodePositions.get_base_positions()
-    
-    def _get_electrode_3d_positions(self) -> Dict[str, Tuple[int, int, int]]:
-        """获取3D电极位置"""
-        return ElectrodePositions.get_3d_positions()
-    
-    def _get_mid_electrode_positions(self) -> Dict[str, Tuple[int, int]]:
-        """获取中间电极位置"""
-        base_positions = self._get_electrode_positions()
-        node_names = self.get_default_electrode_names()
-        calculator = ElectrodeCalculator(base_positions, node_names)
-        return calculator.calculate_mid_positions()
-    
-    def _get_center_electrode_positions(self) -> Dict[str, Tuple[int, int]]:
-        """获取中心电极位置"""
-        base_positions = self._get_electrode_positions()
-        node_names = self.get_default_electrode_names()
-        calculator = ElectrodeCalculator(base_positions, node_names)
-        return calculator.calculate_center_positions()
-    
     def get_electrode_button(self, electrode_name: str) -> QtWidgets.QPushButton:
         """Get electrode button by name for easy access."""
         button = getattr(self, f"electrode_{electrode_name}", None)
@@ -404,15 +524,18 @@ class Ui_Locate(object):
     
     def get_default_electrode_names(self) -> List[str]:
         """Get list of all electrode names."""
-        return list(self._get_electrode_positions().keys())
+        return self.position_manager.get_base_electrode_names()
     
     def get_all_electrode_names(self) -> List[str]:
         """Get list of all electrode names."""
-        all_names = []
-        all_names.extend(self._get_electrode_positions().keys())
-        all_names.extend(self._get_mid_electrode_positions().keys())
-        all_names.extend(self._get_center_electrode_positions().keys())
-        return all_names
+        return self.position_manager.get_all_electrode_names()
+    
+    def get_position_manager(self) -> PositionManager:
+        """Get the position manager instance."""
+        if not hasattr(self, 'position_manager') or self.position_manager is None:
+            logger.warning("Position manager not initialized, creating new instance")
+            self.position_manager = PositionManager()
+        return self.position_manager
     
     def get_style_for_type(self, electrode_type: str, button_size: str = "normal") -> str:
         """Get appropriate style for electrode type and size."""

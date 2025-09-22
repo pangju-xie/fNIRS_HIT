@@ -1,0 +1,246 @@
+{
+  "enabled_sensor_types": [
+    "fnirs"
+  ],
+  "sampling_rates": {
+    "fnirs": 10
+  },
+  "channel_counts": {
+    "fnirs_sources": 8,
+    "fnirs_detectors": 8
+  },
+  "enabled_channels": {
+    "fnirs": {
+      "S1-D1": {
+        "node_pair": "FC3-C3",
+        "distance": 31.654383582688826
+      },
+      "S2-D2": {
+        "node_pair": "FC1-C1",
+        "distance": 33.74907406137241
+      },
+      "S2-D8": {
+        "node_pair": "FC1-FCz",
+        "distance": 33.74907406137241
+      },
+      "S3-D1": {
+        "node_pair": "CP3-C3",
+        "distance": 31.654383582688826
+      },
+      "S3-D3": {
+        "node_pair": "CP3-CP1",
+        "distance": 31.68595903550972
+      },
+      "S4-D4": {
+        "node_pair": "P3-P1",
+        "distance": 26.115129714401192
+      },
+      "S5-D2": {
+        "node_pair": "Cz-C1",
+        "distance": 34.713109915419565
+      },
+      "S5-D5": {
+        "node_pair": "Cz-CPz",
+        "distance": 34.713109915419565
+      },
+      "S5-D6": {
+        "node_pair": "Cz-C2",
+        "distance": 34.713109915419565
+      },
+      "S5-D8": {
+        "node_pair": "Cz-FCz",
+        "distance": 34.713109915419565
+      },
+      "S6-D5": {
+        "node_pair": "CP2-CPz",
+        "distance": 33.74907406137241
+      },
+      "S6-D6": {
+        "node_pair": "CP2-C2",
+        "distance": 33.74907406137241
+      },
+      "S6-D7": {
+        "node_pair": "CP2-CP4",
+        "distance": 31.68595903550972
+      },
+      "S7-D6": {
+        "node_pair": "C4-C2",
+        "distance": 35.22782990761707
+      },
+      "S7-D7": {
+        "node_pair": "C4-CP4",
+        "distance": 31.654383582688826
+      },
+      "S8-D6": {
+        "node_pair": "FC2-C2",
+        "distance": 33.74907406137241
+      },
+      "S8-D8": {
+        "node_pair": "FC2-FCz",
+        "distance": 33.74907406137241
+      }
+    },
+    "fnirssource": {
+      "1": {
+        "node_name": "FC3",
+        "position_3d": [
+          -59,
+          31,
+          56
+        ]
+      },
+      "2": {
+        "node_name": "FC1",
+        "position_3d": [
+          -33,
+          33,
+          74
+        ]
+      },
+      "3": {
+        "node_name": "CP3",
+        "position_3d": [
+          -59,
+          -31,
+          56
+        ]
+      },
+      "4": {
+        "node_name": "P3",
+        "position_3d": [
+          -48,
+          -59,
+          44
+        ]
+      },
+      "5": {
+        "node_name": "Cz",
+        "position_3d": [
+          0,
+          0,
+          88
+        ]
+      },
+      "6": {
+        "node_name": "CP2",
+        "position_3d": [
+          33,
+          -33,
+          74
+        ]
+      },
+      "7": {
+        "node_name": "C4",
+        "position_3d": [
+          63,
+          0,
+          61
+        ]
+      },
+      "8": {
+        "node_name": "FC2",
+        "position_3d": [
+          33,
+          33,
+          74
+        ]
+      }
+    },
+    "fnirsdetect": {
+      "1": {
+        "node_name": "C3",
+        "position_3d": [
+          -63,
+          0,
+          61
+        ]
+      },
+      "2": {
+        "node_name": "C1",
+        "position_3d": [
+          -34,
+          0,
+          81
+        ]
+      },
+      "3": {
+        "node_name": "CP1",
+        "position_3d": [
+          -33,
+          -33,
+          74
+        ]
+      },
+      "4": {
+        "node_name": "P1",
+        "position_3d": [
+          -25,
+          -62,
+          56
+        ]
+      },
+      "5": {
+        "node_name": "CPz",
+        "position_3d": [
+          0,
+          -34,
+          81
+        ]
+      },
+      "6": {
+        "node_name": "C2",
+        "position_3d": [
+          34,
+          0,
+          81
+        ]
+      },
+      "7": {
+        "node_name": "CP4",
+        "position_3d": [
+          59,
+          -31,
+          56
+        ]
+      },
+      "8": {
+        "node_name": "FCz",
+        "position_3d": [
+          0,
+          34,
+          81
+        ]
+      }
+    },
+    "eeg": {}
+  },
+  "sensor_configs": {
+    "fnirs": {
+      "color": [
+        "#E91E63",
+        "#1040ff"
+      ],
+      "prefix": [
+        "S",
+        "D"
+      ],
+      "max_channels": 0,
+      "min_channels": 0,
+      "channels_per_row": 8,
+      "max_sources": 32,
+      "max_detectors": 32,
+      "min_sources": 1,
+      "min_detectors": 1
+    }
+  },
+  "metadata": {
+    "total_channels": {
+      "fnirs": 17
+    },
+    "configuration_timestamp": "周三 9月 17 16:12:44 2025",
+    "enabled_sensors": [
+      "fnirs"
+    ],
+    "version": "2.0"
+  }
+}
