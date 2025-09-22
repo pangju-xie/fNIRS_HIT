@@ -47705,3 +47705,919 @@ S1-D1, S1-D2, S1-D4, S1-D5, S1-D6, S2-D1, S2-D2, S2-D3, S2-D4, S2-D5
 2025-09-22 20:52:16.840 - __main__ - INFO - _cleanup_components:1089 - Network closed successfully
 2025-09-22 20:52:16.840 - __main__ - INFO - shutdown_cleanup:1132 - Shutdown cleanup completed
 2025-09-22 20:52:16.840 - __main__ - INFO - closeEvent:1139 - Application closed successfully
+2025-09-22 21:18:28.736 - locate - INFO - setup_logging:36 - Logging initialized with level: INFO
+2025-09-22 21:18:28.803 - __main__ - INFO - _setup_responsive_ui:256 - 响应式UI设置完成
+2025-09-22 21:18:28.868 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-22 21:18:28.868 - network - INFO - _setup_network:119 - Network ready: 192.168.1.101:1227 -> 192.168.1.255:2227
+2025-09-22 21:18:28.868 - __main__ - INFO - _initialize_network:336 - 网络模块初始化成功
+2025-09-22 21:18:29.309 - __main__ - INFO - initialize_component:79 - user 组件初始化成功
+2025-09-22 21:18:29.310 - __main__ - INFO - _initialize_system:325 - 系统初始化完成
+2025-09-22 21:18:29.311 - __main__ - INFO - __init__:232 - 主窗口初始化完成
+2025-09-22 21:18:29.409 - __main__ - INFO - main:1167 - 应用程序启动成功 - 响应式模块化设计
+2025-09-22 21:18:59.559 - user - INFO - getNameInitials:92 - Generated initials for 谢发文: XFW_26
+2025-09-22 21:19:00.899 - network - INFO - sendConnect:507 - Connection broadcast sent
+2025-09-22 21:19:01.216 - network - INFO - _handle_connect:315 - Device connected: [164, 62, 20] at 192.168.1.100
+2025-09-22 21:19:01.216 - network - INFO - _handle_connect:319 - Single device connected, commands will target this device
+2025-09-22 21:19:01.216 - __main__ - INFO - _on_state_changed:436 - 状态变更: 0 -> 1
+2025-09-22 21:19:01.220 - __main__ - ERROR - _init_sensors:627 - 传感器初始化失败: 'Wavelength'
+2025-09-22 21:19:01.221 - config - INFO - __init__:229 - Initializing ConfigurationManager
+2025-09-22 21:19:01.221 - config - INFO - get_montage_directory:203 - Montage directory: E:\xfw\code\fnirs\HyBrid_BCI\montage
+2025-09-22 21:19:01.223 - ui_config - INFO - __init__:271 - UIManager initialized
+2025-09-22 21:19:01.223 - ui_config - INFO - setup_ui_for_sensors:275 - Setting up UI for enabled sensors
+2025-09-22 21:19:01.224 - locate - INFO - __init__:322 - Initializing Locate application
+2025-09-22 21:19:01.225 - ui_locate - INFO - __init__:339 - PositionManager initialized with 213 2D positions and 64 3D positions
+2025-09-22 21:19:01.225 - locate - INFO - __init__:133 - ElectrodeManager initialized
+2025-09-22 21:19:01.225 - locate - INFO - __init__:229 - ChannelCalculator initialized with threshold: 40.0mm
+2025-09-22 21:19:01.225 - ui_locate - INFO - setupUi:446 - Setting up UI components
+2025-09-22 21:19:01.226 - ui_locate - INFO - _create_electrode_buttons:491 - Creating default electrode buttons
+2025-09-22 21:19:01.230 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 61 default electrode buttons
+2025-09-22 21:19:01.230 - ui_locate - INFO - _create_electrode_buttons:491 - Creating middle electrode buttons
+2025-09-22 21:19:01.237 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 104 middle electrode buttons
+2025-09-22 21:19:01.237 - ui_locate - INFO - _create_electrode_buttons:491 - Creating center electrode buttons
+2025-09-22 21:19:01.241 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 48 center electrode buttons
+2025-09-22 21:19:01.241 - ui_locate - INFO - setupUi:456 - UI setup completed successfully
+2025-09-22 21:19:01.241 - locate - INFO - set_position_manager:138 - position manager set for ElectrondeManager
+2025-09-22 21:19:01.242 - locate - INFO - _connect_electrode_signals:394 - Connecting signals for 213 electrodes
+2025-09-22 21:19:01.246 - locate - INFO - _connect_electrode_signals:423 - Signal connection complete: 213 success, 0 failed
+2025-09-22 21:19:01.246 - locate - INFO - __init__:328 - Locate application initialized successfully
+2025-09-22 21:19:02.058 - config - INFO - __post_init__:88 - Initializing DeviceConfiguration with sensors: {'fnirs'}
+2025-09-22 21:19:02.059 - ui_config - INFO - initialize_ui_values:425 - UI values initialization completed
+2025-09-22 21:19:02.059 - config - INFO - _initialize_configuration:285 - Configuration initialization completed
+2025-09-22 21:19:02.059 - config - INFO - __init__:249 - ConfigurationManager initialization completed successfully
+2025-09-22 21:19:05.279 - __main__ - INFO - initialize_component:79 - config 组件初始化成功
+2025-09-22 21:19:05.279 - __main__ - INFO - on_device_connected:538 - 设备连接成功: ID=[164, 62, 20], Type=4
+2025-09-22 21:19:05.279 - network - INFO - _acknowledge_pending_command:287 - Command CONNECT acknowledged by device [164, 62, 20]
+2025-09-22 21:19:09.645 - __main__ - ERROR - on_tab_changed:842 - 处理标签页切换失败: 'ConfigurationManager' object has no attribute 'update_ui_state'
+2025-09-22 21:19:11.214 - network - INFO - sendBatteryQuery:535 - Battery query sent to all devices
+2025-09-22 21:19:11.457 - network - INFO - _handle_battery_query:351 - device battery level:100
+2025-09-22 21:19:11.619 - config - INFO - load_configuration:711 - Starting configuration load
+2025-09-22 21:19:14.073 - ui_config - INFO - apply_loaded_configuration:822 - Applying loaded configuration
+2025-09-22 21:19:14.073 - ui_config - INFO - _apply_loaded_enabled_channels:894 - Applying loaded enabled channels: ['fnirs', 'fnirssource', 'fnirsdetect', 'eeg']
+2025-09-22 21:19:14.074 - ui_config - INFO - _apply_loaded_enabled_channels:920 - Successfully applied loaded enabled channels to config and UI
+2025-09-22 21:19:14.074 - locate - INFO - load_pairs_info:651 - Loading pairs info: ['fnirs', 'fnirssource', 'fnirsdetect', 'eeg']
+2025-09-22 21:19:14.074 - locate - INFO - reset_all_electrodes:683 - Resetting all electrodes
+2025-09-22 21:19:14.972 - locate - INFO - clear_all:210 - Cleared 0 electrode states
+2025-09-22 21:19:14.972 - locate - INFO - reset_all_electrodes:712 - Reset complete: 213 regular electrodes, 0 dynamic buttons removed
+2025-09-22 21:19:14.973 - locate - INFO - load_pairs_info:657 - Processing fnirs: 17 pairs
+2025-09-22 21:19:14.973 - locate - INFO - load_pairs_info:657 - Processing fnirssource: 8 pairs
+2025-09-22 21:19:14.973 - locate - INFO - _load_electrodes:596 - Loading EEG electrodes
+2025-09-22 21:19:14.973 - locate - INFO - set_current_node_info:629 - Setting node info: type=Source, number=1, checked=True
+2025-09-22 21:19:14.973 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.SOURCE: 'Source'>, number=1, checked=True)
+2025-09-22 21:19:14.974 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: FC3
+2025-09-22 21:19:14.974 - locate - INFO - add_electrode:143 - Adding electrode: FC3, type=Source, number=1
+2025-09-22 21:19:14.974 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: FC3
+2025-09-22 21:19:14.980 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode FC3
+2025-09-22 21:19:14.980 - locate - INFO - set_current_node_info:629 - Setting node info: type=Source, number=2, checked=True
+2025-09-22 21:19:14.980 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.SOURCE: 'Source'>, number=2, checked=True)
+2025-09-22 21:19:14.980 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: FC1
+2025-09-22 21:19:14.980 - locate - INFO - add_electrode:143 - Adding electrode: FC1, type=Source, number=2
+2025-09-22 21:19:14.981 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: FC1
+2025-09-22 21:19:14.986 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode FC1
+2025-09-22 21:19:14.986 - locate - INFO - set_current_node_info:629 - Setting node info: type=Source, number=3, checked=True
+2025-09-22 21:19:14.986 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.SOURCE: 'Source'>, number=3, checked=True)
+2025-09-22 21:19:14.986 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: CP3
+2025-09-22 21:19:14.986 - locate - INFO - add_electrode:143 - Adding electrode: CP3, type=Source, number=3
+2025-09-22 21:19:14.986 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: CP3
+2025-09-22 21:19:14.991 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode CP3
+2025-09-22 21:19:14.991 - locate - INFO - set_current_node_info:629 - Setting node info: type=Source, number=4, checked=True
+2025-09-22 21:19:14.992 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.SOURCE: 'Source'>, number=4, checked=True)
+2025-09-22 21:19:14.992 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: P3
+2025-09-22 21:19:14.992 - locate - INFO - add_electrode:143 - Adding electrode: P3, type=Source, number=4
+2025-09-22 21:19:14.992 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: P3
+2025-09-22 21:19:14.998 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode P3
+2025-09-22 21:19:14.998 - locate - INFO - set_current_node_info:629 - Setting node info: type=Source, number=5, checked=True
+2025-09-22 21:19:14.998 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.SOURCE: 'Source'>, number=5, checked=True)
+2025-09-22 21:19:14.998 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: Cz
+2025-09-22 21:19:14.999 - locate - INFO - add_electrode:143 - Adding electrode: Cz, type=Source, number=5
+2025-09-22 21:19:14.999 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: Cz
+2025-09-22 21:19:15.004 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode Cz
+2025-09-22 21:19:15.004 - locate - INFO - set_current_node_info:629 - Setting node info: type=Source, number=6, checked=True
+2025-09-22 21:19:15.004 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.SOURCE: 'Source'>, number=6, checked=True)
+2025-09-22 21:19:15.004 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: CP2
+2025-09-22 21:19:15.005 - locate - INFO - add_electrode:143 - Adding electrode: CP2, type=Source, number=6
+2025-09-22 21:19:15.005 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: CP2
+2025-09-22 21:19:15.009 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode CP2
+2025-09-22 21:19:15.010 - locate - INFO - set_current_node_info:629 - Setting node info: type=Source, number=7, checked=True
+2025-09-22 21:19:15.010 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.SOURCE: 'Source'>, number=7, checked=True)
+2025-09-22 21:19:15.010 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: C4
+2025-09-22 21:19:15.011 - locate - INFO - add_electrode:143 - Adding electrode: C4, type=Source, number=7
+2025-09-22 21:19:15.011 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: C4
+2025-09-22 21:19:15.015 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode C4
+2025-09-22 21:19:15.015 - locate - INFO - set_current_node_info:629 - Setting node info: type=Source, number=8, checked=True
+2025-09-22 21:19:15.015 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.SOURCE: 'Source'>, number=8, checked=True)
+2025-09-22 21:19:15.016 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: FC2
+2025-09-22 21:19:15.016 - locate - INFO - add_electrode:143 - Adding electrode: FC2, type=Source, number=8
+2025-09-22 21:19:15.016 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: FC2
+2025-09-22 21:19:15.021 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode FC2
+2025-09-22 21:19:15.021 - locate - INFO - _load_electrodes:619 - Loaded 8 ElectrodeType.SOURCE electrodes
+2025-09-22 21:19:15.021 - locate - INFO - load_pairs_info:657 - Processing fnirsdetect: 8 pairs
+2025-09-22 21:19:15.022 - locate - INFO - _load_electrodes:596 - Loading EEG electrodes
+2025-09-22 21:19:15.022 - locate - INFO - set_current_node_info:629 - Setting node info: type=Detect, number=1, checked=True
+2025-09-22 21:19:15.022 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.DETECT: 'Detect'>, number=1, checked=True)
+2025-09-22 21:19:15.022 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: C3
+2025-09-22 21:19:15.022 - locate - INFO - add_electrode:143 - Adding electrode: C3, type=Detect, number=1
+2025-09-22 21:19:15.022 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: C3
+2025-09-22 21:19:15.026 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode C3
+2025-09-22 21:19:15.026 - locate - INFO - set_current_node_info:629 - Setting node info: type=Detect, number=2, checked=True
+2025-09-22 21:19:15.027 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.DETECT: 'Detect'>, number=2, checked=True)
+2025-09-22 21:19:15.027 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: C1
+2025-09-22 21:19:15.027 - locate - INFO - add_electrode:143 - Adding electrode: C1, type=Detect, number=2
+2025-09-22 21:19:15.027 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: C1
+2025-09-22 21:19:15.031 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode C1
+2025-09-22 21:19:15.031 - locate - INFO - set_current_node_info:629 - Setting node info: type=Detect, number=3, checked=True
+2025-09-22 21:19:15.031 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.DETECT: 'Detect'>, number=3, checked=True)
+2025-09-22 21:19:15.032 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: CP1
+2025-09-22 21:19:15.032 - locate - INFO - add_electrode:143 - Adding electrode: CP1, type=Detect, number=3
+2025-09-22 21:19:15.032 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: CP1
+2025-09-22 21:19:15.037 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode CP1
+2025-09-22 21:19:15.037 - locate - INFO - set_current_node_info:629 - Setting node info: type=Detect, number=4, checked=True
+2025-09-22 21:19:15.037 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.DETECT: 'Detect'>, number=4, checked=True)
+2025-09-22 21:19:15.038 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: P1
+2025-09-22 21:19:15.038 - locate - INFO - add_electrode:143 - Adding electrode: P1, type=Detect, number=4
+2025-09-22 21:19:15.038 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: P1
+2025-09-22 21:19:15.043 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode P1
+2025-09-22 21:19:15.043 - locate - INFO - set_current_node_info:629 - Setting node info: type=Detect, number=5, checked=True
+2025-09-22 21:19:15.043 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.DETECT: 'Detect'>, number=5, checked=True)
+2025-09-22 21:19:15.043 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: CPz
+2025-09-22 21:19:15.043 - locate - INFO - add_electrode:143 - Adding electrode: CPz, type=Detect, number=5
+2025-09-22 21:19:15.043 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: CPz
+2025-09-22 21:19:15.047 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode CPz
+2025-09-22 21:19:15.048 - locate - INFO - set_current_node_info:629 - Setting node info: type=Detect, number=6, checked=True
+2025-09-22 21:19:15.048 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.DETECT: 'Detect'>, number=6, checked=True)
+2025-09-22 21:19:15.048 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: C2
+2025-09-22 21:19:15.048 - locate - INFO - add_electrode:143 - Adding electrode: C2, type=Detect, number=6
+2025-09-22 21:19:15.048 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: C2
+2025-09-22 21:19:15.053 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode C2
+2025-09-22 21:19:15.053 - locate - INFO - set_current_node_info:629 - Setting node info: type=Detect, number=7, checked=True
+2025-09-22 21:19:15.053 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.DETECT: 'Detect'>, number=7, checked=True)
+2025-09-22 21:19:15.054 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: CP4
+2025-09-22 21:19:15.054 - locate - INFO - add_electrode:143 - Adding electrode: CP4, type=Detect, number=7
+2025-09-22 21:19:15.054 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: CP4
+2025-09-22 21:19:15.059 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode CP4
+2025-09-22 21:19:15.059 - locate - INFO - set_current_node_info:629 - Setting node info: type=Detect, number=8, checked=True
+2025-09-22 21:19:15.059 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.DETECT: 'Detect'>, number=8, checked=True)
+2025-09-22 21:19:15.059 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: FCz
+2025-09-22 21:19:15.059 - locate - INFO - add_electrode:143 - Adding electrode: FCz, type=Detect, number=8
+2025-09-22 21:19:15.059 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: FCz
+2025-09-22 21:19:15.064 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode FCz
+2025-09-22 21:19:15.065 - locate - INFO - _load_electrodes:619 - Loaded 8 ElectrodeType.DETECT electrodes
+2025-09-22 21:19:15.065 - locate - INFO - load_pairs_info:657 - Processing eeg: 0 pairs
+2025-09-22 21:19:15.065 - locate - INFO - _load_electrodes:596 - Loading EEG electrodes
+2025-09-22 21:19:15.065 - locate - INFO - _load_electrodes:619 - Loaded 0 ElectrodeType.EEG electrodes
+2025-09-22 21:19:15.065 - locate - INFO - load_pairs_info:675 - Pairs info loaded successfully
+2025-09-22 21:19:15.066 - ui_config - INFO - _apply_loaded_electrode_positions:1013 - Applied electrode positions from loaded configuration
+2025-09-22 21:19:19.274 - config - INFO - create_configuration:520 - Creating configuration
+2025-09-22 21:19:19.275 - ui_config - INFO - _add_brain_control_buttons:557 - Created reset_locator_btn at position (580, 10)
+2025-09-22 21:19:19.276 - ui_config - INFO - _add_brain_control_buttons:557 - Created finish_locator_btn at position (670, 10)
+2025-09-22 21:19:19.276 - ui_config - INFO - generate_fnirs_configuration:702 - Generating fNIRS configuration
+2025-09-22 21:19:19.277 - ui_config - INFO - generate_fnirs_configuration:725 - Generated 8 source and 8 detector checkboxes
+2025-09-22 21:19:19.278 - config - INFO - create_configuration:529 - Configuration creation completed successfully
+2025-09-22 21:19:20.299 - locate - INFO - get_channel_pairs_summary:746 - Generating channel pairs summary
+2025-09-22 21:19:20.299 - locate - INFO - calculate_channel_pairs:721 - Calculating channel pairs
+2025-09-22 21:19:20.300 - locate - INFO - calculate_fnirs_pairs:233 - Calculating fNIRS channel pairs
+2025-09-22 21:19:20.300 - locate - INFO - calculate_fnirs_pairs:238 - Found 8 sources and 8 detectors
+2025-09-22 21:19:20.300 - locate - INFO - calculate_fnirs_pairs:256 - Valid fNIRS pair: S1-D1, distance: 32.00mm
+2025-09-22 21:19:20.300 - locate - INFO - calculate_fnirs_pairs:256 - Valid fNIRS pair: S2-D2, distance: 34.00mm
+2025-09-22 21:19:20.301 - locate - INFO - calculate_fnirs_pairs:256 - Valid fNIRS pair: S2-D8, distance: 34.00mm
+2025-09-22 21:19:20.301 - locate - INFO - calculate_fnirs_pairs:256 - Valid fNIRS pair: S3-D1, distance: 32.00mm
+2025-09-22 21:19:20.301 - locate - INFO - calculate_fnirs_pairs:256 - Valid fNIRS pair: S3-D3, distance: 32.00mm
+2025-09-22 21:19:20.301 - locate - INFO - calculate_fnirs_pairs:256 - Valid fNIRS pair: S4-D4, distance: 26.00mm
+2025-09-22 21:19:20.301 - locate - INFO - calculate_fnirs_pairs:256 - Valid fNIRS pair: S5-D2, distance: 35.00mm
+2025-09-22 21:19:20.302 - locate - INFO - calculate_fnirs_pairs:256 - Valid fNIRS pair: S5-D5, distance: 35.00mm
+2025-09-22 21:19:20.302 - locate - INFO - calculate_fnirs_pairs:256 - Valid fNIRS pair: S5-D6, distance: 35.00mm
+2025-09-22 21:19:20.302 - locate - INFO - calculate_fnirs_pairs:256 - Valid fNIRS pair: S5-D8, distance: 35.00mm
+2025-09-22 21:19:20.302 - locate - INFO - calculate_fnirs_pairs:256 - Valid fNIRS pair: S6-D5, distance: 34.00mm
+2025-09-22 21:19:20.303 - locate - INFO - calculate_fnirs_pairs:256 - Valid fNIRS pair: S6-D6, distance: 34.00mm
+2025-09-22 21:19:20.303 - locate - INFO - calculate_fnirs_pairs:256 - Valid fNIRS pair: S6-D7, distance: 32.00mm
+2025-09-22 21:19:20.303 - locate - INFO - calculate_fnirs_pairs:256 - Valid fNIRS pair: S7-D6, distance: 35.00mm
+2025-09-22 21:19:20.303 - locate - INFO - calculate_fnirs_pairs:256 - Valid fNIRS pair: S7-D7, distance: 32.00mm
+2025-09-22 21:19:20.303 - locate - INFO - calculate_fnirs_pairs:256 - Valid fNIRS pair: S8-D6, distance: 34.00mm
+2025-09-22 21:19:20.304 - locate - INFO - calculate_fnirs_pairs:256 - Valid fNIRS pair: S8-D8, distance: 34.00mm
+2025-09-22 21:19:20.304 - locate - INFO - calculate_fnirs_pairs:265 - Found 17 valid fNIRS channel pairs
+2025-09-22 21:19:20.304 - locate - INFO - calculate_channel_pairs:736 - Channel calculation complete: {'sources': 8, 'detectors': 8, 'eeg_channels': 0, 'fnirs_channels': 17, 'valid_fnirs_pairs': ['S1-D1', 'S2-D2', 'S2-D8', 'S3-D1', 'S3-D3', 'S4-D4', 'S5-D2', 'S5-D5', 'S5-D6', 'S5-D8', 'S6-D5', 'S6-D6', 'S6-D7', 'S7-D6', 'S7-D7', 'S8-D6', 'S8-D8'], 'calculation_timestamp': 'locate'}
+2025-09-22 21:19:20.304 - locate - INFO - get_channel_pairs_summary:765 - Displaying channel summary to user
+2025-09-22 21:19:20.304 - locate - INFO - show_message:277 - Showing message: Sources: 8
+Detectors: 8
+EEG Channels: 0
+Valid fNIRS Channels: 17
+
+fNIRS Pairs:
+S1-D1, S2-D2, S2-D8, S3-D1, S3-D3, S4-D4, S5-D2, S5-D5, S5-D6, S5-D8
+... and 7 more
+
+
+2025-09-22 21:19:21.215 - network - INFO - sendBatteryQuery:535 - Battery query sent to all devices
+2025-09-22 21:19:21.388 - network - INFO - _handle_battery_query:351 - device battery level:100
+2025-09-22 21:19:23.115 - config - INFO - apply_channel_config:360 - Apply channel config called
+2025-09-22 21:19:23.115 - ui_config - INFO - process_sensor_configurations:800 - Updated fnirs sampling rate to 10Hz
+2025-09-22 21:19:23.115 - config - ERROR - _process_standard_sensor_configuration:466 - Invalid channel count for eeg: 0
+2025-09-22 21:19:23.116 - config - INFO - _process_config_configurations:397 - Configuration processing complete. Length: 11
+2025-09-22 21:19:23.116 - network - INFO - sendSampleRate:541 - Sample rate set for all types
+2025-09-22 21:19:23.116 - network - INFO - sendChannelConfig:547 - Channel config sent for all type
+2025-09-22 21:19:23.116 - __main__ - INFO - on_config_set:635 - 配置已发送到设备
+2025-09-22 21:19:23.334 - network - INFO - _handle_sample_rate:361 - Sample rate set success
+2025-09-22 21:19:23.334 - network - INFO - _acknowledge_pending_command:299 - Command SAMPLE_RATE acknowledged by device [164, 62, 20]
+2025-09-22 21:19:23.334 - network - INFO - _handle_channel_config:371 - Channel config set success
+2025-09-22 21:19:23.335 - __main__ - INFO - _on_state_changed:436 - 状态变更: 1 -> 2
+2025-09-22 21:19:23.339 - locate - INFO - __init__:322 - Initializing Locate application
+2025-09-22 21:19:23.340 - ui_locate - INFO - __init__:339 - PositionManager initialized with 213 2D positions and 64 3D positions
+2025-09-22 21:19:23.340 - locate - INFO - __init__:133 - ElectrodeManager initialized
+2025-09-22 21:19:23.340 - locate - INFO - __init__:229 - ChannelCalculator initialized with threshold: 40.0mm
+2025-09-22 21:19:23.340 - ui_locate - INFO - setupUi:446 - Setting up UI components
+2025-09-22 21:19:23.340 - ui_locate - INFO - _create_electrode_buttons:491 - Creating default electrode buttons
+2025-09-22 21:19:23.344 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 61 default electrode buttons
+2025-09-22 21:19:23.345 - ui_locate - INFO - _create_electrode_buttons:491 - Creating middle electrode buttons
+2025-09-22 21:19:23.351 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 104 middle electrode buttons
+2025-09-22 21:19:23.352 - ui_locate - INFO - _create_electrode_buttons:491 - Creating center electrode buttons
+2025-09-22 21:19:23.355 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 48 center electrode buttons
+2025-09-22 21:19:23.355 - ui_locate - INFO - setupUi:456 - UI setup completed successfully
+2025-09-22 21:19:23.355 - locate - INFO - set_position_manager:138 - position manager set for ElectrondeManager
+2025-09-22 21:19:23.355 - locate - INFO - _connect_electrode_signals:394 - Connecting signals for 213 electrodes
+2025-09-22 21:19:23.359 - locate - INFO - _connect_electrode_signals:423 - Signal connection complete: 213 success, 0 failed
+2025-09-22 21:19:23.359 - locate - INFO - __init__:328 - Locate application initialized successfully
+2025-09-22 21:19:28.609 - __main__ - INFO - initialize_component:79 - qualify 组件初始化成功
+2025-09-22 21:19:28.610 - __main__ - INFO - complete_configuration:893 - 配置步骤完成
+2025-09-22 21:19:28.610 - network - INFO - _acknowledge_pending_command:299 - Command CHANNEL_CONFIG acknowledged by device [164, 62, 20]
+2025-09-22 21:19:31.213 - network - INFO - sendBatteryQuery:535 - Battery query sent to all devices
+2025-09-22 21:19:31.423 - network - INFO - _handle_battery_query:351 - device battery level:100
+2025-09-22 21:19:36.440 - __main__ - INFO - _on_state_changed:436 - 状态变更: 2 -> 3
+2025-09-22 21:19:36.440 - __main__ - INFO - complete_test:904 - 测试步骤完成
+2025-09-22 21:19:41.235 - network - INFO - sendBatteryQuery:535 - Battery query sent to all devices
+2025-09-22 21:19:41.458 - network - INFO - _handle_battery_query:351 - device battery level:90
+2025-09-22 21:19:47.642 - __main__ - ERROR - on_tab_changed:842 - 处理标签页切换失败: 'ConfigurationManager' object has no attribute 'update_ui_state'
+2025-09-22 21:19:51.247 - network - INFO - sendBatteryQuery:535 - Battery query sent to all devices
+2025-09-22 21:19:51.391 - network - INFO - _handle_battery_query:351 - device battery level:100
+2025-09-22 21:19:54.266 - __main__ - INFO - _perform_shutdown:1116 - 开始关闭清理...
+2025-09-22 21:19:54.269 - network - INFO - sendDisconnect:514 - Disconnect sent to all devices
+2025-09-22 21:19:54.360 - network - INFO - _handle_disconnect:328 - Device disconnected: [164, 62, 20] at 192.168.1.100
+2025-09-22 21:19:54.360 - network - INFO - _acknowledge_pending_command:299 - Command DISCONNECT acknowledged by device [164, 62, 20]
+2025-09-22 21:19:56.214 - __main__ - INFO - cleanup_all:111 - user 组件清理完成
+2025-09-22 21:19:56.215 - __main__ - INFO - cleanup_all:111 - config 组件清理完成
+2025-09-22 21:19:56.216 - __main__ - INFO - cleanup_all:111 - qualify 组件清理完成
+2025-09-22 21:19:56.216 - network - INFO - close:583 - Network closed
+2025-09-22 21:19:56.216 - __main__ - INFO - _perform_shutdown:1146 - 关闭清理完成
+2025-09-22 21:19:56.216 - __main__ - INFO - closeEvent:1109 - 应用程序关闭成功
+2025-09-22 21:24:44.768 - locate - INFO - setup_logging:36 - Logging initialized with level: INFO
+2025-09-22 21:24:44.900 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-22 21:24:44.900 - network - INFO - _setup_network:119 - Network ready: 192.168.1.101:1227 -> 192.168.1.255:2227
+2025-09-22 21:24:44.901 - __main__ - INFO - initialize_network:110 - Network module initialized successfully
+2025-09-22 21:24:45.318 - __main__ - INFO - initialize_user_widget:126 - User widget integrated into home tab successfully
+2025-09-22 21:24:45.379 - __main__ - INFO - restore_window_state:1060 - Last session sensors: ['fnirs']
+2025-09-22 21:24:45.386 - __main__ - INFO - _initialize_components:103 - MainWindow initialized successfully with UI structure from XML
+2025-09-22 21:24:45.386 - __main__ - INFO - __init__:78 - MainWindow initialized successfully with UI structure from XML
+2025-09-22 21:24:45.434 - __main__ - INFO - main:1166 - Application started successfully with optimized XML-based UI structure and integrated configuration manager
+2025-09-22 21:24:49.988 - __main__ - INFO - shutdown_cleanup:1124 - Starting shutdown cleanup...
+2025-09-22 21:24:49.990 - __main__ - INFO - _cleanup_components:1091 - Configuration Manager closed successfully
+2025-09-22 21:24:49.991 - __main__ - INFO - _cleanup_components:1091 - User Widget closed successfully
+2025-09-22 21:24:49.991 - network - INFO - close:583 - Network closed
+2025-09-22 21:24:49.991 - __main__ - INFO - _cleanup_components:1091 - Network closed successfully
+2025-09-22 21:24:49.991 - __main__ - INFO - shutdown_cleanup:1134 - Shutdown cleanup completed
+2025-09-22 21:24:49.991 - __main__ - INFO - closeEvent:1141 - Application closed successfully
+2025-09-22 21:47:02.376 - locate - INFO - setup_logging:36 - Logging initialized with level: INFO
+2025-09-22 21:47:02.478 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-22 21:47:02.478 - network - INFO - _setup_network:119 - Network ready: 192.168.1.101:1227 -> 192.168.1.255:2227
+2025-09-22 21:47:02.479 - __main__ - INFO - _initialize_network:195 - 网络模块初始化成功
+2025-09-22 21:47:02.890 - __main__ - INFO - add_component:105 - user 组件添加成功
+2025-09-22 21:47:03.001 - __main__ - INFO - _initialize_system:184 - 系统初始化完成
+2025-09-22 21:47:03.001 - __main__ - INFO - __init__:158 - 主窗口初始化完成
+2025-09-22 21:47:03.059 - __main__ - INFO - main:973 - 应用程序启动成功 - 优化响应式设计
+2025-09-22 21:47:15.361 - user - INFO - getNameInitials:92 - Generated initials for 谢发文: XFW_26
+2025-09-22 21:47:18.129 - user - INFO - getNameInitials:92 - Generated initials for 谢发文: XFW_26
+2025-09-22 21:47:19.078 - network - INFO - sendConnect:507 - Connection broadcast sent
+2025-09-22 21:47:19.271 - network - INFO - _handle_connect:315 - Device connected: [164, 62, 20] at 192.168.1.100
+2025-09-22 21:47:19.271 - network - INFO - _handle_connect:319 - Single device connected, commands will target this device
+2025-09-22 21:47:19.272 - __main__ - INFO - _on_state_changed:281 - 状态变更: 0 -> 1
+2025-09-22 21:47:19.692 - __main__ - ERROR - _init_sensors:471 - 传感器初始化失败: 'Wavelength'
+2025-09-22 21:47:19.693 - config - INFO - __init__:229 - Initializing ConfigurationManager
+2025-09-22 21:47:19.693 - config - INFO - get_montage_directory:203 - Montage directory: E:\xfw\code\fnirs\HyBrid_BCI\montage
+2025-09-22 21:47:19.695 - ui_config - INFO - __init__:271 - UIManager initialized
+2025-09-22 21:47:19.695 - ui_config - INFO - setup_ui_for_sensors:275 - Setting up UI for enabled sensors
+2025-09-22 21:47:19.696 - locate - INFO - __init__:322 - Initializing Locate application
+2025-09-22 21:47:19.697 - ui_locate - INFO - __init__:339 - PositionManager initialized with 213 2D positions and 64 3D positions
+2025-09-22 21:47:19.697 - locate - INFO - __init__:133 - ElectrodeManager initialized
+2025-09-22 21:47:19.697 - locate - INFO - __init__:229 - ChannelCalculator initialized with threshold: 40.0mm
+2025-09-22 21:47:19.697 - ui_locate - INFO - setupUi:446 - Setting up UI components
+2025-09-22 21:47:19.698 - ui_locate - INFO - _create_electrode_buttons:491 - Creating default electrode buttons
+2025-09-22 21:47:19.702 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 61 default electrode buttons
+2025-09-22 21:47:19.702 - ui_locate - INFO - _create_electrode_buttons:491 - Creating middle electrode buttons
+2025-09-22 21:47:19.709 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 104 middle electrode buttons
+2025-09-22 21:47:19.709 - ui_locate - INFO - _create_electrode_buttons:491 - Creating center electrode buttons
+2025-09-22 21:47:19.712 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 48 center electrode buttons
+2025-09-22 21:47:19.712 - ui_locate - INFO - setupUi:456 - UI setup completed successfully
+2025-09-22 21:47:19.712 - locate - INFO - set_position_manager:138 - position manager set for ElectrondeManager
+2025-09-22 21:47:19.713 - locate - INFO - _connect_electrode_signals:394 - Connecting signals for 213 electrodes
+2025-09-22 21:47:19.716 - locate - INFO - _connect_electrode_signals:423 - Signal connection complete: 213 success, 0 failed
+2025-09-22 21:47:19.716 - locate - INFO - __init__:328 - Locate application initialized successfully
+2025-09-22 21:47:20.660 - config - INFO - __post_init__:88 - Initializing DeviceConfiguration with sensors: {'fnirs'}
+2025-09-22 21:47:20.661 - ui_config - INFO - initialize_ui_values:425 - UI values initialization completed
+2025-09-22 21:47:20.661 - config - INFO - _initialize_configuration:285 - Configuration initialization completed
+2025-09-22 21:47:20.661 - config - INFO - __init__:249 - ConfigurationManager initialization completed successfully
+2025-09-22 21:47:22.446 - __main__ - INFO - add_component:105 - config 组件添加成功
+2025-09-22 21:47:22.447 - __main__ - INFO - on_device_connected:382 - 设备连接成功: ID=[164, 62, 20], Type=4
+2025-09-22 21:47:22.447 - network - INFO - _acknowledge_pending_command:287 - Command CONNECT acknowledged by device [164, 62, 20]
+2025-09-22 21:47:29.690 - network - INFO - sendBatteryQuery:535 - Battery query sent to all devices
+2025-09-22 21:47:30.489 - user - INFO - getNameInitials:92 - Generated initials for 谢发文: XFW_26
+2025-09-22 21:47:32.381 - network - INFO - sendDisconnect:514 - Disconnect sent to all devices
+2025-09-22 21:47:32.481 - network - INFO - _handle_disconnect:328 - Device disconnected: [164, 62, 20] at 192.168.1.100
+2025-09-22 21:47:32.482 - __main__ - INFO - _on_state_changed:281 - 状态变更: 1 -> 0
+2025-09-22 21:47:32.483 - __main__ - INFO - on_device_disconnected:406 - 设备断开连接
+2025-09-22 21:47:32.483 - network - INFO - _acknowledge_pending_command:299 - Command DISCONNECT acknowledged by device [164, 62, 20]
+2025-09-22 21:47:35.109 - network - INFO - sendConnect:507 - Connection broadcast sent
+2025-09-22 21:47:35.388 - __main__ - WARNING - force_disconnect:420 - 强制断开连接
+2025-09-22 21:47:35.389 - __main__ - INFO - on_device_disconnected:406 - 设备断开连接
+2025-09-22 21:47:37.115 - network - WARNING - _check_retries:486 - Retrying command CONNECT
+2025-09-22 21:47:40.421 - network - INFO - sendConnect:507 - Connection broadcast sent
+2025-09-22 21:47:40.570 - network - INFO - _handle_connect:315 - Device connected: [164, 62, 20] at 192.168.1.100
+2025-09-22 21:47:40.570 - network - INFO - _handle_connect:319 - Single device connected, commands will target this device
+2025-09-22 21:47:40.571 - __main__ - INFO - _on_state_changed:281 - 状态变更: 0 -> 1
+2025-09-22 21:47:40.572 - __main__ - ERROR - _init_sensors:471 - 传感器初始化失败: 'Wavelength'
+2025-09-22 21:47:40.573 - config - INFO - __init__:229 - Initializing ConfigurationManager
+2025-09-22 21:47:40.573 - config - INFO - get_montage_directory:203 - Montage directory: E:\xfw\code\fnirs\HyBrid_BCI\montage
+2025-09-22 21:47:40.575 - ui_config - INFO - __init__:271 - UIManager initialized
+2025-09-22 21:47:40.575 - ui_config - INFO - setup_ui_for_sensors:275 - Setting up UI for enabled sensors
+2025-09-22 21:47:40.575 - locate - INFO - __init__:322 - Initializing Locate application
+2025-09-22 21:47:40.576 - ui_locate - INFO - __init__:339 - PositionManager initialized with 213 2D positions and 64 3D positions
+2025-09-22 21:47:40.576 - locate - INFO - __init__:133 - ElectrodeManager initialized
+2025-09-22 21:47:40.576 - locate - INFO - __init__:229 - ChannelCalculator initialized with threshold: 40.0mm
+2025-09-22 21:47:40.577 - ui_locate - INFO - setupUi:446 - Setting up UI components
+2025-09-22 21:47:40.577 - ui_locate - INFO - _create_electrode_buttons:491 - Creating default electrode buttons
+2025-09-22 21:47:40.581 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 61 default electrode buttons
+2025-09-22 21:47:40.581 - ui_locate - INFO - _create_electrode_buttons:491 - Creating middle electrode buttons
+2025-09-22 21:47:40.587 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 104 middle electrode buttons
+2025-09-22 21:47:40.588 - ui_locate - INFO - _create_electrode_buttons:491 - Creating center electrode buttons
+2025-09-22 21:47:40.591 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 48 center electrode buttons
+2025-09-22 21:47:40.591 - ui_locate - INFO - setupUi:456 - UI setup completed successfully
+2025-09-22 21:47:40.592 - locate - INFO - set_position_manager:138 - position manager set for ElectrondeManager
+2025-09-22 21:47:40.592 - locate - INFO - _connect_electrode_signals:394 - Connecting signals for 213 electrodes
+2025-09-22 21:47:40.595 - locate - INFO - _connect_electrode_signals:423 - Signal connection complete: 213 success, 0 failed
+2025-09-22 21:47:40.596 - locate - INFO - __init__:328 - Locate application initialized successfully
+2025-09-22 21:47:41.438 - config - INFO - __post_init__:88 - Initializing DeviceConfiguration with sensors: {'fnirs'}
+2025-09-22 21:47:41.438 - ui_config - INFO - initialize_ui_values:425 - UI values initialization completed
+2025-09-22 21:47:41.439 - config - INFO - _initialize_configuration:285 - Configuration initialization completed
+2025-09-22 21:47:41.439 - config - INFO - __init__:249 - ConfigurationManager initialization completed successfully
+2025-09-22 21:47:43.024 - __main__ - INFO - add_component:105 - config 组件添加成功
+2025-09-22 21:47:43.024 - __main__ - INFO - on_device_connected:382 - 设备连接成功: ID=[164, 62, 20], Type=4
+2025-09-22 21:47:43.024 - network - INFO - _acknowledge_pending_command:287 - Command CONNECT acknowledged by device [164, 62, 20]
+2025-09-22 21:47:47.085 - network - INFO - sendDisconnect:514 - Disconnect sent to all devices
+2025-09-22 21:47:47.226 - network - INFO - _handle_disconnect:328 - Device disconnected: [164, 62, 20] at 192.168.1.100
+2025-09-22 21:47:47.227 - __main__ - INFO - _on_state_changed:281 - 状态变更: 1 -> 0
+2025-09-22 21:47:47.227 - __main__ - INFO - on_device_disconnected:406 - 设备断开连接
+2025-09-22 21:47:47.227 - network - INFO - _acknowledge_pending_command:299 - Command DISCONNECT acknowledged by device [164, 62, 20]
+2025-09-22 21:47:50.084 - __main__ - WARNING - force_disconnect:420 - 强制断开连接
+2025-09-22 21:47:50.085 - __main__ - INFO - on_device_disconnected:406 - 设备断开连接
+2025-09-22 21:47:50.150 - network - INFO - sendConnect:507 - Connection broadcast sent
+2025-09-22 21:47:50.195 - network - INFO - _handle_connect:315 - Device connected: [164, 62, 20] at 192.168.1.100
+2025-09-22 21:47:50.195 - network - INFO - _handle_connect:319 - Single device connected, commands will target this device
+2025-09-22 21:47:50.196 - __main__ - INFO - _on_state_changed:281 - 状态变更: 0 -> 1
+2025-09-22 21:47:50.197 - __main__ - ERROR - _init_sensors:471 - 传感器初始化失败: 'Wavelength'
+2025-09-22 21:47:50.198 - config - INFO - __init__:229 - Initializing ConfigurationManager
+2025-09-22 21:47:50.198 - config - INFO - get_montage_directory:203 - Montage directory: E:\xfw\code\fnirs\HyBrid_BCI\montage
+2025-09-22 21:47:50.200 - ui_config - INFO - __init__:271 - UIManager initialized
+2025-09-22 21:47:50.200 - ui_config - INFO - setup_ui_for_sensors:275 - Setting up UI for enabled sensors
+2025-09-22 21:47:50.201 - locate - INFO - __init__:322 - Initializing Locate application
+2025-09-22 21:47:50.201 - ui_locate - INFO - __init__:339 - PositionManager initialized with 213 2D positions and 64 3D positions
+2025-09-22 21:47:50.202 - locate - INFO - __init__:133 - ElectrodeManager initialized
+2025-09-22 21:47:50.202 - locate - INFO - __init__:229 - ChannelCalculator initialized with threshold: 40.0mm
+2025-09-22 21:47:50.202 - ui_locate - INFO - setupUi:446 - Setting up UI components
+2025-09-22 21:47:50.202 - ui_locate - INFO - _create_electrode_buttons:491 - Creating default electrode buttons
+2025-09-22 21:47:50.207 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 61 default electrode buttons
+2025-09-22 21:47:50.207 - ui_locate - INFO - _create_electrode_buttons:491 - Creating middle electrode buttons
+2025-09-22 21:47:50.214 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 104 middle electrode buttons
+2025-09-22 21:47:50.214 - ui_locate - INFO - _create_electrode_buttons:491 - Creating center electrode buttons
+2025-09-22 21:47:50.217 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 48 center electrode buttons
+2025-09-22 21:47:50.217 - ui_locate - INFO - setupUi:456 - UI setup completed successfully
+2025-09-22 21:47:50.217 - locate - INFO - set_position_manager:138 - position manager set for ElectrondeManager
+2025-09-22 21:47:50.218 - locate - INFO - _connect_electrode_signals:394 - Connecting signals for 213 electrodes
+2025-09-22 21:47:50.221 - locate - INFO - _connect_electrode_signals:423 - Signal connection complete: 213 success, 0 failed
+2025-09-22 21:47:50.222 - locate - INFO - __init__:328 - Locate application initialized successfully
+2025-09-22 21:47:51.008 - config - INFO - __post_init__:88 - Initializing DeviceConfiguration with sensors: {'fnirs'}
+2025-09-22 21:47:51.008 - ui_config - INFO - initialize_ui_values:425 - UI values initialization completed
+2025-09-22 21:47:51.008 - config - INFO - _initialize_configuration:285 - Configuration initialization completed
+2025-09-22 21:47:51.008 - config - INFO - __init__:249 - ConfigurationManager initialization completed successfully
+2025-09-22 21:47:52.700 - __main__ - INFO - add_component:105 - config 组件添加成功
+2025-09-22 21:47:52.701 - __main__ - INFO - on_device_connected:382 - 设备连接成功: ID=[164, 62, 20], Type=4
+2025-09-22 21:47:52.701 - network - INFO - _acknowledge_pending_command:287 - Command CONNECT acknowledged by device [164, 62, 20]
+2025-09-22 21:48:00.211 - network - INFO - sendBatteryQuery:535 - Battery query sent to all devices
+2025-09-22 21:48:07.477 - network - INFO - sendDisconnect:514 - Disconnect sent to all devices
+2025-09-22 21:48:09.484 - network - WARNING - _check_retries:486 - Retrying command DISCONNECT
+2025-09-22 21:48:10.479 - __main__ - WARNING - force_disconnect:420 - 强制断开连接
+2025-09-22 21:48:10.480 - __main__ - INFO - _on_state_changed:281 - 状态变更: 1 -> 0
+2025-09-22 21:48:10.480 - __main__ - INFO - on_device_disconnected:406 - 设备断开连接
+2025-09-22 21:48:11.490 - network - WARNING - _check_retries:486 - Retrying command DISCONNECT
+2025-09-22 21:48:11.533 - network - INFO - sendConnect:507 - Connection broadcast sent
+2025-09-22 21:48:11.699 - network - INFO - _handle_connect:315 - Device connected: [164, 62, 20] at 192.168.1.100
+2025-09-22 21:48:11.699 - network - INFO - _handle_connect:319 - Single device connected, commands will target this device
+2025-09-22 21:48:11.699 - __main__ - INFO - _on_state_changed:281 - 状态变更: 0 -> 1
+2025-09-22 21:48:11.701 - __main__ - ERROR - _init_sensors:471 - 传感器初始化失败: 'Wavelength'
+2025-09-22 21:48:11.701 - config - INFO - __init__:229 - Initializing ConfigurationManager
+2025-09-22 21:48:11.702 - config - INFO - get_montage_directory:203 - Montage directory: E:\xfw\code\fnirs\HyBrid_BCI\montage
+2025-09-22 21:48:11.703 - ui_config - INFO - __init__:271 - UIManager initialized
+2025-09-22 21:48:11.703 - ui_config - INFO - setup_ui_for_sensors:275 - Setting up UI for enabled sensors
+2025-09-22 21:48:11.704 - locate - INFO - __init__:322 - Initializing Locate application
+2025-09-22 21:48:11.704 - ui_locate - INFO - __init__:339 - PositionManager initialized with 213 2D positions and 64 3D positions
+2025-09-22 21:48:11.705 - locate - INFO - __init__:133 - ElectrodeManager initialized
+2025-09-22 21:48:11.705 - locate - INFO - __init__:229 - ChannelCalculator initialized with threshold: 40.0mm
+2025-09-22 21:48:11.705 - ui_locate - INFO - setupUi:446 - Setting up UI components
+2025-09-22 21:48:11.705 - ui_locate - INFO - _create_electrode_buttons:491 - Creating default electrode buttons
+2025-09-22 21:48:11.709 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 61 default electrode buttons
+2025-09-22 21:48:11.710 - ui_locate - INFO - _create_electrode_buttons:491 - Creating middle electrode buttons
+2025-09-22 21:48:11.717 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 104 middle electrode buttons
+2025-09-22 21:48:11.717 - ui_locate - INFO - _create_electrode_buttons:491 - Creating center electrode buttons
+2025-09-22 21:48:11.720 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 48 center electrode buttons
+2025-09-22 21:48:11.720 - ui_locate - INFO - setupUi:456 - UI setup completed successfully
+2025-09-22 21:48:11.721 - locate - INFO - set_position_manager:138 - position manager set for ElectrondeManager
+2025-09-22 21:48:11.721 - locate - INFO - _connect_electrode_signals:394 - Connecting signals for 213 electrodes
+2025-09-22 21:48:11.724 - locate - INFO - _connect_electrode_signals:423 - Signal connection complete: 213 success, 0 failed
+2025-09-22 21:48:11.724 - locate - INFO - __init__:328 - Locate application initialized successfully
+2025-09-22 21:48:12.519 - config - INFO - __post_init__:88 - Initializing DeviceConfiguration with sensors: {'fnirs'}
+2025-09-22 21:48:12.519 - ui_config - INFO - initialize_ui_values:425 - UI values initialization completed
+2025-09-22 21:48:12.519 - config - INFO - _initialize_configuration:285 - Configuration initialization completed
+2025-09-22 21:48:12.519 - config - INFO - __init__:249 - ConfigurationManager initialization completed successfully
+2025-09-22 21:48:14.151 - __main__ - INFO - add_component:105 - config 组件添加成功
+2025-09-22 21:48:14.152 - __main__ - INFO - on_device_connected:382 - 设备连接成功: ID=[164, 62, 20], Type=4
+2025-09-22 21:48:14.152 - network - INFO - _acknowledge_pending_command:287 - Command CONNECT acknowledged by device [164, 62, 20]
+2025-09-22 21:48:14.152 - network - INFO - _handle_disconnect:328 - Device disconnected: [164, 62, 20] at 192.168.1.100
+2025-09-22 21:48:14.153 - __main__ - INFO - _on_state_changed:281 - 状态变更: 1 -> 0
+2025-09-22 21:48:14.154 - __main__ - INFO - on_device_disconnected:406 - 设备断开连接
+2025-09-22 21:48:14.154 - network - INFO - _acknowledge_pending_command:299 - Command DISCONNECT acknowledged by device [164, 62, 20]
+2025-09-22 21:48:19.269 - network - INFO - sendConnect:507 - Connection broadcast sent
+2025-09-22 21:48:19.481 - network - INFO - _handle_connect:315 - Device connected: [164, 62, 20] at 192.168.1.100
+2025-09-22 21:48:19.481 - network - INFO - _handle_connect:319 - Single device connected, commands will target this device
+2025-09-22 21:48:19.481 - __main__ - INFO - _on_state_changed:281 - 状态变更: 0 -> 1
+2025-09-22 21:48:19.483 - __main__ - ERROR - _init_sensors:471 - 传感器初始化失败: 'Wavelength'
+2025-09-22 21:48:19.483 - config - INFO - __init__:229 - Initializing ConfigurationManager
+2025-09-22 21:48:19.484 - config - INFO - get_montage_directory:203 - Montage directory: E:\xfw\code\fnirs\HyBrid_BCI\montage
+2025-09-22 21:48:19.486 - ui_config - INFO - __init__:271 - UIManager initialized
+2025-09-22 21:48:19.486 - ui_config - INFO - setup_ui_for_sensors:275 - Setting up UI for enabled sensors
+2025-09-22 21:48:19.486 - locate - INFO - __init__:322 - Initializing Locate application
+2025-09-22 21:48:19.487 - ui_locate - INFO - __init__:339 - PositionManager initialized with 213 2D positions and 64 3D positions
+2025-09-22 21:48:19.487 - locate - INFO - __init__:133 - ElectrodeManager initialized
+2025-09-22 21:48:19.487 - locate - INFO - __init__:229 - ChannelCalculator initialized with threshold: 40.0mm
+2025-09-22 21:48:19.487 - ui_locate - INFO - setupUi:446 - Setting up UI components
+2025-09-22 21:48:19.488 - ui_locate - INFO - _create_electrode_buttons:491 - Creating default electrode buttons
+2025-09-22 21:48:19.492 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 61 default electrode buttons
+2025-09-22 21:48:19.492 - ui_locate - INFO - _create_electrode_buttons:491 - Creating middle electrode buttons
+2025-09-22 21:48:19.498 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 104 middle electrode buttons
+2025-09-22 21:48:19.498 - ui_locate - INFO - _create_electrode_buttons:491 - Creating center electrode buttons
+2025-09-22 21:48:19.502 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 48 center electrode buttons
+2025-09-22 21:48:19.502 - ui_locate - INFO - setupUi:456 - UI setup completed successfully
+2025-09-22 21:48:19.502 - locate - INFO - set_position_manager:138 - position manager set for ElectrondeManager
+2025-09-22 21:48:19.503 - locate - INFO - _connect_electrode_signals:394 - Connecting signals for 213 electrodes
+2025-09-22 21:48:19.507 - locate - INFO - _connect_electrode_signals:423 - Signal connection complete: 213 success, 0 failed
+2025-09-22 21:48:19.507 - locate - INFO - __init__:328 - Locate application initialized successfully
+2025-09-22 21:48:20.297 - config - INFO - __post_init__:88 - Initializing DeviceConfiguration with sensors: {'fnirs'}
+2025-09-22 21:48:20.297 - ui_config - INFO - initialize_ui_values:425 - UI values initialization completed
+2025-09-22 21:48:20.297 - config - INFO - _initialize_configuration:285 - Configuration initialization completed
+2025-09-22 21:48:20.297 - config - INFO - __init__:249 - ConfigurationManager initialization completed successfully
+2025-09-22 21:48:21.940 - __main__ - INFO - add_component:105 - config 组件添加成功
+2025-09-22 21:48:21.940 - __main__ - INFO - on_device_connected:382 - 设备连接成功: ID=[164, 62, 20], Type=4
+2025-09-22 21:48:21.941 - network - INFO - _acknowledge_pending_command:287 - Command CONNECT acknowledged by device [164, 62, 20]
+2025-09-22 21:48:29.483 - network - INFO - sendBatteryQuery:535 - Battery query sent to all devices
+2025-09-22 21:48:29.721 - network - INFO - _handle_battery_query:351 - device battery level:100
+2025-09-22 21:48:39.576 - network - INFO - sendBatteryQuery:535 - Battery query sent to all devices
+2025-09-22 21:48:39.755 - network - INFO - _handle_battery_query:351 - device battery level:100
+2025-09-22 21:48:49.489 - network - INFO - sendBatteryQuery:535 - Battery query sent to all devices
+2025-09-22 21:48:49.689 - network - INFO - _handle_battery_query:351 - device battery level:100
+2025-09-22 21:48:52.331 - __main__ - INFO - _perform_shutdown:922 - 开始关闭清理...
+2025-09-22 21:48:52.334 - network - INFO - sendDisconnect:514 - Disconnect sent to all devices
+2025-09-22 21:48:52.453 - network - INFO - _handle_disconnect:328 - Device disconnected: [164, 62, 20] at 192.168.1.100
+2025-09-22 21:48:52.453 - network - INFO - _acknowledge_pending_command:299 - Command DISCONNECT acknowledged by device [164, 62, 20]
+2025-09-22 21:48:54.235 - network - INFO - close:583 - Network closed
+2025-09-22 21:48:54.235 - __main__ - INFO - _perform_shutdown:952 - 关闭清理完成
+2025-09-22 21:48:54.236 - __main__ - INFO - closeEvent:915 - 应用程序关闭成功
+2025-09-22 21:54:46.661 - locate - INFO - setup_logging:36 - Logging initialized with level: INFO
+2025-09-22 21:54:46.804 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-22 21:54:46.804 - network - INFO - _setup_network:119 - Network ready: 192.168.1.101:1227 -> 192.168.1.255:2227
+2025-09-22 21:54:46.804 - __main__ - INFO - _initialize_network:208 - 网络模块初始化成功
+2025-09-22 21:54:47.226 - __main__ - INFO - add_component:109 - user 组件添加成功
+2025-09-22 21:54:47.288 - __main__ - INFO - _initialize_system:197 - 系统初始化完成
+2025-09-22 21:54:47.288 - __main__ - INFO - __init__:171 - 主窗口初始化完成
+2025-09-22 21:54:47.329 - __main__ - INFO - main:1045 - 应用程序启动成功 - 优化响应式设计
+2025-09-22 21:55:03.025 - user - INFO - getNameInitials:92 - Generated initials for 谢发文: XFW_26
+2025-09-22 21:55:07.445 - network - INFO - sendConnect:507 - Connection broadcast sent
+2025-09-22 21:55:07.537 - network - INFO - _handle_connect:315 - Device connected: [164, 62, 20] at 192.168.1.100
+2025-09-22 21:55:07.539 - network - INFO - _handle_connect:319 - Single device connected, commands will target this device
+2025-09-22 21:55:07.539 - __main__ - INFO - _on_state_changed:294 - 状态变更: 0 -> 1
+2025-09-22 21:55:07.542 - __main__ - ERROR - _init_sensors:529 - 传感器初始化失败: 'Wavelength'
+2025-09-22 21:55:07.542 - config - INFO - __init__:229 - Initializing ConfigurationManager
+2025-09-22 21:55:07.543 - config - INFO - get_montage_directory:203 - Montage directory: E:\xfw\code\fnirs\HyBrid_BCI\montage
+2025-09-22 21:55:07.545 - ui_config - INFO - __init__:271 - UIManager initialized
+2025-09-22 21:55:07.545 - ui_config - INFO - setup_ui_for_sensors:275 - Setting up UI for enabled sensors
+2025-09-22 21:55:07.546 - locate - INFO - __init__:322 - Initializing Locate application
+2025-09-22 21:55:07.546 - ui_locate - INFO - __init__:339 - PositionManager initialized with 213 2D positions and 64 3D positions
+2025-09-22 21:55:07.546 - locate - INFO - __init__:133 - ElectrodeManager initialized
+2025-09-22 21:55:07.547 - locate - INFO - __init__:229 - ChannelCalculator initialized with threshold: 40.0mm
+2025-09-22 21:55:07.547 - ui_locate - INFO - setupUi:446 - Setting up UI components
+2025-09-22 21:55:07.547 - ui_locate - INFO - _create_electrode_buttons:491 - Creating default electrode buttons
+2025-09-22 21:55:07.551 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 61 default electrode buttons
+2025-09-22 21:55:07.551 - ui_locate - INFO - _create_electrode_buttons:491 - Creating middle electrode buttons
+2025-09-22 21:55:07.558 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 104 middle electrode buttons
+2025-09-22 21:55:07.558 - ui_locate - INFO - _create_electrode_buttons:491 - Creating center electrode buttons
+2025-09-22 21:55:07.561 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 48 center electrode buttons
+2025-09-22 21:55:07.561 - ui_locate - INFO - setupUi:456 - UI setup completed successfully
+2025-09-22 21:55:07.562 - locate - INFO - set_position_manager:138 - position manager set for ElectrondeManager
+2025-09-22 21:55:07.562 - locate - INFO - _connect_electrode_signals:394 - Connecting signals for 213 electrodes
+2025-09-22 21:55:07.566 - locate - INFO - _connect_electrode_signals:423 - Signal connection complete: 213 success, 0 failed
+2025-09-22 21:55:07.566 - locate - INFO - __init__:328 - Locate application initialized successfully
+2025-09-22 21:55:08.465 - config - INFO - __post_init__:88 - Initializing DeviceConfiguration with sensors: {'fnirs'}
+2025-09-22 21:55:08.465 - ui_config - INFO - initialize_ui_values:425 - UI values initialization completed
+2025-09-22 21:55:08.466 - config - INFO - _initialize_configuration:285 - Configuration initialization completed
+2025-09-22 21:55:08.466 - config - INFO - __init__:249 - ConfigurationManager initialization completed successfully
+2025-09-22 21:55:10.194 - __main__ - INFO - add_component:109 - config 组件添加成功
+2025-09-22 21:55:10.194 - __main__ - INFO - _initialize_config_widget:545 - 配置组件初始化成功
+2025-09-22 21:55:10.194 - __main__ - INFO - on_device_connected:398 - 设备连接成功: ID=[164, 62, 20], Type=4
+2025-09-22 21:55:10.194 - network - INFO - _acknowledge_pending_command:287 - Command CONNECT acknowledged by device [164, 62, 20]
+2025-09-22 21:55:17.550 - network - INFO - sendBatteryQuery:535 - Battery query sent to all devices
+2025-09-22 21:55:17.774 - network - INFO - _handle_battery_query:351 - device battery level:100
+2025-09-22 21:55:27.544 - network - INFO - sendBatteryQuery:535 - Battery query sent to all devices
+2025-09-22 21:55:27.707 - network - INFO - _handle_battery_query:351 - device battery level:100
+2025-09-22 21:55:37.540 - network - INFO - sendBatteryQuery:535 - Battery query sent to all devices
+2025-09-22 21:55:37.742 - network - INFO - _handle_battery_query:351 - device battery level:90
+2025-09-22 21:55:47.539 - network - INFO - sendBatteryQuery:535 - Battery query sent to all devices
+2025-09-22 21:55:47.777 - network - INFO - _handle_battery_query:351 - device battery level:100
+2025-09-22 21:55:48.163 - __main__ - INFO - _perform_shutdown:994 - 开始关闭清理...
+2025-09-22 21:55:48.164 - network - INFO - sendDisconnect:514 - Disconnect sent to all devices
+2025-09-22 21:55:48.290 - network - INFO - _handle_disconnect:328 - Device disconnected: [164, 62, 20] at 192.168.1.100
+2025-09-22 21:55:48.290 - network - INFO - _acknowledge_pending_command:299 - Command DISCONNECT acknowledged by device [164, 62, 20]
+2025-09-22 21:55:50.441 - __main__ - INFO - remove_component:126 - user 组件已移除
+2025-09-22 21:55:50.441 - __main__ - INFO - remove_component:126 - config 组件已移除
+2025-09-22 21:55:50.441 - network - INFO - close:583 - Network closed
+2025-09-22 21:55:50.442 - __main__ - INFO - _perform_shutdown:1024 - 关闭清理完成
+2025-09-22 21:55:50.442 - __main__ - INFO - closeEvent:987 - 应用程序关闭成功
+2025-09-22 21:56:01.576 - locate - INFO - setup_logging:36 - Logging initialized with level: INFO
+2025-09-22 21:56:01.720 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-22 21:56:01.720 - network - INFO - _setup_network:119 - Network ready: 192.168.1.101:1227 -> 192.168.1.255:2227
+2025-09-22 21:56:01.721 - __main__ - INFO - _initialize_network:208 - 网络模块初始化成功
+2025-09-22 21:56:02.131 - __main__ - INFO - add_component:109 - user 组件添加成功
+2025-09-22 21:56:02.187 - __main__ - INFO - _initialize_system:197 - 系统初始化完成
+2025-09-22 21:56:02.187 - __main__ - INFO - __init__:171 - 主窗口初始化完成
+2025-09-22 21:56:02.228 - __main__ - INFO - main:1045 - 应用程序启动成功 - 优化响应式设计
+2025-09-22 21:56:21.756 - network - INFO - sendConnect:507 - Connection broadcast sent
+2025-09-22 21:56:21.875 - network - INFO - _handle_connect:315 - Device connected: [164, 62, 20] at 192.168.1.100
+2025-09-22 21:56:21.875 - network - INFO - _handle_connect:319 - Single device connected, commands will target this device
+2025-09-22 21:56:21.882 - __main__ - INFO - _on_state_changed:294 - 状态变更: 0 -> 1
+2025-09-22 21:56:21.886 - __main__ - ERROR - _init_sensors:529 - 传感器初始化失败: 'Wavelength'
+2025-09-22 21:56:21.887 - config - INFO - __init__:229 - Initializing ConfigurationManager
+2025-09-22 21:56:21.887 - config - INFO - get_montage_directory:203 - Montage directory: E:\xfw\code\fnirs\HyBrid_BCI\montage
+2025-09-22 21:56:21.889 - ui_config - INFO - __init__:271 - UIManager initialized
+2025-09-22 21:56:21.889 - ui_config - INFO - setup_ui_for_sensors:275 - Setting up UI for enabled sensors
+2025-09-22 21:56:21.890 - locate - INFO - __init__:322 - Initializing Locate application
+2025-09-22 21:56:21.890 - ui_locate - INFO - __init__:339 - PositionManager initialized with 213 2D positions and 64 3D positions
+2025-09-22 21:56:21.891 - locate - INFO - __init__:133 - ElectrodeManager initialized
+2025-09-22 21:56:21.891 - locate - INFO - __init__:229 - ChannelCalculator initialized with threshold: 40.0mm
+2025-09-22 21:56:21.891 - ui_locate - INFO - setupUi:446 - Setting up UI components
+2025-09-22 21:56:21.891 - ui_locate - INFO - _create_electrode_buttons:491 - Creating default electrode buttons
+2025-09-22 21:56:21.895 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 61 default electrode buttons
+2025-09-22 21:56:21.895 - ui_locate - INFO - _create_electrode_buttons:491 - Creating middle electrode buttons
+2025-09-22 21:56:21.902 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 104 middle electrode buttons
+2025-09-22 21:56:21.902 - ui_locate - INFO - _create_electrode_buttons:491 - Creating center electrode buttons
+2025-09-22 21:56:21.906 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 48 center electrode buttons
+2025-09-22 21:56:21.906 - ui_locate - INFO - setupUi:456 - UI setup completed successfully
+2025-09-22 21:56:21.906 - locate - INFO - set_position_manager:138 - position manager set for ElectrondeManager
+2025-09-22 21:56:21.906 - locate - INFO - _connect_electrode_signals:394 - Connecting signals for 213 electrodes
+2025-09-22 21:56:21.910 - locate - INFO - _connect_electrode_signals:423 - Signal connection complete: 213 success, 0 failed
+2025-09-22 21:56:21.910 - locate - INFO - __init__:328 - Locate application initialized successfully
+2025-09-22 21:56:22.782 - config - INFO - __post_init__:88 - Initializing DeviceConfiguration with sensors: {'fnirs'}
+2025-09-22 21:56:22.782 - ui_config - INFO - initialize_ui_values:425 - UI values initialization completed
+2025-09-22 21:56:22.782 - config - INFO - _initialize_configuration:285 - Configuration initialization completed
+2025-09-22 21:56:22.782 - config - INFO - __init__:249 - ConfigurationManager initialization completed successfully
+2025-09-22 21:56:24.583 - __main__ - INFO - add_component:109 - config 组件添加成功
+2025-09-22 21:56:24.584 - __main__ - INFO - _initialize_config_widget:545 - 配置组件初始化成功
+2025-09-22 21:56:24.584 - __main__ - INFO - on_device_connected:398 - 设备连接成功: ID=[164, 62, 20], Type=4
+2025-09-22 21:56:24.584 - network - INFO - _acknowledge_pending_command:287 - Command CONNECT acknowledged by device [164, 62, 20]
+2025-09-22 21:56:31.898 - network - INFO - sendBatteryQuery:535 - Battery query sent to all devices
+2025-09-22 21:56:32.115 - network - INFO - _handle_battery_query:351 - device battery level:100
+2025-09-22 21:56:40.529 - user - INFO - getNameInitials:92 - Generated initials for 谢发文: XFW_26
+2025-09-22 21:56:41.904 - network - INFO - sendBatteryQuery:535 - Battery query sent to all devices
+2025-09-22 21:56:41.985 - network - INFO - _handle_battery_query:351 - device battery level:100
+2025-09-22 21:56:46.972 - network - INFO - sendDisconnect:514 - Disconnect sent to all devices
+2025-09-22 21:56:47.064 - network - INFO - _handle_disconnect:328 - Device disconnected: [164, 62, 20] at 192.168.1.100
+2025-09-22 21:56:47.065 - __main__ - INFO - remove_component:126 - config 组件已移除
+2025-09-22 21:56:47.067 - __main__ - INFO - _on_state_changed:294 - 状态变更: 1 -> 0
+2025-09-22 21:56:47.069 - __main__ - INFO - on_device_disconnected:425 - 设备断开连接
+2025-09-22 21:56:47.069 - network - INFO - _acknowledge_pending_command:299 - Command DISCONNECT acknowledged by device [164, 62, 20]
+2025-09-22 21:56:48.108 - network - INFO - sendConnect:507 - Connection broadcast sent
+2025-09-22 21:56:48.191 - network - INFO - _handle_connect:315 - Device connected: [164, 62, 20] at 192.168.1.100
+2025-09-22 21:56:48.191 - network - INFO - _handle_connect:319 - Single device connected, commands will target this device
+2025-09-22 21:56:48.192 - __main__ - INFO - _on_state_changed:294 - 状态变更: 0 -> 1
+2025-09-22 21:56:48.193 - __main__ - ERROR - _init_sensors:529 - 传感器初始化失败: 'Wavelength'
+2025-09-22 21:56:48.194 - config - INFO - __init__:229 - Initializing ConfigurationManager
+2025-09-22 21:56:48.194 - config - INFO - get_montage_directory:203 - Montage directory: E:\xfw\code\fnirs\HyBrid_BCI\montage
+2025-09-22 21:56:48.195 - ui_config - INFO - __init__:271 - UIManager initialized
+2025-09-22 21:56:48.196 - ui_config - INFO - setup_ui_for_sensors:275 - Setting up UI for enabled sensors
+2025-09-22 21:56:48.196 - locate - INFO - __init__:322 - Initializing Locate application
+2025-09-22 21:56:48.197 - ui_locate - INFO - __init__:339 - PositionManager initialized with 213 2D positions and 64 3D positions
+2025-09-22 21:56:48.197 - locate - INFO - __init__:133 - ElectrodeManager initialized
+2025-09-22 21:56:48.197 - locate - INFO - __init__:229 - ChannelCalculator initialized with threshold: 40.0mm
+2025-09-22 21:56:48.197 - ui_locate - INFO - setupUi:446 - Setting up UI components
+2025-09-22 21:56:48.197 - ui_locate - INFO - _create_electrode_buttons:491 - Creating default electrode buttons
+2025-09-22 21:56:48.201 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 61 default electrode buttons
+2025-09-22 21:56:48.202 - ui_locate - INFO - _create_electrode_buttons:491 - Creating middle electrode buttons
+2025-09-22 21:56:48.208 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 104 middle electrode buttons
+2025-09-22 21:56:48.208 - ui_locate - INFO - _create_electrode_buttons:491 - Creating center electrode buttons
+2025-09-22 21:56:48.211 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 48 center electrode buttons
+2025-09-22 21:56:48.211 - ui_locate - INFO - setupUi:456 - UI setup completed successfully
+2025-09-22 21:56:48.212 - locate - INFO - set_position_manager:138 - position manager set for ElectrondeManager
+2025-09-22 21:56:48.212 - locate - INFO - _connect_electrode_signals:394 - Connecting signals for 213 electrodes
+2025-09-22 21:56:48.215 - locate - INFO - _connect_electrode_signals:423 - Signal connection complete: 213 success, 0 failed
+2025-09-22 21:56:48.215 - locate - INFO - __init__:328 - Locate application initialized successfully
+2025-09-22 21:56:49.118 - config - INFO - __post_init__:88 - Initializing DeviceConfiguration with sensors: {'fnirs'}
+2025-09-22 21:56:49.119 - ui_config - INFO - initialize_ui_values:425 - UI values initialization completed
+2025-09-22 21:56:49.119 - config - INFO - _initialize_configuration:285 - Configuration initialization completed
+2025-09-22 21:56:49.119 - config - INFO - __init__:249 - ConfigurationManager initialization completed successfully
+2025-09-22 21:56:50.994 - __main__ - INFO - add_component:109 - config 组件添加成功
+2025-09-22 21:56:50.994 - __main__ - INFO - _initialize_config_widget:545 - 配置组件初始化成功
+2025-09-22 21:56:50.994 - __main__ - INFO - on_device_connected:398 - 设备连接成功: ID=[164, 62, 20], Type=4
+2025-09-22 21:56:50.994 - network - INFO - _acknowledge_pending_command:287 - Command CONNECT acknowledged by device [164, 62, 20]
+2025-09-22 21:56:50.995 - __main__ - WARNING - force_disconnect:478 - 强制断开连接
+2025-09-22 21:56:50.995 - __main__ - INFO - remove_component:126 - config 组件已移除
+2025-09-22 21:56:50.996 - __main__ - INFO - _on_state_changed:294 - 状态变更: 1 -> 0
+2025-09-22 21:56:50.997 - __main__ - INFO - on_device_disconnected:425 - 设备断开连接
+2025-09-22 21:56:55.437 - network - INFO - sendConnect:507 - Connection broadcast sent
+2025-09-22 21:56:55.563 - network - INFO - _handle_connect:315 - Device connected: [164, 62, 20] at 192.168.1.100
+2025-09-22 21:56:55.564 - network - INFO - _handle_connect:319 - Single device connected, commands will target this device
+2025-09-22 21:56:55.564 - __main__ - INFO - _on_state_changed:294 - 状态变更: 0 -> 1
+2025-09-22 21:56:55.566 - __main__ - ERROR - _init_sensors:529 - 传感器初始化失败: 'Wavelength'
+2025-09-22 21:56:55.566 - config - INFO - __init__:229 - Initializing ConfigurationManager
+2025-09-22 21:56:55.567 - config - INFO - get_montage_directory:203 - Montage directory: E:\xfw\code\fnirs\HyBrid_BCI\montage
+2025-09-22 21:56:55.568 - ui_config - INFO - __init__:271 - UIManager initialized
+2025-09-22 21:56:55.569 - ui_config - INFO - setup_ui_for_sensors:275 - Setting up UI for enabled sensors
+2025-09-22 21:56:55.569 - locate - INFO - __init__:322 - Initializing Locate application
+2025-09-22 21:56:55.570 - ui_locate - INFO - __init__:339 - PositionManager initialized with 213 2D positions and 64 3D positions
+2025-09-22 21:56:55.570 - locate - INFO - __init__:133 - ElectrodeManager initialized
+2025-09-22 21:56:55.570 - locate - INFO - __init__:229 - ChannelCalculator initialized with threshold: 40.0mm
+2025-09-22 21:56:55.570 - ui_locate - INFO - setupUi:446 - Setting up UI components
+2025-09-22 21:56:55.570 - ui_locate - INFO - _create_electrode_buttons:491 - Creating default electrode buttons
+2025-09-22 21:56:55.575 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 61 default electrode buttons
+2025-09-22 21:56:55.575 - ui_locate - INFO - _create_electrode_buttons:491 - Creating middle electrode buttons
+2025-09-22 21:56:55.581 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 104 middle electrode buttons
+2025-09-22 21:56:55.581 - ui_locate - INFO - _create_electrode_buttons:491 - Creating center electrode buttons
+2025-09-22 21:56:55.585 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 48 center electrode buttons
+2025-09-22 21:56:55.585 - ui_locate - INFO - setupUi:456 - UI setup completed successfully
+2025-09-22 21:56:55.585 - locate - INFO - set_position_manager:138 - position manager set for ElectrondeManager
+2025-09-22 21:56:55.585 - locate - INFO - _connect_electrode_signals:394 - Connecting signals for 213 electrodes
+2025-09-22 21:56:55.589 - locate - INFO - _connect_electrode_signals:423 - Signal connection complete: 213 success, 0 failed
+2025-09-22 21:56:55.589 - locate - INFO - __init__:328 - Locate application initialized successfully
+2025-09-22 21:56:56.464 - config - INFO - __post_init__:88 - Initializing DeviceConfiguration with sensors: {'fnirs'}
+2025-09-22 21:56:56.464 - ui_config - INFO - initialize_ui_values:425 - UI values initialization completed
+2025-09-22 21:56:56.465 - config - INFO - _initialize_configuration:285 - Configuration initialization completed
+2025-09-22 21:56:56.465 - config - INFO - __init__:249 - ConfigurationManager initialization completed successfully
+2025-09-22 21:56:58.249 - __main__ - INFO - add_component:109 - config 组件添加成功
+2025-09-22 21:56:58.250 - __main__ - INFO - _initialize_config_widget:545 - 配置组件初始化成功
+2025-09-22 21:56:58.250 - __main__ - INFO - on_device_connected:398 - 设备连接成功: ID=[164, 62, 20], Type=4
+2025-09-22 21:56:58.250 - network - INFO - _acknowledge_pending_command:287 - Command CONNECT acknowledged by device [164, 62, 20]
+2025-09-22 21:57:05.571 - network - INFO - sendBatteryQuery:535 - Battery query sent to all devices
+2025-09-22 21:57:05.804 - network - INFO - _handle_battery_query:351 - device battery level:90
+2025-09-22 21:57:15.577 - network - INFO - sendBatteryQuery:535 - Battery query sent to all devices
+2025-09-22 21:57:15.736 - network - INFO - _handle_battery_query:351 - device battery level:100
+2025-09-22 21:57:25.573 - network - INFO - sendBatteryQuery:535 - Battery query sent to all devices
+2025-09-22 21:57:25.771 - network - INFO - _handle_battery_query:351 - device battery level:90
+2025-09-22 21:57:34.946 - __main__ - INFO - _perform_shutdown:994 - 开始关闭清理...
+2025-09-22 21:57:34.949 - network - INFO - sendDisconnect:514 - Disconnect sent to all devices
+2025-09-22 21:57:35.001 - network - INFO - _handle_disconnect:328 - Device disconnected: [164, 62, 20] at 192.168.1.100
+2025-09-22 21:57:35.002 - network - INFO - _acknowledge_pending_command:299 - Command DISCONNECT acknowledged by device [164, 62, 20]
+2025-09-22 21:57:36.278 - __main__ - INFO - remove_component:126 - user 组件已移除
+2025-09-22 21:57:36.279 - __main__ - INFO - remove_component:126 - config 组件已移除
+2025-09-22 21:57:36.279 - network - INFO - close:583 - Network closed
+2025-09-22 21:57:36.279 - __main__ - INFO - _perform_shutdown:1024 - 关闭清理完成
+2025-09-22 21:57:36.279 - __main__ - INFO - closeEvent:987 - 应用程序关闭成功
+2025-09-22 22:01:06.516 - locate - INFO - setup_logging:36 - Logging initialized with level: INFO
+2025-09-22 22:01:06.535 - __main__ - INFO - main:916 - Starting Device Configuration Manager v2.0.0
+2025-09-22 22:01:06.535 - __main__ - INFO - __init__:229 - Initializing ConfigurationManager
+2025-09-22 22:01:06.536 - __main__ - INFO - get_montage_directory:203 - Montage directory: E:\xfw\code\fnirs\HyBrid_BCI\montage
+2025-09-22 22:01:07.021 - ui_config - INFO - __init__:271 - UIManager initialized
+2025-09-22 22:01:07.021 - ui_config - INFO - setup_ui_for_sensors:275 - Setting up UI for enabled sensors
+2025-09-22 22:01:07.023 - locate - INFO - __init__:322 - Initializing Locate application
+2025-09-22 22:01:07.024 - ui_locate - INFO - __init__:339 - PositionManager initialized with 213 2D positions and 64 3D positions
+2025-09-22 22:01:07.024 - locate - INFO - __init__:133 - ElectrodeManager initialized
+2025-09-22 22:01:07.024 - locate - INFO - __init__:229 - ChannelCalculator initialized with threshold: 40.0mm
+2025-09-22 22:01:07.024 - ui_locate - INFO - setupUi:446 - Setting up UI components
+2025-09-22 22:01:07.025 - ui_locate - INFO - _create_electrode_buttons:491 - Creating default electrode buttons
+2025-09-22 22:01:07.029 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 61 default electrode buttons
+2025-09-22 22:01:07.029 - ui_locate - INFO - _create_electrode_buttons:491 - Creating middle electrode buttons
+2025-09-22 22:01:07.037 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 104 middle electrode buttons
+2025-09-22 22:01:07.037 - ui_locate - INFO - _create_electrode_buttons:491 - Creating center electrode buttons
+2025-09-22 22:01:07.040 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 48 center electrode buttons
+2025-09-22 22:01:07.041 - ui_locate - INFO - setupUi:456 - UI setup completed successfully
+2025-09-22 22:01:07.041 - locate - INFO - set_position_manager:138 - position manager set for ElectrondeManager
+2025-09-22 22:01:07.041 - locate - INFO - _connect_electrode_signals:394 - Connecting signals for 213 electrodes
+2025-09-22 22:01:07.046 - locate - INFO - _connect_electrode_signals:423 - Signal connection complete: 213 success, 0 failed
+2025-09-22 22:01:07.046 - locate - INFO - __init__:328 - Locate application initialized successfully
+2025-09-22 22:01:07.842 - __main__ - INFO - __post_init__:88 - Initializing DeviceConfiguration with sensors: {'fnirs'}
+2025-09-22 22:01:07.843 - ui_config - INFO - initialize_ui_values:425 - UI values initialization completed
+2025-09-22 22:01:07.843 - __main__ - INFO - _initialize_configuration:285 - Configuration initialization completed
+2025-09-22 22:01:07.843 - __main__ - INFO - __init__:249 - ConfigurationManager initialization completed successfully
+2025-09-22 22:01:08.816 - __main__ - INFO - main:930 - Configuration Manager started successfully with sensors: FNIRS
+2025-09-22 22:01:08.816 - __main__ - INFO - main:932 - Initial configuration: {'enabled_sensors': ['fnirs'], 'sampling_rates': {'fnirs': 10}, 'total_channels': {'fnirs': 0}, 'channel_counts': {'fnirs_sources': 8, 'fnirs_detectors': 8}, 'enabled_channels': {'fnirs': {}, 'fnirssource': [], 'fnirsdetect': []}}
+2025-09-22 22:01:15.208 - __main__ - INFO - main:936 - Application exited with code: 0
+2025-09-22 22:01:21.811 - locate - INFO - setup_logging:36 - Logging initialized with level: INFO
+2025-09-22 22:01:21.831 - __main__ - INFO - main:916 - Starting Device Configuration Manager v2.0.0
+2025-09-22 22:01:21.831 - __main__ - INFO - __init__:229 - Initializing ConfigurationManager
+2025-09-22 22:01:21.832 - __main__ - INFO - get_montage_directory:203 - Montage directory: E:\xfw\code\fnirs\HyBrid_BCI\montage
+2025-09-22 22:01:22.308 - ui_config - INFO - __init__:271 - UIManager initialized
+2025-09-22 22:01:22.308 - ui_config - INFO - setup_ui_for_sensors:275 - Setting up UI for enabled sensors
+2025-09-22 22:01:22.310 - locate - INFO - __init__:322 - Initializing Locate application
+2025-09-22 22:01:22.311 - ui_locate - INFO - __init__:339 - PositionManager initialized with 213 2D positions and 64 3D positions
+2025-09-22 22:01:22.311 - locate - INFO - __init__:133 - ElectrodeManager initialized
+2025-09-22 22:01:22.311 - locate - INFO - __init__:229 - ChannelCalculator initialized with threshold: 40.0mm
+2025-09-22 22:01:22.311 - ui_locate - INFO - setupUi:446 - Setting up UI components
+2025-09-22 22:01:22.311 - ui_locate - INFO - _create_electrode_buttons:491 - Creating default electrode buttons
+2025-09-22 22:01:22.316 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 61 default electrode buttons
+2025-09-22 22:01:22.316 - ui_locate - INFO - _create_electrode_buttons:491 - Creating middle electrode buttons
+2025-09-22 22:01:22.324 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 104 middle electrode buttons
+2025-09-22 22:01:22.324 - ui_locate - INFO - _create_electrode_buttons:491 - Creating center electrode buttons
+2025-09-22 22:01:22.327 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 48 center electrode buttons
+2025-09-22 22:01:22.328 - ui_locate - INFO - setupUi:456 - UI setup completed successfully
+2025-09-22 22:01:22.328 - locate - INFO - set_position_manager:138 - position manager set for ElectrondeManager
+2025-09-22 22:01:22.328 - locate - INFO - _connect_electrode_signals:394 - Connecting signals for 213 electrodes
+2025-09-22 22:01:22.332 - locate - INFO - _connect_electrode_signals:423 - Signal connection complete: 213 success, 0 failed
+2025-09-22 22:01:22.333 - locate - INFO - __init__:328 - Locate application initialized successfully
+2025-09-22 22:01:23.010 - __main__ - INFO - __post_init__:88 - Initializing DeviceConfiguration with sensors: {'fnirs'}
+2025-09-22 22:01:23.010 - ui_config - INFO - initialize_ui_values:425 - UI values initialization completed
+2025-09-22 22:01:23.010 - __main__ - INFO - _initialize_configuration:285 - Configuration initialization completed
+2025-09-22 22:01:23.011 - __main__ - INFO - __init__:249 - ConfigurationManager initialization completed successfully
+2025-09-22 22:01:23.843 - __main__ - INFO - main:930 - Configuration Manager started successfully with sensors: FNIRS
+2025-09-22 22:01:23.843 - __main__ - INFO - main:932 - Initial configuration: {'enabled_sensors': ['fnirs'], 'sampling_rates': {'fnirs': 10}, 'total_channels': {'fnirs': 0}, 'channel_counts': {'fnirs_sources': 8, 'fnirs_detectors': 8}, 'enabled_channels': {'fnirs': {}, 'fnirssource': [], 'fnirsdetect': []}}
+2025-09-22 22:01:32.827 - __main__ - INFO - main:936 - Application exited with code: 0
+2025-09-22 22:02:09.752 - locate - INFO - setup_logging:36 - Logging initialized with level: INFO
+2025-09-22 22:02:09.772 - __main__ - INFO - main:916 - Starting Device Configuration Manager v2.0.0
+2025-09-22 22:02:09.772 - __main__ - INFO - __init__:229 - Initializing ConfigurationManager
+2025-09-22 22:02:09.773 - __main__ - INFO - get_montage_directory:203 - Montage directory: E:\xfw\code\fnirs\HyBrid_BCI\montage
+2025-09-22 22:02:10.258 - ui_config - INFO - __init__:271 - UIManager initialized
+2025-09-22 22:02:10.258 - ui_config - INFO - setup_ui_for_sensors:275 - Setting up UI for enabled sensors
+2025-09-22 22:02:10.260 - locate - INFO - __init__:322 - Initializing Locate application
+2025-09-22 22:02:10.261 - ui_locate - INFO - __init__:339 - PositionManager initialized with 213 2D positions and 64 3D positions
+2025-09-22 22:02:10.261 - locate - INFO - __init__:133 - ElectrodeManager initialized
+2025-09-22 22:02:10.261 - locate - INFO - __init__:229 - ChannelCalculator initialized with threshold: 40.0mm
+2025-09-22 22:02:10.261 - ui_locate - INFO - setupUi:446 - Setting up UI components
+2025-09-22 22:02:10.261 - ui_locate - INFO - _create_electrode_buttons:491 - Creating default electrode buttons
+2025-09-22 22:02:10.266 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 61 default electrode buttons
+2025-09-22 22:02:10.266 - ui_locate - INFO - _create_electrode_buttons:491 - Creating middle electrode buttons
+2025-09-22 22:02:10.273 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 104 middle electrode buttons
+2025-09-22 22:02:10.273 - ui_locate - INFO - _create_electrode_buttons:491 - Creating center electrode buttons
+2025-09-22 22:02:10.276 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 48 center electrode buttons
+2025-09-22 22:02:10.276 - ui_locate - INFO - setupUi:456 - UI setup completed successfully
+2025-09-22 22:02:10.277 - locate - INFO - set_position_manager:138 - position manager set for ElectrondeManager
+2025-09-22 22:02:10.277 - locate - INFO - _connect_electrode_signals:394 - Connecting signals for 213 electrodes
+2025-09-22 22:02:10.281 - locate - INFO - _connect_electrode_signals:423 - Signal connection complete: 213 success, 0 failed
+2025-09-22 22:02:10.281 - locate - INFO - __init__:328 - Locate application initialized successfully
+2025-09-22 22:02:11.094 - __main__ - INFO - __post_init__:88 - Initializing DeviceConfiguration with sensors: {'fnirs'}
+2025-09-22 22:02:11.094 - ui_config - INFO - initialize_ui_values:425 - UI values initialization completed
+2025-09-22 22:02:11.095 - __main__ - INFO - _initialize_configuration:285 - Configuration initialization completed
+2025-09-22 22:02:11.095 - __main__ - INFO - __init__:249 - ConfigurationManager initialization completed successfully
+2025-09-22 22:02:11.948 - __main__ - INFO - main:930 - Configuration Manager started successfully with sensors: FNIRS
+2025-09-22 22:02:11.949 - __main__ - INFO - main:932 - Initial configuration: {'enabled_sensors': ['fnirs'], 'sampling_rates': {'fnirs': 10}, 'total_channels': {'fnirs': 0}, 'channel_counts': {'fnirs_sources': 8, 'fnirs_detectors': 8}, 'enabled_channels': {'fnirs': {}, 'fnirssource': [], 'fnirsdetect': []}}
+2025-09-22 22:02:17.099 - __main__ - INFO - main:936 - Application exited with code: 0
+2025-09-22 22:02:54.733 - locate - INFO - setup_logging:36 - Logging initialized with level: INFO
+2025-09-22 22:02:54.753 - __main__ - INFO - main:916 - Starting Device Configuration Manager v2.0.0
+2025-09-22 22:02:54.753 - __main__ - INFO - __init__:229 - Initializing ConfigurationManager
+2025-09-22 22:02:54.753 - __main__ - INFO - get_montage_directory:203 - Montage directory: E:\xfw\code\fnirs\HyBrid_BCI\montage
+2025-09-22 22:02:55.216 - ui_config - INFO - __init__:271 - UIManager initialized
+2025-09-22 22:02:55.216 - ui_config - INFO - setup_ui_for_sensors:275 - Setting up UI for enabled sensors
+2025-09-22 22:02:55.218 - locate - INFO - __init__:322 - Initializing Locate application
+2025-09-22 22:02:55.218 - ui_locate - INFO - __init__:339 - PositionManager initialized with 213 2D positions and 64 3D positions
+2025-09-22 22:02:55.218 - locate - INFO - __init__:133 - ElectrodeManager initialized
+2025-09-22 22:02:55.218 - locate - INFO - __init__:229 - ChannelCalculator initialized with threshold: 40.0mm
+2025-09-22 22:02:55.218 - ui_locate - INFO - setupUi:446 - Setting up UI components
+2025-09-22 22:02:55.219 - ui_locate - INFO - _create_electrode_buttons:491 - Creating default electrode buttons
+2025-09-22 22:02:55.223 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 61 default electrode buttons
+2025-09-22 22:02:55.223 - ui_locate - INFO - _create_electrode_buttons:491 - Creating middle electrode buttons
+2025-09-22 22:02:55.232 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 104 middle electrode buttons
+2025-09-22 22:02:55.232 - ui_locate - INFO - _create_electrode_buttons:491 - Creating center electrode buttons
+2025-09-22 22:02:55.235 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 48 center electrode buttons
+2025-09-22 22:02:55.236 - ui_locate - INFO - setupUi:456 - UI setup completed successfully
+2025-09-22 22:02:55.236 - locate - INFO - set_position_manager:138 - position manager set for ElectrondeManager
+2025-09-22 22:02:55.236 - locate - INFO - _connect_electrode_signals:394 - Connecting signals for 213 electrodes
+2025-09-22 22:02:55.240 - locate - INFO - _connect_electrode_signals:423 - Signal connection complete: 213 success, 0 failed
+2025-09-22 22:02:55.240 - locate - INFO - __init__:328 - Locate application initialized successfully
+2025-09-22 22:02:55.936 - __main__ - INFO - __post_init__:88 - Initializing DeviceConfiguration with sensors: {'fnirs'}
+2025-09-22 22:02:55.937 - ui_config - INFO - initialize_ui_values:425 - UI values initialization completed
+2025-09-22 22:02:55.937 - __main__ - INFO - _initialize_configuration:285 - Configuration initialization completed
+2025-09-22 22:02:55.937 - __main__ - INFO - __init__:249 - ConfigurationManager initialization completed successfully
+2025-09-22 22:02:56.724 - __main__ - INFO - main:930 - Configuration Manager started successfully with sensors: FNIRS
+2025-09-22 22:02:56.725 - __main__ - INFO - main:932 - Initial configuration: {'enabled_sensors': ['fnirs'], 'sampling_rates': {'fnirs': 10}, 'total_channels': {'fnirs': 0}, 'channel_counts': {'fnirs_sources': 8, 'fnirs_detectors': 8}, 'enabled_channels': {'fnirs': {}, 'fnirssource': [], 'fnirsdetect': []}}
+2025-09-22 22:03:02.625 - __main__ - INFO - main:936 - Application exited with code: 0
+2025-09-22 22:03:11.930 - locate - INFO - setup_logging:36 - Logging initialized with level: INFO
+2025-09-22 22:03:11.948 - __main__ - INFO - main:916 - Starting Device Configuration Manager v2.0.0
+2025-09-22 22:03:11.949 - __main__ - INFO - __init__:229 - Initializing ConfigurationManager
+2025-09-22 22:03:11.950 - __main__ - INFO - get_montage_directory:203 - Montage directory: E:\xfw\code\fnirs\HyBrid_BCI\montage
+2025-09-22 22:03:12.423 - ui_config - INFO - __init__:271 - UIManager initialized
+2025-09-22 22:03:12.423 - ui_config - INFO - setup_ui_for_sensors:275 - Setting up UI for enabled sensors
+2025-09-22 22:03:12.424 - locate - INFO - __init__:322 - Initializing Locate application
+2025-09-22 22:03:12.425 - ui_locate - INFO - __init__:339 - PositionManager initialized with 213 2D positions and 64 3D positions
+2025-09-22 22:03:12.425 - locate - INFO - __init__:133 - ElectrodeManager initialized
+2025-09-22 22:03:12.425 - locate - INFO - __init__:229 - ChannelCalculator initialized with threshold: 40.0mm
+2025-09-22 22:03:12.425 - ui_locate - INFO - setupUi:446 - Setting up UI components
+2025-09-22 22:03:12.426 - ui_locate - INFO - _create_electrode_buttons:491 - Creating default electrode buttons
+2025-09-22 22:03:12.429 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 61 default electrode buttons
+2025-09-22 22:03:12.430 - ui_locate - INFO - _create_electrode_buttons:491 - Creating middle electrode buttons
+2025-09-22 22:03:12.436 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 104 middle electrode buttons
+2025-09-22 22:03:12.436 - ui_locate - INFO - _create_electrode_buttons:491 - Creating center electrode buttons
+2025-09-22 22:03:12.440 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 48 center electrode buttons
+2025-09-22 22:03:12.440 - ui_locate - INFO - setupUi:456 - UI setup completed successfully
+2025-09-22 22:03:12.440 - locate - INFO - set_position_manager:138 - position manager set for ElectrondeManager
+2025-09-22 22:03:12.440 - locate - INFO - _connect_electrode_signals:394 - Connecting signals for 213 electrodes
+2025-09-22 22:03:12.444 - locate - INFO - _connect_electrode_signals:423 - Signal connection complete: 213 success, 0 failed
+2025-09-22 22:03:12.444 - locate - INFO - __init__:328 - Locate application initialized successfully
+2025-09-22 22:03:13.175 - __main__ - INFO - __post_init__:88 - Initializing DeviceConfiguration with sensors: {'fnirs'}
+2025-09-22 22:03:13.175 - ui_config - INFO - initialize_ui_values:425 - UI values initialization completed
+2025-09-22 22:03:13.175 - __main__ - INFO - _initialize_configuration:285 - Configuration initialization completed
+2025-09-22 22:03:13.175 - __main__ - INFO - __init__:249 - ConfigurationManager initialization completed successfully
+2025-09-22 22:03:13.972 - __main__ - INFO - main:930 - Configuration Manager started successfully with sensors: FNIRS
+2025-09-22 22:03:13.972 - __main__ - INFO - main:932 - Initial configuration: {'enabled_sensors': ['fnirs'], 'sampling_rates': {'fnirs': 10}, 'total_channels': {'fnirs': 0}, 'channel_counts': {'fnirs_sources': 8, 'fnirs_detectors': 8}, 'enabled_channels': {'fnirs': {}, 'fnirssource': [], 'fnirsdetect': []}}
+2025-09-22 22:03:19.732 - __main__ - INFO - main:936 - Application exited with code: 0
+2025-09-22 22:03:27.015 - locate - INFO - setup_logging:36 - Logging initialized with level: INFO
+2025-09-22 22:03:27.034 - __main__ - INFO - main:916 - Starting Device Configuration Manager v2.0.0
+2025-09-22 22:03:27.035 - __main__ - INFO - __init__:229 - Initializing ConfigurationManager
+2025-09-22 22:03:27.035 - __main__ - INFO - get_montage_directory:203 - Montage directory: E:\xfw\code\fnirs\HyBrid_BCI\montage
+2025-09-22 22:03:27.512 - ui_config - INFO - __init__:271 - UIManager initialized
+2025-09-22 22:03:27.512 - ui_config - INFO - setup_ui_for_sensors:275 - Setting up UI for enabled sensors
+2025-09-22 22:03:27.514 - locate - INFO - __init__:322 - Initializing Locate application
+2025-09-22 22:03:27.514 - ui_locate - INFO - __init__:339 - PositionManager initialized with 213 2D positions and 64 3D positions
+2025-09-22 22:03:27.514 - locate - INFO - __init__:133 - ElectrodeManager initialized
+2025-09-22 22:03:27.514 - locate - INFO - __init__:229 - ChannelCalculator initialized with threshold: 40.0mm
+2025-09-22 22:03:27.515 - ui_locate - INFO - setupUi:446 - Setting up UI components
+2025-09-22 22:03:27.515 - ui_locate - INFO - _create_electrode_buttons:491 - Creating default electrode buttons
+2025-09-22 22:03:27.520 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 61 default electrode buttons
+2025-09-22 22:03:27.520 - ui_locate - INFO - _create_electrode_buttons:491 - Creating middle electrode buttons
+2025-09-22 22:03:27.527 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 104 middle electrode buttons
+2025-09-22 22:03:27.527 - ui_locate - INFO - _create_electrode_buttons:491 - Creating center electrode buttons
+2025-09-22 22:03:27.530 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 48 center electrode buttons
+2025-09-22 22:03:27.530 - ui_locate - INFO - setupUi:456 - UI setup completed successfully
+2025-09-22 22:03:27.531 - locate - INFO - set_position_manager:138 - position manager set for ElectrondeManager
+2025-09-22 22:03:27.531 - locate - INFO - _connect_electrode_signals:394 - Connecting signals for 213 electrodes
+2025-09-22 22:03:27.535 - locate - INFO - _connect_electrode_signals:423 - Signal connection complete: 213 success, 0 failed
+2025-09-22 22:03:27.535 - locate - INFO - __init__:328 - Locate application initialized successfully
+2025-09-22 22:03:28.289 - __main__ - INFO - __post_init__:88 - Initializing DeviceConfiguration with sensors: {'fnirs'}
+2025-09-22 22:03:28.294 - ui_config - INFO - initialize_ui_values:425 - UI values initialization completed
+2025-09-22 22:03:28.294 - __main__ - INFO - _initialize_configuration:285 - Configuration initialization completed
+2025-09-22 22:03:28.294 - __main__ - INFO - __init__:249 - ConfigurationManager initialization completed successfully
+2025-09-22 22:03:29.069 - __main__ - INFO - main:930 - Configuration Manager started successfully with sensors: FNIRS
+2025-09-22 22:03:29.069 - __main__ - INFO - main:932 - Initial configuration: {'enabled_sensors': ['fnirs'], 'sampling_rates': {'fnirs': 10}, 'total_channels': {'fnirs': 0}, 'channel_counts': {'fnirs_sources': 8, 'fnirs_detectors': 8}, 'enabled_channels': {'fnirs': {}, 'fnirssource': [], 'fnirsdetect': []}}
+2025-09-22 22:03:42.441 - __main__ - INFO - main:936 - Application exited with code: 0
+2025-09-22 22:03:49.882 - locate - INFO - setup_logging:36 - Logging initialized with level: INFO
+2025-09-22 22:03:50.003 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-22 22:03:50.003 - network - INFO - _setup_network:119 - Network ready: 192.168.1.101:1227 -> 192.168.1.255:2227
+2025-09-22 22:03:50.003 - __main__ - INFO - _initialize_network:208 - 网络模块初始化成功
+2025-09-22 22:03:50.415 - __main__ - INFO - add_component:109 - user 组件添加成功
+2025-09-22 22:03:50.480 - __main__ - INFO - _initialize_system:197 - 系统初始化完成
+2025-09-22 22:03:50.481 - __main__ - INFO - __init__:171 - 主窗口初始化完成
+2025-09-22 22:03:50.520 - __main__ - INFO - main:1045 - 应用程序启动成功 - 优化响应式设计
+2025-09-22 22:04:09.927 - user - INFO - getNameInitials:92 - Generated initials for 谢发文: XFW_26
+2025-09-22 22:04:10.997 - network - INFO - sendConnect:507 - Connection broadcast sent
+2025-09-22 22:04:11.266 - network - INFO - _handle_connect:315 - Device connected: [164, 62, 20] at 192.168.1.100
+2025-09-22 22:04:11.266 - network - INFO - _handle_connect:319 - Single device connected, commands will target this device
+2025-09-22 22:04:11.267 - __main__ - INFO - _on_state_changed:294 - 状态变更: 0 -> 1
+2025-09-22 22:04:11.271 - __main__ - ERROR - _init_sensors:529 - 传感器初始化失败: 'Wavelength'
+2025-09-22 22:04:11.271 - config - INFO - __init__:229 - Initializing ConfigurationManager
+2025-09-22 22:04:11.271 - config - INFO - get_montage_directory:203 - Montage directory: E:\xfw\code\fnirs\HyBrid_BCI\montage
+2025-09-22 22:04:11.273 - ui_config - INFO - __init__:271 - UIManager initialized
+2025-09-22 22:04:11.273 - ui_config - INFO - setup_ui_for_sensors:275 - Setting up UI for enabled sensors
+2025-09-22 22:04:11.274 - locate - INFO - __init__:322 - Initializing Locate application
+2025-09-22 22:04:11.275 - ui_locate - INFO - __init__:339 - PositionManager initialized with 213 2D positions and 64 3D positions
+2025-09-22 22:04:11.275 - locate - INFO - __init__:133 - ElectrodeManager initialized
+2025-09-22 22:04:11.275 - locate - INFO - __init__:229 - ChannelCalculator initialized with threshold: 40.0mm
+2025-09-22 22:04:11.275 - ui_locate - INFO - setupUi:446 - Setting up UI components
+2025-09-22 22:04:11.275 - ui_locate - INFO - _create_electrode_buttons:491 - Creating default electrode buttons
+2025-09-22 22:04:11.280 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 61 default electrode buttons
+2025-09-22 22:04:11.280 - ui_locate - INFO - _create_electrode_buttons:491 - Creating middle electrode buttons
+2025-09-22 22:04:11.287 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 104 middle electrode buttons
+2025-09-22 22:04:11.287 - ui_locate - INFO - _create_electrode_buttons:491 - Creating center electrode buttons
+2025-09-22 22:04:11.290 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 48 center electrode buttons
+2025-09-22 22:04:11.290 - ui_locate - INFO - setupUi:456 - UI setup completed successfully
+2025-09-22 22:04:11.291 - locate - INFO - set_position_manager:138 - position manager set for ElectrondeManager
+2025-09-22 22:04:11.291 - locate - INFO - _connect_electrode_signals:394 - Connecting signals for 213 electrodes
+2025-09-22 22:04:11.294 - locate - INFO - _connect_electrode_signals:423 - Signal connection complete: 213 success, 0 failed
+2025-09-22 22:04:11.295 - locate - INFO - __init__:328 - Locate application initialized successfully
+2025-09-22 22:04:12.225 - config - INFO - __post_init__:88 - Initializing DeviceConfiguration with sensors: {'fnirs'}
+2025-09-22 22:04:12.225 - ui_config - INFO - initialize_ui_values:425 - UI values initialization completed
+2025-09-22 22:04:12.226 - config - INFO - _initialize_configuration:285 - Configuration initialization completed
+2025-09-22 22:04:12.226 - config - INFO - __init__:249 - ConfigurationManager initialization completed successfully
+2025-09-22 22:04:14.073 - __main__ - INFO - add_component:109 - config 组件添加成功
+2025-09-22 22:04:14.074 - __main__ - INFO - _initialize_config_widget:545 - 配置组件初始化成功
+2025-09-22 22:04:14.074 - __main__ - INFO - on_device_connected:398 - 设备连接成功: ID=[164, 62, 20], Type=4
+2025-09-22 22:04:14.074 - network - INFO - _acknowledge_pending_command:287 - Command CONNECT acknowledged by device [164, 62, 20]
+2025-09-22 22:04:21.270 - network - INFO - sendBatteryQuery:535 - Battery query sent to all devices
+2025-09-22 22:04:31.262 - network - INFO - sendBatteryQuery:535 - Battery query sent to all devices
+2025-09-22 22:04:31.437 - network - INFO - _handle_battery_query:351 - device battery level:100
+2025-09-22 22:04:41.262 - network - INFO - sendBatteryQuery:535 - Battery query sent to all devices
+2025-09-22 22:04:51.268 - network - INFO - sendBatteryQuery:535 - Battery query sent to all devices
+2025-09-22 22:05:01.270 - network - INFO - sendBatteryQuery:535 - Battery query sent to all devices
+2025-09-22 22:05:01.543 - network - INFO - _handle_battery_query:351 - device battery level:100
+2025-09-22 22:05:11.261 - network - INFO - sendBatteryQuery:535 - Battery query sent to all devices
+2025-09-22 22:05:11.474 - network - INFO - _handle_battery_query:351 - device battery level:90
+2025-09-22 22:05:21.263 - network - INFO - sendBatteryQuery:535 - Battery query sent to all devices
+2025-09-22 22:05:21.407 - network - INFO - _handle_battery_query:351 - device battery level:100
+2025-09-22 22:05:31.268 - network - INFO - sendBatteryQuery:535 - Battery query sent to all devices
+2025-09-22 22:05:31.441 - network - INFO - _handle_battery_query:351 - device battery level:100
+2025-09-22 22:05:41.264 - network - INFO - sendBatteryQuery:535 - Battery query sent to all devices
+2025-09-22 22:05:41.476 - network - INFO - _handle_battery_query:351 - device battery level:90
+2025-09-22 22:05:47.409 - __main__ - INFO - _perform_shutdown:994 - 开始关闭清理...
+2025-09-22 22:05:47.410 - network - INFO - sendDisconnect:514 - Disconnect sent to all devices
+2025-09-22 22:05:47.518 - network - INFO - _handle_disconnect:328 - Device disconnected: [164, 62, 20] at 192.168.1.100
+2025-09-22 22:05:47.518 - network - INFO - _acknowledge_pending_command:299 - Command DISCONNECT acknowledged by device [164, 62, 20]
+2025-09-22 22:05:49.726 - __main__ - INFO - remove_component:126 - user 组件已移除
+2025-09-22 22:05:49.727 - __main__ - INFO - remove_component:126 - config 组件已移除
+2025-09-22 22:05:49.727 - network - INFO - close:583 - Network closed
+2025-09-22 22:05:49.727 - __main__ - INFO - _perform_shutdown:1024 - 关闭清理完成
+2025-09-22 22:05:49.728 - __main__ - INFO - closeEvent:987 - 应用程序关闭成功

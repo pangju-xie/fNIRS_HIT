@@ -63,12 +63,12 @@ class Ui_ConfigForm(object):
     def _setup_sampling_rate_group(self, ConfigForm):
         """Setup sampling rate configuration group"""
         self.samplingRateGroup = QtWidgets.QGroupBox(ConfigForm)
-        self.samplingRateGroup.setGeometry(QtCore.QRect(20, 20, 1160, 80))
+        self.samplingRateGroup.setGeometry(QtCore.QRect(20, 20, 1160, 60))
         self.samplingRateGroup.setObjectName("samplingRateGroup")
         self.samplingRateGroup.setTitle("采样率配置")
 
         self.samplingRateWidget = QtWidgets.QWidget(self.samplingRateGroup)
-        self.samplingRateWidget.setGeometry(QtCore.QRect(10, 25, 1140, 45))
+        self.samplingRateWidget.setGeometry(QtCore.QRect(10, 25, 1140, 25))
         self.samplingRateWidget.setObjectName("samplingRateWidget")
         
         self.samplingRateLayout = QtWidgets.QHBoxLayout(self.samplingRateWidget)
@@ -129,7 +129,7 @@ class Ui_ConfigForm(object):
     def _setup_channel_config_group(self, ConfigForm):
         """Setup channel configuration group"""
         self.channelConfigGroup = QtWidgets.QGroupBox(ConfigForm)
-        self.channelConfigGroup.setGeometry(QtCore.QRect(20, 110, 1160, 711))
+        self.channelConfigGroup.setGeometry(QtCore.QRect(20, 90, 1160, 711))
         self.channelConfigGroup.setObjectName("channelConfigGroup")
         self.channelConfigGroup.setTitle("通道配置")
 

@@ -348,7 +348,7 @@ class Locate(QtWidgets.QWidget):
         
         # Channel data
         self.fnirs_node_pairs: Dict[str, Dict] = {}
-        self.eeg_node_pairs: Dict[str, Dict] = {}
+        # self.eeg_node_pairs: Dict[str, Dict] = {}
         self.fnirs_channel_quality = []
         
         logger.debug("Components initialized")
@@ -579,12 +579,12 @@ class Locate(QtWidgets.QWidget):
             positions_3d = {}
             
             if hasattr(self.ui, '_get_electrode_3d_positions'):
-                positions_3d = self.ui._get_electrode_3d_positions()
+                positions_3d = self.ui._get_electrode_3d_positions() # type: ignore
                 # logger.debug(f"Retrieved {len(positions_3d)} 3D positions")
             else:
                 logger.warning("UI does not have _get_electrode_3d_positions method")
             
-            self.channel_calculator.set_position_data(ui_positions, positions_3d)
+            self.channel_calculator.set_position_data(ui_positions, positions_3d) # type: ignore
             
         except Exception as e:
             logger.error(f"Error updating position data: {e}")
@@ -770,7 +770,7 @@ class Locate(QtWidgets.QWidget):
             # UIUtilities.show_error(self, f"Error generating summary: {str(e)}")
     
     # ===================== PAINT METHODS =====================
-    def paintEvent(self, event):
+    def paintEvent(self, event): # type: ignore
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 

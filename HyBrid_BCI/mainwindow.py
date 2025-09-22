@@ -4,10 +4,12 @@ import sys
 import logging
 import os
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QTimer, pyqtSignal, QObject, QSettings
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
+from PyQt5.QtCore import QTimer, pyqtSignal, QSettings
+from PyQt5.QtWidgets import (QApplication, QMainWindow, QMessageBox, 
+                            QScrollArea, QSplitter, QVBoxLayout, QHBoxLayout, 
+                            QWidget, QSizePolicy)
 
-# Import the UI configuration that matches the XML definition
+# Import the optimized UI configuration
 from ui_mainwindow import Ui_MainWindow
 import network
 import user
@@ -15,8 +17,7 @@ import fNIRS
 from config import ConfigurationManager
 import qualify
 
-
-os.environ['NUMEXPR_MAX_THREADS'] = '16'  # Limit numexpr threads to prevent oversubscription
+os.environ['NUMEXPR_MAX_THREADS'] = '16'
 
 # Configure logging
 logging.basicConfig(
@@ -29,17 +30,18 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# Constants
 class WorkflowStates:
-    """Define workflow states and transitions"""
+    """工作流状态定义"""
     DISCONNECTED = 0
     CONNECTED = 1
     CONFIGURED = 2
     TESTED = 3
     ACQUIRED = 4
     ANALYZED = 5
-    
+
 class SensorTypes:
-    """Define sensor types"""
+    """传感器类型定义"""
     NotInit = 0
     EEG = 1
     SEMG = 2
@@ -49,161 +51,172 @@ class SensorTypes:
     SEMG_FNIRS = 6
     EEG_SEMG_FNIRS = 7
 
+class StateManager:
+    """状态管理器"""
+    
+    def __init__(self):
+        self.current_state = WorkflowStates.DISCONNECTED
+        self.sensor_type = SensorTypes.NotInit
+        self.sensors = {}
+        self.is_connecting = False
+        self.is_disconnecting = False
+        self.is_shutting_down = False
+        self.state_callbacks = []
+    
+    def register_callback(self, callback):
+        """注册状态变更回调"""
+        self.state_callbacks.append(callback)
+    
+    def set_state(self, new_state):
+        """设置新状态并通知回调"""
+        if self.current_state != new_state:
+            old_state = self.current_state
+            self.current_state = new_state
+            for callback in self.state_callbacks:
+                try:
+                    callback(old_state, new_state)
+                except Exception as e:
+                    logger.error(f"状态回调执行失败: {e}")
+    
+    def can_transition_to(self, target_state):
+        """检查是否可以转换到目标状态"""
+        valid_transitions = {
+            WorkflowStates.DISCONNECTED: [WorkflowStates.CONNECTED],
+            WorkflowStates.CONNECTED: [WorkflowStates.DISCONNECTED, WorkflowStates.CONFIGURED],
+            WorkflowStates.CONFIGURED: [WorkflowStates.DISCONNECTED, WorkflowStates.TESTED],
+            WorkflowStates.TESTED: [WorkflowStates.DISCONNECTED, WorkflowStates.ACQUIRED],
+            WorkflowStates.ACQUIRED: [WorkflowStates.DISCONNECTED, WorkflowStates.ANALYZED],
+            WorkflowStates.ANALYZED: [WorkflowStates.DISCONNECTED]
+        }
+        return target_state in valid_transitions.get(self.current_state, [])
+
+class ComponentManager:
+    """组件管理器 - 简化版本"""
+    
+    def __init__(self, main_window):
+        self.main_window = main_window
+        self.components = {}
+    
+    def add_component(self, name, widget, layout):
+        """添加组件到指定布局"""
+        try:
+            # 如果组件已存在，先清理
+            if name in self.components:
+                self.remove_component(name)
+            
+            layout.addWidget(widget)
+            self.components[name] = widget
+            logger.info(f"{name} 组件添加成功")
+            return widget
+        except Exception as e:
+            logger.error(f"添加 {name} 组件失败: {e}")
+            self._add_error_placeholder(layout, f"{name} 组件加载失败")
+            return None
+    
+    def remove_component(self, name):
+        """移除指定组件"""
+        if name in self.components:
+            try:
+                widget = self.components[name]
+                if widget and hasattr(widget, 'close'):
+                    widget.close()
+                elif widget and hasattr(widget, 'deleteLater'):
+                    widget.deleteLater()
+                del self.components[name]
+                logger.info(f"{name} 组件已移除")
+            except Exception as e:
+                logger.warning(f"移除 {name} 组件失败: {e}")
+    
+    def _add_error_placeholder(self, layout, message):
+        """添加错误占位符"""
+        placeholder = QtWidgets.QLabel(message)
+        placeholder.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        placeholder.setStyleSheet("QLabel { color: #f44336; font-style: italic; padding: 20px; }")
+        layout.addWidget(placeholder)
+    
+    def cleanup_all(self):
+        """清理所有组件"""
+        for name in list(self.components.keys()):
+            self.remove_component(name)
 
 class MainWindow(QMainWindow):
     """
-    Main window using the exact UI structure from mainwindow.ui
+    主窗口 - 优化的响应式设计
     """
     
-    # Define custom signals for better component communication
+    # 定义信号
     deviceConnectionChanged = pyqtSignal(bool)
-    workflowStateChanged = pyqtSignal(int)
+    workflowStateChanged = pyqtSignal(int, int)  # old_state, new_state
     batteryLevelChanged = pyqtSignal(int)
     configurationChanged = pyqtSignal()
     
     def __init__(self):
         super().__init__()
+        
+        # 初始化管理器
+        self.state_manager = StateManager()
+        self.component_manager = ComponentManager(self)
+        self.timers = {}  # 简化的定时器管理
+        
+        # 设置UI
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         
-        # Initialize state variables
-        self._init_state_variables()
-        
-        # Settings for window state persistence
+        # 初始化设置
         self.settings = QSettings('fNIRS Solutions', 'fNIRS Data Acquisition System')
         
-        # Initialize components in proper order
-        self._initialize_components()
+        # 初始化系统
+        self._initialize_system()
         
-        logger.info("MainWindow initialized successfully with UI structure from XML")
+        logger.info("主窗口初始化完成")
     
-    def _init_state_variables(self):
-        """Initialize all state variables"""
-        self.current_state = WorkflowStates.DISCONNECTED
-        self.is_connecting = False
-        self.is_disconnecting = False
-        self.is_shutting_down = False
-        self.sensor_type = SensorTypes.NotInit
-        self.sensors = {}
-        self.config_widget = None
-        self.connection_timeout_timer = None
-        self.battery_query_timer = None
+    def _initialize_system(self):
+        """初始化系统组件"""
+        try:
+            # 注册状态变更回调
+            self.state_manager.register_callback(self._on_state_changed)
+            
+            # 初始化网络
+            self._initialize_network()
+            
+            # 设置连接
+            self._setup_connections()
+            
+            # 初始化组件
+            self._initialize_components()
+            
+            # 初始化定时器
+            self._initialize_timers()
+            
+            # 更新UI状态
+            self.update_ui_state()
+            
+            # 恢复窗口状态
+            self.restore_window_state()
+            
+            logger.info("系统初始化完成")
+            
+        except Exception as e:
+            logger.error(f"系统初始化失败: {e}")
+            QMessageBox.critical(self, "初始化错误", f"系统初始化失败:\n{e}")
     
-    def _initialize_components(self):
-        """Initialize all components in proper order"""
-        self.initialize_network()
-        self.initialize_user_widget()
-        # self.initialize_qualify_widget()
-        self.setup_ui_connections()
-        self.setup_timers()
-        self.update_ui_state()
-        self.restore_window_state()
-        self.ui.tabWidget.setCurrentIndex(0)
-        
-        logger.info("MainWindow initialized successfully with UI structure from XML")
-
-    def initialize_network(self):
-        """Initialize network module with comprehensive error handling"""
+    def _initialize_network(self):
+        """初始化网络模块"""
         try:
             self.network = network.UdpPort(1227, 2227)
-            self.setup_network_connections()
-            logger.info("Network module initialized successfully")
+            self._setup_network_connections()
+            logger.info("网络模块初始化成功")
         except Exception as e:
-            logger.error(f"Failed to initialize network: {e}")
-            QMessageBox.critical(self, "Network Error", f"Failed to initialize network:\n{e}")
+            logger.error(f"网络模块初始化失败: {e}")
             self.network = None
     
-    def initialize_user_widget(self):
-        """Initialize and integrate user widget into home tab"""
-        try:
-            self.user_widget = user.UserInfoManager()
-            self.ui.homeLayout.addWidget(self.user_widget)
-            
-            # Connect user widget signals if available
-            if hasattr(self.user_widget, 'patientChanged'):
-                self.user_widget.patientChanged.connect(self.on_patient_changed)
-            
-            logger.info("User widget integrated into home tab successfully")
-                
-        except Exception as e:
-            logger.error(f"Failed to initialize user widget: {e}")
-            self._add_placeholder_to_layout(self.ui.homeLayout, "User widget could not be loaded")
-
-    def initialize_config_widget(self, sensor_types):
-        """Initialize and integrate configuration manager into configuration tab"""
-        try:
-            self.config_widget = ConfigurationManager(sensor_types)
-            self.ui.configLayout.addWidget(self.config_widget)
-            
-            # Connect configuration manager signals
-            self.config_widget.OnConfigSet.connect(self.on_config_set)
-            self.deviceConnectionChanged.connect(self.update_config_manager_state)
-            
-        except Exception as e:
-            logger.error(f"Failed to initialize configuration manager: {e}")
-            self._add_placeholder_to_layout(self.ui.configLayout, "Configuration manager could not be loaded")
-
-    def initialize_qualify_widget(self):
-        """Initialize and integrate config widget into home tab"""
-        try:
-            self.qualify_widget = qualify.QualifyApp()
-            self.ui.testLayout.addWidget(self.qualify_widget)
-            self.config_widget.OnConfigApplied.connect(self.qualify_widget.initialize_channels) # type: ignore
-            logger.info("Qualify widget integrated into home tab successfully")
-                
-        except Exception as e:
-            logger.error(f"Failed to initialize config widget: {e}")
-            # Add placeholder to home tab if qyalify widget fails
-            self._add_placeholder_to_layout(self.ui.testLayout, "Qualify widget could not be loaded")
-
-    def _add_placeholder_to_layout(self, layout, message):
-        """Add placeholder label to layout"""
-        placeholder = QtWidgets.QLabel(message)
-        placeholder.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-        placeholder.setStyleSheet("QLabel { color: #f44336; font-style: italic; }")
-        layout.addWidget(placeholder)
-
-    def setup_timers(self):
-        """Setup all timers with proper configuration"""
-        # Connection timeout timer
-        self.connection_timeout_timer = QTimer()
-        self.connection_timeout_timer.setSingleShot(True)
-        self.connection_timeout_timer.timeout.connect(self.on_connection_timeout)
-        
-        # Battery monitoring timer
-        self.battery_query_timer = QTimer()
-        self.battery_query_timer.timeout.connect(self.query_battery)
-        self.battery_query_timer.setSingleShot(False)
-    
-    def setup_network_connections(self):
-        """Setup network signal connections"""
-        if not self.network:
-            return
-            
-        connections = [
-            (self.network.onDeviceConnected, self.on_device_connected),
-            (self.network.onDeviceDisconnected, self.on_device_disconnected),
-            (self.network.onDeviceSample, self.on_sample_start_stop),
-            (self.network.onDataReceived, self.on_data_received),
-            (self.network.onDataPatched, self.on_data_patched),
-            (self.network.onBatteryUpdated, self.on_battery_updated),
-            (self.network.onSampleRateSetDone, self.on_sample_rate_set_done),
-            (self.network.onChannelConfigSetDone, self.on_channel_config_set_done),
-            (self.network.networkError, self.on_network_error)
-        ]
-        
-        for signal, slot in connections:
-            signal.connect(slot)
-    
-    def setup_ui_connections(self):
-        """Setup UI signal-slot connections using the UI structure from XML"""
-        # Button connections
+    def _setup_connections(self):
+        """设置信号连接"""
+        # UI连接
         self.ui.connectButton.clicked.connect(self.handle_connection_toggle)
-        
-        # Tab change handling
         self.ui.tabWidget.currentChanged.connect(self.on_tab_changed)
         
-        # Menu actions
+        # 菜单连接
         menu_connections = [
             (self.ui.saveAction, self.save_data),
             (self.ui.exportAction, self.export_data),
@@ -215,368 +228,500 @@ class MainWindow(QMainWindow):
         for action, slot in menu_connections:
             action.triggered.connect(slot)
         
-        # Connect custom signals
-
-        signal_connections = [
-            (self.deviceConnectionChanged, self.on_device_connection_changed),
-            (self.workflowStateChanged, self.on_workflow_state_changed),
-            (self.batteryLevelChanged, self.update_battery_display),
-            (self.configurationChanged, self.on_configuration_changed),
+        # 自定义信号连接
+        self.deviceConnectionChanged.connect(self.on_device_connection_changed)
+        self.workflowStateChanged.connect(self.on_workflow_state_changed)
+        self.batteryLevelChanged.connect(self.update_battery_display)
+        self.configurationChanged.connect(self.on_configuration_changed)
+    
+    def _setup_network_connections(self):
+        """设置网络信号连接"""
+        if not self.network:
+            return
             
+        network_connections = [
+            (self.network.onDeviceConnected, self.on_device_connected),
+            (self.network.onDeviceDisconnected, self.on_device_disconnected),
+            (self.network.onDeviceSample, self.on_sample_start_stop),
+            (self.network.onDataReceived, self.on_data_received),
+            (self.network.onDataPatched, self.on_data_patched),
+            (self.network.onBatteryUpdated, self.on_battery_updated),
+            (self.network.onSampleRateSetDone, self.on_sample_rate_set_done),
+            (self.network.onChannelConfigSetDone, self.on_channel_config_set_done),
+            (self.network.networkError, self.on_network_error)
         ]
         
-        for signal, slot in signal_connections:
+        for signal, slot in network_connections:
             signal.connect(slot)
     
-    def on_config_set(self, sample_data, channel_config):
-        """Handle sample rate configuration from config manager"""
+    def _initialize_components(self):
+        """初始化所有组件"""
+        # 初始化用户信息组件
+        self.user_widget = self._create_user_widget()
+        
+        # 配置和测试组件将在设备连接后初始化
+        self.config_widget = None
+        self.qualify_widget = None
+    
+    def _create_user_widget(self):
+        """创建用户信息组件"""
         try:
-            logger.info("Config sample rate and channels")
-            
-            # Send configuration to network if connected
-            if self.network and self.current_state >= WorkflowStates.CONNECTED:
-                self.network.sendSampleRate(sample_data)
-                self.network.sendChannelConfig(channel_config)
-            
+            widget = user.UserInfoManager()
+            self.component_manager.add_component('user', widget, self.ui.homeLayout) # type: ignore
+            if hasattr(widget, 'patientChanged'):
+                widget.patientChanged.connect(self.on_patient_changed)
+            return widget
         except Exception as e:
-            logger.error(f"Error handling sample rate configuration: {e}")
+            logger.error(f"用户组件创建失败: {e}")
+            return None
     
-    def update_config_manager_state(self, connected):
-        """Update configuration manager state based on device connection"""
-        if not self.config_widget:
-            return
-            
-        try:
-            if connected and self.sensor_type != SensorTypes.NotInit:
-                logger.info(f"Updating config manager with sensor type: {self.sensor_type}")
-                
-                # Recreate config manager if sensor types don't match
-                if (hasattr(self.config_widget, 'sensor_types') and 
-                    self.config_widget.sensor_types != self.sensor_type):
-                    self._recreate_config_manager_for_sensor_type()
-            
-            self.config_widget.setEnabled(connected)
-            logger.debug(f"Configuration manager state updated: enabled={connected}")
-            
-        except Exception as e:
-            logger.error(f"Error updating configuration manager state: {e}")
+    def _initialize_timers(self):
+        """初始化定时器"""
+        # 连接超时定时器
+        self.timers['connection_timeout'] = QTimer()
+        self.timers['connection_timeout'].timeout.connect(self.on_connection_timeout)
+        self.timers['connection_timeout'].setSingleShot(True)
+        
+        # 电池查询定时器
+        self.timers['battery_query'] = QTimer()
+        self.timers['battery_query'].timeout.connect(self.query_battery)
+        self.timers['battery_query'].setInterval(10000)
     
-    def _recreate_config_manager_for_sensor_type(self):
-        """Recreate configuration manager with correct sensor type"""
-        try:
-            if not hasattr(self.ui, 'configLayout'):
-                return
-                
-            # Remove old config manager
-            if self.config_widget:
-                self.ui.configLayout.removeWidget(self.config_widget)
-                self.config_widget.deleteLater()
-            
-            # Create new config manager
-            self.config_widget = ConfigurationManager(sensor_types=self.sensor_type)
-            self.ui.configLayout.addWidget(self.config_widget)
-            self.config_widget.setEnabled(self.current_state >= WorkflowStates.CONNECTED)
-            
-            logger.info(f"Configuration manager recreated for sensor type: {self.sensor_type}")
-            
-        except Exception as e:
-            logger.error(f"Failed to recreate configuration manager: {e}")
+    def _on_state_changed(self, old_state, new_state):
+        """状态变更回调"""
+        self.workflowStateChanged.emit(old_state, new_state)
+        self.update_ui_state()
+        logger.info(f"状态变更: {old_state} -> {new_state}")
     
-    def get_current_configuration(self):
-        """Get current configuration from config manager"""
-        if self.config_widget:
-            try:
-                return self.config_widget.get_configuration_dict()
-            except Exception as e:
-                logger.error(f"Failed to get current configuration: {e}")
-        return {}
-    
-    def get_configuration_summary(self):
-        """Get configuration summary for display"""
-        if self.config_widget:
-            try:
-                return self.config_widget.get_channel_summary()
-            except Exception as e:
-                logger.error(f"Failed to get configuration summary: {e}")
-                return "Configuration summary not available"
-        return "Configuration manager not initialized"
-    
-    def on_configuration_changed(self):
-        """Handle configuration changes"""
-        try:
-            if self.config_widget:
-                summary = self.config_widget.get_sensor_summary()
-                enabled_sensors = summary.get('enabled_sensors', [])
-                if enabled_sensors:
-                    sensors_str = ", ".join([s.upper() for s in enabled_sensors])
-                    self.update_status(f"Configuration updated - {sensors_str}", "#2196f3")
-            
-            logger.debug("Configuration changed event handled")
-            
-        except Exception as e:
-            logger.error(f"Error handling configuration change: {e}")
-    
-    def on_tab_changed(self, index):
-        """Handle tab change events and workflow progression"""
-        if self.is_shutting_down:
-            return
-            
-        try:
-            tab_names = ['home', 'configuration', 'test', 'acquisition', 'analysis']
-            if 0 <= index < len(tab_names):
-                current_tab = tab_names[index]
-                logger.debug(f"Tab changed to: {current_tab} (index: {index})")
-                
-                # Special handling for configuration tab
-                if current_tab == 'configuration' and self.config_widget:
-                    self.config_widget.update_ui_state()
-                
-                # Trigger workflow progression
-                self.handle_workflow_progression(current_tab, index)
-                
-        except Exception as e:
-            logger.error(f"Error handling tab change: {e}")
-    
-    def handle_workflow_progression(self, tab_name, tab_index):
-        """Handle workflow progression when switching tabs"""
-        try:
-            progression_map = {
-                ('configuration', WorkflowStates.CONNECTED): self.complete_configuration,
-                ('test', WorkflowStates.CONFIGURED): self.complete_test,
-                ('acquisition', WorkflowStates.TESTED): self.complete_acquisition,
-                ('analysis', WorkflowStates.ACQUIRED): self.complete_analysis
-            }
-            
-            key = (tab_name, self.current_state)
-            if key in progression_map:
-                QTimer.singleShot(1500, progression_map[key])
-                
-        except Exception as e:
-            logger.error(f"Error in workflow progression: {e}")
+    # ===== 连接管理 =====
     
     def handle_connection_toggle(self):
-        """Handle connection/disconnection button click"""
-        if self.is_shutting_down or not self.network:
-            if not self.network:
-                self.show_error_message("Network module not available")
+        """处理连接切换"""
+        if self.state_manager.is_shutting_down or not self.network:
             return
             
-        try:
-            if self.current_state == WorkflowStates.DISCONNECTED and not self.is_connecting:
-                self.connect_device()
-            elif self.current_state >= WorkflowStates.CONNECTED or self.is_connecting:
-                self.disconnect_device()
-        except Exception as e:
-            logger.error(f"Connection toggle failed: {e}")
-            self.show_error_message(f"Connection operation failed: {e}")
+        if self.state_manager.current_state == WorkflowStates.DISCONNECTED:
+            self.connect_device()
+        else:
+            self.disconnect_device()
     
     def connect_device(self):
-        """Initiate device connection with improved UI feedback"""
-        if self.is_shutting_down or self.is_connecting:
+        """连接设备"""
+        if self.state_manager.is_connecting or self.state_manager.is_shutting_down:
             return
             
         try:
-            self._set_connection_ui_state(True, "正在连接...")
-            self.update_status("Connecting to devices...", "#ff9800")
-            self.update_connection_indicator(False, "正在连接...")
-            
-            self.stop_battery_monitoring()
+            self._set_connecting_state()
             self.network.sendConnect() # type: ignore
-            self.connection_timeout_timer.start(10000) # type: ignore
+            self.timers['connection_timeout'].start(10000)
             
         except Exception as e:
-            self.reset_connection_ui()
-            logger.error(f"Connection initiation failed: {e}")
-            self.show_error_message(f"Failed to start connection: {e}")
+            self._reset_connection_state()
+            logger.error(f"连接失败: {e}")
+            self.show_error_message(f"连接失败: {e}")
     
     def disconnect_device(self):
-        """Initiate device disconnection with proper cleanup"""
-        if self.is_shutting_down or self.is_disconnecting:
+        """断开连接"""
+        if self.state_manager.is_disconnecting:
             return
             
         try:
-            self._set_disconnection_ui_state()
-            self.stop_all_timers()
+            self._set_disconnecting_state()
+            self._stop_all_timers()
             
-            # Send disconnection command if devices are connected
             if self.network and len(self.network.get_connected_devices()) > 0:
                 self.network.sendDisconnect()
                 QTimer.singleShot(3000, self.force_disconnect)
             else:
                 QTimer.singleShot(100, self.on_device_disconnected)
-            
+                
         except Exception as e:
-            logger.error(f"Disconnection failed: {e}")
-            self.show_error_message(f"Failed to disconnect: {e}")
+            logger.error(f"断开连接失败: {e}")
             self.force_disconnect()
     
-    def _set_connection_ui_state(self, connecting=False, text="连接设备"):
-        """Set UI state for connection operations"""
-        self.is_connecting = connecting
-        self.ui.connectButton.setEnabled(not connecting)
-        self.ui.connectButton.setText(text)
+    def _set_connecting_state(self):
+        """设置连接中状态"""
+        self.state_manager.is_connecting = True
+        self.ui.connectButton.setEnabled(False)
+        self.ui.connectButton.setText("正在连接...")
+        self._update_status("正在连接设备...", "#ff9800")
     
-    def _set_disconnection_ui_state(self):
-        """Set UI state for disconnection operations"""
-        self.is_disconnecting = True
+    def _set_disconnecting_state(self):
+        """设置断开连接中状态"""
+        self.state_manager.is_disconnecting = True
         self.ui.connectButton.setEnabled(False)
         self.ui.connectButton.setText("正在断开...")
-        self.update_status("Disconnecting devices...", "#ff9800")
-        self.update_connection_indicator(False, "正在断开...")
+        self._update_status("正在断开连接...", "#ff9800")
     
-    def force_disconnect(self):
-        """Force disconnection if normal disconnect fails"""
-        if not self.is_shutting_down:
-            logger.warning("Forcing disconnection due to timeout")
-            self.on_device_disconnected()
-    
-    def stop_all_timers(self):
-        """Stop all active timers safely"""
-        timers = [self.connection_timeout_timer, self.battery_query_timer]
-        for timer in timers:
-            if timer and timer.isActive():
-                timer.stop()
-    
-    def stop_battery_monitoring(self):
-        """Stop battery monitoring safely"""
-        if self.battery_query_timer and self.battery_query_timer.isActive():
-            self.battery_query_timer.stop()
-            logger.debug("Battery monitoring stopped")
-    
-    def on_connection_timeout(self):
-        """Handle connection timeout"""
-        if self.is_connecting and not self.is_shutting_down:
-            self.reset_connection_ui()
-            self.update_status("Connection timeout - no devices found", "#f44336")
-            self.update_connection_indicator(False, "连接超时")
-            logger.warning("Connection attempt timed out")
-    
-    def reset_connection_ui(self):
-        """Reset connection UI to disconnected state"""
-        if not self.is_shutting_down:
+    def _reset_connection_state(self):
+        """重置连接状态"""
+        if not self.state_manager.is_shutting_down:
             self.ui.connectButton.setEnabled(True)
             self.ui.connectButton.setText("连接设备")
-        self.is_connecting = False
-        self.is_disconnecting = False
-
-    ########   handle device connect/disconnect    ########
+        
+        self.state_manager.is_connecting = False
+        self.state_manager.is_disconnecting = False
+    
+    # ===== 网络事件处理 =====
     
     def on_device_connected(self, sensor_id, sensor_type):
-        """Handle device connected signal with enhanced UI updates"""
-        if self.is_shutting_down:
+        """处理设备连接事件"""
+        if self.state_manager.is_shutting_down:
             return
             
         try:
-            if self.connection_timeout_timer.isActive(): # type: ignore
-                self.connection_timeout_timer.stop() # type: ignore
+            self.timers['connection_timeout'].stop()
+            self.state_manager.is_connecting = False
             
-            self.is_connecting = False
-            self.current_state = WorkflowStates.CONNECTED
+            # 确保之前的组件已清理（防御性编程）
+            self._ensure_component_cleanup()
             
-            # Update device and sensor info
-            self.update_device_info(sensor_id, sensor_type)
-            self.init_sensor(sensor_type, self.user_widget.current_patient.to_dict()) # type: ignore
+            # 更新状态
+            self.state_manager.set_state(WorkflowStates.CONNECTED)
+            self.state_manager.sensor_type = sensor_type
             
-            # Update UI
-            self._set_connected_ui_state()
-            self.start_battery_monitoring()
+            # 初始化传感器
+            self._init_sensors(sensor_type)
             
-            # Emit signals and initialize config manager
+            # 更新UI
+            self._set_connected_state(sensor_id, sensor_type)
+            
+            # 启动电池监控
+            self.timers['battery_query'].start()
+            
+            # 初始化配置组件（现在有重复检查保护）
+            self._initialize_config_widget(sensor_type)
+            
+            # 发送信号
             self.deviceConnectionChanged.emit(True)
-            self.workflowStateChanged.emit(self.current_state)
-            self.initialize_config_widget(sensor_type)
             
-            logger.info(f"Device connected successfully: ID={sensor_id}, Type={sensor_type}")
+            logger.info(f"设备连接成功: ID={sensor_id}, Type={sensor_type}")
             
         except Exception as e:
-            logger.error(f"Error handling device connection: {e}")
+            logger.error(f"处理设备连接失败: {e}")
     
-    def _set_connected_ui_state(self):
-        """Set UI state for connected devices"""
+    def on_device_disconnected(self):
+        """处理设备断开事件"""
+        if self.state_manager.is_shutting_down:
+            return
+            
+        try:
+            self._stop_all_timers()
+            
+            # 清理配置和测试组件，避免重复初始化
+            self._cleanup_session_components()
+            
+            # 重置状态
+            self.state_manager.set_state(WorkflowStates.DISCONNECTED)
+            self.state_manager.sensor_type = SensorTypes.NotInit
+            self.state_manager.sensors.clear()
+            
+            # 重置UI
+            self._reset_disconnected_state()
+            
+            # 发送信号
+            self.deviceConnectionChanged.emit(False)
+            
+            logger.info("设备断开连接")
+            
+        except Exception as e:
+            logger.error(f"处理设备断开失败: {e}")
+    
+    def _cleanup_session_components(self):
+        """清理会话相关的组件"""
+        # 清理配置组件
+        if self.config_widget:
+            self.component_manager.remove_component('config')
+            # 清理布局中的配置组件
+            self.ui.clear_tab_content('config')
+            self.config_widget = None
+            
+        # 清理测试组件  
+        if self.qualify_widget:
+            self.component_manager.remove_component('qualify')
+            # 清理布局中的测试组件
+            self.ui.clear_tab_content('test')
+            self.qualify_widget = None
+            
+        logger.debug("会话组件清理完成")
+    
+    def _ensure_component_cleanup(self):
+        """确保组件完全清理"""
+        # 检查配置组件
+        if hasattr(self, 'config_widget') and self.config_widget is not None:
+            try:
+                # 断开可能的信号连接
+                if hasattr(self.config_widget, 'OnConfigSet'):
+                    self.config_widget.OnConfigSet.disconnect()
+                self.config_widget = None
+            except Exception as e:
+                logger.warning(f"清理配置组件连接失败: {e}")
+        
+        # 检查测试组件
+        if hasattr(self, 'qualify_widget') and self.qualify_widget is not None:
+            try:
+                self.qualify_widget = None
+            except Exception as e:
+                logger.warning(f"清理测试组件失败: {e}")
+                
+        logger.debug("组件清理检查完成")
+    
+    def on_connection_timeout(self):
+        """处理连接超时"""
+        if self.state_manager.is_connecting:
+            self._reset_connection_state()
+            self._update_status("连接超时 - 未找到设备", "#f44336")
+            logger.warning("连接超时")
+    
+    def force_disconnect(self):
+        """强制断开连接"""
+        logger.warning("强制断开连接")
+        self.on_device_disconnected()
+    
+    def _set_connected_state(self, sensor_id, sensor_type):
+        """设置已连接状态"""
         self.ui.connectButton.setText("断开连接")
         self.ui.connectButton.setEnabled(True)
         
         device_count = len(self.network.get_connected_devices()) if self.network else 1
-        self.update_status(f"Connected to {device_count} device(s)", "#4caf50")
-        self.update_connection_indicator(True, f"{device_count} 个设备")
+        self._update_status(f"已连接 {device_count} 个设备", "#4caf50")
+        self._update_device_info(sensor_id, sensor_type)
     
-    def on_device_disconnected(self):
-        """Handle device disconnected signal with comprehensive cleanup"""
-        if self.is_shutting_down:
-            return
-            
-        try:
-            self.stop_all_timers()
-            self._reset_to_disconnected_state()
-            self._reset_ui_elements()
-            
-            # Emit signals
-            self.deviceConnectionChanged.emit(False)
-            self.workflowStateChanged.emit(self.current_state)
-            
-            logger.info("Device disconnected successfully")
-            
-        except Exception as e:
-            logger.error(f"Error handling device disconnection: {e}")
-    
-    def _reset_to_disconnected_state(self):
-        """Reset internal state to disconnected"""
-        self.current_state = WorkflowStates.DISCONNECTED
-        self.is_disconnecting = False
-        self.sensor_type = SensorTypes.NotInit
-    
-    def _reset_ui_elements(self):
-        """Reset UI elements to disconnected state"""
-        self.update_device_info('--', '--')
+    def _reset_disconnected_state(self):
+        """重置断开连接状态"""
+        self._update_device_info('--', '--')
         self.ui.batteryProgressBar.setValue(0)
         self.ui.batteryProgressBar.setStyleSheet("")
-        self.reset_connection_ui()
-        self.update_status("Device disconnected", "#2196f3")
-        self.update_connection_indicator(False, "已断开")
+        self._reset_connection_state()
+        self._update_status("设备已断开", "#2196f3")
         self.ui.tabWidget.setCurrentIndex(0)
     
-    def update_connection_indicator(self, connected, status_text=""):
-        """Update the connection status indicator"""
-        try:
-            if connected:
-                self.ui.connectionStatusLabel.setText("🟢 已连接")
-                self.ui.connectionStatusLabel.setStyleSheet("QLabel { color: #4caf50; font-weight: bold; }")
-            else:
-                status_display = status_text if status_text else "未连接"
-                self.ui.connectionStatusLabel.setText(f"⚫ {status_display}")
-                self.ui.connectionStatusLabel.setStyleSheet("QLabel { color: #f44336; font-weight: bold; }")
-                
-            # Update device count
-            device_count = 0
-            if self.network and connected:
-                device_count = len(self.network.get_connected_devices())
-            self.ui.deviceCountLabel.setText(f"数量: {device_count}")
-                
-        except Exception as e:
-            logger.error(f"Error updating connection indicator: {e}")
-
-    def on_device_connection_changed(self, connected):
-        """Handle device connection state changes"""
-        self.update_ui_state()
+    # ===== 传感器和配置管理 =====
     
-    def on_workflow_state_changed(self, new_state):
-        """Handle workflow state changes"""
-        self.update_ui_state()
+    def _init_sensors(self, sensor_type):
+        """初始化传感器"""
+        try:
+            self.state_manager.sensors.clear()
             
-    def update_device_info(self, device_id, device_type):
-        """Update device information display in status area"""
-        if self.is_shutting_down:
+            # 获取用户信息
+            user_dict = {}
+            if (self.user_widget and 
+                hasattr(self.user_widget, 'current_patient')):
+                user_dict = self.user_widget.current_patient.to_dict()
+            
+            # 初始化不同类型的传感器
+            sensor_map = {
+                SensorTypes.EEG: 'eeg',
+                SensorTypes.SEMG: 'semg',
+                SensorTypes.FNIRS: 'fnirs'
+            }
+            
+            for sensor_bit, sensor_name in sensor_map.items():
+                if sensor_type & sensor_bit:
+                    if sensor_name == 'fnirs':
+                        self.state_manager.sensors[sensor_name] = fNIRS.fNIRS(user_dict)
+                    else:
+                        self.state_manager.sensors[sensor_name] = True
+            
+            logger.info(f"传感器初始化完成: {list(self.state_manager.sensors.keys())}")
+            
+        except Exception as e:
+            logger.error(f"传感器初始化失败: {e}")
+    
+    def _initialize_config_widget(self, sensor_types):
+        """初始化配置组件"""
+        # 防止重复初始化
+        if self.config_widget is not None:
+            logger.debug("配置组件已存在，跳过重复初始化")
             return
             
         try:
+            self.config_widget = ConfigurationManager(sensor_types)
+            self.component_manager.add_component('config', self.config_widget, self.ui.configLayout) # type: ignore
+            
+            if self.config_widget:
+                self.config_widget.OnConfigSet.connect(self.on_config_set)
+                self.deviceConnectionChanged.connect(self._update_config_state)
+                logger.info("配置组件初始化成功")
+                
+        except Exception as e:
+            logger.error(f"配置组件初始化失败: {e}")
+            self.config_widget = None
+    
+    def _initialize_qualify_widget(self):
+        """初始化测试组件"""
+        # 防止重复初始化
+        if self.qualify_widget is not None:
+            logger.debug("测试组件已存在，跳过重复初始化")
+            return
+            
+        try:
+            self.qualify_widget = qualify.QualifyApp()
+            self.component_manager.add_component('qualify', self.qualify_widget, self.ui.testLayout) # type: ignore
+            
+            if self.qualify_widget and self.config_widget:
+                self.config_widget.OnConfigApplied.connect(
+                    self.qualify_widget.initialize_channels
+                )
+                logger.info("测试组件初始化成功")
+                
+        except Exception as e:
+            logger.error(f"测试组件初始化失败: {e}")
+            self.qualify_widget = None
+    
+    def on_config_set(self, sample_data, channel_config):
+        """处理配置设置"""
+        try:
+            if self.network and self.state_manager.current_state >= WorkflowStates.CONNECTED:
+                self.network.sendSampleRate(sample_data)
+                self.network.sendChannelConfig(channel_config)
+                logger.info("配置已发送到设备")
+                
+        except Exception as e:
+            logger.error(f"配置设置失败: {e}")
+    
+    def on_sample_rate_set_done(self, valid: bool):
+        """处理采样率设置完成"""
+        if self.config_widget and valid:
+            self.config_widget.sample_rate_send_done = valid
+            # 设置传感器采样率
+            sample_rate = self.config_widget.get_sample_rate()
+            for sensor_name, rates in sample_rate.items():
+                if (sensor_name in self.state_manager.sensors and 
+                    sensor_name == 'fnirs'):
+                    self.state_manager.sensors[sensor_name].setSampleRate(rates)
+            
+            self._check_configuration_complete()
+    
+    def on_channel_config_set_done(self, valid: bool):
+        """处理通道配置完成"""
+        if self.config_widget and valid:
+            self.config_widget.channel_config_send_done = valid
+            # 设置传感器配置
+            for sensor_name in self.state_manager.sensors.keys():
+                if sensor_name == 'fnirs':
+                    montage = self.config_widget.get_fnirs_source_detector()
+                    self.state_manager.sensors[sensor_name].setMontage(montage)
+            
+            self._check_configuration_complete()
+    
+    def _check_configuration_complete(self):
+        """检查配置是否完成"""
+        if (hasattr(self.config_widget, 'sample_rate_send_done') and
+            hasattr(self.config_widget, 'channel_config_send_done') and
+            self.config_widget.sample_rate_send_done and  # type: ignore
+            self.config_widget.channel_config_send_done): # type: ignore
+            
+            self.config_widget.sample_rate_send_done = False # type: ignore
+            self.config_widget.channel_config_send_done = False # type: ignore
+            
+            self.state_manager.set_state(WorkflowStates.CONFIGURED)
+            self._update_status("配置完成", "#4caf50")
+            self.configurationChanged.emit()
+            
+            # 初始化测试组件
+            self._initialize_qualify_widget()
+            
+            logger.info("配置步骤完成")
+    
+    # ===== 数据处理 =====
+    
+    def on_sample_start_stop(self, is_start: bool):
+        """处理数据采样开始/停止"""
+        status = "开始" if is_start else "停止"
+        logger.info(f"数据采样{status}")
+    
+    def on_data_received(self, sensor_type, packet_id, data):
+        """处理接收到的数据"""
+        try:
+            if sensor_type == SensorTypes.FNIRS:
+                if 'fnirs' in self.state_manager.sensors:
+                    self.state_manager.sensors['fnirs'].updataData(packet_id, data)
+        except Exception as e:
+            logger.error(f"数据处理失败: {e}")
+    
+    def on_data_patched(self, sensor_type, packet_id, data):
+        """处理数据修补"""
+        logger.debug(f"数据修补: {sensor_type}, {packet_id}")
+    
+    def on_battery_updated(self, battery_level):
+        """处理电池电量更新"""
+        if not self.state_manager.is_shutting_down:
+            self.batteryLevelChanged.emit(battery_level)
+    
+    def query_battery(self):
+        """查询电池电量"""
+        if (not self.state_manager.is_shutting_down and 
+            self.network and 
+            self.state_manager.current_state >= WorkflowStates.CONNECTED):
+            try:
+                self.network.sendBatteryQuery()
+            except Exception as e:
+                logger.warning(f"电池查询失败: {e}")
+    
+    def on_network_error(self, error_message):
+        """处理网络错误"""
+        if self.state_manager.is_shutting_down:
+            return
+            
+        logger.error(f"网络错误: {error_message}")
+        self._update_status(f"网络错误: {error_message}", "#f44336")
+        
+        if "connection" in error_message.lower():
+            self.on_device_disconnected()
+        
+        self.show_error_message(f"网络错误: {error_message}")
+    
+    # ===== UI更新和工作流管理 =====
+    
+    def update_ui_state(self):
+        """更新UI状态"""
+        if self.state_manager.is_shutting_down:
+            return
+            
+        try:
+            # 检查连接和患者信息
+            connected = self.state_manager.current_state >= WorkflowStates.CONNECTED
+            has_patient = self._check_patient_info()
+            
+            # Tab启用逻辑
+            tab_states = [
+                True,  # 主页
+                connected and has_patient,  # 配置需要连接和患者信息
+                self.state_manager.current_state >= WorkflowStates.CONFIGURED,
+                self.state_manager.current_state >= WorkflowStates.TESTED,
+                self.state_manager.current_state >= WorkflowStates.ACQUIRED
+            ]
+            
+            for index, enabled in enumerate(tab_states):
+                if index < self.ui.tabWidget.count():
+                    self.ui.tabWidget.setTabEnabled(index, enabled)
+            
+        except Exception as e:
+            logger.error(f"UI状态更新失败: {e}")
+    
+    def _check_patient_info(self):
+        """检查患者信息是否完整"""
+        try:
+            if (hasattr(self, 'user_widget') and 
+                hasattr(self.user_widget, 'current_patient') and
+                self.user_widget.current_patient): # type: ignore
+                return getattr(self.user_widget.current_patient, 'initials', '') != '' # type: ignore
+        except Exception as e:
+            logger.warning(f"检查患者信息失败: {e}")
+        return False
+    
+    def _update_device_info(self, device_id, device_type):
+        """更新设备信息显示"""
+        try:
             if device_id != "--" and device_type != "--":
-                # Format device ID
+                # 格式化设备ID
                 if isinstance(device_id, list):
                     id_str = "-".join([f"{x:02X}" for x in device_id])
                 else:
                     id_str = str(device_id)
                 
-                # Map device type to readable name
+                # 设备类型映射
                 type_names = {
                     1: "EEG", 2: "sEMG", 3: "EEG/sEMG", 4: "fNIRS",
                     5: "EEG/fNIRS", 6: "sEMG/fNIRS", 7: "EEG/sEMG/fNIRS"
@@ -590,482 +735,229 @@ class MainWindow(QMainWindow):
                 self.ui.deviceTypeLabel.setText("设备类型: --")
                 
         except Exception as e:
-            logger.error(f"Error updating device info: {e}")
-    
-    ########   handle battery issue    ########
-        
-    def start_battery_monitoring(self):
-        """Start battery level monitoring for connected devices"""
-        if (self.is_shutting_down or not self.network or 
-            self.current_state < WorkflowStates.CONNECTED or
-            len(self.network.get_connected_devices()) == 0):
-            return
-        
-        try:
-            self.query_battery()
-            if not self.battery_query_timer.isActive(): # type: ignore
-                self.battery_query_timer.start(10000) # type: ignore
-                logger.debug("Battery monitoring started")
-        except Exception as e:
-            logger.warning(f"Failed to start battery monitoring: {e}")
-    
-    def query_battery(self):
-        """Query battery status from devices with safety checks"""
-        if (self.is_shutting_down or not self.network or 
-            self.current_state < WorkflowStates.CONNECTED or
-            len(self.network.get_connected_devices()) == 0):
-            self.stop_battery_monitoring()
-            return
-        
-        try:
-            self.network.sendBatteryQuery()
-            logger.debug("Battery query sent")
-        except Exception as e:
-            logger.warning(f"Battery query failed: {e}")
-            self.stop_battery_monitoring()
-    
-    def on_battery_updated(self, battery_level):
-        """Handle battery level update from network"""
-        if not self.is_shutting_down:
-            self.batteryLevelChanged.emit(battery_level)
+            logger.error(f"更新设备信息失败: {e}")
     
     def update_battery_display(self, battery_level):
-        """Update battery display elements"""
-        if self.is_shutting_down:
-            return
-            
+        """更新电池显示"""
         try:
             self.ui.batteryProgressBar.setValue(battery_level)
             
-            # Update color based on battery level
-            color_map = {
-                (0, 20): "#f44336",    # Red
-                (20, 50): "#ff9800",   # Orange
-                (50, 101): "#4caf50"   # Green
-            }
-            
-            color = next(color for (low, high), color in color_map.items() 
-                        if low <= battery_level < high)
+            # 根据电量设置颜色
+            if battery_level < 20:
+                color = "#f44336"  # 红色
+            elif battery_level < 50:
+                color = "#ff9800"  # 橙色
+            else:
+                color = "#4caf50"  # 绿色
             
             self.ui.batteryProgressBar.setStyleSheet(
                 f"QProgressBar::chunk {{ background-color: {color}; }}"
             )
             
-            logger.debug(f"Battery level updated: {battery_level}%")
-            
         except Exception as e:
-            logger.error(f"Error updating battery display: {e}")
+            logger.error(f"更新电池显示失败: {e}")
     
-    ########   handle configuration    ########
+    def _update_status(self, message, color="#333333"):
+        """更新状态显示"""
+        try:
+            self.ui.statusInfoLabel.setText(f"状态: {message}")
+            self.ui.statusInfoLabel.setStyleSheet(
+                f"QLabel {{ color: {color}; font-weight: bold; }}"
+            )
+        except Exception as e:
+            logger.error(f"更新状态显示失败: {e}")
     
-    def on_sample_rate_set_done(self, valid: bool):
-        """Handle sample rate config done"""
-        if self.config_widget and valid:
-            self.config_widget.sample_rate_send_done = valid
-            sample_rate = self.config_widget.get_sample_rate()
-            for sensor, rates in sample_rate.items():
-                if sensor in self.sensors.keys() and sensor == 'fnirs':
-                    self.sensors[sensor].setSampleRate(rates)
-                elif sensor in self.sensors.keys() and sensor == 'eeg':
-                    pass
-                elif sensor in self.sensors.keys() and sensor == 'semg':
-                    pass
-                
-            self.complete_configuration()
-        
-    def on_channel_config_set_done(self, valid: bool):
-        """Handle channel config done"""
-        if self.config_widget and valid:
-            self.config_widget.channel_config_send_done = valid
-            for sensor in self.sensors.keys():
-                if sensor == 'fnirs':
-                    self.sensors[sensor].setMontage(self.config_widget.get_fnirs_source_detector())
-                elif sensor == 'eeg':
-                    pass
-                elif sensor == 'semg':
-                    pass
-                
-            self.complete_configuration()
+    def _update_config_state(self, connected):
+        """更新配置管理器状态"""
+        if self.config_widget:
+            try:
+                self.config_widget.setEnabled(connected)
+            except Exception as e:
+                logger.error(f"更新配置管理器状态失败: {e}")
     
-    ########   handle data receive    ########
+    # ===== 工作流管理 =====
     
-    def on_sample_start_stop(self, is_start:bool):
-        
-        #start data sample
-        if is_start:
-            pass
-        #stop data sample
-        else:
-            pass
-        return 
-    
-    def on_data_received(self, sensor_type, packet_id, data):
-        if sensor_type == SensorTypes.FNIRS:
-            self.sensors['fnirs'].updataData(packet_id, data)
-        elif sensor_type == SensorTypes.EEG:
-            pass
-        elif sensor_type == SensorTypes.SEMG:
-            pass
-            
-        return
-    
-    def on_data_patched(self, sensor_type, packet_id, data):
-        return
-    
-    ########   handle network error    ########
-    
-    def on_network_error(self, error_message):
-        """Handle network errors with appropriate user feedback"""
-        if self.is_shutting_down:
-            return
-            
-        logger.error(f"Network error: {error_message}")
-        self.update_status(f"Network error: {error_message}", "#f44336")
-        
-        # If it's a connection error, trigger disconnection
-        if "connection" in error_message.lower():
-            self.on_device_disconnected()
-        
-        if not self.is_shutting_down:
-            self.show_error_message(f"Network Error: {error_message}")
-
-    def init_sensor(self, sensor_type, subj_dict):
-        """Initialize sensor type and related components"""
-        if self.is_shutting_down:
+    def on_tab_changed(self, index):
+        """处理标签页切换"""
+        if self.state_manager.is_shutting_down:
             return
             
         try:
-            self.sensor_type = sensor_type
-            self.sensors.clear()
-            
-            sensor_map = {
-                SensorTypes.EEG: 'eeg',
-                SensorTypes.SEMG: 'semg',
-                SensorTypes.FNIRS: 'fnirs'
+            tab_names = ['home', 'configuration', 'test', 'acquisition', 'analysis']
+            if 0 <= index < len(tab_names):
+                current_tab = tab_names[index]
+                logger.debug(f"切换到标签页: {current_tab}")
+                
+                # 处理工作流进展
+                self._handle_workflow_progression(current_tab)
+                
+        except Exception as e:
+            logger.error(f"处理标签页切换失败: {e}")
+    
+    def _handle_workflow_progression(self, tab_name):
+        """处理工作流进展"""
+        try:
+            progression_actions = {
+                'test': lambda: self._progress_to_state(WorkflowStates.TESTED, "测试完成"),
+                'acquisition': lambda: self._progress_to_state(WorkflowStates.ACQUIRED, "数据采集完成"),
+                'analysis': lambda: self._progress_to_state(WorkflowStates.ANALYZED, "数据分析完成")
             }
             
-            for sensor_bit, sensor_name in sensor_map.items():
-                if sensor_type & sensor_bit:
-                    if sensor_name == 'fnirs':
-                        self.sensors[sensor_name] = fNIRS.fNIRS(subj_dict)
-                    else:
-                        self.sensors[sensor_name] = True
-            
-            logger.info(f"Sensor initialized with {len(self.sensors)} types: {list(self.sensors.keys())}")
-            
-            # Update configuration manager if needed
-            if (self.config_widget and 
-                getattr(self.config_widget, 'sensor_types', None) != sensor_type):
-                logger.info(f"Updating configuration manager sensor type to {sensor_type}")
-                self._recreate_config_manager_for_sensor_type()
-            
-        except Exception as e:
-            logger.error(f"Error initializing sensor: {e}")
-    
-
-    def update_status(self, message, color="#333333"):
-        """Update status label with message and color"""
-        if self.is_shutting_down:
-            return
-            
-        try:
-            self.ui.statusInfoLabel.setText(f"Status: {message}")
-            self.ui.statusInfoLabel.setStyleSheet(f"QLabel {{ color: {color}; font-weight: bold; }}")
-        except Exception as e:
-            logger.error(f"Error updating status: {e}")
-    
-    def show_error_message(self, message):
-        """Show error message dialog"""
-        if not self.is_shutting_down:
-            QMessageBox.critical(self, "Error", message)
-    
-    def _complete_workflow_step(self, required_state, new_state, message):
-        """Generic workflow step completion"""
-        if self.is_shutting_down or self.current_state != required_state:
-            return
-            
-        self.current_state = new_state
-        self.workflowStateChanged.emit(self.current_state)
-        self.update_status(message, "#4caf50")
-        logger.info(f"Workflow step completed: {message}")
-    
-    def complete_configuration(self):
-        """Complete configuration workflow step"""
-        if (self.is_shutting_down or self.current_state != WorkflowStates.CONNECTED or
-            not self.config_widget):
-            return
-            
-        try:
-            if (self.config_widget.sample_rate_send_done and 
-                self.config_widget.channel_config_send_done):
-                self.config_widget.sample_rate_send_done = False
-                self.config_widget.channel_config_send_done = False
+            if tab_name in progression_actions:
+                QTimer.singleShot(1500, progression_actions[tab_name])
                 
-                self._complete_workflow_step(
-                    WorkflowStates.CONNECTED, 
-                    WorkflowStates.CONFIGURED,
-                    "Configuration completed"
-                )
-                self.configurationChanged.emit()
-            
         except Exception as e:
-            logger.error(f"Error completing configuration: {e}")
-            self.update_status(f"Configuration failed: {str(e)}", "#f44336")
+            logger.error(f"工作流进展处理失败: {e}")
     
-    def complete_test(self):
-        """Complete test workflow step"""
-        self._complete_workflow_step(
-            WorkflowStates.CONFIGURED, 
-            WorkflowStates.TESTED,
-            "Test completed"
-        )
+    def _progress_to_state(self, target_state, message):
+        """进展到目标状态"""
+        if self.state_manager.can_transition_to(target_state):
+            self.state_manager.set_state(target_state)
+            self._update_status(message, "#4caf50")
+            logger.info(f"{message}")
     
-    def complete_acquisition(self):
-        """Complete acquisition workflow step"""
-        self._complete_workflow_step(
-            WorkflowStates.TESTED,
-            WorkflowStates.ACQUIRED,
-            "Data acquisition completed"
-        )
+    # ===== 事件回调 =====
     
-    def complete_analysis(self):
-        """Complete analysis workflow step"""
-        self._complete_workflow_step(
-            WorkflowStates.ACQUIRED,
-            WorkflowStates.ANALYZED,
-            "Data analysis completed"
-        )
+    def on_device_connection_changed(self, connected):
+        """设备连接状态变更回调"""
+        self.update_ui_state()
     
-    def update_ui_state(self):
-        """Update UI state based on current workflow and connection status"""
-        if self.is_shutting_down:
-            return
-            
-        try:
-            # Check connection and patient info
-            connected = self.current_state >= WorkflowStates.CONNECTED
-            has_patient = (hasattr(self, 'user_widget') and 
-                          hasattr(self.user_widget, 'current_patient') and
-                          getattr(self.user_widget.current_patient, 'initials', '') != '')
-            print(getattr(self.user_widget.current_patient, 'initials', ''))
-            
-            # Tab enabling logic
-            tab_states = [
-                True,  # Home tab is always enabled
-                connected and has_patient,  # Configuration requires connection and patient info
-                self.current_state >= WorkflowStates.CONFIGURED,  # Test requires configuration
-                self.current_state >= WorkflowStates.TESTED,     # Acquisition requires test
-                self.current_state >= WorkflowStates.ACQUIRED    # Analysis requires acquisition
-            ]
-            
-            for index, enabled in enumerate(tab_states):
-                self.ui.tabWidget.setTabEnabled(index, enabled)
-            
-        except Exception as e:
-            logger.error(f"Error updating UI state: {e}")
+    def on_workflow_state_changed(self, old_state, new_state):
+        """工作流状态变更回调"""
+        self.update_ui_state()
+    
+    def on_configuration_changed(self):
+        """配置变更回调"""
+        logger.debug("配置已变更")
     
     def on_patient_changed(self):
-        """Handle patient information changes"""
+        """患者信息变更回调"""
         self.update_ui_state()
-        logger.debug("Patient information changed, UI state updated")
     
-    def _handle_tab_save_operation(self, tab_index):
-        """Handle save operations based on current tab"""
-        operations = {
-            0: self._save_patient_data,
-            1: self._save_configuration_data
-        }
-        
-        operation = operations.get(tab_index, self._save_generic_data)
-        operation()
-    
-    def _save_patient_data(self):
-        """Save patient data from home tab"""
-        if hasattr(self, 'user_widget') and hasattr(self.user_widget, 'save_patient_data'):
-            self.user_widget.save_patient_data()
-            QMessageBox.information(self, "Save", "Patient data saved successfully!")
-        else:
-            QMessageBox.information(self, "Save", "No patient data to save")
-    
-    def _save_configuration_data(self):
-        """Save configuration data from config tab"""
-        if self.config_widget:
-            try:
-                self.config_widget.save_configuration()
-            except Exception as e:
-                logger.error(f"Configuration save failed: {e}")
-                QMessageBox.critical(self, "Save Error", f"Failed to save configuration: {str(e)}")
-        else:
-            QMessageBox.information(self, "Save", "No configuration to save")
-    
-    def _save_generic_data(self):
-        """Generic save operation for other tabs"""
-        QMessageBox.information(self, "Save", "Data saved successfully!")
+    # ===== 文件操作 =====
     
     def save_data(self):
-        """Save current data based on active tab"""
-        if self.is_shutting_down:
+        """保存数据"""
+        if self.state_manager.is_shutting_down:
             return
             
         try:
             current_index = self.ui.tabWidget.currentIndex()
-            self._handle_tab_save_operation(current_index)
-            logger.info(f"Data saved for tab index: {current_index}")
+            if current_index == 0 and self.user_widget:
+                self._save_patient_data()
+            elif current_index == 1 and self.config_widget:
+                self._save_configuration_data()
+            else:
+                QMessageBox.information(self, "保存", "数据保存成功!")
                 
         except Exception as e:
-            logger.error(f"Save failed: {e}")
-            self.show_error_message(f"Save failed: {e}")
+            logger.error(f"保存失败: {e}")
+            self.show_error_message(f"保存失败: {e}")
+    
+    def _save_patient_data(self):
+        """保存患者数据"""
+        try:
+            if hasattr(self.user_widget, 'save_patient_data'):
+                self.user_widget.save_patient_data() # type: ignore
+            QMessageBox.information(self, "保存", "患者数据保存成功!")
+        except Exception as e:
+            QMessageBox.critical(self, "保存错误", f"保存患者数据失败: {e}")
+    
+    def _save_configuration_data(self):
+        """保存配置数据"""
+        try:
+            self.config_widget.save_configuration() # type: ignore
+            QMessageBox.information(self, "保存", "配置保存成功!")
+        except Exception as e:
+            QMessageBox.critical(self, "保存错误", f"保存配置失败: {e}")
     
     def export_data(self):
-        """Export data functionality"""
-        if self.is_shutting_down:
+        """导出数据"""
+        if self.state_manager.is_shutting_down:
             return
             
         try:
-            current_index = self.ui.tabWidget.currentIndex()
-            
-            if current_index == 1 and self.config_widget:
-                self._export_configuration()
-            elif self.current_state >= WorkflowStates.ACQUIRED:
-                QMessageBox.information(self, "Export", "Data export functionality will be implemented here")
+            if self.state_manager.current_state >= WorkflowStates.ACQUIRED:
+                QMessageBox.information(self, "导出", "数据导出功能将在此实现")
             else:
-                QMessageBox.information(self, "Export", "No data available for export. Complete data acquisition first.")
+                QMessageBox.information(self, "导出", "无可导出数据。请先完成数据采集。")
                 
         except Exception as e:
-            logger.error(f"Export failed: {e}")
-            self.show_error_message(f"Export failed: {e}")
+            logger.error(f"导出失败: {e}")
+            self.show_error_message(f"导出失败: {e}")
     
-    def _export_configuration(self):
-        """Export configuration data"""
-        config_dict = self.config_widget.get_configuration_dict() # type: ignore
-        summary = self.config_widget.get_sensor_summary() # type: ignore
-        
-        QMessageBox.information(self, "Export", 
-            f"Configuration Export Summary:\n\n{summary}\n\n"
-            f"Use 'Save Configuration' to save to file.")
+    # ===== 界面对话框 =====
     
     def show_preferences(self):
-        """Show preferences dialog"""
-        if not self.is_shutting_down:
-            QMessageBox.information(self, "Preferences", "Preferences dialog will be implemented here")
+        """显示首选项对话框"""
+        if not self.state_manager.is_shutting_down:
+            QMessageBox.information(self, "首选项", "首选项对话框将在此实现")
     
     def show_about(self):
-        """Show about dialog with enhanced information"""
-        if self.is_shutting_down:
+        """显示关于对话框"""
+        if self.state_manager.is_shutting_down:
             return
             
-        # Get configuration info if available
-        config_info = ""
-        if self.config_widget:
-            try:
-                enabled_sensors = self.config_widget.get_enabled_sensor_types()
-                config_info = f"\n• Active sensors: {', '.join([s.upper() for s in enabled_sensors])}"
-            except:
-                config_info = "\n• Configuration manager: Available"
-        
         about_text = (
-            "fNIRS Data Acquisition System\n\n"
-            "Version: 2.0 (Optimized XML-Based UI with Configuration Manager)\n"
-            "A comprehensive system for fNIRS data collection and analysis.\n\n"
-            "Features:\n"
-            "• Optimized code structure with reduced redundancy\n"
-            "• UI structure matching XML definition\n"
-            "• Tabbed interface with workflow management\n"
-            "• Integrated configuration management system\n"
-            "• Real-time device status indicators\n"
-            "• Multilingual support (Chinese/English)\n"
-            "• Enhanced error handling and logging\n"
-            "• Signal-based component communication\n"
-            "• Persistent window state\n"
-            "• Patient information management\n"
-            "• Automatic device discovery\n"
-            "• Real-time battery monitoring\n"
-            "• Command acknowledgment system\n"
-            "• Robust network communication\n"
-            f"• Advanced sensor configuration{config_info}"
+            "fNIRS 数据采集系统\n\n"
+            "版本: 3.1 (优化响应式设计)\n"
+            "功能齐全的 fNIRS 数据收集和分析系统。\n\n"
+            "主要改进:\n"
+            "• 完全响应式的TabWidget布局\n"
+            "• 简化的代码结构和组件管理\n"
+            "• 优化的状态管理系统\n"
+            "• 更好的错误处理和日志记录\n"
+            "• 自适应滚动区域支持\n"
+            "• 统一的定时器管理\n"
+            "• 改进的网络连接处理\n"
+            "• 模块化的组件初始化"
         )
-        QMessageBox.about(self, "About fNIRS System", about_text)
+        QMessageBox.about(self, "关于 fNIRS 系统", about_text)
     
-    # Utility methods for external access
-    def get_user_widget(self):
-        """Get reference to the user widget for external access"""
-        return getattr(self, 'user_widget', None)
+    def show_error_message(self, message):
+        """显示错误消息对话框"""
+        if not self.state_manager.is_shutting_down:
+            QMessageBox.critical(self, "错误", message)
     
-    def get_config_manager(self):
-        """Get reference to the configuration manager for external access"""
-        return getattr(self, 'config_widget', None)
+    # ===== 工具方法 =====
     
-    def get_network_statistics(self):
-        """Get current network statistics"""
-        if self.network and not self.is_shutting_down:
-            return self.network.get_statistics()
-        return {}
+    def _stop_all_timers(self):
+        """停止所有定时器"""
+        for timer in self.timers.values():
+            if timer.isActive():
+                timer.stop()
     
     def resizeEvent(self, event): # type: ignore
-        """Handle window resize events"""
+        """处理窗口大小调整事件"""
         super().resizeEvent(event)
-        # The tab widget and status area positions are fixed as per XML definition
-    
-    def _save_window_configuration(self):
-        """Save window and configuration state"""
-        try:
-            # Save window geometry and state
-            self.settings.setValue("window/geometry", self.saveGeometry())
-            self.settings.setValue("window/state", self.saveState())
-            self.settings.setValue("tab/current_index", self.ui.tabWidget.currentIndex())
-            
-            # Save configuration manager state if available
-            if self.config_widget:
-                try:
-                    config_summary = self.config_widget.get_sensor_summary()
-                    self.settings.setValue("config/last_sensors", config_summary.get('enabled_sensors', []))
-                except Exception as e:
-                    logger.warning(f"Failed to save configuration state: {e}")
-            
-            self.settings.sync()
-            logger.debug("Window state saved")
-        except Exception as e:
-            logger.error(f"Error saving window state: {e}")
-    
-    def save_window_state(self):
-        """Save current window state to settings"""
-        self._save_window_configuration()
+        # 响应式设计已在UI层面处理，这里只需要基本更新
+        self.update()
     
     def restore_window_state(self):
-        """Restore window and tab state from settings"""
+        """恢复窗口状态"""
         try:
-            # Restore window geometry
             geometry = self.settings.value("window/geometry")
             if geometry:
                 self.restoreGeometry(geometry)
             else:
-                self.resize(1200, 852)
-                self.center_window()
+                self.resize(1200, 800)
+                self._center_window()
             
-            # Restore window state
             window_state = self.settings.value("window/state")
             if window_state:
                 self.restoreState(window_state)
             
-            # Restore tab index (default to 4 as per XML - Analysis tab)
-            tab_index = self.settings.value("tab/current_index", 4, type=int)
+            tab_index = self.settings.value("tab/current_index", 0, type=int)
             if 0 <= tab_index < self.ui.tabWidget.count():
                 self.ui.tabWidget.setCurrentIndex(tab_index)
-            
-            # Log restored configuration info
-            last_sensors = self.settings.value("config/last_sensors", [], type=list)
-            if last_sensors:
-                logger.info(f"Last session sensors: {last_sensors}")
-            
-            logger.debug("Window state restored")
-            
+                
         except Exception as e:
-            logger.error(f"Error restoring window state: {e}")
-            self.resize(1200, 852)
-            self.center_window()
+            logger.error(f"恢复窗口状态失败: {e}")
+            self.resize(1200, 800)
+            self._center_window()
     
-    def center_window(self):
-        """Center the window on the screen"""
+    def _center_window(self):
+        """窗口居中"""
         try:
             screen = QApplication.desktop().availableGeometry() # type: ignore
             window_rect = self.frameGeometry()
@@ -1073,101 +965,90 @@ class MainWindow(QMainWindow):
             window_rect.moveCenter(center_point)
             self.move(window_rect.topLeft())
         except Exception as e:
-            logger.error(f"Error centering window: {e}")
+            logger.error(f"窗口居中失败: {e}")
     
-    def _cleanup_components(self):
-        """Cleanup individual components during shutdown"""
-        cleanup_operations = [
-            ("configuration manager", self._cleanup_config_manager),
-            ("user widget", self._cleanup_user_widget),
-            ("network", self._cleanup_network)
-        ]
-        
-        for component_name, cleanup_func in cleanup_operations:
-            try:
-                cleanup_func()
-                logger.info(f"{component_name.title()} closed successfully")
-            except Exception as e:
-                logger.warning(f"Error during {component_name} cleanup: {e}")
+    def save_window_state(self):
+        """保存窗口状态"""
+        try:
+            self.settings.setValue("window/geometry", self.saveGeometry())
+            self.settings.setValue("window/state", self.saveState())
+            self.settings.setValue("tab/current_index", self.ui.tabWidget.currentIndex())
+            self.settings.sync()
+        except Exception as e:
+            logger.error(f"保存窗口状态失败: {e}")
     
-    def _cleanup_config_manager(self):
-        """Cleanup configuration manager"""
-        if self.config_widget:
-            if hasattr(self.config_widget, 'get_sensor_summary'):
-                summary = self.config_widget.get_sensor_summary()
-                logger.info(f"Final configuration state: {summary}")
-            self.config_widget.close()
-    
-    def _cleanup_user_widget(self):
-        """Cleanup user widget"""
-        if hasattr(self, 'user_widget') and hasattr(self.user_widget, 'closeEvent'):
-            from PyQt5.QtGui import QCloseEvent
-            close_event = QCloseEvent()
-            self.user_widget.closeEvent(close_event)
-    
-    def _cleanup_network(self):
-        """Cleanup network connections"""
-        if self.network:
-            if self.current_state >= WorkflowStates.CONNECTED:
-                connected_devices = self.network.get_connected_devices()
-                if len(connected_devices) > 0:
-                    self.network.sendDisconnect()
-                    QApplication.processEvents()
-                    import time
-                    time.sleep(0.5)
-            self.network.close()
-    
-    def shutdown_cleanup(self):
-        """Perform comprehensive cleanup during shutdown"""
-        logger.info("Starting shutdown cleanup...")
-        
-        # Set shutdown flag and save state
-        self.is_shutting_down = True
-        self.save_window_state()
-        
-        # Stop all timers and cleanup components
-        self.stop_all_timers()
-        self._cleanup_components()
-        
-        logger.info("Shutdown cleanup completed")
+    # ===== 清理和关闭 =====
     
     def closeEvent(self, event): # type: ignore
-        """Handle application close event"""
+        """处理应用程序关闭事件"""
         try:
-            self.shutdown_cleanup()
+            self._perform_shutdown()
             event.accept()
-            logger.info("Application closed successfully")
-            
+            logger.info("应用程序关闭成功")
         except Exception as e:
-            logger.error(f"Error during application shutdown: {e}")
-            event.accept()  # Force close even if there's an error
+            logger.error(f"应用程序关闭时发生错误: {e}")
+            event.accept()  # 强制关闭
+    
+    def _perform_shutdown(self):
+        """执行关闭清理"""
+        logger.info("开始关闭清理...")
+        
+        # 设置关闭标志
+        self.state_manager.is_shutting_down = True
+        
+        # 保存窗口状态
+        self.save_window_state()
+        
+        # 停止所有定时器
+        self._stop_all_timers()
+        
+        # 断开网络连接
+        if (self.network and 
+            self.state_manager.current_state >= WorkflowStates.CONNECTED):
+            try:
+                self.network.sendDisconnect()
+                QApplication.processEvents()
+            except Exception as e:
+                logger.warning(f"网络断开失败: {e}")
+        
+        # 清理所有组件
+        self.component_manager.cleanup_all()
+        
+        # 关闭网络
+        if self.network:
+            try:
+                self.network.close()
+            except Exception as e:
+                logger.warning(f"网络模块关闭失败: {e}")
+        
+        logger.info("关闭清理完成")
 
 
 def main():
-    """Main application entry point"""
+    """主应用程序入口点"""
     try:
         app = QApplication(sys.argv)
         
-        # Set application properties
+        # 设置应用程序属性
         app.setApplicationName("fNIRS Data Acquisition System")
-        app.setApplicationVersion("2.0")
+        app.setApplicationVersion("3.1")
         app.setOrganizationName("fNIRS Solutions")
         
-        # Enable high DPI scaling
+        # 启用高DPI缩放
         app.setAttribute(QtCore.Qt.ApplicationAttribute.AA_EnableHighDpiScaling, True)
         app.setAttribute(QtCore.Qt.ApplicationAttribute.AA_UseHighDpiPixmaps, True)
         
-        # Create and show main window
+        # 创建并显示主窗口
         window = MainWindow()
         window.show()
         
-        logger.info("Application started successfully with optimized XML-based UI structure and integrated configuration manager")
+        logger.info("应用程序启动成功 - 优化响应式设计")
         
-        # Start event loop
+        # 启动事件循环
         sys.exit(app.exec_())
         
     except Exception as e:
-        logger.critical(f"Failed to start application: {e}")
+        logger.critical(f"应用程序启动失败: {e}")
         import traceback
         traceback.print_exc()
         sys.exit(1)

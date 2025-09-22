@@ -40,7 +40,7 @@ class Position3D:
             (self.z - other.z)**2
         )
         logger.debug(f"3D Distance from {self} to {other}: {distance:.2f}")
-        return distance
+        return round(distance)
     
     def to_tuple(self) -> Tuple[float, float, float]:
         """Convert to tuple format."""
