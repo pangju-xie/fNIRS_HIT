@@ -18,7 +18,7 @@ set(HEAD_HASH)
 file(READ "E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/CMakeFiles/git-data/HEAD" HEAD_CONTENTS LIMIT 1024)
 
 string(STRIP "${HEAD_CONTENTS}" HEAD_CONTENTS)
-set(GIT_DIR "D:/ProgramData/Espressif/frameworks/esp-idf-v5.3.3/.git")
+set(GIT_DIR "E:/xfw/code/fnirs/.git")
 # handle git-worktree
 if(EXISTS "${GIT_DIR}/commondir")
 	file(READ "${GIT_DIR}/commondir" GIT_DIR_NEW LIMIT 1024)

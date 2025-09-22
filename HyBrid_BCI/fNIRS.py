@@ -86,6 +86,7 @@ class fNIRS:
     def setSampleRate(self, rate):
         """设置采样率"""
         self.sample_rate = rate
+        logger.info(f"fnirs set sample rate: {rate}.")
     
     def get_channels(self):
         """获取通道配置"""
@@ -139,6 +140,7 @@ class fNIRS:
         
         self.set_done = True
         
+        logger.info(f"fnirs set montage done. valid channel number:{self.channel_num}.")
         # 初始化数据数组
         self.raw = np.array([]).reshape(0, len(self.struct.Wavelength), self.channel_num)
         self.OD = np.array([]).reshape(0, len(self.struct.Wavelength), self.channel_num)

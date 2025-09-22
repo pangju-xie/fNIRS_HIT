@@ -66,8 +66,8 @@ class StyleConfig:
                 background-color: {bg_color};
                 color: {text_color};
                 font: bold 12px;
-                min-width: 10px;
-                min-height: 10px;
+                min-width: -5px;
+                min-height: -5px;
                 max-width: 40px;
                 max-height: 40px;
             }}

@@ -484,7 +484,7 @@ class MainWindow(QMainWindow):
             # Emit signals and initialize config manager
             self.deviceConnectionChanged.emit(True)
             self.workflowStateChanged.emit(self.current_state)
-            self.initialize_config_manager(sensor_type)
+            self.initialize_config_widget(sensor_type)
             
             logger.info(f"Device connected successfully: ID={sensor_id}, Type={sensor_type}")
             
@@ -664,11 +664,11 @@ class MainWindow(QMainWindow):
             self.config_widget.sample_rate_send_done = valid
             sample_rate = self.config_widget.get_sample_rate()
             for sensor, rates in sample_rate.items():
-                if sensor == 'fnirs':
+                if sensor in self.sensors.keys() and sensor == 'fnirs':
                     self.sensors[sensor].setSampleRate(rates)
-                elif sensor == 'eeg':
+                elif sensor in self.sensors.keys() and sensor == 'eeg':
                     pass
-                elif sensor == 'semg':
+                elif sensor in self.sensors.keys() and sensor == 'semg':
                     pass
                 
             self.complete_configuration()

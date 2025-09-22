@@ -1,7 +1,7 @@
 {
     "version":            "1.2",
     "project_name":       "main",
-    "project_version":    "1",
+    "project_version":    "732ac94-dirty",
     "project_path":       "E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32",
     "idf_path":           "D:/ProgramData/Espressif/frameworks/esp-idf-v5.3.3",
     "build_dir":          "E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build",
@@ -40,7 +40,7 @@
             "managed_reqs": [],
             "managed_priv_reqs": [],
             "file": "E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/BSP/libBSP.a",
-            "sources": [ "E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/components/BSP/dns_server.c", "E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/components/BSP/led.c", "E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/components/BSP/spi.c", "E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/components/BSP/transmit.c", "E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/components/BSP/uart.c", "E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/components/BSP/udp.c", "E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/components/BSP/web_server_post.c", "E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/components/BSP/wifi.c", "E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/index.html.S" ],
+            "sources": [ "E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/components/BSP/circular_buffer.c", "E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/components/BSP/dns_server.c", "E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/components/BSP/led.c", "E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/components/BSP/spi.c", "E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/components/BSP/transmit.c", "E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/components/BSP/uart.c", "E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/components/BSP/udp.c", "E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/components/BSP/web_server_post.c", "E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/components/BSP/wifi.c", "E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/index.html.S" ],
             "include_dirs": [ "include" ]
         },
         "app_trace": {

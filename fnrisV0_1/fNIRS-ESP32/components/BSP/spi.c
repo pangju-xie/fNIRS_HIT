@@ -4,9 +4,14 @@
 #include "driver/gpio.h"
 #include "esp_log.h"
 #include "spi.h"
-#include "udp.h"
+// #include "udp.h"
+#include "circular_buffer.h"
 
 static const char* TAG = "SPI";
+#define SPI_RX_BUF_SIZE 4096
+static circular_buffer_t spi_rx_buffer;
+static uint8_t spi_rx_buf_memory[SPI_RX_BUF_SIZE];
+
 
 //Called after a transaction is queued and ready for pickup by master. We use this to set the handshake line high.
 void my_post_setup_cb(spi_slave_transaction_t *trans) {
@@ -56,43 +61,83 @@ void spi_init(void){
     vTaskDelay(1000/portTICK_PERIOD_MS);
 }
 
+/**
+ * @brief 初始化UART接收缓冲区
+ * @return 操作结果
+ */
+static bool init_spi_rx_buffer(void)
+{
+    circ_buf_result_t result = circular_buffer_init_static(&spi_rx_buffer, 
+                                                          spi_rx_buf_memory, 
+                                                          SPI_RX_BUF_SIZE);
+    
+    if (result != CIRC_BUF_OK) {
+        ESP_LOGE(TAG, "Failed to initialize circular buffer: %s", 
+                 circular_buffer_get_error_string(result));
+        return false;
+    }
+    
+    ESP_LOGI(TAG, "SPI RX circular buffer initialized, size: %d bytes", SPI_RX_BUF_SIZE);
+    return true;
+}
+
+
 /// @brief SPI从机，接收STM32发来的数据
 /// @param arg 
 static void spi_slave_task(void *arg) {
     spi_slave_transaction_t t;
     memset(&t, 0, sizeof(t));
+    uint8_t temp_buf[SPI_TEMP_BUF_SIZE];  // 临时接收缓冲区
     uint8_t* rx_buffer = (uint8_t*)malloc(1024); //SPI接收数组
     t.length = 1024 * 8; // 1290 bytes
     t.tx_buffer = NULL;
     t.rx_buffer = rx_buffer;
 
+    // 初始化循环缓冲区
+    if (!init_spi_rx_buffer()) {
+        ESP_LOGE(TAG, "Failed to initialize SPI RX buffer, task exiting");
+        vTaskDelete(NULL);
+        return;
+    }
+    
+    ESP_LOGI(TAG, "SPI RX task started successfully");
+
     while (1) {
-        // ESP_LOGI(TAG, "Enfsddgf");
         // Wait for the master to initiate a transfer
         esp_err_t ret = spi_slave_transmit(HSPI_HOST, &t, portMAX_DELAY);
-        // if(udpRxData[0] != 0x00)
-        //     ESP_LOGI(TAG, "I sent it%x\t%x\t%x.............................................",udpRxData[0],udpRxData[1],udpRxData[2]);
-        // ESP_LOGI(TAG, "After  Enfsddgf..............................................");
-        if (ret == ESP_OK){
-            ESP_LOGI(TAG, "read %d bytes.", t.trans_len/8);
-            printf("READ DATA: ");
-            for(int i = 0;i<t.trans_len/8;i++){
-                printf("%02X ", rx_buffer[i]);
+        if(ret == ESP_OK){
+            int32_t rx_bytes = t.trans_len/8;
+            // 将接收到的数据写入循环缓冲区
+            int32_t written = circular_buffer_write_force(&spi_rx_buffer, temp_buf, rx_bytes);
+            
+            if (written < 0) {
+                ESP_LOGE(TAG, "Failed to write to circular buffer: %s", 
+                         circular_buffer_get_error_string(-written));
+                continue;
             }
-            printf(".\r\n");
-            if(rx_buffer[0] == 0xBA && rx_buffer[1] == 0xBA) {    //SPI接收成功且包头有效
-                int length = 11+ (int)(rx_buffer[7]<<8|rx_buffer[8]);
-                // Data received, send it over UDP
-                // ESP_LOGI(TAG, "SPI Data recv ok");
-                udp_safe_send(rx_buffer, length);  //将接收到的数据通过WiFi发送给PC
+            
+            if (written != rx_bytes) {
+                ESP_LOGW(TAG, "Partial write: %d/%d bytes", written, rx_bytes);
             }
-        } else {
-            ESP_LOGE(TAG, "SPI slave error occurred: %s", esp_err_to_name(ret));
+            
+            // 处理缓冲区中的所有完整帧
+            process_all_frames(&spi_rx_buffer);
         }
-        vTaskDelay(1/portTICK_PERIOD_MS);
+        
+        // 定期检查缓冲区状态（可选的调试信息）
+        static uint32_t debug_counter = 0;
+        if (++debug_counter % 1000 == 0) {
+            int32_t data_len = circular_buffer_get_data_len(&spi_rx_buffer);
+            int32_t free_space = circular_buffer_get_free_space(&spi_rx_buffer);
+            ESP_LOGD(TAG, "Buffer status: %d bytes used, %d bytes free", data_len, free_space);
+        }
+        
+        // 短暂延时，避免CPU占用过高
+        vTaskDelay(10 / portTICK_PERIOD_MS);
     }
-
-    free(rx_buffer);
+    
+    // 清理资源（实际上不会执行到这里）
+    circular_buffer_deinit(&spi_rx_buffer);
     vTaskDelete(NULL);
 }
 
