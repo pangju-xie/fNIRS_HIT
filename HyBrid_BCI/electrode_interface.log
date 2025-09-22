@@ -45203,3 +45203,401 @@ S1-D1, S2-D2, S2-D8, S3-D1, S3-D3, S4-D4, S5-D2, S5-D5, S5-D6, S5-D8
 2025-09-22 15:29:52.990 - __main__ - INFO - _cleanup_components:1089 - Network closed successfully
 2025-09-22 15:29:52.990 - __main__ - INFO - shutdown_cleanup:1132 - Shutdown cleanup completed
 2025-09-22 15:29:52.990 - __main__ - INFO - closeEvent:1139 - Application closed successfully
+2025-09-22 15:34:32.228 - locate - INFO - setup_logging:36 - Logging initialized with level: INFO
+2025-09-22 15:34:32.386 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-22 15:34:32.386 - network - INFO - _setup_network:119 - Network ready: 192.168.1.100:1227 -> 192.168.1.255:2227
+2025-09-22 15:34:32.386 - __main__ - INFO - initialize_network:110 - Network module initialized successfully
+2025-09-22 15:34:32.821 - __main__ - INFO - initialize_user_widget:126 - User widget integrated into home tab successfully
+2025-09-22 15:34:32.822 - __main__ - INFO - restore_window_state:1058 - Last session sensors: ['fnirs']
+2025-09-22 15:34:32.822 - __main__ - INFO - _initialize_components:103 - MainWindow initialized successfully with UI structure from XML
+2025-09-22 15:34:32.822 - __main__ - INFO - __init__:78 - MainWindow initialized successfully with UI structure from XML
+2025-09-22 15:34:32.933 - __main__ - INFO - main:1164 - Application started successfully with optimized XML-based UI structure and integrated configuration manager
+2025-09-22 15:35:16.438 - __main__ - INFO - shutdown_cleanup:1122 - Starting shutdown cleanup...
+2025-09-22 15:35:16.439 - __main__ - INFO - _cleanup_components:1089 - Configuration Manager closed successfully
+2025-09-22 15:35:16.439 - __main__ - INFO - _cleanup_components:1089 - User Widget closed successfully
+2025-09-22 15:35:16.439 - network - INFO - close:583 - Network closed
+2025-09-22 15:35:16.439 - __main__ - INFO - _cleanup_components:1089 - Network closed successfully
+2025-09-22 15:35:16.440 - __main__ - INFO - shutdown_cleanup:1132 - Shutdown cleanup completed
+2025-09-22 15:35:16.440 - __main__ - INFO - closeEvent:1139 - Application closed successfully
+2025-09-22 15:43:32.380 - locate - INFO - setup_logging:36 - Logging initialized with level: INFO
+2025-09-22 15:43:32.925 - locate - INFO - __init__:322 - Initializing Locate application
+2025-09-22 15:43:32.926 - ui_locate - INFO - __init__:339 - PositionManager initialized with 213 2D positions and 64 3D positions
+2025-09-22 15:43:32.926 - locate - INFO - __init__:133 - ElectrodeManager initialized
+2025-09-22 15:43:32.926 - locate - INFO - __init__:229 - ChannelCalculator initialized with threshold: 40.0mm
+2025-09-22 15:43:32.926 - ui_locate - INFO - setupUi:446 - Setting up UI components
+2025-09-22 15:43:32.926 - ui_locate - INFO - _create_electrode_buttons:491 - Creating default electrode buttons
+2025-09-22 15:43:32.931 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 61 default electrode buttons
+2025-09-22 15:43:32.931 - ui_locate - INFO - _create_electrode_buttons:491 - Creating middle electrode buttons
+2025-09-22 15:43:32.937 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 104 middle electrode buttons
+2025-09-22 15:43:32.937 - ui_locate - INFO - _create_electrode_buttons:491 - Creating center electrode buttons
+2025-09-22 15:43:32.941 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 48 center electrode buttons
+2025-09-22 15:43:32.941 - ui_locate - INFO - setupUi:456 - UI setup completed successfully
+2025-09-22 15:43:32.941 - locate - INFO - set_position_manager:138 - position manager set for ElectrondeManager
+2025-09-22 15:43:32.941 - locate - INFO - _connect_electrode_signals:394 - Connecting signals for 213 electrodes
+2025-09-22 15:43:32.945 - locate - INFO - _connect_electrode_signals:423 - Signal connection complete: 213 success, 0 failed
+2025-09-22 15:43:32.945 - locate - INFO - __init__:328 - Locate application initialized successfully
+2025-09-22 15:43:56.791 - locate - INFO - setup_logging:36 - Logging initialized with level: INFO
+2025-09-22 15:43:56.816 - __main__ - INFO - main:916 - Starting Device Configuration Manager v2.0.0
+2025-09-22 15:43:56.817 - __main__ - INFO - __init__:229 - Initializing ConfigurationManager
+2025-09-22 15:43:56.817 - __main__ - INFO - get_montage_directory:203 - Montage directory: E:\xfw\code\fnirs\HyBrid_BCI\montage
+2025-09-22 15:43:57.317 - ui_config - INFO - __init__:271 - UIManager initialized
+2025-09-22 15:43:57.317 - ui_config - INFO - setup_ui_for_sensors:275 - Setting up UI for enabled sensors
+2025-09-22 15:43:57.319 - locate - INFO - __init__:322 - Initializing Locate application
+2025-09-22 15:43:57.319 - ui_locate - INFO - __init__:339 - PositionManager initialized with 213 2D positions and 64 3D positions
+2025-09-22 15:43:57.319 - locate - INFO - __init__:133 - ElectrodeManager initialized
+2025-09-22 15:43:57.320 - locate - INFO - __init__:229 - ChannelCalculator initialized with threshold: 40.0mm
+2025-09-22 15:43:57.320 - ui_locate - INFO - setupUi:446 - Setting up UI components
+2025-09-22 15:43:57.320 - ui_locate - INFO - _create_electrode_buttons:491 - Creating default electrode buttons
+2025-09-22 15:43:57.324 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 61 default electrode buttons
+2025-09-22 15:43:57.324 - ui_locate - INFO - _create_electrode_buttons:491 - Creating middle electrode buttons
+2025-09-22 15:43:57.331 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 104 middle electrode buttons
+2025-09-22 15:43:57.331 - ui_locate - INFO - _create_electrode_buttons:491 - Creating center electrode buttons
+2025-09-22 15:43:57.334 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 48 center electrode buttons
+2025-09-22 15:43:57.334 - ui_locate - INFO - setupUi:456 - UI setup completed successfully
+2025-09-22 15:43:57.335 - locate - INFO - set_position_manager:138 - position manager set for ElectrondeManager
+2025-09-22 15:43:57.335 - locate - INFO - _connect_electrode_signals:394 - Connecting signals for 213 electrodes
+2025-09-22 15:43:57.339 - locate - INFO - _connect_electrode_signals:423 - Signal connection complete: 213 success, 0 failed
+2025-09-22 15:43:57.339 - locate - INFO - __init__:328 - Locate application initialized successfully
+2025-09-22 15:43:58.028 - __main__ - INFO - __post_init__:88 - Initializing DeviceConfiguration with sensors: {'fnirs'}
+2025-09-22 15:43:58.028 - ui_config - INFO - initialize_ui_values:425 - UI values initialization completed
+2025-09-22 15:43:58.028 - __main__ - INFO - _initialize_configuration:285 - Configuration initialization completed
+2025-09-22 15:43:58.028 - __main__ - INFO - __init__:249 - ConfigurationManager initialization completed successfully
+2025-09-22 15:43:58.828 - __main__ - INFO - main:930 - Configuration Manager started successfully with sensors: FNIRS
+2025-09-22 15:43:58.829 - __main__ - INFO - main:932 - Initial configuration: {'enabled_sensors': ['fnirs'], 'sampling_rates': {'fnirs': 10}, 'total_channels': {'fnirs': 0}, 'channel_counts': {'fnirs_sources': 8, 'fnirs_detectors': 8}, 'enabled_channels': {'fnirs': {}, 'fnirssource': [], 'fnirsdetect': []}}
+2025-09-22 15:44:01.502 - __main__ - INFO - main:936 - Application exited with code: 0
+2025-09-22 15:48:12.349 - locate - INFO - setup_logging:36 - Logging initialized with level: INFO
+2025-09-22 15:48:12.478 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-22 15:48:12.478 - network - INFO - _setup_network:119 - Network ready: 192.168.1.100:1227 -> 192.168.1.255:2227
+2025-09-22 15:48:12.478 - __main__ - INFO - initialize_network:110 - Network module initialized successfully
+2025-09-22 15:48:12.911 - __main__ - INFO - initialize_user_widget:126 - User widget integrated into home tab successfully
+2025-09-22 15:48:12.912 - __main__ - INFO - restore_window_state:1058 - Last session sensors: ['fnirs']
+2025-09-22 15:48:12.912 - __main__ - INFO - _initialize_components:103 - MainWindow initialized successfully with UI structure from XML
+2025-09-22 15:48:12.912 - __main__ - INFO - __init__:78 - MainWindow initialized successfully with UI structure from XML
+2025-09-22 15:48:13.022 - __main__ - INFO - main:1164 - Application started successfully with optimized XML-based UI structure and integrated configuration manager
+2025-09-22 15:48:14.285 - __main__ - INFO - shutdown_cleanup:1122 - Starting shutdown cleanup...
+2025-09-22 15:48:14.285 - __main__ - INFO - _cleanup_components:1089 - Configuration Manager closed successfully
+2025-09-22 15:48:14.286 - __main__ - INFO - _cleanup_components:1089 - User Widget closed successfully
+2025-09-22 15:48:14.286 - network - INFO - close:583 - Network closed
+2025-09-22 15:48:14.286 - __main__ - INFO - _cleanup_components:1089 - Network closed successfully
+2025-09-22 15:48:14.286 - __main__ - INFO - shutdown_cleanup:1132 - Shutdown cleanup completed
+2025-09-22 15:48:14.286 - __main__ - INFO - closeEvent:1139 - Application closed successfully
+2025-09-22 15:48:51.956 - __main__ - INFO - setup_logging:36 - Logging initialized with level: INFO
+2025-09-22 15:48:58.734 - locate - INFO - setup_logging:36 - Logging initialized with level: INFO
+2025-09-22 15:48:58.758 - __main__ - INFO - main:916 - Starting Device Configuration Manager v2.0.0
+2025-09-22 15:48:58.758 - __main__ - INFO - __init__:229 - Initializing ConfigurationManager
+2025-09-22 15:48:58.758 - __main__ - INFO - get_montage_directory:203 - Montage directory: E:\xfw\code\fnirs\HyBrid_BCI\montage
+2025-09-22 15:48:59.272 - ui_config - INFO - __init__:271 - UIManager initialized
+2025-09-22 15:48:59.272 - ui_config - INFO - setup_ui_for_sensors:275 - Setting up UI for enabled sensors
+2025-09-22 15:48:59.274 - locate - INFO - __init__:322 - Initializing Locate application
+2025-09-22 15:48:59.274 - ui_locate - INFO - __init__:339 - PositionManager initialized with 213 2D positions and 64 3D positions
+2025-09-22 15:48:59.274 - locate - INFO - __init__:133 - ElectrodeManager initialized
+2025-09-22 15:48:59.275 - locate - INFO - __init__:229 - ChannelCalculator initialized with threshold: 40.0mm
+2025-09-22 15:48:59.275 - ui_locate - INFO - setupUi:446 - Setting up UI components
+2025-09-22 15:48:59.275 - ui_locate - INFO - _create_electrode_buttons:491 - Creating default electrode buttons
+2025-09-22 15:48:59.279 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 61 default electrode buttons
+2025-09-22 15:48:59.279 - ui_locate - INFO - _create_electrode_buttons:491 - Creating middle electrode buttons
+2025-09-22 15:48:59.286 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 104 middle electrode buttons
+2025-09-22 15:48:59.286 - ui_locate - INFO - _create_electrode_buttons:491 - Creating center electrode buttons
+2025-09-22 15:48:59.289 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 48 center electrode buttons
+2025-09-22 15:48:59.289 - ui_locate - INFO - setupUi:456 - UI setup completed successfully
+2025-09-22 15:48:59.289 - locate - INFO - set_position_manager:138 - position manager set for ElectrondeManager
+2025-09-22 15:48:59.289 - locate - INFO - _connect_electrode_signals:394 - Connecting signals for 213 electrodes
+2025-09-22 15:48:59.293 - locate - INFO - _connect_electrode_signals:423 - Signal connection complete: 213 success, 0 failed
+2025-09-22 15:48:59.293 - locate - INFO - __init__:328 - Locate application initialized successfully
+2025-09-22 15:48:59.991 - __main__ - INFO - __post_init__:88 - Initializing DeviceConfiguration with sensors: {'fnirs'}
+2025-09-22 15:48:59.991 - ui_config - INFO - initialize_ui_values:425 - UI values initialization completed
+2025-09-22 15:48:59.991 - __main__ - INFO - _initialize_configuration:285 - Configuration initialization completed
+2025-09-22 15:48:59.991 - __main__ - INFO - __init__:249 - ConfigurationManager initialization completed successfully
+2025-09-22 15:49:00.793 - __main__ - INFO - main:930 - Configuration Manager started successfully with sensors: FNIRS
+2025-09-22 15:49:00.793 - __main__ - INFO - main:932 - Initial configuration: {'enabled_sensors': ['fnirs'], 'sampling_rates': {'fnirs': 10}, 'total_channels': {'fnirs': 0}, 'channel_counts': {'fnirs_sources': 8, 'fnirs_detectors': 8}, 'enabled_channels': {'fnirs': {}, 'fnirssource': [], 'fnirsdetect': []}}
+2025-09-22 15:49:05.180 - __main__ - INFO - load_configuration:711 - Starting configuration load
+2025-09-22 15:49:07.361 - ui_config - INFO - apply_loaded_configuration:822 - Applying loaded configuration
+2025-09-22 15:49:07.362 - ui_config - INFO - _apply_loaded_enabled_channels:894 - Applying loaded enabled channels: ['fnirs', 'fnirssource', 'fnirsdetect', 'eeg']
+2025-09-22 15:49:07.362 - ui_config - INFO - _apply_loaded_enabled_channels:920 - Successfully applied loaded enabled channels to config and UI
+2025-09-22 15:49:07.362 - locate - INFO - load_pairs_info:651 - Loading pairs info: ['fnirs', 'fnirssource', 'fnirsdetect', 'eeg']
+2025-09-22 15:49:07.362 - locate - INFO - reset_all_electrodes:683 - Resetting all electrodes
+2025-09-22 15:49:08.157 - locate - INFO - clear_all:210 - Cleared 0 electrode states
+2025-09-22 15:49:08.157 - locate - INFO - reset_all_electrodes:712 - Reset complete: 213 regular electrodes, 0 dynamic buttons removed
+2025-09-22 15:49:08.157 - locate - INFO - load_pairs_info:657 - Processing fnirs: 17 pairs
+2025-09-22 15:49:08.157 - locate - INFO - load_pairs_info:657 - Processing fnirssource: 8 pairs
+2025-09-22 15:49:08.158 - locate - INFO - _load_electrodes:596 - Loading EEG electrodes
+2025-09-22 15:49:08.158 - locate - INFO - set_current_node_info:629 - Setting node info: type=Source, number=1, checked=True
+2025-09-22 15:49:08.158 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.SOURCE: 'Source'>, number=1, checked=True)
+2025-09-22 15:49:08.158 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: FC3
+2025-09-22 15:49:08.158 - locate - INFO - add_electrode:143 - Adding electrode: FC3, type=Source, number=1
+2025-09-22 15:49:08.158 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: FC3
+2025-09-22 15:49:08.162 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode FC3
+2025-09-22 15:49:08.163 - locate - INFO - set_current_node_info:629 - Setting node info: type=Source, number=2, checked=True
+2025-09-22 15:49:08.163 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.SOURCE: 'Source'>, number=2, checked=True)
+2025-09-22 15:49:08.163 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: FC1
+2025-09-22 15:49:08.163 - locate - INFO - add_electrode:143 - Adding electrode: FC1, type=Source, number=2
+2025-09-22 15:49:08.163 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: FC1
+2025-09-22 15:49:08.166 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode FC1
+2025-09-22 15:49:08.166 - locate - INFO - set_current_node_info:629 - Setting node info: type=Source, number=3, checked=True
+2025-09-22 15:49:08.167 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.SOURCE: 'Source'>, number=3, checked=True)
+2025-09-22 15:49:08.167 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: CP3
+2025-09-22 15:49:08.167 - locate - INFO - add_electrode:143 - Adding electrode: CP3, type=Source, number=3
+2025-09-22 15:49:08.167 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: CP3
+2025-09-22 15:49:08.170 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode CP3
+2025-09-22 15:49:08.170 - locate - INFO - set_current_node_info:629 - Setting node info: type=Source, number=4, checked=True
+2025-09-22 15:49:08.170 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.SOURCE: 'Source'>, number=4, checked=True)
+2025-09-22 15:49:08.171 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: P3
+2025-09-22 15:49:08.171 - locate - INFO - add_electrode:143 - Adding electrode: P3, type=Source, number=4
+2025-09-22 15:49:08.171 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: P3
+2025-09-22 15:49:08.174 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode P3
+2025-09-22 15:49:08.174 - locate - INFO - set_current_node_info:629 - Setting node info: type=Source, number=5, checked=True
+2025-09-22 15:49:08.174 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.SOURCE: 'Source'>, number=5, checked=True)
+2025-09-22 15:49:08.174 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: Cz
+2025-09-22 15:49:08.174 - locate - INFO - add_electrode:143 - Adding electrode: Cz, type=Source, number=5
+2025-09-22 15:49:08.175 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: Cz
+2025-09-22 15:49:08.178 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode Cz
+2025-09-22 15:49:08.178 - locate - INFO - set_current_node_info:629 - Setting node info: type=Source, number=6, checked=True
+2025-09-22 15:49:08.179 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.SOURCE: 'Source'>, number=6, checked=True)
+2025-09-22 15:49:08.179 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: CP2
+2025-09-22 15:49:08.179 - locate - INFO - add_electrode:143 - Adding electrode: CP2, type=Source, number=6
+2025-09-22 15:49:08.179 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: CP2
+2025-09-22 15:49:08.183 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode CP2
+2025-09-22 15:49:08.183 - locate - INFO - set_current_node_info:629 - Setting node info: type=Source, number=7, checked=True
+2025-09-22 15:49:08.183 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.SOURCE: 'Source'>, number=7, checked=True)
+2025-09-22 15:49:08.183 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: C4
+2025-09-22 15:49:08.183 - locate - INFO - add_electrode:143 - Adding electrode: C4, type=Source, number=7
+2025-09-22 15:49:08.183 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: C4
+2025-09-22 15:49:08.186 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode C4
+2025-09-22 15:49:08.187 - locate - INFO - set_current_node_info:629 - Setting node info: type=Source, number=8, checked=True
+2025-09-22 15:49:08.187 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.SOURCE: 'Source'>, number=8, checked=True)
+2025-09-22 15:49:08.187 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: FC2
+2025-09-22 15:49:08.187 - locate - INFO - add_electrode:143 - Adding electrode: FC2, type=Source, number=8
+2025-09-22 15:49:08.187 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: FC2
+2025-09-22 15:49:08.190 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode FC2
+2025-09-22 15:49:08.191 - locate - INFO - _load_electrodes:619 - Loaded 8 ElectrodeType.SOURCE electrodes
+2025-09-22 15:49:08.191 - locate - INFO - load_pairs_info:657 - Processing fnirsdetect: 8 pairs
+2025-09-22 15:49:08.191 - locate - INFO - _load_electrodes:596 - Loading EEG electrodes
+2025-09-22 15:49:08.191 - locate - INFO - set_current_node_info:629 - Setting node info: type=Detect, number=1, checked=True
+2025-09-22 15:49:08.191 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.DETECT: 'Detect'>, number=1, checked=True)
+2025-09-22 15:49:08.191 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: C3
+2025-09-22 15:49:08.191 - locate - INFO - add_electrode:143 - Adding electrode: C3, type=Detect, number=1
+2025-09-22 15:49:08.191 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: C3
+2025-09-22 15:49:08.195 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode C3
+2025-09-22 15:49:08.195 - locate - INFO - set_current_node_info:629 - Setting node info: type=Detect, number=2, checked=True
+2025-09-22 15:49:08.196 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.DETECT: 'Detect'>, number=2, checked=True)
+2025-09-22 15:49:08.196 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: C1
+2025-09-22 15:49:08.196 - locate - INFO - add_electrode:143 - Adding electrode: C1, type=Detect, number=2
+2025-09-22 15:49:08.196 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: C1
+2025-09-22 15:49:08.200 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode C1
+2025-09-22 15:49:08.200 - locate - INFO - set_current_node_info:629 - Setting node info: type=Detect, number=3, checked=True
+2025-09-22 15:49:08.200 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.DETECT: 'Detect'>, number=3, checked=True)
+2025-09-22 15:49:08.200 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: CP1
+2025-09-22 15:49:08.200 - locate - INFO - add_electrode:143 - Adding electrode: CP1, type=Detect, number=3
+2025-09-22 15:49:08.200 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: CP1
+2025-09-22 15:49:08.204 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode CP1
+2025-09-22 15:49:08.204 - locate - INFO - set_current_node_info:629 - Setting node info: type=Detect, number=4, checked=True
+2025-09-22 15:49:08.204 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.DETECT: 'Detect'>, number=4, checked=True)
+2025-09-22 15:49:08.204 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: P1
+2025-09-22 15:49:08.204 - locate - INFO - add_electrode:143 - Adding electrode: P1, type=Detect, number=4
+2025-09-22 15:49:08.204 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: P1
+2025-09-22 15:49:08.207 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode P1
+2025-09-22 15:49:08.207 - locate - INFO - set_current_node_info:629 - Setting node info: type=Detect, number=5, checked=True
+2025-09-22 15:49:08.207 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.DETECT: 'Detect'>, number=5, checked=True)
+2025-09-22 15:49:08.207 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: CPz
+2025-09-22 15:49:08.207 - locate - INFO - add_electrode:143 - Adding electrode: CPz, type=Detect, number=5
+2025-09-22 15:49:08.208 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: CPz
+2025-09-22 15:49:08.211 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode CPz
+2025-09-22 15:49:08.212 - locate - INFO - set_current_node_info:629 - Setting node info: type=Detect, number=6, checked=True
+2025-09-22 15:49:08.212 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.DETECT: 'Detect'>, number=6, checked=True)
+2025-09-22 15:49:08.212 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: C2
+2025-09-22 15:49:08.212 - locate - INFO - add_electrode:143 - Adding electrode: C2, type=Detect, number=6
+2025-09-22 15:49:08.212 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: C2
+2025-09-22 15:49:08.216 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode C2
+2025-09-22 15:49:08.216 - locate - INFO - set_current_node_info:629 - Setting node info: type=Detect, number=7, checked=True
+2025-09-22 15:49:08.216 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.DETECT: 'Detect'>, number=7, checked=True)
+2025-09-22 15:49:08.216 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: CP4
+2025-09-22 15:49:08.216 - locate - INFO - add_electrode:143 - Adding electrode: CP4, type=Detect, number=7
+2025-09-22 15:49:08.217 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: CP4
+2025-09-22 15:49:08.219 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode CP4
+2025-09-22 15:49:08.220 - locate - INFO - set_current_node_info:629 - Setting node info: type=Detect, number=8, checked=True
+2025-09-22 15:49:08.220 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.DETECT: 'Detect'>, number=8, checked=True)
+2025-09-22 15:49:08.220 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: FCz
+2025-09-22 15:49:08.220 - locate - INFO - add_electrode:143 - Adding electrode: FCz, type=Detect, number=8
+2025-09-22 15:49:08.220 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: FCz
+2025-09-22 15:49:08.223 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode FCz
+2025-09-22 15:49:08.223 - locate - INFO - _load_electrodes:619 - Loaded 8 ElectrodeType.DETECT electrodes
+2025-09-22 15:49:08.223 - locate - INFO - load_pairs_info:657 - Processing eeg: 0 pairs
+2025-09-22 15:49:08.224 - locate - INFO - _load_electrodes:596 - Loading EEG electrodes
+2025-09-22 15:49:08.224 - locate - INFO - _load_electrodes:619 - Loaded 0 ElectrodeType.EEG electrodes
+2025-09-22 15:49:08.224 - locate - INFO - load_pairs_info:675 - Pairs info loaded successfully
+2025-09-22 15:49:08.224 - ui_config - INFO - _apply_loaded_electrode_positions:1013 - Applied electrode positions from loaded configuration
+2025-09-22 15:53:08.360 - __main__ - INFO - main:936 - Application exited with code: 0
+2025-09-22 15:56:52.165 - locate - INFO - setup_logging:36 - Logging initialized with level: INFO
+2025-09-22 15:56:52.191 - __main__ - INFO - main:916 - Starting Device Configuration Manager v2.0.0
+2025-09-22 15:56:52.191 - __main__ - INFO - __init__:229 - Initializing ConfigurationManager
+2025-09-22 15:56:52.192 - __main__ - INFO - get_montage_directory:203 - Montage directory: E:\xfw\code\fnirs\HyBrid_BCI\montage
+2025-09-22 15:56:52.732 - ui_config - INFO - __init__:271 - UIManager initialized
+2025-09-22 15:56:52.732 - ui_config - INFO - setup_ui_for_sensors:275 - Setting up UI for enabled sensors
+2025-09-22 15:56:52.734 - locate - INFO - __init__:322 - Initializing Locate application
+2025-09-22 15:56:52.735 - ui_locate - INFO - __init__:339 - PositionManager initialized with 213 2D positions and 64 3D positions
+2025-09-22 15:56:52.735 - locate - INFO - __init__:133 - ElectrodeManager initialized
+2025-09-22 15:56:52.735 - locate - INFO - __init__:229 - ChannelCalculator initialized with threshold: 40.0mm
+2025-09-22 15:56:52.735 - ui_locate - INFO - setupUi:446 - Setting up UI components
+2025-09-22 15:56:52.735 - ui_locate - INFO - _create_electrode_buttons:491 - Creating default electrode buttons
+2025-09-22 15:56:52.740 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 61 default electrode buttons
+2025-09-22 15:56:52.740 - ui_locate - INFO - _create_electrode_buttons:491 - Creating middle electrode buttons
+2025-09-22 15:56:52.746 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 104 middle electrode buttons
+2025-09-22 15:56:52.746 - ui_locate - INFO - _create_electrode_buttons:491 - Creating center electrode buttons
+2025-09-22 15:56:52.749 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 48 center electrode buttons
+2025-09-22 15:56:52.750 - ui_locate - INFO - setupUi:456 - UI setup completed successfully
+2025-09-22 15:56:52.750 - locate - INFO - set_position_manager:138 - position manager set for ElectrondeManager
+2025-09-22 15:56:52.750 - locate - INFO - _connect_electrode_signals:394 - Connecting signals for 213 electrodes
+2025-09-22 15:56:52.754 - locate - INFO - _connect_electrode_signals:423 - Signal connection complete: 213 success, 0 failed
+2025-09-22 15:56:52.755 - locate - INFO - __init__:328 - Locate application initialized successfully
+2025-09-22 15:56:52.770 - __main__ - INFO - __post_init__:88 - Initializing DeviceConfiguration with sensors: {'fnirs'}
+2025-09-22 15:56:52.770 - ui_config - INFO - initialize_ui_values:425 - UI values initialization completed
+2025-09-22 15:56:52.770 - __main__ - INFO - _initialize_configuration:285 - Configuration initialization completed
+2025-09-22 15:56:52.770 - __main__ - INFO - __init__:249 - ConfigurationManager initialization completed successfully
+2025-09-22 15:56:52.891 - __main__ - INFO - main:930 - Configuration Manager started successfully with sensors: FNIRS
+2025-09-22 15:56:52.891 - __main__ - INFO - main:932 - Initial configuration: {'enabled_sensors': ['fnirs'], 'sampling_rates': {'fnirs': 10}, 'total_channels': {'fnirs': 0}, 'channel_counts': {'fnirs_sources': 8, 'fnirs_detectors': 8}, 'enabled_channels': {'fnirs': {}, 'fnirssource': [], 'fnirsdetect': []}}
+2025-09-22 15:57:04.446 - __main__ - INFO - load_configuration:711 - Starting configuration load
+2025-09-22 15:57:07.148 - ui_config - INFO - apply_loaded_configuration:822 - Applying loaded configuration
+2025-09-22 15:57:07.148 - ui_config - INFO - _apply_loaded_enabled_channels:894 - Applying loaded enabled channels: ['fnirs', 'fnirssource', 'fnirsdetect', 'eeg']
+2025-09-22 15:57:07.148 - ui_config - INFO - _apply_loaded_enabled_channels:920 - Successfully applied loaded enabled channels to config and UI
+2025-09-22 15:57:07.148 - locate - INFO - load_pairs_info:651 - Loading pairs info: ['fnirs', 'fnirssource', 'fnirsdetect', 'eeg']
+2025-09-22 15:57:07.149 - locate - INFO - reset_all_electrodes:683 - Resetting all electrodes
+2025-09-22 15:57:07.167 - locate - INFO - clear_all:210 - Cleared 0 electrode states
+2025-09-22 15:57:07.167 - locate - INFO - reset_all_electrodes:712 - Reset complete: 213 regular electrodes, 0 dynamic buttons removed
+2025-09-22 15:57:07.167 - locate - INFO - load_pairs_info:657 - Processing fnirs: 27 pairs
+2025-09-22 15:57:07.167 - locate - INFO - load_pairs_info:657 - Processing fnirssource: 8 pairs
+2025-09-22 15:57:07.167 - locate - INFO - _load_electrodes:596 - Loading EEG electrodes
+2025-09-22 15:57:07.167 - locate - INFO - set_current_node_info:629 - Setting node info: type=Source, number=1, checked=True
+2025-09-22 15:57:07.168 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.SOURCE: 'Source'>, number=1, checked=True)
+2025-09-22 15:57:07.168 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: FC1_C1_FCz_Cz
+2025-09-22 15:57:07.168 - locate - INFO - add_electrode:143 - Adding electrode: FC1_C1_FCz_Cz, type=Source, number=1
+2025-09-22 15:57:07.168 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: FC1_C1_FCz_Cz
+2025-09-22 15:57:07.168 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode FC1_C1_FCz_Cz
+2025-09-22 15:57:07.169 - locate - INFO - set_current_node_info:629 - Setting node info: type=Source, number=2, checked=True
+2025-09-22 15:57:07.169 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.SOURCE: 'Source'>, number=2, checked=True)
+2025-09-22 15:57:07.169 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: C1
+2025-09-22 15:57:07.169 - locate - INFO - add_electrode:143 - Adding electrode: C1, type=Source, number=2
+2025-09-22 15:57:07.169 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: C1
+2025-09-22 15:57:07.169 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode C1
+2025-09-22 15:57:07.169 - locate - INFO - set_current_node_info:629 - Setting node info: type=Source, number=3, checked=True
+2025-09-22 15:57:07.170 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.SOURCE: 'Source'>, number=3, checked=True)
+2025-09-22 15:57:07.170 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: C3
+2025-09-22 15:57:07.170 - locate - INFO - add_electrode:143 - Adding electrode: C3, type=Source, number=3
+2025-09-22 15:57:07.170 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: C3
+2025-09-22 15:57:07.170 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode C3
+2025-09-22 15:57:07.170 - locate - INFO - set_current_node_info:629 - Setting node info: type=Source, number=4, checked=True
+2025-09-22 15:57:07.171 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.SOURCE: 'Source'>, number=4, checked=True)
+2025-09-22 15:57:07.171 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: FC3
+2025-09-22 15:57:07.171 - locate - INFO - add_electrode:143 - Adding electrode: FC3, type=Source, number=4
+2025-09-22 15:57:07.171 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: FC3
+2025-09-22 15:57:07.172 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode FC3
+2025-09-22 15:57:07.172 - locate - INFO - set_current_node_info:629 - Setting node info: type=Source, number=5, checked=True
+2025-09-22 15:57:07.172 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.SOURCE: 'Source'>, number=5, checked=True)
+2025-09-22 15:57:07.172 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: F3_FC3_F1_FC1
+2025-09-22 15:57:07.172 - locate - INFO - add_electrode:143 - Adding electrode: F3_FC3_F1_FC1, type=Source, number=5
+2025-09-22 15:57:07.173 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: F3_FC3_F1_FC1
+2025-09-22 15:57:07.173 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode F3_FC3_F1_FC1
+2025-09-22 15:57:07.173 - locate - INFO - set_current_node_info:629 - Setting node info: type=Source, number=6, checked=True
+2025-09-22 15:57:07.173 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.SOURCE: 'Source'>, number=6, checked=True)
+2025-09-22 15:57:07.173 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: FCz
+2025-09-22 15:57:07.174 - locate - INFO - add_electrode:143 - Adding electrode: FCz, type=Source, number=6
+2025-09-22 15:57:07.174 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: FCz
+2025-09-22 15:57:07.174 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode FCz
+2025-09-22 15:57:07.174 - locate - INFO - set_current_node_info:629 - Setting node info: type=Source, number=7, checked=True
+2025-09-22 15:57:07.174 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.SOURCE: 'Source'>, number=7, checked=True)
+2025-09-22 15:57:07.174 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: Fz
+2025-09-22 15:57:07.175 - locate - INFO - add_electrode:143 - Adding electrode: Fz, type=Source, number=7
+2025-09-22 15:57:07.175 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: Fz
+2025-09-22 15:57:07.175 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode Fz
+2025-09-22 15:57:07.175 - locate - INFO - set_current_node_info:629 - Setting node info: type=Source, number=8, checked=True
+2025-09-22 15:57:07.175 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.SOURCE: 'Source'>, number=8, checked=True)
+2025-09-22 15:57:07.176 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: Cz_CPz
+2025-09-22 15:57:07.176 - locate - INFO - add_electrode:143 - Adding electrode: Cz_CPz, type=Source, number=8
+2025-09-22 15:57:07.176 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: Cz_CPz
+2025-09-22 15:57:07.176 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode Cz_CPz
+2025-09-22 15:57:07.176 - locate - INFO - _load_electrodes:619 - Loaded 8 ElectrodeType.SOURCE electrodes
+2025-09-22 15:57:07.176 - locate - INFO - load_pairs_info:657 - Processing fnirsdetect: 8 pairs
+2025-09-22 15:57:07.177 - locate - INFO - _load_electrodes:596 - Loading EEG electrodes
+2025-09-22 15:57:07.177 - locate - INFO - set_current_node_info:629 - Setting node info: type=Detect, number=1, checked=True
+2025-09-22 15:57:07.177 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.DETECT: 'Detect'>, number=1, checked=True)
+2025-09-22 15:57:07.177 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: FC1
+2025-09-22 15:57:07.177 - locate - INFO - add_electrode:143 - Adding electrode: FC1, type=Detect, number=1
+2025-09-22 15:57:07.177 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: FC1
+2025-09-22 15:57:07.177 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode FC1
+2025-09-22 15:57:07.178 - locate - INFO - set_current_node_info:629 - Setting node info: type=Detect, number=2, checked=True
+2025-09-22 15:57:07.178 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.DETECT: 'Detect'>, number=2, checked=True)
+2025-09-22 15:57:07.178 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: FC3_C3_FC1_C1
+2025-09-22 15:57:07.178 - locate - INFO - add_electrode:143 - Adding electrode: FC3_C3_FC1_C1, type=Detect, number=2
+2025-09-22 15:57:07.178 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: FC3_C3_FC1_C1
+2025-09-22 15:57:07.179 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode FC3_C3_FC1_C1
+2025-09-22 15:57:07.179 - locate - INFO - set_current_node_info:629 - Setting node info: type=Detect, number=3, checked=True
+2025-09-22 15:57:07.179 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.DETECT: 'Detect'>, number=3, checked=True)
+2025-09-22 15:57:07.179 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: C3_CP3_C1_CP1
+2025-09-22 15:57:07.179 - locate - INFO - add_electrode:143 - Adding electrode: C3_CP3_C1_CP1, type=Detect, number=3
+2025-09-22 15:57:07.179 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: C3_CP3_C1_CP1
+2025-09-22 15:57:07.180 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode C3_CP3_C1_CP1
+2025-09-22 15:57:07.180 - locate - INFO - set_current_node_info:629 - Setting node info: type=Detect, number=4, checked=True
+2025-09-22 15:57:07.180 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.DETECT: 'Detect'>, number=4, checked=True)
+2025-09-22 15:57:07.180 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: C1_CP1_Cz_CPz
+2025-09-22 15:57:07.180 - locate - INFO - add_electrode:143 - Adding electrode: C1_CP1_Cz_CPz, type=Detect, number=4
+2025-09-22 15:57:07.180 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: C1_CP1_Cz_CPz
+2025-09-22 15:57:07.181 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode C1_CP1_Cz_CPz
+2025-09-22 15:57:07.181 - locate - INFO - set_current_node_info:629 - Setting node info: type=Detect, number=5, checked=True
+2025-09-22 15:57:07.181 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.DETECT: 'Detect'>, number=5, checked=True)
+2025-09-22 15:57:07.181 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: Cz
+2025-09-22 15:57:07.181 - locate - INFO - add_electrode:143 - Adding electrode: Cz, type=Detect, number=5
+2025-09-22 15:57:07.181 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: Cz
+2025-09-22 15:57:07.182 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode Cz
+2025-09-22 15:57:07.182 - locate - INFO - set_current_node_info:629 - Setting node info: type=Detect, number=6, checked=True
+2025-09-22 15:57:07.182 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.DETECT: 'Detect'>, number=6, checked=True)
+2025-09-22 15:57:07.182 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: F1_FC1_Fz_FCz
+2025-09-22 15:57:07.182 - locate - INFO - add_electrode:143 - Adding electrode: F1_FC1_Fz_FCz, type=Detect, number=6
+2025-09-22 15:57:07.182 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: F1_FC1_Fz_FCz
+2025-09-22 15:57:07.183 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode F1_FC1_Fz_FCz
+2025-09-22 15:57:07.183 - locate - INFO - set_current_node_info:629 - Setting node info: type=Detect, number=7, checked=True
+2025-09-22 15:57:07.183 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.DETECT: 'Detect'>, number=7, checked=True)
+2025-09-22 15:57:07.183 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: Fz_FCz_F2_FC2
+2025-09-22 15:57:07.183 - locate - INFO - add_electrode:143 - Adding electrode: Fz_FCz_F2_FC2, type=Detect, number=7
+2025-09-22 15:57:07.183 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: Fz_FCz_F2_FC2
+2025-09-22 15:57:07.184 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode Fz_FCz_F2_FC2
+2025-09-22 15:57:07.184 - locate - INFO - set_current_node_info:629 - Setting node info: type=Detect, number=8, checked=True
+2025-09-22 15:57:07.184 - locate - INFO - set_current_node_info:641 - Node info set successfully: NodeInfo(type=<ElectrodeType.DETECT: 'Detect'>, number=8, checked=True)
+2025-09-22 15:57:07.184 - locate - INFO - _on_electrode_left_click:433 - Left click on electrode: F3_FC3
+2025-09-22 15:57:07.184 - locate - INFO - add_electrode:143 - Adding electrode: F3_FC3, type=Detect, number=8
+2025-09-22 15:57:07.185 - locate - INFO - add_electrode:164 - Successfully added/updated electrode: F3_FC3
+2025-09-22 15:57:07.185 - locate - INFO - _on_electrode_left_click:456 - Successfully updated electrode F3_FC3
+2025-09-22 15:57:07.185 - locate - INFO - _load_electrodes:619 - Loaded 8 ElectrodeType.DETECT electrodes
+2025-09-22 15:57:07.185 - locate - INFO - load_pairs_info:657 - Processing eeg: 0 pairs
+2025-09-22 15:57:07.185 - locate - INFO - _load_electrodes:596 - Loading EEG electrodes
+2025-09-22 15:57:07.185 - locate - INFO - _load_electrodes:619 - Loaded 0 ElectrodeType.EEG electrodes
+2025-09-22 15:57:07.185 - locate - INFO - load_pairs_info:675 - Pairs info loaded successfully
+2025-09-22 15:57:07.186 - ui_config - INFO - _apply_loaded_electrode_positions:1013 - Applied electrode positions from loaded configuration
+2025-09-22 15:57:10.731 - __main__ - INFO - main:936 - Application exited with code: 0
+2025-09-22 15:57:21.854 - locate - INFO - setup_logging:36 - Logging initialized with level: INFO
+2025-09-22 15:57:21.878 - __main__ - INFO - main:916 - Starting Device Configuration Manager v2.0.0
+2025-09-22 15:57:21.879 - __main__ - INFO - __init__:229 - Initializing ConfigurationManager
+2025-09-22 15:57:21.879 - __main__ - INFO - get_montage_directory:203 - Montage directory: E:\xfw\code\fnirs\HyBrid_BCI\montage
+2025-09-22 15:57:22.403 - ui_config - INFO - __init__:271 - UIManager initialized
+2025-09-22 15:57:22.403 - ui_config - INFO - setup_ui_for_sensors:275 - Setting up UI for enabled sensors
+2025-09-22 15:57:22.405 - locate - INFO - __init__:322 - Initializing Locate application
+2025-09-22 15:57:22.406 - ui_locate - INFO - __init__:339 - PositionManager initialized with 213 2D positions and 64 3D positions
+2025-09-22 15:57:22.406 - locate - INFO - __init__:133 - ElectrodeManager initialized
+2025-09-22 15:57:22.406 - locate - INFO - __init__:229 - ChannelCalculator initialized with threshold: 40.0mm
+2025-09-22 15:57:22.406 - ui_locate - INFO - setupUi:446 - Setting up UI components
+2025-09-22 15:57:22.406 - ui_locate - INFO - _create_electrode_buttons:491 - Creating default electrode buttons
+2025-09-22 15:57:22.410 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 61 default electrode buttons
+2025-09-22 15:57:22.411 - ui_locate - INFO - _create_electrode_buttons:491 - Creating middle electrode buttons
+2025-09-22 15:57:22.417 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 104 middle electrode buttons
+2025-09-22 15:57:22.417 - ui_locate - INFO - _create_electrode_buttons:491 - Creating center electrode buttons
+2025-09-22 15:57:22.420 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 48 center electrode buttons
+2025-09-22 15:57:22.420 - ui_locate - INFO - setupUi:456 - UI setup completed successfully
+2025-09-22 15:57:22.420 - locate - INFO - set_position_manager:138 - position manager set for ElectrondeManager
+2025-09-22 15:57:22.420 - locate - INFO - _connect_electrode_signals:394 - Connecting signals for 213 electrodes
+2025-09-22 15:57:22.425 - locate - INFO - _connect_electrode_signals:423 - Signal connection complete: 213 success, 0 failed
+2025-09-22 15:57:22.425 - locate - INFO - __init__:328 - Locate application initialized successfully
+2025-09-22 15:57:22.439 - __main__ - INFO - __post_init__:88 - Initializing DeviceConfiguration with sensors: {'fnirs'}
+2025-09-22 15:57:22.439 - ui_config - INFO - initialize_ui_values:425 - UI values initialization completed
+2025-09-22 15:57:22.439 - __main__ - INFO - _initialize_configuration:285 - Configuration initialization completed
+2025-09-22 15:57:22.439 - __main__ - INFO - __init__:249 - ConfigurationManager initialization completed successfully
+2025-09-22 15:57:22.550 - __main__ - INFO - main:930 - Configuration Manager started successfully with sensors: FNIRS
+2025-09-22 15:57:22.551 - __main__ - INFO - main:932 - Initial configuration: {'enabled_sensors': ['fnirs'], 'sampling_rates': {'fnirs': 10}, 'total_channels': {'fnirs': 0}, 'channel_counts': {'fnirs_sources': 8, 'fnirs_detectors': 8}, 'enabled_channels': {'fnirs': {}, 'fnirssource': [], 'fnirsdetect': []}}
+2025-09-22 15:57:31.129 - __main__ - INFO - main:936 - Application exited with code: 0
