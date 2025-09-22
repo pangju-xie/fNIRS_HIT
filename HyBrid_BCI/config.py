@@ -219,7 +219,7 @@ def get_default_config_path(filename: str = "device_config.json") -> str:
 class ConfigurationManager(QWidget, Ui_ConfigForm):
     """Main configuration management class with enhanced error handling"""
     
-    OnConfigSet = pyqtSignal(List[int], List[int])
+    OnConfigSet = pyqtSignal(list, list)
     
     OnConfigApplied = pyqtSignal(dict)
 

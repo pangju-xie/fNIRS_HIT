@@ -394,7 +394,7 @@ class QualifyApp(QWidget):
         """Get current channel data for external use"""
         return self.channels
     
-    def closeEvent(self, event):
+    def closeEvent(self, event): # type: ignore
         """Handle application close event"""
         self.stop_assessment()
         event.accept()

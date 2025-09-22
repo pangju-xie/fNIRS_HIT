@@ -45182,3 +45182,24 @@ S1-D1, S2-D2, S2-D8, S3-D1, S3-D3, S4-D4, S5-D2, S5-D5, S5-D6, S5-D8
 2025-09-17 17:03:35.415 - __main__ - INFO - shutdown_cleanup:1138 - Network closed successfully
 2025-09-17 17:03:35.415 - __main__ - INFO - shutdown_cleanup:1142 - Shutdown cleanup completed
 2025-09-17 17:03:35.416 - __main__ - INFO - closeEvent:1149 - Application closed successfully
+2025-09-22 15:14:11.344 - locate - INFO - setup_logging:36 - Logging initialized with level: INFO
+2025-09-22 15:16:57.710 - locate - INFO - setup_logging:36 - Logging initialized with level: INFO
+2025-09-22 15:20:17.533 - locate - INFO - setup_logging:36 - Logging initialized with level: INFO
+2025-09-22 15:20:56.050 - locate - INFO - setup_logging:36 - Logging initialized with level: INFO
+2025-09-22 15:28:18.593 - locate - INFO - setup_logging:36 - Logging initialized with level: INFO
+2025-09-22 15:29:43.858 - locate - INFO - setup_logging:36 - Logging initialized with level: INFO
+2025-09-22 15:29:44.051 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-22 15:29:44.051 - network - INFO - _setup_network:119 - Network ready: 192.168.1.100:1227 -> 192.168.1.255:2227
+2025-09-22 15:29:44.051 - __main__ - INFO - initialize_network:110 - Network module initialized successfully
+2025-09-22 15:29:45.927 - __main__ - INFO - initialize_user_widget:126 - User widget integrated into home tab successfully
+2025-09-22 15:29:45.931 - __main__ - INFO - restore_window_state:1058 - Last session sensors: ['fnirs']
+2025-09-22 15:29:45.932 - __main__ - INFO - _initialize_components:103 - MainWindow initialized successfully with UI structure from XML
+2025-09-22 15:29:45.932 - __main__ - INFO - __init__:78 - MainWindow initialized successfully with UI structure from XML
+2025-09-22 15:29:46.099 - __main__ - INFO - main:1164 - Application started successfully with optimized XML-based UI structure and integrated configuration manager
+2025-09-22 15:29:52.987 - __main__ - INFO - shutdown_cleanup:1122 - Starting shutdown cleanup...
+2025-09-22 15:29:52.988 - __main__ - INFO - _cleanup_components:1089 - Configuration Manager closed successfully
+2025-09-22 15:29:52.989 - __main__ - INFO - _cleanup_components:1089 - User Widget closed successfully
+2025-09-22 15:29:52.990 - network - INFO - close:583 - Network closed
+2025-09-22 15:29:52.990 - __main__ - INFO - _cleanup_components:1089 - Network closed successfully
+2025-09-22 15:29:52.990 - __main__ - INFO - shutdown_cleanup:1132 - Shutdown cleanup completed
+2025-09-22 15:29:52.990 - __main__ - INFO - closeEvent:1139 - Application closed successfully
