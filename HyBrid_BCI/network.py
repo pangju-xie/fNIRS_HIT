@@ -66,8 +66,8 @@ class UdpPort(QWidget):
     onDeviceDisconnected = pyqtSignal()
     onBatteryUpdated = pyqtSignal(int)
     #config
-    onSampleRateSet = pyqtSignal(int, bool)
-    onChannelConfigSet = pyqtSignal(int, bool)
+    onSampleRateSetDone = pyqtSignal(bool)
+    onChannelConfigSetDone = pyqtSignal(bool)
     #display
     onDeviceSample = pyqtSignal(bool)
     onDataReceived = pyqtSignal(int, int, list)
@@ -138,7 +138,7 @@ class UdpPort(QWidget):
                     for addr in addrs[name]:
                         if addr.family == socket.AF_INET and not addr.address.startswith('127.'):
                             self.local_ip = addr.address
-                            self._calc_broadcast(addr.address, addr.netmask)
+                            self._calc_broadcast(addr.address, addr.netmask) # type: ignore
                             return
             
             # Fallback to any active interface
@@ -147,7 +147,7 @@ class UdpPort(QWidget):
                     for addr in addr_list:
                         if addr.family == socket.AF_INET and not addr.address.startswith('127.'):
                             self.local_ip = addr.address
-                            self._calc_broadcast(addr.address, addr.netmask)
+                            self._calc_broadcast(addr.address, addr.netmask) # type: ignore
                             return
                             
             raise Exception("No suitable network interface found")
@@ -176,7 +176,7 @@ class UdpPort(QWidget):
                 self.socket = QUdpSocket(self)
                 
                 # Try binding
-                if self.socket.bind(QHostAddress.Any, self.localPort, QUdpSocket.ReuseAddressHint):
+                if self.socket.bind(QHostAddress.Any, self.localPort, QUdpSocket.BindFlag.ReuseAddressHint):
                     # self.localPort = current_port
                     self.socket.readyRead.connect(self._handle_data)
                     logger.info(f"Socket bound to port {self.localPort}")
@@ -192,14 +192,14 @@ class UdpPort(QWidget):
     
     def _handle_data(self):
         """Handle incoming UDP data"""
-        while self.socket.hasPendingDatagrams():
+        while self.socket.hasPendingDatagrams(): # type: ignore
             try:
-                size = self.socket.pendingDatagramSize()
-                data, host, port = self.socket.readDatagram(size)
+                size = self.socket.pendingDatagramSize() # type: ignore
+                data, host, port = self.socket.readDatagram(size) # type: ignore
                 
                 if data:
                     # logger.info(f'Received {len(data)} bytes from {host.toString()}:{port}')
-                    self._process_packet(list(data), host.toString())
+                    self._process_packet(list(data), host.toString()) # type: ignore
                     
             except Exception as e:
                 logger.error(f"Error reading datagram: {e}")
@@ -259,9 +259,9 @@ class UdpPort(QWidget):
             elif cmd == Commands.BATTERY_QUERY:
                 success = self._handle_battery_query(data)
             elif cmd == Commands.SAMPLE_RATE:
-                success = self._handle_sample_rate(sensor_type, data)
+                success = self._handle_sample_rate(data)
             elif cmd == Commands.CHANNEL_CONFIG:
-                success = self._handle_channel_config(sensor_type, data)
+                success = self._handle_channel_config(data)
             elif cmd == Commands.DATA_RECEIVE:
                 success = self._handle_data_receive(sensor_type, data)
             elif cmd == Commands.DATA_PATCHING:
@@ -353,29 +353,23 @@ class UdpPort(QWidget):
             return True
         return False
     
-    def _handle_sample_rate(self, sensor_type: int, data: List[int]):
+    def _handle_sample_rate(self,data: List[int]):
         if len(self.devices) == 0:
             logger.warning("No devices connected")
             return False
-        if sensor_type & self.devices[0].type == 0:
-            logger.warning(f"Sample rate type mismatch, receive type: {sensor_type}, device type: {self.devices[0].type}")
-            return False
-        elif data and data[0] == 1:
+        if data and data[0] == 1:
             logger.info("Sample rate set success")
-            self.onSampleRateSet.emit(sensor_type, True)
+            self.onSampleRateSetDone.emit(True)
             return True
         return False
     
-    def _handle_channel_config(self,sensor_type: int, data: List[int]):
+    def _handle_channel_config(self,data: List[int]):
         if len(self.devices) == 0:
             logger.warning("No devices connected")
             return False
-        if sensor_type & self.devices[0].type == 0:
-            logger.warning(f"Channel config type mismatch, receive type: {sensor_type}, device type: {self.devices[0].type}")
-            return False
-        elif data and data[0] == 1:
+        if data and data[0] == 1:
             logger.info("Channel config set success")
-            self.onChannelConfigSet.emit(sensor_type, True)
+            self.onChannelConfigSetDone.emit(True)
             return True
         return False
     
@@ -437,7 +431,7 @@ class UdpPort(QWidget):
     def _udp_send_data(self, packet:bytes, ip: str, port: int):
         try:
             # Send
-            bytes_sent = self.socket.writeDatagram(packet, QHostAddress(ip), port)
+            bytes_sent = self.socket.writeDatagram(packet, QHostAddress(ip), port) # type: ignore
             
             if bytes_sent == -1:
                 logger.error(f"Failed to send packet to {ip}")
@@ -448,7 +442,7 @@ class UdpPort(QWidget):
             logger.error(f"Send error: {e}")
             return False
     
-    def _send_command(self, cmd: Commands, data: List[int] = None) -> bool:
+    def _send_command(self, cmd: Commands, data: List[int] = None) -> bool: # type: ignore
         """Send command with retry tracking"""
         if data is None:
             data = []
@@ -541,18 +535,16 @@ class UdpPort(QWidget):
             logger.info("Battery query sent to all devices")
         return success
     
-    def sendSampleRate(self, sensor_type: int, rate: int) -> bool:
-        data = [sensor_type, rate]
+    def sendSampleRate(self, data: List[int]) -> bool:
         success = self._send_command(Commands.SAMPLE_RATE, data)
         if success:
-            logger.info(f"Sample rate set to {rate} for type {sensor_type}")
+            logger.info(f"Sample rate set for all types")
         return success
     
-    def sendChannelConfig(self, sensor_type: int, config: List[int]) -> bool:
-        data = [sensor_type] + config
-        success = self._send_command(Commands.CHANNEL_CONFIG, data)
+    def sendChannelConfig(self, config: List[int]) -> bool:
+        success = self._send_command(Commands.CHANNEL_CONFIG, config)
         if success:
-            logger.info(f"Channel config sent for type {sensor_type}")
+            logger.info(f"Channel config sent for all type")
         return success
     
     def sendDataPatching(self, sensor_type: int, patch_data: int) -> bool:
@@ -573,7 +565,7 @@ class UdpPort(QWidget):
             'pending_commands': len(self.pending_commands)
         }
     
-    def close(self):
+    def close(self): # type: ignore
         """Close network connection"""
         try:
             if self.retry_timer.isActive():

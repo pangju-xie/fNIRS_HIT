@@ -186,7 +186,7 @@ class CSVManager:
             
             # Write back all data
             with open(self.csv_file_path, 'w', newline='', encoding='utf-8') as file:
-                writer = csv.DictWriter(file, fieldnames=headers)
+                writer = csv.DictWriter(file, fieldnames=headers) # type: ignore
                 writer.writeheader()
                 writer.writerows(rows)
             
@@ -262,7 +262,7 @@ class UserInfoManager(QtWidgets.QWidget):
         # Button connections
         self.ui.saveButton.clicked.connect(self.save_patient_data)
         self.ui.clearButton.clicked.connect(self.clear_form)
-        self.ui.cancelButton.clicked.connect(self.close)
+        self.ui.cancelButton.clicked.connect(self.close) # type: ignore
         
         # Form validation connections
         self.ui.nameLineEdit.textChanged.connect(lambda: self.validate_form())
@@ -282,7 +282,7 @@ class UserInfoManager(QtWidgets.QWidget):
     
     def center_window(self):
         """Center the window on screen"""
-        screen = QtWidgets.QApplication.desktop().screenGeometry()
+        screen = QtWidgets.QApplication.desktop().screenGeometry() # type: ignore
         window = self.geometry()
         self.move(
             (screen.width() - window.width()) // 2,
@@ -356,7 +356,7 @@ class UserInfoManager(QtWidgets.QWidget):
         else:
             # New user
             self.ui.saveButton.setText("设置")
-            self.onUserSet.emit(self.current_patient.initials)
+            self.onUserSet.emit(self.current_patient.initials) # type: ignore
     
     def collect_form_data(self) -> PatientData:
         """Collect data from form fields"""
@@ -507,7 +507,7 @@ class UserInfoManager(QtWidgets.QWidget):
             )
             print(f"Error saving patient data: {str(e)}")
     
-    def closeEvent(self, event) -> None:
+    def closeEvent(self, event) -> None: # type: ignore
         """Handle window close event"""
         # Check if form has unsaved changes
         current_data = self.collect_form_data()

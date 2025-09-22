@@ -219,8 +219,7 @@ def get_default_config_path(filename: str = "device_config.json") -> str:
 class ConfigurationManager(QWidget, Ui_ConfigForm):
     """Main configuration management class with enhanced error handling"""
     
-    OnSampleRateSet = pyqtSignal(int, int)
-    OnChannelConfigSet = pyqtSignal(int, list)
+    OnConfigSet = pyqtSignal(List[int], List[int])
     
     OnConfigApplied = pyqtSignal(dict)
 
@@ -230,6 +229,8 @@ class ConfigurationManager(QWidget, Ui_ConfigForm):
         logger.info("Initializing ConfigurationManager")
         self.montage_dir = get_montage_directory()
         self.sensor_types = sensor_types
+        self.sample_rate_send_done = False
+        self.channel_config_send_done = False
         
         # Process sensor types
         if sensor_types is None:
@@ -279,7 +280,7 @@ class ConfigurationManager(QWidget, Ui_ConfigForm):
     def _initialize_configuration(self):
         """Initialize device configuration"""
         try:
-            self.config = DeviceConfiguration(enabled_sensors=self.enabled_sensor_types)
+            self.config = DeviceConfiguration(enabled_sensors=self.enabled_sensor_types) # type: ignore
             self.ui_manager.initialize_ui_values(self.config)
             logger.info("Configuration initialization completed")
         except Exception as e:
@@ -360,10 +361,14 @@ class ConfigurationManager(QWidget, Ui_ConfigForm):
 
         self.OnConfigApplied.emit(self.get_sensor_summary())
         
+
         try:
             sample_rate_order = self._generate_sample_rate_order()
             config_order = self._generate_config_order()
-            return self.sensor_types, sample_rate_order, config_order
+            self.OnConfigSet.emit(sample_rate_order,config_order)
+            
+            
+            
         except Exception as e:
             logger.error(f"Failed to apply sampling rates: {e}")
             self._show_error_message("Error", f"无效的采样率值：{str(e)}")
@@ -820,6 +825,19 @@ class ConfigurationManager(QWidget, Ui_ConfigForm):
             logger.error(f"Configuration validation failed: {e}")
             return {'errors': [f"Validation failed: {str(e)}"], 'warnings': []}
     
+    def get_fnirs_channel_pairs(self)-> List[str]:
+        '''Get list of enabled fnirs channel pairs'''
+        return list(self.config.enabled_channels['fnirs'].keys()) # type: ignore
+    
+    def get_fnirs_source_detector(self):
+        source_montage = {}
+        detect_montage = {}
+        for num, pos in self.config.enabled_channels['fnirssource'].items(): # type: ignore
+            source_montage['S'+num] = pos['position_3d']
+        for num, pos in self.config.enabled_channels['fnirsdetect'].items(): # type: ignore
+            detect_montage['D'+num] = pos['position_3d']
+        return self.config.channel_counts['fnirs_sources'], self.config.channel_counts['fnirs_detectors'], source_montage, detect_montage, list(self.config.enabled_channels['fnirs'].keys()) # type: ignore
+    
     def get_enabled_sensor_types(self) -> List[str]:
         """Get list of enabled sensor types"""
         return list(self.enabled_sensor_types)
@@ -827,6 +845,9 @@ class ConfigurationManager(QWidget, Ui_ConfigForm):
     def is_sensor_enabled(self, sensor_type: str) -> bool:
         """Check if a specific sensor type is enabled"""
         return sensor_type in self.enabled_sensor_types
+    
+    def get_sample_rate(self) -> Dict[str, int]:
+        return self.config.sampling_rates
     
     def get_channel_summary(self) -> str:
         """Get comprehensive channel summary for display"""

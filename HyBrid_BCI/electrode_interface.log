@@ -45137,3 +45137,48 @@ S1-D1, S2-D2, S2-D8, S3-D1, S3-D3, S4-D4, S5-D2, S5-D5, S5-D6, S5-D8
 2025-09-17 16:15:19.899 - __main__ - INFO - main:908 - Configuration Manager started successfully with sensors: FNIRS
 2025-09-17 16:15:19.899 - __main__ - INFO - main:910 - Initial configuration: {'enabled_sensors': ['fnirs'], 'sampling_rates': {'fnirs': 10}, 'total_channels': {'fnirs': 0}, 'channel_counts': {'fnirs_sources': 8, 'fnirs_detectors': 8}, 'enabled_channels': {'fnirs': {}, 'fnirssource': [], 'fnirsdetect': []}}
 2025-09-17 16:15:27.203 - __main__ - INFO - main:914 - Application exited with code: 0
+2025-09-17 17:01:15.154 - locate - INFO - setup_logging:34 - Logging initialized with level: INFO
+2025-09-17 17:01:15.297 - network - INFO - _setup_socket:182 - Socket bound to port 1227
+2025-09-17 17:01:15.297 - network - INFO - _setup_network:119 - Network ready: 10.249.44.121:1227 -> 10.249.47.255:2227
+2025-09-17 17:01:15.297 - __main__ - INFO - initialize_network:99 - Network module initialized successfully
+2025-09-17 17:01:15.724 - __main__ - INFO - initialize_user_widget:118 - User widget integrated into home tab successfully
+2025-09-17 17:01:15.725 - config - INFO - __init__:228 - Initializing ConfigurationManager
+2025-09-17 17:01:15.725 - config - INFO - get_montage_directory:203 - Montage directory: E:\xfw\code\fnirs\HyBrid_BCI\montage
+2025-09-17 17:01:15.729 - ui_config - INFO - __init__:271 - UIManager initialized
+2025-09-17 17:01:15.729 - ui_config - INFO - setup_ui_for_sensors:275 - Setting up UI for enabled sensors
+2025-09-17 17:01:15.730 - locate - INFO - __init__:319 - Initializing Locate application
+2025-09-17 17:01:15.730 - ui_locate - INFO - __init__:339 - PositionManager initialized with 213 2D positions and 64 3D positions
+2025-09-17 17:01:15.731 - locate - INFO - __init__:131 - ElectrodeManager initialized
+2025-09-17 17:01:15.731 - locate - INFO - __init__:226 - ChannelCalculator initialized with threshold: 40.0mm
+2025-09-17 17:01:15.731 - ui_locate - INFO - setupUi:446 - Setting up UI components
+2025-09-17 17:01:15.731 - ui_locate - INFO - _create_electrode_buttons:491 - Creating default electrode buttons
+2025-09-17 17:01:15.736 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 61 default electrode buttons
+2025-09-17 17:01:15.736 - ui_locate - INFO - _create_electrode_buttons:491 - Creating middle electrode buttons
+2025-09-17 17:01:15.742 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 104 middle electrode buttons
+2025-09-17 17:01:15.743 - ui_locate - INFO - _create_electrode_buttons:491 - Creating center electrode buttons
+2025-09-17 17:01:15.746 - ui_locate - INFO - _create_electrode_buttons:516 - Successfully created 48 center electrode buttons
+2025-09-17 17:01:15.746 - ui_locate - INFO - setupUi:456 - UI setup completed successfully
+2025-09-17 17:01:15.747 - locate - INFO - set_position_manager:136 - position manager set for ElectrondeManager
+2025-09-17 17:01:15.747 - locate - INFO - _connect_electrode_signals:389 - Connecting signals for 213 electrodes
+2025-09-17 17:01:15.751 - locate - INFO - _connect_electrode_signals:418 - Signal connection complete: 213 success, 0 failed
+2025-09-17 17:01:15.751 - locate - INFO - __init__:325 - Locate application initialized successfully
+2025-09-17 17:01:15.767 - config - INFO - __post_init__:88 - Initializing DeviceConfiguration with sensors: {'fnirs'}
+2025-09-17 17:01:15.767 - ui_config - INFO - initialize_ui_values:425 - UI values initialization completed
+2025-09-17 17:01:15.767 - config - INFO - _initialize_configuration:282 - Configuration initialization completed
+2025-09-17 17:01:15.768 - config - INFO - __init__:246 - ConfigurationManager initialization completed successfully
+2025-09-17 17:01:15.797 - __main__ - INFO - initialize_config_manager:142 - Configuration manager integrated into configuration tab successfully
+2025-09-17 17:01:15.800 - __main__ - INFO - __init__:92 - MainWindow initialized successfully with UI structure from XML
+2025-09-17 17:01:15.926 - __main__ - INFO - main:1174 - Application started successfully with XML-based UI structure and integrated configuration manager
+2025-09-17 17:01:38.511 - user - INFO - getNameInitials:92 - Generated initials for 谢发文: XFW_26
+2025-09-17 17:01:41.964 - network - INFO - sendConnect:513 - Connection broadcast sent
+2025-09-17 17:01:45.956 - network - WARNING - _check_retries:492 - Retrying command CONNECT
+2025-09-17 17:01:47.961 - network - WARNING - _check_retries:492 - Retrying command CONNECT
+2025-09-17 17:01:51.961 - __main__ - WARNING - on_connection_timeout:528 - Connection attempt timed out
+2025-09-17 17:01:51.962 - network - WARNING - _check_retries:492 - Retrying command CONNECT
+2025-09-17 17:03:33.961 - __main__ - INFO - shutdown_cleanup:1093 - Starting shutdown cleanup...
+2025-09-17 17:03:33.964 - __main__ - INFO - shutdown_cleanup:1110 - Final configuration state: {'enabled_sensors': ['fnirs'], 'sampling_rates': {'fnirs': 10}, 'total_channels': {'fnirs': 0}, 'channel_counts': {'fnirs_sources': 8, 'fnirs_detectors': 8}, 'enabled_channels': {'fnirs': {}, 'fnirssource': [], 'fnirsdetect': []}}
+2025-09-17 17:03:33.964 - __main__ - INFO - shutdown_cleanup:1113 - Configuration manager closed successfully
+2025-09-17 17:03:35.415 - network - INFO - close:591 - Network closed
+2025-09-17 17:03:35.415 - __main__ - INFO - shutdown_cleanup:1138 - Network closed successfully
+2025-09-17 17:03:35.415 - __main__ - INFO - shutdown_cleanup:1142 - Shutdown cleanup completed
+2025-09-17 17:03:35.416 - __main__ - INFO - closeEvent:1149 - Application closed successfully

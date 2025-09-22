@@ -2,12 +2,13 @@ import numpy as np
 import pandas as pd
 import os
 import sys
-import csv
+import h5py
 from datetime import datetime
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
 import subprocess
 import logging
-import mne, mne_nirs
+import mne
+import mne_nirs
 
 
 logger = logging.getLogger(__name__)
@@ -15,14 +16,16 @@ logging.basicConfig(level=logging.DEBUG)
 
 
 class fNIRS_Struct:
-    def __init__(self, Wavelength = [750, 850], DPF = [3.0, 3.0]):
+    def __init__(self, Wavelength=[750, 850], DPF=[3.0, 3.0]):
         if len(Wavelength) < 2:
             raise ValueError("At least two wavelengths are required for fNIRS calculations.")
         
         if len(DPF) != len(Wavelength):
             self.DPF = np.array([3.0] * len(Wavelength))  # 默认DPF值
+        else:
+            self.DPF = np.array(DPF)
             
-        self.Wavelength = Wavelength
+        self.Wavelength = np.array(Wavelength)
         self.coef = np.zeros((len(Wavelength), 2))  # 消光系数矩阵
         
         if not os.path.exists('extinction_coefficients.csv'):
@@ -40,135 +43,108 @@ class fNIRS_Struct:
     
     def _calculate_D_matrix(self):
         """计算血氧计算矩阵 D""" 
-        
         # 使用改进的比尔-朗伯定律计算矩阵 D
-        Mat_A = np.dot(self.coef, self.DPF.T)
-        self.Mat_D = np.dot(np.linalg.inv(np.dot(Mat_A.T, Mat_A)), Mat_A)
-        
-        return self.Mat_D
+        Mat_A = np.dot(self.coef, np.diag(self.DPF))
+        self.Mat_D = np.dot(np.linalg.pinv(Mat_A), np.eye(2))
+        # return self.Mat_D
     
     def get_D_matrix(self):
         """返回血氧计算矩阵 D"""
         return self.Mat_D
-    
+
 
 class fNIRS:
-    def _init__(self, Wavelength = [750, 850], DPF = [3.0, 3.0], sample_rate = 10):
+    def __init__(self, subject_info, Wavelength=[750, 850], DPF=[3.0, 3.0], sample_rate=10):
         self.struct = fNIRS_Struct(Wavelength, DPF)
         
-        #fnirs Monatage 配置
+        # fNIRS Montage 配置
         self.source_num = 0
         self.detector_num = 0
-        self.Source_Montage = {}  # 光源定位{'S1':(x,y,z）, ...}
+        self.Source_Montage = {}  # 光源定位{'S1':(x,y,z), ...}
         self.Detector_Montage = {} # 探测器定位{'D1':(x,y,z), ...}
-        self.channel_name = []      # 通道配置 ['S1-D1', 'S1-D2, ...]
-        self.channel_config = []    # 有效通道配置 []
-        self.long_channel_mask = []  # 长距离通道索引 [1, 1, 0]
+        self.channels = []      # 通道配置 ['S1-D1', 'S1-D2', ...]
+        self.long_channel_mask = []  # 长距离通道索引 [1, 1, 0, ...]
         self.channel_num = 0
         
         self.sample_rate = sample_rate  # 采样率
         self.set_done = False
         
         self.time = np.array([])
-        self.raw = np.array([])
-        self.OD = np.array([])
-        self.hemoglobin = np.array([])
+        self.raw = np.array([]).reshape(0, 0, 0)  # [time, wavelength, channel]
+        self.OD = np.array([]).reshape(0, 0, 0)   # [time, wavelength, channel]
+        self.hemoglobin = np.array([]).reshape(0, 0, 0)  # [time, chromophore, channel]
         self.get_packet = np.array([])
         
+        # SNIRF相关属性
+        self.subject_info = subject_info    
+        self.measurement_info = {}
+        
     def getSampleRate(self):
+        """获取采样率"""
         return self.sample_rate
     
     def setSampleRate(self, rate):
+        """设置采样率"""
         self.sample_rate = rate
     
-    def loadMontage(self, MontageFile):
-        """加载通道定位文件
+    def get_channels(self):
+        """获取通道配置"""
+        return self.channels.copy()
+    
+    def getSources(self):
+        """获取光源信息
+        
+        Returns:
+            dict: 光源位置信息 {'S1': (x, y, z), 'S2': (x, y, z), ...}
+        """
+        return self.Source_Montage.copy()
+    
+    def getDetectors(self):
+        """获取探测器信息
+        
+        Returns:
+            dict: 探测器位置信息 {'D1': (x, y, z), 'D2': (x, y, z), ...}
+        """
+        return self.Detector_Montage.copy()
+    
+    def getChannels(self):
+        """获取通道信息
+        
+        Returns:
+            dict: 包含通道详细信息的字典
+        """
+        channels_info = {
+            'channels': self.channels.copy(),
+            'channel_num': self.channel_num,
+            'wavelengths': self.struct.Wavelength.copy(),
+            'long_channel_mask': self.long_channel_mask.copy()
+        }
+        
+        return channels_info
+    
+    def setMontage(self, s_num, d_num, sources, detectors, channels):
+        """设置蒙太奇配置
         
         Args:
-            MontageFile: 定位文件路径 (CSV格式)
+            sources: 光源位置字典 {'S1': (x, y, z), ...}
+            detectors: 探测器位置字典 {'D1': (x, y, z), ...}
+            channels: 通道配置列表 [('S1', 'D1'), ('S1', 'D2'), ...]
         """
-        if not os.path.exists(MontageFile):
-            raise FileNotFoundError(f"Montage file '{MontageFile}' not found.")
+        self.Source_Montage = sources.copy()
+        self.Detector_Montage = detectors.copy()
+        self.source_num = s_num
+        self.detector_num = d_num
+        self.channels = channels.copy()
+        self.channel_num = len(channels)
         
-        try:
-            df = pd.read_csv(MontageFile)
-            if 'Type' not in df.columns or 'ID' not in df.columns or 'X' not in df.columns or 'Y' not in df.columns or 'Z' not in df.columns:
-                raise ValueError("Montage file must contain 'Type', 'ID', 'X', 'Y', and 'Z' columns.")
-            
-            self.Source_Montage.clear()
-            self.Detector_Montage.clear()
-            
-            for _, row in df.iterrows():
-                if row['Type'] == 'S':
-                    self.Source_Montage[row['ID']] = (row['X'], row['Y'], row['Z'])
-                elif row['Type'] == 'D':
-                    self.Detector_Montage[row['ID']] = (row['X'], row['Y'], row['Z'])
-            
-            self.source_num = len(self.Source_Montage)
-            self.detector_num = len(self.Detector_Montage)
-            
-            logger.info(f"Loaded montage with {self.source_num} sources and {self.detector_num} detectors.")
-            
-        except Exception as e:
-            logger.error(f"Error loading montage: {e}")
-            raise
+        self.set_done = True
         
-    def saveMontage(self, MontageFile):
-        """保存通道定位文件
+        # 初始化数据数组
+        self.raw = np.array([]).reshape(0, len(self.struct.Wavelength), self.channel_num)
+        self.OD = np.array([]).reshape(0, len(self.struct.Wavelength), self.channel_num)
+        self.hemoglobin = np.array([]).reshape(0, 2, self.channel_num)  # 2 for Hb and HbO2
         
-        Args:
-            MontageFile: 定位文件路径 (CSV格式)
-        """
-        try:
-            data = []
-            for id, (x, y, z) in self.Source_Montage.items():
-                data.append({'Type': 'S', 'ID': id, 'X': x, 'Y': y, 'Z': z})
-            for id, (x, y, z) in self.Detector_Montage.items():
-                data.append({'Type': 'D', 'ID': id, 'X': x, 'Y': y, 'Z': z})
-            
-            df = pd.DataFrame(data)
-            df.to_csv(MontageFile, index=False)
-            logger.info(f"Montage saved to '{MontageFile}'.")
-            
-        except Exception as e:
-            logger.error(f"Error saving montage: {e}")
-            raise
-    
-    def _set_effective_channels(self, long_distance=3.0, short_distance=1.0):
-        """根据定位计算有效通道
-        
-        Args:
-            long_distance: 长距离阈值 (cm)
-            short_distance: 短距离阈值 (cm)
-        """
-        if not self.Source_Montage or not self.Detector_Montage:
-            raise ValueError("Source and Detector montages must be loaded before calculating channels.")
-        
-        self.channel_config.clear()
-        self.long_channel_mask.clear()
-        
-        for s_id, s_pos in self.Source_Montage.items():
-            self.channel_config.append(0)
-            for d_id, d_pos in self.Detector_Montage.items():
-                dist = np.sqrt((s_pos[0] - d_pos[0])**2 + (s_pos[1] - d_pos[1])**2 + (s_pos[2] - d_pos[2])**2)
-                if long_distance + 0.5 >= dist >= long_distance - 0.5:
-                    self.channel_config[s_id] |= (1 << d_id)
-                    self.channel_name.append(f"S{s_id+1}-D{d_id+1}")
-                    # self.channel_config.append([s_id, d_id])
-                    self.long_channel_mask.append(1)
-                elif short_distance + 0.2 >= dist >= short_distance - 0.2:
-                    self.channel_config[s_id] |= (1 << d_id)
-                    self.channel_name.append(f"S{s_id+1}-D{d_id+1}")
-                    self.long_channel_mask.append(0)
-        
-        self.channel_num = len(self.channel_config)
-        logger.info(f"Found {self.channel_num} effective channels.")
-    
-    def get_channel_config(self):
-        return self.channel_config
-    
-        
-    def updataData(self, data):
+    def updataData(self, packet_id, data):
         """更新传感器数据
         
         Args:
@@ -179,26 +155,27 @@ class fNIRS:
         
         try:
             # 解析包ID
-            packet_id = data[-1] | (data[-2] << 8) | (data[-3] << 16) | (data[-4] << 24)
             self.get_packet = np.append(self.get_packet, packet_id)
             times = (packet_id - self.get_packet[0]) / self.sample_rate
-            self.time = np.append(self.time, times)
+            self.time = np.append(self.time, times) # type: ignore
             
             # 初始化数据行
-            dataline = np.zeros([1, self.channel_num * 2])
+            dataline = np.zeros((1, len(self.struct.Wavelength), self.channel_num))
             
             # 处理每个通道的红光和红外光数据
-            for i in range(self.channel_num * 2):
-                val = data[i*3+2] | (data[i*3+1] << 8) | (data[i*3+0] << 16)  # 24位补码
-                
-                # 计算数据值
-                if val > 0X7FFFFF:
-                    val = 0XFFFFFF - val  # 负数转正数
-                if val == 0:
-                    val = 1  # 避免log(0)
-                
-                val = val * 5000 / 0x780000  # 计算电压值, Vref=5V
-                dataline[0, i] = val
+            for ch_idx in range(self.channel_num):
+                for wl_idx in range(len(self.struct.Wavelength)):
+                    data_idx = ch_idx * len(self.struct.Wavelength) + wl_idx
+                    val = data[data_idx*3+2] | (data[data_idx*3+1] << 8) | (data[data_idx*3+0] << 16)  # 24位补码
+                    
+                    # 计算数据值
+                    if val > 0X7FFFFF:
+                        val = 0XFFFFFF - val  # 负数转正数
+                    if val == 0:
+                        val = 1  # 避免log(0)
+                    
+                    val = val * 5000 / 0x780000  # 计算电压值, Vref=5V
+                    dataline[0, wl_idx, ch_idx] = val
             
             self._calculate_fnirs_data(dataline)
             
@@ -206,41 +183,46 @@ class fNIRS:
             logger.error(f"Error updating data: {e}")
             
     def _calculate_fnirs_data(self, dataline):
-         # 重塑数据格式: [时间点, 光类型(红/红外), 通道]
-        dataline = np.reshape(dataline, (1, -1, 2)).transpose(0, 2, 1)
+        """计算fNIRS数据"""
+        # 添加原始数据
         self.raw = np.concatenate((self.raw, dataline), axis=0)
         
         # 计算光学密度
-        OD = np.log(dataline)
+        OD = -np.log(dataline)
         self.OD = np.concatenate((self.OD, OD), axis=0)
         
         # 计算血红蛋白浓度
-        hemoglobin = np.expand_dims(np.dot(self.struct.get_D_matrix(), OD.squeeze()), axis=0)
+        hemoglobin = np.zeros((1, 2, self.channel_num))
+        for ch_idx in range(self.channel_num):
+            od_channel = OD[0, :, ch_idx]
+            hb_values = np.dot(self.struct.get_D_matrix(), od_channel)
+            hemoglobin[0, :, ch_idx] = hb_values
+        
         self.hemoglobin = np.concatenate((self.hemoglobin, hemoglobin), axis=0)
-        
-        
-    def exportData(self, subfileix = 'XFW', file_path=None, data_type='all'):
+    
+    def exportData(self, subfileix='XFW', file_path=None, data_type='snirf'):
         """导出数据到文件
         
         Args:
+            subfileix: 子文件夹名称
             file_path: 文件路径，如果为None则自动生成
-            data_type: 数据类型 ('raw', 'hemoglobin', 'all')
+            data_type: 数据类型 ('snirf', 'csv', 'all')
         """
-        if len(self.time) == 0:
+        if len(self.time) == 0: # type: ignore
             raise ValueError("没有可导出的数据")
         
         # 自动生成文件路径
         if file_path is None:
-            file_path = self._generate_filename(subfileix)
+            file_path = self._generate_filename(subfileix, data_type)
         
         try:
-            if data_type in ['all', 'hemoglobin'] and len(self.hemoglobin) > 0:
-                self._save_hemoglobin_data(file_path)
+            if data_type in ['snirf', 'all']:
+                snirf_path = file_path if file_path.endswith('.snirf') else file_path.replace('.csv', '.snirf')
+                self._save_snirf_data(snirf_path)
             
-            if data_type in ['all', 'raw'] and len(self.raw) > 0:
-                raw_path = file_path.replace('.csv', '_raw.csv')
-                self._save_raw_data(raw_path)
-            
+            if data_type in ['csv', 'all']:
+                csv_path = file_path if file_path.endswith('.csv') else file_path.replace('.snirf', '.csv')
+                self._save_csv_data(csv_path)
             
             return file_path
             
@@ -248,10 +230,10 @@ class fNIRS:
             print(f"fNIRS Error exporting data - {e}")
             raise
 
-    def SaveData(self, username, show_dialog=True):
+    def SaveData(self, username, show_dialog=True, data_type='snirf'):
         """保存数据到文件（兼容原始接口）"""
         try:
-            file_path = self.exportData(username)
+            file_path = self.exportData(username, data_type=data_type)
             
             if show_dialog:
                 QMessageBox.information(None, "保存成功", f"数据已保存到: {file_path}", QMessageBox.Ok)
@@ -266,51 +248,170 @@ class fNIRS:
                 QMessageBox.critical(None, "保存失败", error_msg, QMessageBox.Ok)
             raise
 
-    def _generate_filename(self, subfileix=""):
+    def loadSnirfData(self, file_path):
+        """从SNIRF文件加载数据
+        
+        Args:
+            file_path: SNIRF文件路径
+        """
+        try:
+            with h5py.File(file_path, 'r') as f:
+                # 读取基本信息
+                if 'formatVersion' in f:
+                    format_version = f['formatVersion'][()].decode() if isinstance(f['formatVersion'][()], bytes) else f['formatVersion'][()] # type: ignore
+                    print(f"SNIRF Format Version: {format_version}")
+                
+                # 读取数据
+                if 'nirs/data1/dataTimeSeries' in f:
+                    data = f['nirs/data1/dataTimeSeries'][()] # type: ignore
+                    time = f['nirs/data1/time'][()] # type: ignore
+                    
+                    # 重塑数据格式 [time, wavelength, channel]
+                    n_time, n_data_points = data.shape # type: ignore
+                    n_wavelengths = len(self.struct.Wavelength)
+                    n_channels = n_data_points // n_wavelengths
+                    
+                    self.raw = data.reshape(n_time, n_wavelengths, n_channels) # type: ignore
+                    self.time = time
+                    
+                    # 重新计算OD和血红蛋白
+                    self.OD = -np.log(self.raw)
+                    self._recalculate_hemoglobin()
+                
+                # 读取蒙太奇信息
+                if 'nirs/probe' in f:
+                    self._load_montage_from_snirf(f['nirs/probe'])
+            
+            print(f"Successfully loaded data from {file_path}")
+            
+        except Exception as e:
+            print(f"Error loading SNIRF data: {e}")
+            raise
+
+    def _save_snirf_data(self, file_path):
+        """保存数据为SNIRF格式"""
+        try:
+            with h5py.File(file_path, 'w') as f:
+                # 基本信息
+                f.create_dataset('formatVersion', data='1.0')
+                
+                # 创建nirs组
+                nirs_group = f.create_group('nirs')
+                data_group = nirs_group.create_group('data1')
+                
+                # 保存时间序列数据
+                # 重塑数据: [time, wavelength*channel]
+                reshaped_data = self.raw.reshape(len(self.time), -1) # type: ignore
+                data_group.create_dataset('dataTimeSeries', data=reshaped_data)
+                data_group.create_dataset('time', data=self.time)
+                
+                # 测量列表
+                measurement_list = []
+                for ch_name in self.channels:
+                    node = ch_name.split('-')
+                    src_idx = int(node[0][1:])
+                    det_idx = int(node[1][1:])
+                    for wl_idx, wavelength in enumerate(self.struct.Wavelength):
+                        measurement_list.append([
+                            src_idx,  # sourceIndex (1-based)
+                            det_idx,  # detectorIndex (1-based)
+                            1,        # wavelengthIndex
+                            1,        # dataType (1 for intensity)
+                            1         # dataTypeIndex
+                        ])
+                
+                data_group.create_dataset('measurementList', data=measurement_list)
+                
+                # 探针信息
+                probe_group = nirs_group.create_group('probe')
+                
+                # 波长
+                probe_group.create_dataset('wavelengths', data=self.struct.Wavelength)
+                
+                # 源位置
+                source_pos = np.array([list(pos) for pos in self.Source_Montage.values()])
+                if len(source_pos) > 0:
+                    probe_group.create_dataset('sourcePos3D', data=source_pos)
+                
+                # 探测器位置
+                detector_pos = np.array([list(pos) for pos in self.Detector_Montage.values()])
+                if len(detector_pos) > 0:
+                    probe_group.create_dataset('detectorPos3D', data=detector_pos)
+                
+                # 受试者信息
+                if self.subject_info:
+                    subject_group = nirs_group.create_group('metaDataTags')
+                    for key, value in self.subject_info.items():
+                        if isinstance(value, str):
+                            subject_group.create_dataset(key, data=value.encode('utf-8'))
+                        else:
+                            subject_group.create_dataset(key, data=value)
+            
+            print(f"SNIRF data saved to {file_path}")
+            
+        except Exception as e:
+            print(f"Error saving SNIRF data: {e}")
+            raise
+
+    def _save_csv_data(self, file_path):
+        """保存数据为CSV格式（兼容性）"""
+        # 保存血红蛋白数据
+        save_data = self.hemoglobin.reshape(-1, 2*self.channel_num)
+        
+        # 生成列名
+        column_names = [f"{ch}_Hb" for ch in self.channels] + [f"{ch}_HbO2" for ch in self.channels]
+        column_names = ["Time"] + column_names
+        
+        # 创建DataFrame并保存
+        if self.time.shape[0] != save_data.shape[0]: # type: ignore
+            raise ValueError("时间数据和血氧数据长度不匹配。")
+        
+        df = pd.DataFrame(np.column_stack([self.time, save_data]), columns=column_names) # type: ignore
+        df.to_csv(file_path, index=False, encoding='utf-8-sig')
+        
+        print(f"CSV data saved to {file_path}")
+
+    def _recalculate_hemoglobin(self):
+        """重新计算血红蛋白浓度"""
+        n_time = self.OD.shape[0]
+        self.hemoglobin = np.zeros((n_time, 2, self.channel_num))
+        
+        for t in range(n_time):
+            for ch_idx in range(self.channel_num):
+                od_channel = self.OD[t, :, ch_idx]
+                hb_values = np.dot(self.struct.get_D_matrix(), od_channel)
+                self.hemoglobin[t, :, ch_idx] = hb_values
+
+    def _load_montage_from_snirf(self, probe_group):
+        """从SNIRF文件加载蒙太奇信息"""
+        try:
+            if 'sourcePos3D' in probe_group:
+                source_pos = probe_group['sourcePos3D'][()]
+                self.Source_Montage = {f'S{i+1}': tuple(pos) for i, pos in enumerate(source_pos)}
+                self.source_num = len(source_pos)
+            
+            if 'detectorPos3D' in probe_group:
+                detector_pos = probe_group['detectorPos3D'][()]
+                self.Detector_Montage = {f'D{i+1}': tuple(pos) for i, pos in enumerate(detector_pos)}
+                self.detector_num = len(detector_pos)
+            
+        except Exception as e:
+            print(f"Error loading montage from SNIRF: {e}")
+
+    def _generate_filename(self, subfileix="", data_type='snirf'):
         """生成文件名"""
-        base_dir = "saved_data/" + subfileix
+        base_dir = f"saved_data/{subfileix}" if subfileix else "saved_data"
         if not os.path.exists(base_dir):
             os.makedirs(base_dir)
         
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = f"fNIRS_{timestamp}.csv"
+        
+        if data_type == 'snirf':
+            filename = f"fNIRS_{timestamp}.snirf"
+        else:
+            filename = f"fNIRS_{timestamp}.csv"
+            
         return os.path.join(base_dir, filename)
-
-    def _save_hemoglobin_data(self, file_path):
-        """保存处理后的血氧数据"""
-        # 重塑数据: [时间点, Hb_ch1, Hb_ch2, Hb_ch3, ..., HbO2_ch1, HbO2_ch2, ...]
-        save_data = self.hemoglobin.reshape(-1, 2*self.channel_num)
-        
-        # 生成列名
-        column_names = [s+'_Hb' for s in self.channel_name] + [s+'_HbO2' for s in self.channel_name]
-        column_names = ["Time"] + column_names
-        
-        # 创建DataFrame并保存
-        if self.time.shape[0] != save_data.shape[0]:
-            raise ValueError("时间数据和血氧数据长度不匹配。")
-        else:
-            df = pd.DataFrame(np.column_stack([self.time, save_data]), columns=column_names)
-            df.to_csv(file_path, index=False, encoding='utf-8-sig')
-        
-            print(f"fNIRS hemoglobin data saved to {file_path}")
-
-    def _save_raw_data(self, file_path):
-        """保存原始光电信号数据"""
-        # 重塑数据: [时间点, Red_ch1, IR_ch1, Red_ch2, IR_ch2, ...]
-        save_data = self.raw.reshape(-1, 2*self.channel_num)
-        
-        # 生成列名
-        column_names = [s+'_Red' for s in self.channel_name] + [s+'_IR' for s in self.channel_name]
-        column_names = ["Time"] + column_names
-        
-        # 创建DataFrame并保存
-        if self.time.shape[0] != save_data.shape[0]:
-            raise ValueError("时间数据和血氧数据长度不匹配。")
-        else:
-            df = pd.DataFrame(np.column_stack([self.time, save_data]), columns=column_names)
-            df.to_csv(file_path, index=False, encoding='utf-8-sig')
-        
-            print(f"fNIRS Raw data saved to {file_path}")
 
     def _open_file_location(self, file_path):
         """打开文件所在文件夹"""
@@ -326,21 +427,14 @@ class fNIRS:
         except Exception as e:
             print(f"fNIRS: Error opening file location - {e}")
 
+    def setSubjectInfo(self, subject_info):
+        """设置受试者信息"""
+        self.subject_info = subject_info.copy()
+
+    def getSubjectInfo(self):
+        """获取受试者信息"""
+        return self.subject_info.copy()
+
     def __str__(self):
         """字符串表示"""
-        return f"Sensor(fNIRS, channels={self.channel_num}, samples={len(self.time)})"
-        
-        
-        
-        
-
-
-
-        
-        
-        
-        
-        
-        
-        
-        
+        return f"fNIRS(channels={self.channel_num}, samples={len(self.time)}, sources={self.source_num}, detectors={self.detector_num})" # type: ignore
