@@ -528,22 +528,24 @@ class Locate(QtWidgets.QWidget):
         
         try:
             # Get all position types for comprehensive coverage
-            positions = {}
+            # positions = {}
             
-            # Base electrode positions
-            if hasattr(self.ui, '_get_electrode_positions'):
-                positions.update(self.ui._get_electrode_positions())
+            # # Base electrode positions
+            # if hasattr(self.ui, '_get_electrode_positions'):
+            #     positions.update(self.ui._get_electrode_positions())
             
-            # Mid electrode positions  
-            if hasattr(self.ui, '_get_mid_electrode_positions'):
-                positions.update(self.ui._get_mid_electrode_positions())
+            # # Mid electrode positions  
+            # if hasattr(self.ui, '_get_mid_electrode_positions'):
+            #     positions.update(self.ui._get_mid_electrode_positions())
                 
-            # Center electrode positions
-            if hasattr(self.ui, '_get_center_electrode_positions'):
-                positions.update(self.ui._get_center_electrode_positions())
+            # # Center electrode positions
+            # if hasattr(self.ui, '_get_center_electrode_positions'):
+            #     positions.update(self.ui._get_center_electrode_positions())
                 
-            # logger.debug(f"Retrieved {len(positions)} total electrode positions")
-            return positions
+            # # logger.debug(f"Retrieved {len(positions)} total electrode positions")
+            # return positions
+
+            return self.ui.position_manager.all_2d_positions
             
         except Exception as e:
             logger.error(f"Error getting electrode positions: {e}")
@@ -778,7 +780,7 @@ class Locate(QtWidgets.QWidget):
         
         # 绘制通道
         positions = self._get_all_electrode_positions()
-        print(positions)
+
         for sch, dch, color in self.fnirs_channel_quality:
             try:
                 pen = QPen(QColor(color))

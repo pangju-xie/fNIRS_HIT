@@ -208,6 +208,7 @@ class QualifyApp(QWidget):
     def initialize_channels(self, node_config):
         """Initialize channel data and widgets"""
         # Clear existing channels
+        print(node_config)
         self.channels.clear()
         self.clear_channel_widgets()
         
@@ -217,8 +218,8 @@ class QualifyApp(QWidget):
             # "S1-D1": "FC1-C1"
             sensor_id = key.split('-')[0].strip('S')
             detector_id = key.split('-')[1].strip('D')
-            sensor_channel = value.split('-')[0]
-            detector_channel = value.split('-')[1]
+            sensor_channel = value['node_pair'].split('-')[0]
+            detector_channel = value['node_pair'].split('-')[1]
 
             self.channels.append(ChannelData(sensor_id=sensor_id, detector_id=detector_id, sensor_channel=sensor_channel, detector_channel=detector_channel))
         
@@ -389,12 +390,6 @@ class QualifyApp(QWidget):
         current_time = datetime.now().strftime("%H:%M:%S")
         self.ui.statusLabel.setText(f"更新状态：运行中 ({current_time})")
     
-    def set_channel_count(self, count):
-        """Set the number of channels dynamically"""
-        self.stop_assessment()
-        self.initialize_channels(count)
-        print(f"Channel count set to: {count}")
-    
     def get_channel_data(self):
         """Get current channel data for external use"""
         return self.channels
@@ -417,9 +412,6 @@ def main():
     # Create and show main window
     window = QualifyApp()
     window.show()
-    
-    # Example: Set custom channel count (uncomment to use)
-    # window.set_channel_count(24)  # Set 24 channels instead of default 16
     
     print("fNIRS Channel Quality Assessment Application Started")
     print("Features:")

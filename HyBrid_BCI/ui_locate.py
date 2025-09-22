@@ -339,7 +339,7 @@ class PositionManager:
         logger.info(f"PositionManager initialized with {len(self.all_2d_positions)} 2D positions "
                    f"and {len(self._base_3d_positions)} 3D positions")
     
-    def get_2d_positio(self, node_name: str) -> Optional[Tuple[int,int]]:
+    def get_2d_position(self, node_name: str) -> Optional[Tuple[int,int]]:
         position = self.all_2d_positions.get(node_name)
         if position:
             logger.debug(f"2D Position for {node_name}: {position}")
