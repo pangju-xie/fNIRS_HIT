@@ -359,15 +359,12 @@ class ConfigurationManager(QWidget, Ui_ConfigForm):
         """Apply channel configuration"""
         logger.info("Apply channel config called")
 
-        self.OnConfigApplied.emit(self.get_sensor_summary())
-        
-
         try:
             sample_rate_order = self._generate_sample_rate_order()
             config_order = self._generate_config_order()
+            
             self.OnConfigSet.emit(sample_rate_order,config_order)
-            
-            
+            self.OnConfigApplied.emit(self.get_sensor_summary())
             
         except Exception as e:
             logger.error(f"Failed to apply sampling rates: {e}")
