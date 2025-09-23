@@ -3,6 +3,7 @@
 # Form implementation generated from reading ui file 'mainwindow.ui'
 # Updated to match the exact UI structure defined in the XML file
 # Optimized for responsive design and better code structure
+# Stylesheet scoped to MainWindow only - won't affect TabWidget content
 #
 # Created by: PyQt5 UI code generator 5.15.11
 #
@@ -19,8 +20,8 @@ class Ui_MainWindow(object):
         MainWindow.setMinimumSize(QtCore.QSize(900, 650))
         MainWindow.setWindowTitle("fNIRS Data Acquisition System")
         
-        # Apply the exact stylesheet from the UI file
-        self._apply_stylesheet(MainWindow)
+        # Apply scoped stylesheet to MainWindow only
+        self._apply_scoped_stylesheet(MainWindow)
         
         # Set up central widget with proper sizing
         self._setup_central_widget(MainWindow)
@@ -44,24 +45,29 @@ class Ui_MainWindow(object):
         # Connect slots
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-    def _apply_stylesheet(self, MainWindow):
-        """Apply comprehensive stylesheet for modern UI"""
+    def _apply_scoped_stylesheet(self, MainWindow):
+        """Apply stylesheet scoped only to MainWindow components"""
+        # Set a unique property to scope the styles
+        MainWindow.setProperty("mainWindowStyle", True)
+        
         MainWindow.setStyleSheet("""
-            QMainWindow {
+            /* Scope all styles to this specific MainWindow */
+            QMainWindow[mainWindowStyle="true"] {
                 background-color: #f5f5f5;
             }
 
-            QTabWidget::pane {
+            /* Tab widget styles - only direct children of this MainWindow */
+            QMainWindow[mainWindowStyle="true"] > QWidget > QTabWidget::pane {
                 border: 1px solid #c0c0c0;
                 background-color: white;
                 border-radius: 5px;
             }
 
-            QTabWidget::tab-bar {
+            QMainWindow[mainWindowStyle="true"] > QWidget > QTabWidget::tab-bar {
                 left: 5px;
             }
 
-            QTabBar::tab {
+            QMainWindow[mainWindowStyle="true"] > QWidget > QTabWidget > QTabBar::tab {
                 background-color: #f0f0f0;
                 border: 1px solid #c0c0c0;
                 border-bottom-color: #c0c0c0;
@@ -74,23 +80,24 @@ class Ui_MainWindow(object):
                 margin-right: 2px;
             }
 
-            QTabBar::tab:selected {
+            QMainWindow[mainWindowStyle="true"] > QWidget > QTabWidget > QTabBar::tab:selected {
                 background-color: white;
                 border-bottom-color: white;
                 border-top: 2px solid #0078d4;
             }
 
-            QTabBar::tab:hover:!selected {
+            QMainWindow[mainWindowStyle="true"] > QWidget > QTabWidget > QTabBar::tab:hover:!selected {
                 background-color: #e8e8e8;
             }
 
-            QTabBar::tab:disabled {
+            QMainWindow[mainWindowStyle="true"] > QWidget > QTabWidget > QTabBar::tab:disabled {
                 background-color: #f8f8f8;
                 color: #888888;
                 border-color: #e0e0e0;
             }
 
-            QGroupBox {
+            /* Status area styles - scoped to statusGroupBox */
+            QGroupBox#statusGroupBox {
                 font-weight: bold;
                 border: 1px solid #cccccc;
                 border-radius: 5px;
@@ -99,14 +106,15 @@ class Ui_MainWindow(object):
                 background-color: white;
             }
 
-            QGroupBox::title {
+            QGroupBox#statusGroupBox::title {
                 subcontrol-origin: margin;
                 left: 10px;
                 padding: 0 8px 0 8px;
                 background-color: white;
             }
 
-            QPushButton {
+            /* Button styles - only in status area */
+            QGroupBox#statusGroupBox QPushButton#connectButton {
                 background-color: #0078d4;
                 color: white;
                 border: none;
@@ -116,20 +124,21 @@ class Ui_MainWindow(object):
                 min-height: 24px;
             }
 
-            QPushButton:hover {
+            QGroupBox#statusGroupBox QPushButton#connectButton:hover {
                 background-color: #106ebe;
             }
 
-            QPushButton:pressed {
+            QGroupBox#statusGroupBox QPushButton#connectButton:pressed {
                 background-color: #005a9e;
             }
 
-            QPushButton:disabled {
+            QGroupBox#statusGroupBox QPushButton#connectButton:disabled {
                 background-color: #cccccc;
                 color: #666666;
             }
 
-            QProgressBar {
+            /* Progress bar styles - only in status area */
+            QGroupBox#statusGroupBox QProgressBar#batteryProgressBar {
                 border: 1px solid #cccccc;
                 border-radius: 3px;
                 text-align: center;
@@ -137,31 +146,75 @@ class Ui_MainWindow(object):
                 background-color: #f0f0f0;
             }
 
-            QProgressBar::chunk {
+            QGroupBox#statusGroupBox QProgressBar#batteryProgressBar::chunk {
                 background-color: #4CAF50;
                 border-radius: 2px;
             }
 
-            /* Add scrollbar styling for better appearance */
-            QScrollBar:vertical {
+            /* Menu bar styles - scoped to this MainWindow */
+            QMainWindow[mainWindowStyle="true"] QMenuBar {
+                background-color: #f8f9fa;
+                border-bottom: 1px solid #dee2e6;
+                padding: 2px;
+            }
+
+            QMainWindow[mainWindowStyle="true"] QMenuBar::item {
+                padding: 8px 12px;
+                background-color: transparent;
+            }
+
+            QMainWindow[mainWindowStyle="true"] QMenuBar::item:selected {
+                background-color: #e9ecef;
+                border-radius: 4px;
+            }
+
+            QMainWindow[mainWindowStyle="true"] QMenuBar::item:pressed {
+                background-color: #dee2e6;
+            }
+
+            /* Status bar styles - scoped to this MainWindow */
+            QMainWindow[mainWindowStyle="true"] QStatusBar {
+                background-color: #f8f9fa;
+                border-top: 1px solid #dee2e6;
+                color: #495057;
+            }
+
+            /* Scrollbar styles - only for tab content scroll areas */
+            QScrollArea[tabContentScroll="true"] QScrollBar:vertical {
                 background: #f0f0f0;
                 width: 12px;
                 border-radius: 6px;
             }
 
-            QScrollBar::handle:vertical {
+            QScrollArea[tabContentScroll="true"] QScrollBar::handle:vertical {
                 background: #c0c0c0;
                 border-radius: 6px;
                 min-height: 20px;
             }
 
-            QScrollBar::handle:vertical:hover {
+            QScrollArea[tabContentScroll="true"] QScrollBar::handle:vertical:hover {
                 background: #a0a0a0;
             }
 
-            QScrollArea {
+            QScrollArea[tabContentScroll="true"] {
                 border: none;
                 background-color: transparent;
+            }
+
+            /* Label styles in status area only */
+            QGroupBox#statusGroupBox QLabel {
+                color: #333333;
+                font-size: 12px;
+            }
+
+            QGroupBox#statusGroupBox QLabel#connectionStatusLabel {
+                color: #f44336;
+                font-weight: bold;
+            }
+
+            QGroupBox#statusGroupBox QLabel#statusInfoLabel {
+                color: #3498db;
+                font-weight: bold;
             }
         """)
 
@@ -213,8 +266,9 @@ class Ui_MainWindow(object):
         tab_widget.setObjectName(tab_name)
         tab_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         
-        # Create scroll area for the tab content
+        # Create scroll area for the tab content with scoped property
         scroll_area = QtWidgets.QScrollArea(tab_widget)
+        scroll_area.setProperty("tabContentScroll", True)  # Add property for scoped styling
         scroll_area.setWidgetResizable(True)
         scroll_area.setFrameShape(QtWidgets.QFrame.NoFrame)
         scroll_area.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarPolicy.ScrollBarAsNeeded)
@@ -226,7 +280,7 @@ class Ui_MainWindow(object):
         content_widget.setObjectName(f"{tab_name}_content")
         content_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
         
-        # Create layout for content widget
+        # Create layout for content widget - NO STYLING APPLIED HERE
         content_layout = QtWidgets.QVBoxLayout(content_widget)
         content_layout.setContentsMargins(20, 20, 20, 20)
         content_layout.setSpacing(15)
@@ -254,7 +308,7 @@ class Ui_MainWindow(object):
         """Setup status area with responsive design"""
         self.statusGroupBox = QtWidgets.QGroupBox(self.centralwidget)
         self.statusGroupBox.setTitle("")  # Empty title as per UI file
-        self.statusGroupBox.setObjectName("statusGroupBox")
+        self.statusGroupBox.setObjectName("statusGroupBox")  # Important: specific ID for scoped styling
         self.statusGroupBox.setFixedHeight(75)  # Fixed height for status area
         self.statusGroupBox.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         
@@ -298,7 +352,7 @@ class Ui_MainWindow(object):
         self.connectButton.setMinimumSize(QtCore.QSize(120, 40))
         self.connectButton.setMaximumSize(QtCore.QSize(150, 40))
         self.connectButton.setText("连接设备")
-        self.connectButton.setObjectName("connectButton")
+        self.connectButton.setObjectName("connectButton")  # Important: specific ID for scoped styling
         self.statusLayout.addWidget(self.connectButton)
 
     def _create_device_info_section(self):
@@ -330,9 +384,8 @@ class Ui_MainWindow(object):
         self.connectionInfoLayout.setObjectName("connectionInfoLayout")
         
         self.connectionStatusLabel = QtWidgets.QLabel(self.statusGroupBox)
-        self.connectionStatusLabel.setStyleSheet("QLabel { color: #f44336; font-weight: bold; }")
         self.connectionStatusLabel.setText("⚫ 未连接")
-        self.connectionStatusLabel.setObjectName("connectionStatusLabel")
+        self.connectionStatusLabel.setObjectName("connectionStatusLabel")  # Important: specific ID for scoped styling
         self.connectionInfoLayout.addWidget(self.connectionStatusLabel)
         
         self.deviceCountLabel = QtWidgets.QLabel(self.statusGroupBox)
@@ -358,7 +411,7 @@ class Ui_MainWindow(object):
         self.batteryProgressBar.setMinimumSize(QtCore.QSize(120, 20))
         self.batteryProgressBar.setMaximumSize(QtCore.QSize(200, 25))
         self.batteryProgressBar.setValue(0)
-        self.batteryProgressBar.setObjectName("batteryProgressBar")
+        self.batteryProgressBar.setObjectName("batteryProgressBar")  # Important: specific ID for scoped styling
         self.batteryLayout.addWidget(self.batteryProgressBar)
         
         self.statusLayout.addLayout(self.batteryLayout)
@@ -366,10 +419,9 @@ class Ui_MainWindow(object):
     def _create_status_info_label(self):
         """Create status information label"""
         self.statusInfoLabel = QtWidgets.QLabel(self.statusGroupBox)
-        self.statusInfoLabel.setStyleSheet("QLabel { color: #3498db; font-weight: bold; }")
         self.statusInfoLabel.setText("Status: Ready to connect")
         self.statusInfoLabel.setWordWrap(True)
-        self.statusInfoLabel.setObjectName("statusInfoLabel")
+        self.statusInfoLabel.setObjectName("statusInfoLabel")  # Important: specific ID for scoped styling
         self.statusLayout.addWidget(self.statusInfoLabel)
 
     def _setup_menu_bar(self, MainWindow):
@@ -519,6 +571,24 @@ class Ui_MainWindow(object):
         layout_name = f"{tab_name}Layout"
         layout = getattr(self, layout_name, None)
         return layout and layout.count() > 0
+
+    def apply_tab_content_style(self, widget, style_dict):
+        """
+        为TabWidget内的内容应用样式的辅助方法
+        这样可以在需要时单独控制Tab内容的样式，而不会被MainWindow样式影响
+        
+        Args:
+            widget: 要应用样式的widget
+            style_dict: 样式字典，例如 {'background-color': '#ffffff', 'border': '1px solid #ccc'}
+        """
+        if not style_dict:
+            return
+        
+        style_string = ""
+        for property_name, value in style_dict.items():
+            style_string += f"{property_name}: {value};\n"
+        
+        widget.setStyleSheet(style_string)
 
 
 if __name__ == "__main__":

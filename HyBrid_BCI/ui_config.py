@@ -48,90 +48,21 @@ class UIConstants:
 class Ui_ConfigForm(object):
     def setupUi(self, ConfigForm):
         ConfigForm.setObjectName("ConfigForm")
-        ConfigForm.resize(1188, 838)
+        ConfigForm.resize(1214, 838)
         ConfigForm.setWindowTitle("Device Configuration")
         ConfigForm.setStyleSheet("QGroupBox { font-weight: bold; }")
 
-        # Sampling Rate Configuration Group
-        self._setup_sampling_rate_group(ConfigForm)
-        
-        # Channel Configuration Group
+        # Channel Configuration Group (now contains everything)
         self._setup_channel_config_group(ConfigForm)
 
         QtCore.QMetaObject.connectSlotsByName(ConfigForm)
 
-    def _setup_sampling_rate_group(self, ConfigForm):
-        """Setup sampling rate configuration group"""
-        self.samplingRateGroup = QtWidgets.QGroupBox(ConfigForm)
-        self.samplingRateGroup.setGeometry(QtCore.QRect(20, 20, 1160, 60))
-        self.samplingRateGroup.setObjectName("samplingRateGroup")
-        self.samplingRateGroup.setTitle("采样率配置")
-
-        self.samplingRateWidget = QtWidgets.QWidget(self.samplingRateGroup)
-        self.samplingRateWidget.setGeometry(QtCore.QRect(10, 25, 1140, 25))
-        self.samplingRateWidget.setObjectName("samplingRateWidget")
-        
-        self.samplingRateLayout = QtWidgets.QHBoxLayout(self.samplingRateWidget)
-        self.samplingRateLayout.setContentsMargins(0, 0, 0, 0)
-        self.samplingRateLayout.setObjectName("samplingRateLayout")
-
-        self._setup_sampling_controls()
-
-    def _setup_sampling_controls(self):
-        """Setup individual sampling rate controls"""
-        # EEG Sampling Rate
-        self.eegSamplingLabel = QtWidgets.QLabel(self.samplingRateWidget)
-        self.eegSamplingLabel.setText("EEG (Hz):")
-        self.eegSamplingLabel.setObjectName("eegSamplingLabel")
-        self.samplingRateLayout.addWidget(self.eegSamplingLabel)
-
-        self.eegSamplingCombo = QtWidgets.QComboBox(self.samplingRateWidget)
-        self.eegSamplingCombo.setObjectName("eegSamplingCombo")
-        self.eegSamplingCombo.addItems(["500", "1000", "2000"])
-        self.eegSamplingCombo.setCurrentText("1000")
-        self.samplingRateLayout.addWidget(self.eegSamplingCombo)
-
-        self._add_spacer()
-
-        # fNIRS Sampling Rate
-        self.fnirsSamplingLabel = QtWidgets.QLabel(self.samplingRateWidget)
-        self.fnirsSamplingLabel.setText("fNIRS (Hz):")
-        self.fnirsSamplingLabel.setObjectName("fnirsSamplingLabel")
-        self.samplingRateLayout.addWidget(self.fnirsSamplingLabel)
-
-        self.fnirsSamplingCombo = QtWidgets.QComboBox(self.samplingRateWidget)
-        self.fnirsSamplingCombo.setObjectName("fnirsSamplingCombo")
-        self.fnirsSamplingCombo.addItems(["10", "20", "50"])
-        self.fnirsSamplingCombo.setCurrentText("10")
-        self.samplingRateLayout.addWidget(self.fnirsSamplingCombo)
-
-        self._add_spacer()
-
-        # sEMG Sampling Rate
-        self.semgSamplingLabel = QtWidgets.QLabel(self.samplingRateWidget)
-        self.semgSamplingLabel.setText("sEMG (Hz):")
-        self.semgSamplingLabel.setObjectName("semgSamplingLabel")
-        self.samplingRateLayout.addWidget(self.semgSamplingLabel)
-
-        self.semgSamplingCombo = QtWidgets.QComboBox(self.samplingRateWidget)
-        self.semgSamplingCombo.setObjectName("semgSamplingCombo")
-        self.semgSamplingCombo.addItems(["500", "1000", "2000"])
-        self.semgSamplingCombo.setCurrentText("1000")
-        self.samplingRateLayout.addWidget(self.semgSamplingCombo)
-
-        self._add_spacer()
-
-    def _add_spacer(self):
-        """Add horizontal spacer"""
-        spacer = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.samplingRateLayout.addItem(spacer)
-
     def _setup_channel_config_group(self, ConfigForm):
         """Setup channel configuration group"""
         self.channelConfigGroup = QtWidgets.QGroupBox(ConfigForm)
-        self.channelConfigGroup.setGeometry(QtCore.QRect(20, 90, 1160, 711))
+        self.channelConfigGroup.setGeometry(QtCore.QRect(10, 10, 1160, 740))
         self.channelConfigGroup.setObjectName("channelConfigGroup")
-        self.channelConfigGroup.setTitle("通道配置")
+        self.channelConfigGroup.setTitle("")
 
         self._setup_control_buttons()
         self._setup_device_params()
@@ -140,7 +71,7 @@ class Ui_ConfigForm(object):
     def _setup_control_buttons(self):
         """Setup control buttons"""
         self.controlButtonsWidget = QtWidgets.QWidget(self.channelConfigGroup)
-        self.controlButtonsWidget.setGeometry(QtCore.QRect(10, 25, 1140, 40))
+        self.controlButtonsWidget.setGeometry(QtCore.QRect(10, 10, 1140, 41))
         self.controlButtonsWidget.setObjectName("controlButtonsWidget")
         
         self.controlButtonsLayout = QtWidgets.QHBoxLayout(self.controlButtonsWidget)
@@ -176,7 +107,7 @@ class Ui_ConfigForm(object):
     def _setup_device_params(self):
         """Setup device parameters controls"""
         self.deviceParamsWidget = QtWidgets.QWidget(self.channelConfigGroup)
-        self.deviceParamsWidget.setGeometry(QtCore.QRect(10, 75, 1140, 31))
+        self.deviceParamsWidget.setGeometry(QtCore.QRect(10, 50, 1140, 31))
         self.deviceParamsWidget.setObjectName("deviceParamsWidget")
         
         self.deviceParamsLayout = QtWidgets.QHBoxLayout(self.deviceParamsWidget)
@@ -184,10 +115,7 @@ class Ui_ConfigForm(object):
         self.deviceParamsLayout.setObjectName("deviceParamsLayout")
 
         self._setup_sensor_param_controls()
-
-        # Add horizontal spacer
-        horizontalSpacer = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.deviceParamsLayout.addItem(horizontalSpacer)
+        self._setup_sampling_controls_in_params()
 
     def _setup_sensor_param_controls(self):
         """Setup sensor parameter controls"""
@@ -206,6 +134,54 @@ class Ui_ConfigForm(object):
         # fNIRS Detectors
         self._add_sensor_control("fNIRS探测器数:", "fnirsDetectorsLabel_2", "fnirsDetectorsSpinBox_2", 
                                 UIConstants.SENSOR_COLORS['fnirs_detector'], 1, 32, 8)
+
+        # Add horizontal spacer
+        horizontalSpacer = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.deviceParamsLayout.addItem(horizontalSpacer)
+
+    def _setup_sampling_controls_in_params(self):
+        """Setup sampling rate controls within device parameters"""
+        # Sampling rate configuration label
+        self.samplingConfigLabel = QtWidgets.QLabel(self.deviceParamsWidget)
+        self.samplingConfigLabel.setText("采样率配置：")
+        self.samplingConfigLabel.setObjectName("label")
+        self.deviceParamsLayout.addWidget(self.samplingConfigLabel)
+
+        # EEG Sampling Rate
+        self.eegSamplingLabel = QtWidgets.QLabel(self.deviceParamsWidget)
+        self.eegSamplingLabel.setText("EEG (Hz):")
+        self.eegSamplingLabel.setObjectName("eegSamplingLabel")
+        self.deviceParamsLayout.addWidget(self.eegSamplingLabel)
+
+        self.eegSamplingCombo = QtWidgets.QComboBox(self.deviceParamsWidget)
+        self.eegSamplingCombo.setObjectName("eegSamplingCombo")
+        self.eegSamplingCombo.addItems(["500", "1000", "2000"])
+        self.eegSamplingCombo.setCurrentText("1000")
+        self.deviceParamsLayout.addWidget(self.eegSamplingCombo)
+
+        # sEMG Sampling Rate
+        self.semgSamplingLabel = QtWidgets.QLabel(self.deviceParamsWidget)
+        self.semgSamplingLabel.setText("sEMG (Hz):")
+        self.semgSamplingLabel.setObjectName("semgSamplingLabel")
+        self.deviceParamsLayout.addWidget(self.semgSamplingLabel)
+
+        self.semgSamplingCombo = QtWidgets.QComboBox(self.deviceParamsWidget)
+        self.semgSamplingCombo.setObjectName("semgSamplingCombo")
+        self.semgSamplingCombo.addItems(["500", "1000", "2000"])
+        self.semgSamplingCombo.setCurrentText("1000")
+        self.deviceParamsLayout.addWidget(self.semgSamplingCombo)
+
+        # fNIRS Sampling Rate
+        self.fnirsSamplingLabel = QtWidgets.QLabel(self.deviceParamsWidget)
+        self.fnirsSamplingLabel.setText("fNIRS (Hz):")
+        self.fnirsSamplingLabel.setObjectName("fnirsSamplingLabel")
+        self.deviceParamsLayout.addWidget(self.fnirsSamplingLabel)
+
+        self.fnirsSamplingCombo = QtWidgets.QComboBox(self.deviceParamsWidget)
+        self.fnirsSamplingCombo.setObjectName("fnirsSamplingCombo")
+        self.fnirsSamplingCombo.addItems(["10", "20", "50"])
+        self.fnirsSamplingCombo.setCurrentText("10")
+        self.deviceParamsLayout.addWidget(self.fnirsSamplingCombo)
 
     def _add_sensor_control(self, label_text: str, label_name: str, spinbox_name: str, 
                            color: str, min_val: int, max_val: int, default_val: int):
@@ -232,8 +208,8 @@ class Ui_ConfigForm(object):
     def _setup_config_tabs(self):
         """Setup configuration tab widget"""
         self.configTabWidget = QtWidgets.QTabWidget(self.channelConfigGroup)
-        self.configTabWidget.setGeometry(QtCore.QRect(10, 110, 1140, 595))
-        self.configTabWidget.setCurrentIndex(0)
+        self.configTabWidget.setGeometry(QtCore.QRect(10, 80, 1140, 650))
+        self.configTabWidget.setCurrentIndex(1)
         self.configTabWidget.setObjectName("configTabWidget")
 
         # Initial placeholder tabs - will be customized by UIManager
@@ -259,8 +235,7 @@ class Ui_ConfigForm(object):
     def retranslateUi(self, ConfigForm):
         _translate = QtCore.QCoreApplication.translate
         ConfigForm.setWindowTitle(_translate("ConfigForm", "Device Configuration"))
-        self.samplingRateGroup.setTitle(_translate("ConfigForm", "采样率配置"))
-        self.channelConfigGroup.setTitle(_translate("ConfigForm", "通道配置"))
+        self.channelConfigGroup.setTitle(_translate("ConfigForm", ""))
 
 
 class UIManager:
