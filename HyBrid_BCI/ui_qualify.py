@@ -73,77 +73,63 @@ class Ui_Form(object):
         self.resetButton.setGeometry(QtCore.QRect(930, 740, 100, 35))
         self.resetButton.setObjectName("resetButton")
 
-        # self.retranslateUi(Form)
+        self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "fNIRS Channel Quality Assessment"))
-        Form.setStyleSheet(_translate("Form", "QWidget {\n"
-"    background-color: #f5f5f5;\n"
-"    font-family: Arial, sans-serif;\n"
-"}\n"
-"\n"
-"QLabel {\n"
-"    color: #333;\n"
-"    font-weight: bold;\n"
-"}\n"
-"\n"
-"QComboBox {\n"
-"    background-color: white;\n"
-"    border: 2px solid #ddd;\n"
-"    border-radius: 4px;\n"
-"    padding: 2px 8px;\n"
-"}\n"
-"\n"
-"QComboBox::drop-down {\n"
-"    border: none;\n"
-"}\n"
-"\n"
-"QComboBox::down-arrow {\n"
-"    image: url(down_arrow.png);\n"
-"    width: 12px;\n"
-"    height: 12px;\n"
-"}\n"
-"\n"
-"QPushButton {\n"
-"    background-color: #4CAF50;\n"
-"    color: white;\n"
-"    border: none;\n"
-"    border-radius: 4px;\n"
-"    padding: 8px 16px;\n"
-"    font-weight: bold;\n"
-"}\n"
-"\n"
-"QPushButton:hover {\n"
-"    background-color: #45a049;\n"
-"}\n"
-"\n"
-"QPushButton:pressed {\n"
-"    background-color: #3d8b40;\n"
-"}\n"
-"\n"
-"QLineEdit {\n"
-"    background-color: white;\n"
-"    border: 1px solid #ddd;\n"
-"    border-radius: 3px;\n"
-"    padding: 2px 5px;\n"
-"    font-family: monospace;\n"
-"}\n"
-"\n"
-"QGroupBox {\n"
-"    font-weight: bold;\n"
-"    border: 2px solid #cccccc;\n"
-"    border-radius: 5px;\n"
-"    margin-top: 1ex;\n"
-"    padding-top: 10px;\n"
-"}\n"
-"\n"
-"QGroupBox::title {\n"
-"    subcontrol-origin: margin;\n"
-"    left: 10px;\n"
-"    padding: 0 5px 0 5px;\n"
-"}"))
+        
+        # 添加作用域属性
+        Form.setProperty("qualifyWindowStyle", True)
+        
+        Form.setStyleSheet("""
+            /* 限制作用域到 qualify 窗口 */
+            QWidget[qualifyWindowStyle="True"] {
+                background-color: #f5f5f5;
+                font-family: Arial, sans-serif;
+            }
+
+            QWidget[qualifyWindowStyle="True"] QLabel {
+                color: #333;
+                font-weight: bold;
+            }
+
+            QWidget[qualifyWindowStyle="True"] QPushButton {
+                background-color: #4CAF50;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                padding: 8px 16px;
+                font-weight: bold;
+            }
+
+            QWidget[qualifyWindowStyle="True"] QPushButton:hover {
+                background-color: #45a049;
+            }
+
+            QWidget[qualifyWindowStyle="True"] QPushButton:pressed {
+                background-color: #3d8b40;
+            }
+
+            /* 特定按钮样式 */
+            QWidget[qualifyWindowStyle="True"] QPushButton#stopButton {
+                background-color: #f44336;
+            }
+
+            QWidget[qualifyWindowStyle="True"] QPushButton#resetButton {
+                background-color: #ff9800;
+            }
+
+            QWidget[qualifyWindowStyle="True"] QGroupBox {
+                font-weight: bold;
+                border: 2px solid #cccccc;
+                border-radius: 5px;
+                margin-top: 1ex;
+                padding-top: 10px;
+            }
+        """)
+    
         self.headerGroup.setTitle(_translate("Form", "Assessment Configuration"))
         self.methodLabel.setText(_translate("Form", "评估方法："))
         self.methodComboBox.setItemText(0, _translate("Form", "光电信号强度"))

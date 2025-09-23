@@ -71,7 +71,7 @@ class Ui_ConfigForm(object):
     def _setup_control_buttons(self):
         """Setup control buttons"""
         self.controlButtonsWidget = QtWidgets.QWidget(self.channelConfigGroup)
-        self.controlButtonsWidget.setGeometry(QtCore.QRect(10, 10, 1140, 41))
+        self.controlButtonsWidget.setGeometry(QtCore.QRect(10, 10, 1120, 41))
         self.controlButtonsWidget.setObjectName("controlButtonsWidget")
         
         self.controlButtonsLayout = QtWidgets.QHBoxLayout(self.controlButtonsWidget)
@@ -107,7 +107,7 @@ class Ui_ConfigForm(object):
     def _setup_device_params(self):
         """Setup device parameters controls"""
         self.deviceParamsWidget = QtWidgets.QWidget(self.channelConfigGroup)
-        self.deviceParamsWidget.setGeometry(QtCore.QRect(10, 50, 1140, 31))
+        self.deviceParamsWidget.setGeometry(QtCore.QRect(10, 50, 1120, 31))
         self.deviceParamsWidget.setObjectName("deviceParamsWidget")
         
         self.deviceParamsLayout = QtWidgets.QHBoxLayout(self.deviceParamsWidget)

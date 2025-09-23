@@ -573,6 +573,10 @@ class MainWindow(QMainWindow):
         """处理配置设置"""
         try:
             if self.network and self.state_manager.current_state >= WorkflowStates.CONNECTED:
+                # 加载测试组件
+                self.state_manager.set_state(WorkflowStates.CONFIGURED)
+                self._initialize_qualify_widget()
+                # 发送至设备
                 self.network.sendSampleRate(sample_data)
                 self.network.sendChannelConfig(channel_config)
                 logger.info("配置已发送到设备")

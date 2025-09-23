@@ -16,8 +16,8 @@ from PyQt5.QtWidgets import QSizePolicy
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1200, 852)
-        MainWindow.setMinimumSize(QtCore.QSize(900, 650))
+        MainWindow.resize(1200, 920)
+        MainWindow.setMinimumSize(QtCore.QSize(900, 920))
         MainWindow.setWindowTitle("fNIRS Data Acquisition System")
         
         # Apply scoped stylesheet to MainWindow only
