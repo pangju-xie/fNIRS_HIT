@@ -41,7 +41,7 @@ int s_retry_num = 0;
 static wifi_config_t wifi_sta_config = {
     .sta = {
         .threshold.authmode = WIFI_AUTH_WPA_WPA2_PSK,
-        .sae_pwe_h2e = WIFI_AUTH_WPA_WPA2_PSK,
+        .sae_pwe_h2e = WPA3_SAE_PWE_BOTH,
     }
 };
 

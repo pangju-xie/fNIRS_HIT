@@ -7,3 +7,5 @@ build/
 *.ipynb
 
 fnrisV0_1/fNIRS-ESP32/build/*
+
+*/__pycache__
