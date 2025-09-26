@@ -9,3 +9,5 @@ build/
 fnrisV0_1/fNIRS-ESP32/build/*
 
 */__pycache__
+
+/用户信息

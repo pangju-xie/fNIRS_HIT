@@ -247,7 +247,6 @@ class UdpPort(QWidget):
     def _handle_command(self, cmd: Commands, sensor_id: List[int], sensor_type: int, data: List[int], host_ip: str):
         """Handle different commands"""
         try:
-            print("____________________________cmd" + cmd)
             success = False
             if cmd == Commands.CONNECT:
                 success = self._handle_connect(sensor_id, sensor_type, data, host_ip)
