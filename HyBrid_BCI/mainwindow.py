@@ -558,13 +558,18 @@ class MainWindow(QMainWindow):
         try:
             self.qualify_widget = qualify.QualifyApp()
             self.component_manager.add_component('qualify', self.qualify_widget, self.ui.testLayout) # type: ignore
-            
+
+            # config向qualify传递通道配置
             if self.qualify_widget and self.config_widget:
                 self.config_widget.OnConfigApplied.connect(
                     self.qualify_widget.initialize_channels
                 )
-                logger.info("测试组件初始化成功")
-                
+            # 采样按钮
+            self.qualify_widget.ui.startButton.clicked.connect(self.network.sendStartSample)
+            self.qualify_widget.ui.stopButton.clicked.connect(self.network.sendStopSample)
+
+            logger.info("测试组件初始化成功")
+
         except Exception as e:
             logger.error(f"测试组件初始化失败: {e}")
             self.qualify_widget = None

@@ -95,9 +95,7 @@ class DataGenerator(QThread):
         timer = QTimer()
         timer.timeout.connect(self.generate_data)
         timer.start(1000 // self.sample_rate)  # 100 Hz
-        
-        while self.running:
-            self.msleep(10)
+        super().run()
             
     def generate_data(self):
         if not self.running:
@@ -237,6 +235,11 @@ class MainWindow(QMainWindow):
         self.is_recording = False
         self.current_filter = "No Filter"
         
+        # Data buffer for storing generated data
+        self.data_buffer = []
+        self.plot_timer = QTimer()
+        self.plot_timer.timeout.connect(self.update_plot_from_buffer)
+        
         # Setup plot canvas
         self.setup_plot_canvas()
         
@@ -319,6 +322,7 @@ class MainWindow(QMainWindow):
     def start_acquisition(self):
         """Start data acquisition"""
         self.data_generator.start_acquisition()
+        self.plot_timer.start(100)  # Update plot every 100ms
         self.ui.startButton.setEnabled(False)
         self.ui.stopButton.setEnabled(True)
         self.ui.statusbar.showMessage("Acquiring data...")
@@ -326,6 +330,7 @@ class MainWindow(QMainWindow):
     def stop_acquisition(self):
         """Stop data acquisition"""
         self.data_generator.stop_acquisition()
+        self.plot_timer.stop()
         self.ui.startButton.setEnabled(True)
         self.ui.stopButton.setEnabled(False)
         self.ui.statusbar.showMessage("Data acquisition stopped")
@@ -335,6 +340,7 @@ class MainWindow(QMainWindow):
         self.stop_acquisition()
         self.is_recording = False
         self.recorded_data.clear()
+        self.data_buffer.clear()
         self.plot_canvas.clear_plot()
         self.ui.recordButton.setText("Record (记录)")
         self.ui.statusbar.showMessage("System reset")
@@ -391,8 +397,20 @@ class MainWindow(QMainWindow):
         if self.is_recording:
             self.recorded_data.append(data.copy())
         
-        # Update plot
-        self.plot_canvas.update_data(data)
+        # Store data in buffer instead of updating plot directly
+        self.data_buffer.append(data.copy())
+    
+    def update_plot_from_buffer(self):
+        """Update plot with data from buffer (called every 100ms)"""
+        if not self.data_buffer:
+            return
+        
+        # Process all data points in buffer
+        for data in self.data_buffer:
+            self.plot_canvas.update_data(data)
+        
+        # Clear buffer after processing
+        self.data_buffer.clear()
     
     def apply_sg_filter(self):
         """Apply S-G filter to recorded data"""
@@ -560,6 +578,8 @@ class MainWindow(QMainWindow):
         """Handle application close event"""
         if self.data_generator.running:
             self.data_generator.stop_acquisition()
+        if self.plot_timer.isActive():
+            self.plot_timer.stop()
         event.accept()
 
 
