@@ -149,6 +149,7 @@ class MainWindow(QMainWindow):
     workflowStateChanged = pyqtSignal(int, int)  # old_state, new_state
     batteryLevelChanged = pyqtSignal(int)
     configurationChanged = pyqtSignal()
+    qualifyQuaryUpdate = pyqtSignal(dict)
     
     def __init__(self):
         super().__init__()
@@ -564,6 +565,11 @@ class MainWindow(QMainWindow):
                 self.config_widget.OnConfigApplied.connect(
                     self.qualify_widget.initialize_channels
                 )
+            # 查询sensor状态
+            if hasattr(self.qualify_widget, 'QualityQuary'):
+                self.qualify_widget.QualityQuary.connect(self.quary_sensor_quality)
+            # self.qualifyQuaryUpdate.connect(self.qualify_widget.update_signals)
+            self.qualifyQuaryUpdate.connect(lambda d: print(d))
             # 采样按钮
             self.qualify_widget.ui.startButton.clicked.connect(self.network.sendStartSample)
             self.qualify_widget.ui.stopButton.clicked.connect(self.network.sendStopSample)
@@ -645,7 +651,7 @@ class MainWindow(QMainWindow):
         try:
             if sensor_type == SensorTypes.FNIRS:
                 if 'fnirs' in self.state_manager.sensors:
-                    self.state_manager.sensors['fnirs'].updataData(packet_id, data)
+                    self.state_manager.sensors['fnirs'].updateData(packet_id, data)
         except Exception as e:
             logger.error(f"数据处理失败: {e}")
     
@@ -680,6 +686,14 @@ class MainWindow(QMainWindow):
             self.on_device_disconnected()
         
         self.show_error_message(f"网络错误: {error_message}")
+    
+    # ===== 数据查询 =====
+    def quary_sensor_quality(self, method_index):
+        quality_data = {}
+        for sensor_name in self.state_manager.sensors.keys():
+            if hasattr(self.state_manager.sensors[sensor_name], 'get_quality'):
+                quality_data[sensor_name] = self.state_manager.sensors[sensor_name].get_quality(method_index)
+        self.qualifyQuaryUpdate.emit(quality_data)
     
     # ===== UI更新和工作流管理 =====
     

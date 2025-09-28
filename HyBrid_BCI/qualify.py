@@ -155,6 +155,8 @@ class ChannelWidget(QWidget):
         return status, color
 class QualifyApp(QWidget):
     """Main application class for fNIRS channel quality assessment"""
+
+    QualityQuary = pyqtSignal(int)  # 后续加入其他传感器可能改为传dict
     
     def __init__(self):
         super().__init__()
@@ -169,24 +171,13 @@ class QualifyApp(QWidget):
         
         # Setup timer for 1-second updates
         self.update_timer = QTimer()
-        self.update_timer.timeout.connect(self.update_signals)
+        self.update_timer.timeout.connect(self.quality_query)
 
         self._add_brain_locator_widget()
         
         # Setup UI connections
         self.setup_connections()
         
-        # # Initialize channels
-        # # 测试用通道
-        # node_config =   {'enabled_sensors': ['fnirs'], 
-        # 'sampling_rates': {'fnirs': 10}, 
-        # 'total_channels': {'fnirs': 2}, 
-        # 'channel_counts': {'fnirs_sources': 16, 'fnirs_detectors': 16}, 
-        # 'enabled_channels': {'fnirs': {'S1-D1': 'F5-F3', 'S1-D2': 'F5-FC5'}, 
-        # 'fnirssource': ['F5'], 
-        # 'fnirsdetect': ['F3', 'FC5']}}
-
-        # self.initialize_channels(node_config)
 
     def _add_brain_locator_widget(self):
         """Add brain electrode locator widget"""
@@ -208,7 +199,6 @@ class QualifyApp(QWidget):
     def initialize_channels(self, node_config):
         """Initialize channel data and widgets"""
         # Clear existing channels
-        print(node_config)
         self.channels.clear()
         self.clear_channel_widgets()
         
@@ -363,7 +353,11 @@ class QualifyApp(QWidget):
         
         print(f"Assessment method changed to: {method_name}")
     
-    def update_signals(self):
+    def quality_query(self):
+        self.QualityQuary.emit(self.assessment_method)
+
+    def update_signals(self, data):
+        # 当前传入的data为dict{'fnirs': ndarray}, 显示功能待实现
         """Update signal values for all channels (called every second)"""
         if not self.is_running:
             return

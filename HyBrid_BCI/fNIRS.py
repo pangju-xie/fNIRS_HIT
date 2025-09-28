@@ -9,7 +9,8 @@ import subprocess
 import logging
 import mne
 import mne_nirs
-
+import scipy.signal as signal
+import scipy.interpolate as interpolate
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG)
@@ -33,7 +34,7 @@ class fNIRS_Struct:
             
         self.ext_coef = pd.read_csv('extinction_coefficients.csv')
         for i, wl in enumerate(Wavelength):
-            row = self.ext_coef[self.ext_coef['Wavelength'] == wl]
+            row = self.ext_coef[self.ext_coef['wavelength_nm'] == wl]
             if not row.empty:
                 self.coef[i, 0] = row['Hb'].values[0]
                 self.coef[i, 1] = row['HbO2'].values[0]
@@ -123,7 +124,7 @@ class fNIRS:
         
         return channels_info
     
-    def setMontage(self, s_num, d_num, sources, detectors, channels):
+    def setMontage(self, montage):
         """设置蒙太奇配置
         
         Args:
@@ -131,6 +132,12 @@ class fNIRS:
             detectors: 探测器位置字典 {'D1': (x, y, z), ...}
             channels: 通道配置列表 [('S1', 'D1'), ('S1', 'D2'), ...]
         """
+        s_num = montage[0]
+        d_num = montage[1]
+        sources = montage[2]
+        detectors = montage[3]
+        channels = montage[4]
+
         self.Source_Montage = sources.copy()
         self.Detector_Montage = detectors.copy()
         self.source_num = s_num
@@ -146,7 +153,7 @@ class fNIRS:
         self.OD = np.array([]).reshape(0, len(self.struct.Wavelength), self.channel_num)
         self.hemoglobin = np.array([]).reshape(0, 2, self.channel_num)  # 2 for Hb and HbO2
         
-    def updataData(self, packet_id, data):
+    def updateData(self, packet_id, data):
         """更新传感器数据
         
         Args:
@@ -183,7 +190,45 @@ class fNIRS:
             
         except Exception as e:
             logger.error(f"Error updating data: {e}")
-            
+
+    def _calculate_strength(self):  # 获取一段时间内的平均原始光强
+        if self.raw.shape[0] < 10:
+            return np.zeros(self.channel_num)
+        vol = np.zeros(self.channel_num)
+        for ch_idx in range(self.channel_num):
+            vol[ch_idx] = np.mean(self.raw[-10:, :, ch_idx])
+        return vol
+
+    def _calculate_sci(self):  # 获取头皮耦合指数
+        # 使用最近的40个数据进行计算, 不足40则全返回0
+        if self.raw.shape[0] < 40:
+            return np.zeros(self.channel_num)
+        sci = np.zeros(self.channel_num)
+        t = self.time[-40:]
+        for ch_idx in range(self.channel_num):
+            raw_750 = self.raw[-40:, 0, ch_idx].reshape(-1, 1)
+            raw_850 = self.raw[-40:, 1, ch_idx].reshape(-1, 1)
+            # 等间距插值
+            t_new = np.linspace(t[0], t[-1], 40)
+            raw_750 = np.interp(t_new, t, raw_750)
+            raw_850 = np.interp(t_new, t, raw_850)
+            # 0.5~2.5Hz滤波
+            fil = signal.butter(4, [0.5, 2.5], 'bandpass', fs=self.sample_rate)
+            raw_750_fil = signal.filtfilt(fil[0], fil[1], raw_750)
+            raw_850_fil = signal.filtfilt(fil[0], fil[1], raw_850)
+            # 计算SCI
+            sci[ch_idx] = np.corrcoef(raw_750_fil, raw_850_fil)[0, 1]
+        return sci
+        
+    def get_quality(self, method_index):
+        """获取用于信号质量评估的参数"""
+        if method_index == 0:
+            return self._calculate_strength()
+        elif method_index == 1:
+            return self._calculate_sci()
+        else:
+            raise ValueError("Invalid method index")
+
     def _calculate_fnirs_data(self, dataline):
         """计算fNIRS数据"""
         # 添加原始数据
