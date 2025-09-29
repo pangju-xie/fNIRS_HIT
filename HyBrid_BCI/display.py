@@ -4,9 +4,9 @@
 Signal Processing and Data Visualization Application
 
 This application provides real-time signal processing capabilities with various
-filtering options and multi-channel data visualization with uniform offsets.
+filtering options and multi-channel data visualization.
 
-Main application logic and interaction handling.
+Main application logic and interaction handling - adapted for new UI structure.
 """
 
 import sys
@@ -16,60 +16,68 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QVBoxLayout, 
-                             QMessageBox, QFileDialog, QWidget, QStatusBar,
-                             QMenu, QAction, QMenuBar, QCheckBox, QHBoxLayout,
-                             QLabel, QComboBox)
-from PyQt5.QtCore import QTimer, QThread, pyqtSignal, Qt
+                             QMessageBox, QFileDialog, QWidget, QStatusBar)
+from PyQt5.QtCore import QThread, pyqtSignal, Qt, QMutex, QMutexLocker
 from PyQt5.QtGui import QKeySequence
 import pandas as pd
 import json
 from datetime import datetime
 
-from ui_display import Ui_DisplayWidget
+from ui_display import Ui_DisplayWidget, SensorTypes
 from signal_processor import SignalProcessor, create_signal_processor
 
 
 class DataGenerator(QThread):
-    """Simulates real-time data acquisition - separated from UI logic"""
+    """Simulates real-time data acquisition"""
     
     dataReady = pyqtSignal(np.ndarray)
     
-    def __init__(self, num_channels=7, sample_rate=100):
+    def __init__(self, sensor_type, sample_rate=100):
         super().__init__()
         
-        self.num_channels = num_channels
+        self.sensor_type = sensor_type
         self.sample_rate = sample_rate
         self.running = False
         self.time_counter = 0
         
+        # Determine number of channels based on sensor type
+        active_signals = SensorTypes.get_active_signals(sensor_type)
+        self.num_channels = self._get_channel_count(active_signals)
+        
+    def _get_channel_count(self, active_signals):
+        """Calculate total channel count based on active signals"""
+        count = 0
+        if 'eeg' in active_signals:
+            count += 8  # 8 EEG channels
+        if 'semg' in active_signals:
+            count += 4  # 4 sEMG channels
+        if 'fnirs' in active_signals:
+            count += 14  # 7 fNIRS channels × 2 (HbO + Hb)
+        return count
+        
     def run(self):
-        timer = QTimer()
-        timer.timeout.connect(self.generate_data)
-        timer.start(1000 // self.sample_rate)  # 100 Hz
-        super().run()
-
+        """Main thread execution"""
+        while self.running:
+            if self.running:
+                self.generate_data()
+            self.msleep(1000 // self.sample_rate)
+            
     def generate_data(self):
         """Generate synthetic multi-channel data"""
         if not self.running:
             return
             
-        # Generate synthetic multi-channel data
         t = self.time_counter / self.sample_rate
-        data = np.zeros(self.num_channels*2)
+        data = np.zeros(self.num_channels)
         
-        for i in range(self.num_channels*2):
-            # Each channel has different frequency components and noise
-            freq1 = 0.1 + i * 0.05  # Different base frequencies
-            freq2 = 1.0 + i * 0.1   # Higher frequency components
+        for i in range(self.num_channels):
+            freq1 = 0.1 + i * 0.05
+            freq2 = 1.0 + i * 0.1
             
-            # Simulate physiological-like signals
             signal_component = (np.sin(2 * np.pi * freq1 * t) + 
                               0.3 * np.sin(2 * np.pi * freq2 * t))
-            
-            # Add some noise
             noise = np.random.normal(0, 0.1)
-            
-            data[i] = signal_component + noise 
+            data[i] = signal_component + noise
             
         self.dataReady.emit(data)
         self.time_counter += 1
@@ -88,147 +96,240 @@ class DataGenerator(QThread):
             self.wait()
 
 
-class PlotCanvas(FigureCanvas):
-    """Custom matplotlib canvas for real-time plotting - separated from UI logic"""
+class BasePlotCanvas(FigureCanvas):
+    """Base class for plotting canvases with sweep mode"""
     
-    def __init__(self, parent, channels, width=15, height=8, dpi=100):
+    def __init__(self, parent, num_channels, channel_labels, width=15, height=8, dpi=100):
         self.fig = Figure(figsize=(width, height), dpi=dpi, facecolor='white')
         super().__init__(self.fig)
         self.setParent(parent)
         
-        self.channel_offset = 10.0
-        self.channels = channels
-        self.num_channels = len(channels)
+        self.num_channels = num_channels
+        self.channel_labels = channel_labels
+        self.max_points = 12000  # 120s * 100 samples/s
+        self.data_index = 0
+        self.sweep_position = 0  # Current position in sweep mode
+        self.mutex = QMutex()  # Thread-safe mutex
+        
+        # Performance optimization
+        self.update_counter = 0
+        self.skip_frames = 2  # Update display every N frames to reduce lag
         
         self.axes = self.fig.add_subplot(111)
         self.axes.set_facecolor('white')
-        self.axes.set_xlabel('Time')
-        self.axes.set_ylabel('Amplitude')
-        self.axes.set_xlim((0,100))
-        self.axes.set_ylim((-self.channel_offset, (self.num_channels*2-1)*self.channel_offset)) # type: ignore
-        self.axes.set_yticks(np.arange(0, self.num_channels*2*self.channel_offset, 2*self.channel_offset), self.channels) # type: ignore
+        self.axes.set_xlabel('Time (s)')
         
-        # Data storage
-        self.max_points = 1000
-        self.time_data = np.zeros(self.max_points)
+        self.time_data = np.arange(self.max_points) / 100.0  # Fixed time axis (0-120s)
         self.channel_data = {}
         self.channel_lines = {}
-        self.colors = ['blue','red']
+        self.sweep_line = None  # Vertical line showing current position
         
-        # Initialize channels
-        self.initialize_channels()
-        
+    def clear_plot(self):
+        """Clear all plotted data"""
+        locker = QMutexLocker(self.mutex)
+        for i in range(self.num_channels):
+            self.channel_data[i] = np.full(self.max_points, np.nan)  # Use NaN instead of zeros
+            self.channel_lines[i].set_data(self.time_data, self.channel_data[i])
         self.data_index = 0
+        self.sweep_position = 0
+        if self.sweep_line:
+            self.sweep_line.set_xdata([0, 0])
+        self.draw_idle()
+
+
+class FNIRSPlotCanvas(BasePlotCanvas):
+    """Canvas for fNIRS signals with HbO/Hb pairs - sweep mode"""
+    
+    def __init__(self, parent, channels, width=15, height=8, dpi=100):
+        self.channel_offset = 20.0  # Double the offset for better spacing
+        self.physical_channels = channels
+        num_channels = len(channels) * 2  # HbO + Hb for each channel
+        
+        # Create labels for HbO and Hb
+        labels = []
+        for ch in channels:
+            labels.append(f"{ch}_HbO")
+            labels.append(f"{ch}_Hb")
+        
+        super().__init__(parent, num_channels, labels, width, height, dpi)
+        
+        self.colors = ['red', 'blue']  # HbO: red, Hb: blue
+        self.initialize_channels()
         
     def initialize_channels(self):
         """Initialize channel data and plot lines"""
-        for i in range(self.num_channels):
-            self.channel_data[2*i] = np.zeros(self.max_points)
-            line1, = self.axes.plot(self.time_data, self.channel_data[i], 
-                                 color=self.colors[0], linewidth=1.5, 
-                                 label=f'Channel {self.channels[i]}_Hb')
-            self.channel_lines[2*i] = line1
-            
-            self.channel_data[2*i+1] = np.zeros(self.max_points)
-            line2, = self.axes.plot(self.time_data, self.channel_data[i], 
-                                 color=self.colors[1], linewidth=1.5, 
-                                 label=f'Channel {self.channels[i]}_HbO')
-            self.channel_lines[2*i+1] = line2
-            
-        # self.axes.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+        self.axes.set_xlim((0, 120))  # 0-120 seconds
+        # Add extra space at the top for better visibility (double offset)
+        y_min = -self.channel_offset
+        y_max = (len(self.physical_channels) - 1) * self.channel_offset * 2 + self.channel_offset
+        self.axes.set_ylim((y_min, y_max)) # type: ignore
+        self.axes.set_yticks(
+            np.arange(0, len(self.physical_channels) * self.channel_offset * 2, self.channel_offset * 2),
+            self.physical_channels
+        )
+        
+        for i, label in enumerate(self.channel_labels):
+            self.channel_data[i] = np.full(self.max_points, np.nan)  # Initialize with NaN
+            color = self.colors[i % 2]  # Alternate between HbO and Hb colors
+            line, = self.axes.plot(self.time_data, self.channel_data[i], 
+                                 color=color, linewidth=1.5, label=label)
+            self.channel_lines[i] = line
+        
+        # Add sweep line
+        self.sweep_line = self.axes.axvline(x=0, color='green', linestyle='--', linewidth=1, alpha=0.7)
+        
         self.fig.tight_layout()
         
     def update_data(self, new_data):
-        """Update plot with new data point"""
-        current_time = self.data_index / 100.0  # Assuming 100 Hz
+        """Update plot with new data point - optimized sweep mode"""
+        if not self.mutex.tryLock():
+            return  # Skip this update if locked
         
-        # Shift data arrays
-        self.time_data[:-1] = self.time_data[1:]
-        self.time_data[-1] = current_time
-        
-        for i, value in enumerate(new_data):
-            if i < self.num_channels*2:
-                baise = i//2
-                # Apply channel offset
-                offset_value = value + baise * self.channel_offset*2
-                self.channel_data[i][:-1] = self.channel_data[i][1:]
-                self.channel_data[i][-1] = offset_value
-                self.channel_lines[i].set_data(self.time_data, self.channel_data[i])
-        
-        # Update axis limits
-        if self.data_index > self.max_points:
-            self.axes.set_xlim(current_time - self.max_points/100.0, current_time)
-        else:
-            self.axes.set_xlim(0, max(10, current_time))
+        try:
+            # Frame skipping for performance
+            self.update_counter += 1
+            should_draw = (self.update_counter % self.skip_frames == 0)
             
-        # Auto-scale y-axis
-        all_data = np.concatenate([self.channel_data[i] for i in range(self.num_channels*2)])
-        valid_data = all_data[all_data != 0]
-        if len(valid_data) > 0:
-            margin = 0.1 * (np.max(valid_data) - np.min(valid_data))
-            self.axes.set_ylim(np.min(valid_data) - margin, np.max(valid_data) + margin)
-        
-        self.data_index += 1
-        self.draw_idle()
-    
-    def clear_plot(self):
-        """Clear all plotted data"""
-        self.time_data = np.zeros(self.max_points)
-        for i in range(self.num_channels):
-            self.channel_data[i] = np.zeros(self.max_points)
-            self.channel_lines[i].set_data(self.time_data, self.channel_data[i])
-        self.data_index = 0
-        self.axes.set_xlim(0, 10)
-        self.axes.set_ylim(-1, 1)
-        self.draw_idle()
-    
-    def set_channel_offset(self, offset):
-        """Update channel offset and redraw"""
-        old_offset = self.channel_offset
-        self.channel_offset = offset
-        
-        # Update existing data with new offset
-        for i in range(self.num_channels):
-            # Remove old offset, add new offset
-            offset_adjustment = (i * offset) - (i * old_offset)
-            adjusted_data = self.channel_data[i] + offset_adjustment
-            self.channel_data[i] = adjusted_data
-            self.channel_lines[i].set_data(self.time_data, adjusted_data)
+            # Update sweep position
+            current_time = self.time_data[self.sweep_position]
             
-        self.draw_idle()
+            # Update data at current position
+            for i, value in enumerate(new_data):
+                if i < self.num_channels:
+                    channel_group = i // 2
+                    offset_value = value + channel_group * self.channel_offset * 2
+                    self.channel_data[i][self.sweep_position] = offset_value
+            
+            # Only update line data if we're going to draw
+            if should_draw:
+                for i in range(self.num_channels):
+                    self.channel_lines[i].set_data(self.time_data, self.channel_data[i])
+                
+                # Update sweep line position
+                self.sweep_line.set_xdata([current_time, current_time])
+            
+            # Clear a small region ahead of the sweep line (creates the "erasing" effect)
+            clear_width = 200  # Adjusted for longer time scale
+            for i in range(clear_width):
+                clear_pos = (self.sweep_position + i + 1) % self.max_points
+                for j in range(self.num_channels):
+                    self.channel_data[j][clear_pos] = np.nan
+            
+            # Move to next position
+            self.sweep_position = (self.sweep_position + 1) % self.max_points
+            self.data_index += 1
+            
+            # Only redraw when needed
+            if should_draw:
+                self.draw_idle()
+        finally:
+            self.mutex.unlock()
+
+
+class EEGPlotCanvas(BasePlotCanvas):
+    """Canvas for EEG signals - sweep mode"""
+    
+    def __init__(self, parent, channels, width=15, height=8, dpi=100):
+        self.channel_offset = 100.0  # Double the offset for better spacing
+        labels = [f"EEG-{ch}" for ch in channels]
+        
+        super().__init__(parent, len(channels), labels, width, height, dpi)
+        self.initialize_channels()
+        
+    def initialize_channels(self):
+        """Initialize channel data and plot lines"""
+        self.axes.set_xlim((0, 120))  # 0-120 seconds
+        # Add extra space at the top for better visibility (double offset)
+        y_min = -self.channel_offset
+        y_max = (self.num_channels - 1) * self.channel_offset + self.channel_offset
+        self.axes.set_ylim((y_min, y_max)) # type: ignore
+        self.axes.set_yticks(
+            np.arange(0, self.num_channels * self.channel_offset, self.channel_offset),
+            self.channel_labels
+        )
+        
+        for i in range(self.num_channels):
+            self.channel_data[i] = np.full(self.max_points, np.nan)  # Initialize with NaN
+            line, = self.axes.plot(self.time_data, self.channel_data[i], 
+                                 color='black', linewidth=1.0, label=self.channel_labels[i])
+            self.channel_lines[i] = line
+        
+        # Add sweep line
+        self.sweep_line = self.axes.axvline(x=0, color='green', linestyle='--', linewidth=1, alpha=0.7)
+        
+        self.fig.tight_layout()
+        
+    def update_data(self, new_data):
+        """Update plot with new data point - optimized sweep mode"""
+        if not self.mutex.tryLock():
+            return  # Skip this update if locked
+        
+        try:
+            # Frame skipping for performance
+            self.update_counter += 1
+            should_draw = (self.update_counter % self.skip_frames == 0)
+            
+            # Update sweep position
+            current_time = self.time_data[self.sweep_position]
+            
+            # Update data at current position
+            for i, value in enumerate(new_data):
+                if i < self.num_channels:
+                    offset_value = value + i * self.channel_offset
+                    self.channel_data[i][self.sweep_position] = offset_value
+            
+            # Only update line data if we're going to draw
+            if should_draw:
+                for i in range(self.num_channels):
+                    self.channel_lines[i].set_data(self.time_data, self.channel_data[i])
+                
+                # Update sweep line position
+                self.sweep_line.set_xdata([current_time, current_time])
+            
+            # Clear a small region ahead of the sweep line
+            clear_width = 200  # Adjusted for longer time scale
+            for i in range(clear_width):
+                clear_pos = (self.sweep_position + i + 1) % self.max_points
+                for j in range(self.num_channels):
+                    self.channel_data[j][clear_pos] = np.nan
+            
+            # Move to next position
+            self.sweep_position = (self.sweep_position + 1) % self.max_points
+            self.data_index += 1
+            
+            # Only redraw when needed
+            if should_draw:
+                self.draw_idle()
+        finally:
+            self.mutex.unlock()
 
 
 class DisplayWidget(QWidget):
     """Main display widget - handles interaction logic"""
     
-    # Signal for status updates
     statusMessage = pyqtSignal(str)
     
-    def __init__(self):
+    def __init__(self, sensor_type=SensorTypes.FNIRS):
         super().__init__()
-        self.ui = Ui_DisplayWidget()
+        self.sensor_type = sensor_type
+        self.ui = Ui_DisplayWidget(sensor_type)
         self.ui.setupUi(self)
-        self.channels = ['S1-D1','S1-D2','S2-D1','S2-D2', 'S3-D1','S3-D3','S3-D4']
+        
+        # CRITICAL: Set the main layout to the widget
+        self.setLayout(self.ui.mainLayout)
+        
         # Initialize signal processor
-        self.signal_processor = create_signal_processor(sample_rate=100, num_channels=8)
+        active_signals = SensorTypes.get_active_signals(sensor_type)
+        num_channels = self._get_total_channels(active_signals)
+        self.signal_processor = create_signal_processor(sample_rate=100, num_channels=num_channels)
         
         # Initialize components
-        self.data_generator = DataGenerator()
+        self.data_generator = DataGenerator(sensor_type)
         self.recorded_data = []
         self.is_recording = False
-        self.current_filter = "No Filter"
-        self.online_filtering_enabled = False
-        
-        # Data buffer for storing generated data
-        self.data_buffer = []
-        self.plot_timer = QTimer()
-        self.plot_timer.timeout.connect(self.update_plot_from_buffer)
         
         # Setup plot canvas
         self.setup_plot_canvas()
-        
-        # Setup additional UI components
-        self.setup_additional_ui()
         
         # Connect signals
         self.connect_signals()
@@ -236,305 +337,264 @@ class DisplayWidget(QWidget):
         # Initialize UI state
         self.initialize_ui_state()
         
+    def _get_total_channels(self, active_signals):
+        """Calculate total number of channels"""
+        count = 0
+        if 'eeg' in active_signals:
+            count += 8
+        if 'semg' in active_signals:
+            count += 4
+        if 'fnirs' in active_signals:
+            count += 14
+        return count
+        
     def setup_plot_canvas(self):
-        """Initialize the plotting canvas"""
-        self.plot_canvas = PlotCanvas(self.ui.plotWidget,self.channels,  width=12, height=6)
+        """Initialize the plotting canvas based on sensor type"""
+        active_signals = SensorTypes.get_active_signals(self.sensor_type)
+        
+        if 'fnirs' in active_signals:
+            channels = ['S1-D1', 'S1-D2', 'S2-D1', 'S2-D2', 'S3-D1', 'S3-D3', 'S3-D4']
+            self.plot_canvas = FNIRSPlotCanvas(self.ui.plotWidget, channels, width=12, height=6)
+        elif 'eeg' in active_signals:
+            channels = [f"Ch{i+1}" for i in range(8)]
+            self.plot_canvas = EEGPlotCanvas(self.ui.plotWidget, channels, width=12, height=6)
+        else:
+            # Default fallback
+            channels = [f"Ch{i+1}" for i in range(4)]
+            self.plot_canvas = EEGPlotCanvas(self.ui.plotWidget, channels, width=12, height=6)
+        
         layout = QVBoxLayout(self.ui.plotWidget)
         layout.addWidget(self.plot_canvas)
         
         # Connect data generator
         self.data_generator.dataReady.connect(self.on_new_data)
         
-    def setup_additional_ui(self):
-        """Setup additional UI components for online/offline filtering"""
-        # Create a horizontal layout for filtering mode selection
-        filter_mode_layout = QHBoxLayout()
-        
-        # Online filtering checkbox
-        self.online_filter_checkbox = QCheckBox("Enable Online Filtering (实时滤波)")
-        self.online_filter_checkbox.setToolTip("Apply filtering in real-time to incoming data")
-        self.online_filter_checkbox.stateChanged.connect(self.toggle_online_filtering)
-        
-        # Processing mode combo
-        self.processing_mode_label = QLabel("Processing Mode (处理模式):")
-        self.processing_mode_combo = QComboBox()
-        self.processing_mode_combo.addItems([
-            "Real-time Only (仅实时)",
-            "Offline Only (仅离线)", 
-            "Both (实时+离线)"
-        ])
-        self.processing_mode_combo.currentTextChanged.connect(self.on_processing_mode_changed)
-        
-        filter_mode_layout.addWidget(self.online_filter_checkbox)
-        filter_mode_layout.addWidget(self.processing_mode_label)
-        filter_mode_layout.addWidget(self.processing_mode_combo)
-        filter_mode_layout.addStretch()
-        
-        # Add to main layout (assuming there's a main layout in ui_display)
-        if hasattr(self.ui, 'mainLayout'):
-            self.ui.mainLayout.insertLayout(0, filter_mode_layout)
-        
     def connect_signals(self):
         """Connect UI signals to their respective slots"""
-        # Control buttons
         self.ui.startButton.clicked.connect(self.start_acquisition)
         self.ui.stopButton.clicked.connect(self.stop_acquisition)
         self.ui.resetButton.clicked.connect(self.reset_system)
         self.ui.recordButton.clicked.connect(self.toggle_recording)
         self.ui.saveButton.clicked.connect(self.save_data)
+        self.ui.applyButton.clicked.connect(self.apply_filter_settings)
         
-        # Filter controls
-        self.ui.filterTypeCombo.currentTextChanged.connect(self.on_filter_changed)
-        self.ui.sgApplyButton.clicked.connect(self.apply_sg_filter)
-        self.ui.butterworthApplyButton.clicked.connect(self.apply_butterworth_filter)
+        # Connect checkbox changes
+        for signal_key, checkbox in self.ui.filter_checkboxes.items():
+            checkbox.toggled.connect(lambda checked, sk=signal_key: self.on_filter_enabled_changed(sk, checked))
         
     def initialize_ui_state(self):
         """Set initial UI state"""
         self.ui.set_control_states(
             start_enabled=True,
             stop_enabled=False,
-            reset_enabled=True,
-            record_enabled=True,
-            save_enabled=True
+            reset_enabled=False,
+            record_enabled=False,
+            save_enabled=False
         )
-        
-        # Set default filter visibility
-        self.on_filter_changed(self.ui.filterTypeCombo.currentText())
         
     def emit_status_message(self, message):
         """Emit status message"""
         self.statusMessage.emit(message)
         
-    def toggle_online_filtering(self, state):
-        """Toggle online filtering on/off"""
-        self.online_filtering_enabled = state == Qt.Checked
-        
-        if self.online_filtering_enabled:
-            self.setup_online_filters()
-            self.emit_status_message("Online filtering enabled")
-        else:
-            self.signal_processor.reset_online_filters()
-            self.emit_status_message("Online filtering disabled")
-    
-    def on_processing_mode_changed(self, mode):
-        """Handle processing mode change"""
-        mode_messages = {
-            "Real-time Only (仅实时)": "Real-time processing mode - filters applied during acquisition",
-            "Offline Only (仅离线)": "Offline processing mode - filters applied to recorded data",
-            "Both (实时+离线)": "Hybrid mode - real-time preview with offline analysis capability"
-        }
-        self.emit_status_message(mode_messages.get(mode, "Processing mode changed"))
-    
-    def setup_online_filters(self):
-        """Setup online filters for all channels based on current settings"""
-        if not self.online_filtering_enabled:
-            return
+    def on_filter_enabled_changed(self, signal_key, enabled):
+        """Handle filter enable/disable - with QMutex protection"""
+        # Lock the plot canvas during filter changes
+        if hasattr(self, 'plot_canvas') and hasattr(self.plot_canvas, 'mutex'):
+            locker = QMutexLocker(self.plot_canvas.mutex)
             
-        filter_type = self.current_filter
+            if enabled:
+                self.setup_online_filter(signal_key)
+                self.emit_status_message(f"{signal_key.upper()} filter enabled")
+            else:
+                self.clear_online_filter(signal_key)
+                self.emit_status_message(f"{signal_key.upper()} filter disabled")
+        else:
+            if enabled:
+                self.setup_online_filter(signal_key)
+                self.emit_status_message(f"{signal_key.upper()} filter enabled")
+            else:
+                self.clear_online_filter(signal_key)
+                self.emit_status_message(f"{signal_key.upper()} filter disabled")
+    
+    def apply_filter_settings(self):
+        """Apply current filter settings to all enabled filters - with QMutex protection"""
+        active_filters = self.ui.get_active_filter_params()
         
-        if "S-G" in filter_type:
-            params = {
-                'window_length': self.ui.windowSpinBox.value(),
-                'polyorder': self.ui.polyOrderSpinBox.value()
-            }
-            for ch in range(8):
-                self.signal_processor.setup_online_filter(ch, 'sg', **params)
-                
-        elif "Butterworth" in filter_type:
-            try:
-                params = {
-                    'low_cutoff': float(self.ui.lowCutoffEdit.text()),
-                    'high_cutoff': float(self.ui.highCutoffEdit.text()),
-                    'order': self.ui.orderSpinBox.value(),
-                    'filter_type': 'bandpass'
-                }
-                for ch in range(8):
-                    self.signal_processor.setup_online_filter(ch, 'butterworth', **params)
-            except ValueError:
-                self.emit_status_message("Invalid Butterworth filter parameters")
-                return
-                
-        elif "Smooth" in filter_type:
-            params = {'window_size': 5}  # Default window size
-            for ch in range(8):
-                self.signal_processor.setup_online_filter(ch, 'smooth', **params)
+        if not active_filters:
+            QMessageBox.information(self, "No Filters", "No filters are currently enabled.")
+            return
         
-        self.emit_status_message(f"Online filters setup for {filter_type}")
+        # Lock the plot canvas during filter configuration
+        if hasattr(self, 'plot_canvas') and hasattr(self.plot_canvas, 'mutex'):
+            locker = QMutexLocker(self.plot_canvas.mutex)
+            
+            for signal_key, filter_config in active_filters.items():
+                self.setup_online_filter(signal_key)
+            
+            filter_list = ", ".join([f"{v['signal_label']}" for v in active_filters.values()])
+            self.emit_status_message(f"Filter settings applied: {filter_list}")
+            QMessageBox.information(self, "Filters Applied", 
+                                  f"Real-time filters configured for:\n{filter_list}")
+        else:
+            for signal_key, filter_config in active_filters.items():
+                self.setup_online_filter(signal_key)
+            
+            filter_list = ", ".join([f"{v['signal_label']}" for v in active_filters.values()])
+            self.emit_status_message(f"Filter settings applied: {filter_list}")
+            QMessageBox.information(self, "Filters Applied", 
+                                  f"Real-time filters configured for:\n{filter_list}")
+    
+    def setup_online_filter(self, signal_key):
+        """Setup online filter for a specific signal type"""
+        filter_params = self.ui.get_active_filter_params_by_signal(signal_key)
         
-    def on_filter_changed(self, filter_type):
-        """Handle filter type change and show/hide appropriate filter groups"""
-        self.current_filter = filter_type
+        if filter_params is None:
+            return
         
-        # Determine which filter groups to show
-        sg_visible = "S-G" in filter_type
-        butterworth_visible = "Butterworth" in filter_type
+        filter_type = filter_params['filter_type']
+        params = filter_params['params']
         
-        # Update visibility
-        self.ui.set_filter_group_visibility(
-            sg_visible=sg_visible,
-            butterworth_visible=butterworth_visible
-        )
-        
-        # Re-setup online filters if enabled
-        if self.online_filtering_enabled:
-            self.setup_online_filters()
-        
-        # Update status message
-        status_messages = {
-            "S-G Filter (S-G滤波)": "S-G Filter selected - configure window size and polynomial order",
-            "Butterworth Filter (Butterworth滤波)": "Butterworth Filter selected - configure cutoff frequencies and order",
-            "No Filter (不滤波)": "No filtering applied",
-            "Smooth Filter (平滑滤波)": "Smooth Filter selected - using moving average"
+        # Map Chinese filter names to processor types
+        filter_type_map = {
+            '低通滤波': 'lowpass',
+            '高通滤波': 'highpass',
+            '带通滤波': 'bandpass',
+            'S-G滤波': 'sg',
+            '平滑滤波': 'smooth'
         }
         
-        message = status_messages.get(filter_type, "Filter type changed")
-        self.emit_status_message(message)
+        processor_filter_type = filter_type_map.get(filter_type)
+        
+        if processor_filter_type:
+            # Setup filter for appropriate channel range
+            channel_range = self._get_channel_range(signal_key)
+            for ch in channel_range:
+                try:
+                    self.signal_processor.setup_online_filter(ch, processor_filter_type, **params)
+                except Exception as e:
+                    self.emit_status_message(f"Filter setup error: {str(e)}")
+    
+    def clear_online_filter(self, signal_key):
+        """Clear online filter for a specific signal type"""
+        channel_range = self._get_channel_range(signal_key)
+        for ch in channel_range:
+            self.signal_processor.clear_online_filter(ch) # type: ignore
+    
+    def _get_channel_range(self, signal_key):
+        """Get channel index range for a signal type"""
+        active_signals = SensorTypes.get_active_signals(self.sensor_type)
+        
+        start_idx = 0
+        if signal_key == 'eeg' and 'eeg' in active_signals:
+            return range(start_idx, start_idx + 8)
+        
+        if 'eeg' in active_signals:
+            start_idx += 8
+            
+        if signal_key == 'semg' and 'semg' in active_signals:
+            return range(start_idx, start_idx + 4)
+        
+        if 'semg' in active_signals:
+            start_idx += 4
+            
+        if signal_key == 'fnirs' and 'fnirs' in active_signals:
+            return range(start_idx, start_idx + 14)
+        
+        return range(0)
         
     def start_acquisition(self):
         """Start data acquisition"""
         self.data_generator.start_acquisition()
-        self.plot_timer.start(100)  # Update plot every 100ms
-        self.ui.startButton.setEnabled(False)
-        self.ui.stopButton.setEnabled(True)
-        self.ui.statusbar.showMessage("Acquiring data...")
-
+        self.ui.set_control_states(
+            start_enabled=False,
+            stop_enabled=True,
+            reset_enabled=True,
+            record_enabled=True,
+            save_enabled=False
+        )
+        self.emit_status_message("Acquiring data...")
+        
     def stop_acquisition(self):
         """Stop data acquisition"""
         self.data_generator.stop_acquisition()
-        self.plot_timer.stop()
-        self.ui.startButton.setEnabled(True)
-        self.ui.stopButton.setEnabled(False)
-        self.ui.statusbar.showMessage("Data acquisition stopped")
-
+        
+        # Wait for the thread to properly finish
+        if self.data_generator.isRunning():
+            self.data_generator.wait(1000)  # Wait up to 1 second
+        
+        self.ui.set_control_states(
+            start_enabled=True,
+            stop_enabled=False,
+            reset_enabled=False,
+            record_enabled=False,
+            save_enabled=True if self.recorded_data else False
+        )
+        self.emit_status_message("Data acquisition stopped")
+        
     def reset_system(self):
         """Reset the entire system"""
-        self.stop_acquisition()
+        # Stop data generator first
+        if self.data_generator.running:
+            self.data_generator.stop_acquisition()
+            if self.data_generator.isRunning():
+                self.data_generator.wait(1000)
+        
+        # Reset state
         self.is_recording = False
         self.recorded_data.clear()
-        self.data_buffer.clear()
-        self.plot_canvas.clear_plot()
+        
+        # Clear plot with mutex protection
+        if hasattr(self, 'plot_canvas'):
+            self.plot_canvas.clear_plot()
+        
+        # Reset filters
         self.signal_processor.reset_online_filters()
-        self.ui.recordButton.setText("Record (记录)")
+        
+        # Update UI
+        self.ui.recordButton.setText("记录")
+        self.ui.set_control_states(
+            start_enabled=True,
+            stop_enabled=False,
+            reset_enabled=False,
+            record_enabled=False,
+            save_enabled=False
+        )
         self.emit_status_message("System reset")
         
     def toggle_recording(self):
         """Toggle data recording"""
         self.is_recording = not self.is_recording
         if self.is_recording:
-            self.ui.recordButton.setText("Stop Recording")
+            self.ui.recordButton.setText("停止记录")
             self.emit_status_message("Recording data...")
         else:
-            self.ui.recordButton.setText("Record (记录)")
+            self.ui.recordButton.setText("记录")
             self.emit_status_message(f"Recording stopped. {len(self.recorded_data)} samples recorded")
     
     def on_new_data(self, data):
-        """Handle new data from generator"""
-        # Apply signal type conversion
-        processed_data = self.apply_signal_conversion(data.copy())
-        
-        # Apply online filtering if enabled
-        if self.online_filtering_enabled:
+        """Handle new data from generator - with error handling"""
+        try:
+            # Apply real-time filtering
+            processed_data = data.copy()
             for ch in range(len(processed_data)):
                 processed_data[ch] = self.signal_processor.process_sample_online(ch, processed_data[ch])
-        
-        # Record raw data (before filtering) for offline processing
-        if self.is_recording:
-            self.recorded_data.append(data.copy())
-        
-        # Store data in buffer instead of updating plot directly
-        self.data_buffer.append(data.copy())
-    
-    def update_plot_from_buffer(self):
-        """Update plot with data from buffer (called every 100ms)"""
-        if not self.data_buffer:
-            return
-        
-        # Process all data points in buffer
-        for data in self.data_buffer:
-            self.plot_canvas.update_data(data)
-        
-        # Clear buffer after processing
-        self.data_buffer.clear()
-    def apply_sg_filter(self):
-        """Apply S-G filter configuration and update online filters if needed"""
-        window_length = self.ui.windowSpinBox.value()
-        poly_order = self.ui.polyOrderSpinBox.value()
-        
-        if window_length % 2 == 0:
-            window_length += 1
-            self.ui.windowSpinBox.setValue(window_length)
-        
-        if window_length <= poly_order:
-            QMessageBox.warning(self, "Warning", 
-                              f"Window length ({window_length}) must be larger than polynomial order ({poly_order})")
-            return
-        
-        # Update online filters if enabled
-        if self.online_filtering_enabled and "S-G" in self.current_filter:
-            self.setup_online_filters()
-        
-        self.emit_status_message("S-G filter parameters updated")
-        QMessageBox.information(self, "Filter Updated", 
-                              f"S-G filter configured: window={window_length}, poly_order={poly_order}")
-    
-    def apply_butterworth_filter(self):
-        """Apply Butterworth filter configuration and update online filters if needed"""
-        try:
-            low_cutoff = float(self.ui.lowCutoffEdit.text())
-            high_cutoff = float(self.ui.highCutoffEdit.text())
-            order = self.ui.orderSpinBox.value()
             
-            if low_cutoff <= 0 or high_cutoff <= 0:
-                QMessageBox.warning(self, "Warning", "Cutoff frequencies must be positive values.")
-                return
-                
-            if low_cutoff >= high_cutoff:
-                QMessageBox.warning(self, "Warning", "Low cutoff must be less than high cutoff frequency.")
-                return
+            # Record data if recording is enabled
+            if self.is_recording:
+                self.recorded_data.append(processed_data.copy())
             
-            nyquist = self.signal_processor.sample_rate / 2
-            if high_cutoff >= nyquist:
-                QMessageBox.warning(self, "Warning", 
-                                  f"High cutoff ({high_cutoff} Hz) must be less than Nyquist frequency ({nyquist} Hz)")
-                return
-            
-            # Update online filters if enabled
-            if self.online_filtering_enabled and "Butterworth" in self.current_filter:
-                self.setup_online_filters()
-                
-            self.emit_status_message("Butterworth filter parameters updated")
-            QMessageBox.information(self, "Filter Updated", 
-                                  f"Butterworth filter configured: {low_cutoff}-{high_cutoff} Hz, Order {order}")
-            
-        except ValueError:
-            QMessageBox.warning(self, "Warning", "Please enter valid numeric values for cutoff frequencies.")
-    
-    def on_offset_changed(self, value):
-        """Handle channel offset change"""
-        self.plot_canvas.set_channel_offset(value)
-    
-    def clear_plot(self):
-        """Clear the plot"""
-        self.plot_canvas.clear_plot()
-        self.emit_status_message("Plot cleared")
+            # Update plot (will skip if mutex is locked)
+            if hasattr(self, 'plot_canvas'):
+                self.plot_canvas.update_data(processed_data)
+        except Exception as e:
+            print(f"Error in on_new_data: {e}")
+            # Don't crash the application on data processing errors
     
     def save_data(self):
-        """Save recorded data to file with option to apply offline filtering"""
+        """Save recorded data to file"""
         if not self.recorded_data:
             QMessageBox.warning(self, "Warning", "No data to save.")
             return
-        
-        # Ask user if they want to apply offline filtering
-        processing_mode = self.processing_mode_combo.currentText()
-        apply_filtering = False
-        
-        if "Offline" in processing_mode and self.current_filter != "No Filter (不滤波)":
-            reply = QMessageBox.question(self, "Offline Filtering", 
-                                       "Apply current filter settings to data before saving?",
-                                       QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel)
-            if reply == QMessageBox.Cancel:
-                return
-            apply_filtering = reply == QMessageBox.Yes
         
         filename, _ = QFileDialog.getSaveFileName(
             self, "Save Data", 
@@ -544,13 +604,7 @@ class DisplayWidget(QWidget):
         
         if filename:
             try:
-                # Get data to save
-                if apply_filtering:
-                    data_to_save = self.apply_offline_filtering()
-                    if data_to_save is None:
-                        return
-                else:
-                    data_to_save = np.array(self.recorded_data)
+                data_to_save = np.array(self.recorded_data)
                 
                 if filename.endswith('.json'):
                     save_dict = {
@@ -558,12 +612,11 @@ class DisplayWidget(QWidget):
                         'metadata': {
                             'timestamp': datetime.now().isoformat(),
                             'sample_rate': self.signal_processor.sample_rate,
+                            'sensor_type': self.sensor_type,
                             'num_channels': data_to_save.shape[1] if data_to_save.ndim > 1 else 1,
-                            'signal_type': self.ui.signalTypeCombo.currentText(),
-                            'filter_type': self.current_filter,
+                            'signal_type': self.ui.get_signal_type(),
                             'num_samples': len(data_to_save),
-                            'filtered': apply_filtering,
-                            'processing_mode': processing_mode
+                            'active_filters': self.ui.get_active_filter_params()
                         }
                     }
                     with open(filename, 'w') as f:
@@ -571,124 +624,49 @@ class DisplayWidget(QWidget):
                 else:
                     if data_to_save.ndim == 1:
                         data_to_save = data_to_save.reshape(-1, 1)
-                    df = pd.DataFrame(data_to_save, columns=[f'Channel_{i+1}' for i in range(data_to_save.shape[1])])
+                    df = pd.DataFrame(data_to_save, 
+                                    columns=[f'Channel_{i+1}' for i in range(data_to_save.shape[1])])
                     df['Time'] = np.arange(len(df)) / self.signal_processor.sample_rate
                     df.to_csv(filename, index=False)
                 
-                filter_status = " (filtered)" if apply_filtering else " (raw)"
-                QMessageBox.information(self, "Success", f"Data saved to {filename}{filter_status}")
-                self.emit_status_message(f"Data saved: {len(data_to_save)} samples{filter_status}")
+                QMessageBox.information(self, "Success", f"Data saved to {filename}")
+                self.emit_status_message(f"Data saved: {len(data_to_save)} samples")
                 
             except Exception as e:
                 QMessageBox.critical(self, "Error", f"Failed to save data: {str(e)}")
     
-    def load_data(self, filename):
-        """Load data from file"""
-        try:
-            if filename.endswith('.json'):
-                with open(filename, 'r') as f:
-                    data_dict = json.load(f)
-                self.recorded_data = data_dict['data']
-                if 'metadata' in data_dict:
-                    metadata = data_dict['metadata']
-                    filter_info = f"\nFiltered: {metadata.get('filtered', 'unknown')}" if 'filtered' in metadata else ""
-                    QMessageBox.information(self, "File Info", 
-                                          f"Loaded {metadata.get('num_samples', 'unknown')} samples\n"
-                                          f"Signal type: {metadata.get('signal_type', 'unknown')}\n"
-                                          f"Filter: {metadata.get('filter_type', 'unknown')}{filter_info}")
-            else:
-                df = pd.read_csv(filename)
-                data_cols = [col for col in df.columns if 'Channel' in col or col.startswith('Ch')]
-                if data_cols:
-                    self.recorded_data = df[data_cols].values.tolist()
-                else:
-                    data_cols = [col for col in df.columns if col != 'Time']
-                    self.recorded_data = df[data_cols].values.tolist()
-            
-            self.emit_status_message(f"Loaded {len(self.recorded_data)} samples from {os.path.basename(filename)}")
-            return True
-            
-        except Exception as e:
-            QMessageBox.critical(self, "Error", f"Failed to load file: {str(e)}")
-            return False
-    
-    def export_plot(self, filename):
-        """Export plot to file"""
-        try:
-            self.plot_canvas.fig.savefig(filename, dpi=300, bbox_inches='tight')
-            return True
-        except Exception as e:
-            QMessageBox.critical(self, "Error", f"Failed to export plot: {str(e)}")
-            return False
-    
-    def get_filter_frequency_response(self):
-        """Get and display filter frequency response"""
-        if self.current_filter == "No Filter (不滤波)":
-            QMessageBox.information(self, "Filter Response", "No filter is currently selected.")
-            return
-            
-        try:
-            if "S-G" in self.current_filter:
-                params = {
-                    'window_length': self.ui.windowSpinBox.value(),
-                    'polyorder': self.ui.polyOrderSpinBox.value()
-                }
-                # S-G filters don't have traditional frequency response
-                QMessageBox.information(self, "Filter Response", 
-                                      "Savitzky-Golay filters don't have traditional frequency response.\n"
-                                      "They preserve signal features while smoothing.")
-                return
-                
-            elif "Butterworth" in self.current_filter:
-                params = {
-                    'low_cutoff': float(self.ui.lowCutoffEdit.text()),
-                    'high_cutoff': float(self.ui.highCutoffEdit.text()),
-                    'order': self.ui.orderSpinBox.value(),
-                    'filter_type': 'bandpass'
-                }
-                freqs, response = self.signal_processor.get_filter_frequency_response('butterworth', **params)
-                
-                # Simple text display of key frequencies
-                passband_start = params['low_cutoff']
-                passband_end = params['high_cutoff']
-                QMessageBox.information(self, "Filter Response", 
-                                      f"Butterworth Bandpass Filter\n"
-                                      f"Passband: {passband_start:.2f} - {passband_end:.2f} Hz\n"
-                                      f"Order: {params['order']}\n"
-                                      f"Sample Rate: {self.signal_processor.sample_rate} Hz")
-                                      
-        except ValueError:
-            QMessageBox.warning(self, "Warning", "Invalid filter parameters.")
-    
     def closeEvent(self, event): # type: ignore
-        """Handle widget close event"""
-        if self.data_generator.running:
-            self.data_generator.stop_acquisition()
-        if self.plot_timer.isActive():
-            self.plot_timer.stop()
-        event.accept()
+        """Handle widget close event - ensure clean shutdown"""
+        try:
+            if hasattr(self, 'data_generator') and self.data_generator.running:
+                self.data_generator.stop_acquisition()
+                if self.data_generator.isRunning():
+                    self.data_generator.wait(2000)  # Wait up to 2 seconds for thread to finish
+            event.accept()
+        except Exception as e:
+            print(f"Error during close: {e}")
+            event.accept()  # Accept anyway to prevent hanging
 
 
 class MainApplication(QMainWindow):
-    """Main application window that contains the DisplayWidget"""
+    """Main application window"""
     
-    def __init__(self):
+    def __init__(self, sensor_type=SensorTypes.FNIRS):
         super().__init__()
         self.setWindowTitle("Signal Processing and Data Visualization")
         self.setMinimumSize(1000, 700)
         self.resize(1200, 850)
         
         # Create central widget
-        self.display_widget = DisplayWidget()
+        self.display_widget = DisplayWidget(sensor_type)
         self.setCentralWidget(self.display_widget)
         
         # Connect status message
         self.display_widget.statusMessage.connect(self.update_status)
         
-        # Setup menu bar and status bar
+        # Setup status bar
         self.setup_status_bar()
         self.setup_shortcuts()
-
         
     def setup_status_bar(self):
         """Setup status bar"""
@@ -705,47 +683,19 @@ class MainApplication(QMainWindow):
     def update_status(self, message):
         """Update status bar message"""
         self.status_bar.showMessage(message)
-        
-    def open_file(self):
-        """Open data file"""
-        filename, _ = QFileDialog.getOpenFileName(
-            self, "Open Data File", "",
-            "CSV Files (*.csv);;JSON Files (*.json)"
-        )
-        if filename:
-            self.display_widget.load_data(filename)
-            
-    def export_plot(self):
-        """Export plot to file"""
-        filename, _ = QFileDialog.getSaveFileName(
-            self, "Export Plot", 
-            f"plot_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png",
-            "PNG Image (*.png);;PDF Document (*.pdf);;SVG Vector (*.svg)"
-        )
-        if filename:
-            if self.display_widget.export_plot(filename):
-                QMessageBox.information(self, "Success", f"Plot exported to {filename}")
-            
-    def show_about(self):
-        """Show about dialog"""
-        QMessageBox.about(self, "About", 
-                         "Signal Processing and Data Visualization\n\n"
-                         "Version 2.0\n\n"
-                         "A real-time signal processing application with "
-                         "online and offline filtering capabilities, "
-                         "multiple filter types, and advanced visualization.\n\n"
-                         "Features:\n"
-                         "• Real-time (online) filtering\n"
-                         "• Batch (offline) filtering\n"
-                         "• Multiple filter types\n"
-                         "• Signal type conversions\n"
-                         "• Multi-channel visualization")
     
     def closeEvent(self, event): # type: ignore
-        """Handle application close event"""
-        if hasattr(self.display_widget, 'data_generator'):
-            self.display_widget.closeEvent(event)
-        event.accept()
+        """Handle application close event - ensure clean shutdown"""
+        try:
+            if hasattr(self.display_widget, 'data_generator'):
+                if self.display_widget.data_generator.running:
+                    self.display_widget.data_generator.stop_acquisition()
+                    if self.display_widget.data_generator.isRunning():
+                        self.display_widget.data_generator.wait(2000)
+            event.accept()
+        except Exception as e:
+            print(f"Error during application close: {e}")
+            event.accept()  # Accept anyway to prevent hanging
 
 
 def main():
@@ -755,12 +705,11 @@ def main():
     app.setApplicationVersion("2.0")
     app.setOrganizationName("Signal Processing Lab")
     
-    # Create and show main window
     try:
-        main_window = MainApplication()
+        # You can change sensor type here: FNIRS, EEG, SEMG, EEG_SEMG_FNIRS, etc.
+        main_window = MainApplication(sensor_type=SensorTypes.FNIRS)
         main_window.show()
         
-        # Start the application event loop
         sys.exit(app.exec_())
         
     except Exception as e:
@@ -768,7 +717,6 @@ def main():
         import traceback
         traceback.print_exc()
         sys.exit(1)
-
 
 if __name__ == "__main__":
     main()
