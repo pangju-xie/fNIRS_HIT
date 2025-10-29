@@ -8,7 +8,7 @@
 #include "udp.h"
 #include "circular_buffer.h"
 
-#define RX_BUF_SIZE 1024
+// #define RX_BUF_SIZE 1024
 
 static const char* TAG = "UART";
 static circular_buffer_t uart_rx_buffer;
@@ -47,7 +47,7 @@ void uart_init(void) {
         .source_clk = UART_SCLK_DEFAULT,
     };
     // We won't use a buffer for sending data.
-    uart_driver_install(UART_NUM, RX_BUF_SIZE * 2, 0, 0, NULL, 0);
+    uart_driver_install(UART_NUM, UART_RX_BUF_SIZE * 2, 0, 0, NULL, 0);
     uart_param_config(UART_NUM, &uart_config);
     uart_set_pin(UART_NUM, TXD_PIN, RXD_PIN, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
 
@@ -83,6 +83,7 @@ static void uart_rx_task(void *arg){
         rx_bytes = uart_read_bytes(UART_NUM, temp_buf, sizeof(temp_buf), 50 / portTICK_PERIOD_MS);
         
         if (rx_bytes > 0) {
+            
             // 将接收到的数据写入循环缓冲区
             int32_t written = circular_buffer_write_force(&uart_rx_buffer, temp_buf, rx_bytes);
             
@@ -161,6 +162,6 @@ bool uart_rx_reset_buffer(void)
 
 void uart_task(void){
     ESP_LOGE(TAG, "CREATE UART RX");
-    xTaskCreate(uart_rx_task, "uart_rx_task", 4096, NULL, 5, NULL);
+    xTaskCreate(uart_rx_task, "uart_rx_task", 6144, NULL, 5, NULL);
 }
 

@@ -107,8 +107,13 @@ static void spi_slave_task(void *arg) {
         esp_err_t ret = spi_slave_transmit(HSPI_HOST, &t, portMAX_DELAY);
         if(ret == ESP_OK){
             int32_t rx_bytes = t.trans_len/8;
+            ESP_LOGI(TAG, "Received %d bytes from STM32", rx_bytes);
+            for(int i=0;i<rx_bytes;i++){
+                printf( "0x%02X ", rx_buffer[i]);
+            }
+            printf("\r\n");
             // 将接收到的数据写入循环缓冲区
-            int32_t written = circular_buffer_write_force(&spi_rx_buffer, temp_buf, rx_bytes);
+            int32_t written = circular_buffer_write_force(&spi_rx_buffer, rx_buffer, rx_bytes);
             
             if (written < 0) {
                 ESP_LOGE(TAG, "Failed to write to circular buffer: %s", 
@@ -143,5 +148,5 @@ static void spi_slave_task(void *arg) {
 
 void spi_task(void){
     ESP_LOGE(TAG, "CREATE SPI SLAVE TASK.");
-    xTaskCreate(spi_slave_task, "spi_slave", 4096, NULL, 4, NULL);
+    xTaskCreate(spi_slave_task, "spi_slave", 8192, NULL, 4, NULL);
 }

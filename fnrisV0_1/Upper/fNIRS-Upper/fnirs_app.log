@@ -3919,3 +3919,16 @@
 2025-09-11 10:47:07,930 - INFO - Application closed successfully
 2025-09-11 10:47:07,965 - INFO - Application about to quit
 2025-09-11 10:47:07,991 - ERROR - Error during network shutdown: wrapped C/C++ object of type QTimer has been deleted
+2025-10-29 09:30:46,225 - INFO - UDP socket bound to 192.168.1.101:1227
+2025-10-29 09:30:46,234 - INFO - Network initialized - Local: 192.168.1.101:1227, Broadcast: 192.168.1.255:2227
+2025-10-29 09:30:46,234 - INFO - Network component initialized
+2025-10-29 09:30:46,235 - INFO - Signals connected successfully
+2025-10-29 09:30:46,235 - INFO - fNIRS Main Window initialized
+2025-10-29 09:30:49,233 - INFO - Closing application...
+2025-10-29 09:30:49,233 - INFO - Disconnecting network...
+2025-10-29 09:30:49,233 - INFO - Cancelled 0 pending commands
+2025-10-29 09:30:49,235 - INFO - Network components closed successfully
+2025-10-29 09:30:49,235 - INFO - Data save operation completed
+2025-10-29 09:30:49,235 - INFO - Application closed successfully
+2025-10-29 09:30:49,277 - INFO - Application about to quit
+2025-10-29 09:30:49,321 - ERROR - Error during network shutdown: wrapped C/C++ object of type QTimer has been deleted

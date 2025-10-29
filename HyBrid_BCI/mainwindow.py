@@ -571,8 +571,8 @@ class MainWindow(QMainWindow):
             # self.qualifyQuaryUpdate.connect(self.qualify_widget.update_signals)
             self.qualifyQuaryUpdate.connect(lambda d: print(d))
             # 采样按钮
-            self.qualify_widget.ui.startButton.clicked.connect(self.network.sendStartSample)
-            self.qualify_widget.ui.stopButton.clicked.connect(self.network.sendStopSample)
+            self.qualify_widget.ui.startButton.clicked.connect(self.network.sendStartSample) # type: ignore
+            self.qualify_widget.ui.stopButton.clicked.connect(self.network.sendStopSample) # type: ignore
 
             logger.info("测试组件初始化成功")
 

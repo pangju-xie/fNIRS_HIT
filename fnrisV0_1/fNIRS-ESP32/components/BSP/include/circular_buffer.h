@@ -18,7 +18,7 @@ extern "C" {
 #define FRAME_HEADER_1      0xBA    // 帧头第一个字节
 #define FRAME_HEADER_2      0xBA    // 帧头第二个字节
 #define MIN_FRAME_SIZE      11      // 最小帧长度
-#define MAX_FRAME_SIZE      30    // 最大帧长度
+#define MAX_FRAME_SIZE      2000    // 最大帧长度
 /**
  * @brief 默认循环缓冲区大小
  */
@@ -48,6 +48,20 @@ typedef enum {
     CIRC_BUF_ERROR_BUFFER_EMPTY,    /**< 缓冲区为空 */
     CIRC_BUF_ERROR_INVALID_PARAM    /**< 无效参数 */
 } circ_buf_result_t;
+
+/**
+ * @brief 验证并处理完整帧（简化版）
+ * @param cb 循环缓冲区指针
+ * @param frame_start 帧头位置
+ * @return 处理结果状态
+ */
+typedef enum {
+    FRAME_SUCCESS,      // 成功处理完整帧
+    FRAME_INCOMPLETE,   // 帧不完整，需要更多数据
+    FRAME_INVALID,      // 帧无效，需要丢弃部分数据
+    FRAME_ERROR         // 处理错误
+} frame_process_result_t;
+
 
 /**
  * @brief 初始化循环缓冲区（使用动态分配）

@@ -1,7 +1,7 @@
 {
     "version":            "1.2",
     "project_name":       "main",
-    "project_version":    "732ac94-dirty",
+    "project_version":    "8274d12-dirty",
     "project_path":       "E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32",
     "idf_path":           "D:/ProgramData/Espressif/frameworks/esp-idf-v5.3.3",
     "build_dir":          "E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build",

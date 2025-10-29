@@ -56,6 +56,8 @@ class fNIRS_Struct:
 
 class fNIRS:
     def __init__(self, subject_info, Wavelength=[750, 850], DPF=[3.0, 3.0], sample_rate=10):
+        
+        
         self.struct = fNIRS_Struct(Wavelength, DPF)
         
         # fNIRS Montage 配置
