@@ -239,6 +239,8 @@ class UdpPort(QWidget):
             logger.debug(f"Received: cmd=0x{command.name} from {host_ip}")
             
             # Handle command
+            if command != Commands.BATTERY_QUERY:
+                print(packet)
             self._handle_command(command, sensor_id, sensor_type, data, host_ip)
             
         except Exception as e:
@@ -377,7 +379,7 @@ class UdpPort(QWidget):
         if len(self.devices) == 0:
             logger.warning("No devices connected")
             return False
-        if sensor_type & self.devices[0].type != 0:
+        if sensor_type != self.devices[0].type:
             logger.warning(f"Data receive type mismatch, receive type:{sensor_type}, device type:{self.devices[0].type}")
             return False
         elif data:

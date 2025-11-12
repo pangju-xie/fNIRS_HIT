@@ -185,9 +185,8 @@ class fNIRS:
                     if val == 0:
                         val = 1  # 避免log(0)
                     
-                    val = val * 3300 / 0x780000  # 计算电压值, Vref=3.3V
+                    val = val * 3300 / 0x780000  # 计算电压值(mV), Vref=3.3V
                     dataline[0, wl_idx, ch_idx] = val
-            
             self._calculate_fnirs_data(dataline)
             
         except Exception as e:

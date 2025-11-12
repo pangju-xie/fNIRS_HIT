@@ -203,7 +203,6 @@ class QualifyApp(QWidget):
         # Clear existing channels
         self.channels.clear()
         self.clear_channel_widgets()
-        print(node_config)
         
         # Create channel data
         self.brain_locate.load_pairs_info(node_config['enabled_channels'])
