@@ -178,6 +178,8 @@ class QualifyApp(QWidget):
         # Setup UI connections
         self.setup_connections()
         
+        # 不要在初始化时创建布局，等到需要时再创建
+        # self.scroll_layout 将在 create_channel_widgets 中创建
 
     def _add_brain_locator_widget(self):
         """Add brain electrode locator widget"""
@@ -201,6 +203,7 @@ class QualifyApp(QWidget):
         # Clear existing channels
         self.channels.clear()
         self.clear_channel_widgets()
+        print(node_config)
         
         # Create channel data
         self.brain_locate.load_pairs_info(node_config['enabled_channels'])
@@ -212,7 +215,6 @@ class QualifyApp(QWidget):
             detector_channel = value['node_pair'].split('-')[1]
 
             self.channels.append(ChannelData(sensor_id=sensor_id, detector_id=detector_id, sensor_channel=sensor_channel, detector_channel=detector_channel))
-        
         # Create channel widgets
         self.create_channel_widgets()
     
@@ -224,22 +226,36 @@ class QualifyApp(QWidget):
     
     def create_channel_widgets(self):
         """Create and layout channel widgets in the scroll area"""
-        # Create main layout for scroll area content
-        scroll_layout = QVBoxLayout()
-        scroll_layout.setSpacing(2)
-        scroll_layout.setContentsMargins(5, 5, 5, 5)
+        
+        # 完全重新创建布局
+        if hasattr(self, 'scroll_layout'):
+            # 删除旧布局
+            QtWidgets.QWidget().setLayout(self.ui.scrollAreaWidgetContents.layout())
+        
+        # 创建新布局
+        self.scroll_layout = QVBoxLayout()
+        self.scroll_layout.setSpacing(2)
+        self.scroll_layout.setContentsMargins(5, 5, 5, 5)
+        
+        # 清除旧的小部件列表
+        for widget in self.channel_widgets:
+            if widget:
+                widget.setParent(None)
+                widget.deleteLater()
+        self.channel_widgets.clear()
         
         # Create widgets for each channel
-        for channel in self.channels:
+        for i, channel in enumerate(self.channels):
             channel_widget = ChannelWidget(channel, self.assessment_method)
             self.channel_widgets.append(channel_widget)
-            scroll_layout.addWidget(channel_widget)
+            self.scroll_layout.addWidget(channel_widget)
         
         # Add stretch to push widgets to top
-        scroll_layout.addStretch()
+        self.scroll_layout.addStretch()
         
         # Set layout to scroll area content
-        self.ui.scrollAreaWidgetContents.setLayout(scroll_layout)
+        self.ui.scrollAreaWidgetContents.setLayout(self.scroll_layout)
+
     
     def start_assessment(self):
         """Start real-time signal assessment"""
