@@ -239,8 +239,6 @@ class UdpPort(QWidget):
             logger.debug(f"Received: cmd=0x{command.name} from {host_ip}")
             
             # Handle command
-            if command != Commands.BATTERY_QUERY:
-                print(packet)
             self._handle_command(command, sensor_id, sensor_type, data, host_ip)
             
         except Exception as e:

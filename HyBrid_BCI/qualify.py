@@ -34,8 +34,7 @@ class ChannelData:
         self.detector_id = detector_id
         self.detector_channel = detector_channel
 
-        self.signal_750nm = 0.0
-        self.signal_850nm = 0.0
+        self.signal_quality = 0.0
         self.quality_status = "Unknown"
         self.last_update = None
 
@@ -51,13 +50,6 @@ class SignalGenerator:
         return max(0, base_signal + noise)
     
     @staticmethod
-    def calculate_sci(signal_750, signal_850):
-        """Calculate Scalp Coupling Index (SCI) based on signal values"""
-        if signal_750 == 0 or signal_850 == 0:
-            return 0.0
-        return abs(signal_750 - signal_850) / (signal_750 + signal_850)
-    
-    @staticmethod
     def get_quality_status(value, assessment_method):
         """Determine quality status based on signal value and method"""
         if assessment_method == 0:  # Signal strength
@@ -70,11 +62,11 @@ class SignalGenerator:
             else:
                 return "Poor", "#F44336"
         else:  # SCI
-            if value < 0.1:
+            if value > 0.75:
                 return "Excellent", "#4CAF50"
-            elif value < 0.2:
+            elif value > 0.5:
                 return "Good", "#8BC34A"
-            elif value < 0.3:
+            elif value > 0.3:
                 return "Fair", "#FF9800"
             else:
                 return "Poor", "#F44336"
@@ -102,18 +94,11 @@ class ChannelWidget(QWidget):
         layout.addWidget(self.name_label)
         
         # 750nm signal display
-        self.signal_750_edit = QLineEdit()
-        self.signal_750_edit.setFixedWidth(120)
-        self.signal_750_edit.setReadOnly(True)
-        self.signal_750_edit.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-        layout.addWidget(self.signal_750_edit)
-        
-        # 850nm signal display
-        self.signal_850_edit = QLineEdit()
-        self.signal_850_edit.setFixedWidth(120)
-        self.signal_850_edit.setReadOnly(True)
-        self.signal_850_edit.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-        layout.addWidget(self.signal_850_edit)
+        self.signal_quality_edit = QLineEdit()
+        self.signal_quality_edit.setFixedWidth(120)
+        self.signal_quality_edit.setReadOnly(True)
+        self.signal_quality_edit.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(self.signal_quality_edit)
         
         # Quality status display
         self.quality_label = QLabel("Unknown")
@@ -132,23 +117,18 @@ class ChannelWidget(QWidget):
         
         self.setLayout(layout)
     
-    def update_data(self, signal_750, signal_850, assessment_method):
+    def update_data(self, quality, assessment_method):
         """Update the displayed data"""
         self.assessment_method = assessment_method
         
-        # Update signal displays
-        self.signal_750_edit.setText(f"{signal_750:.1f}")
-        self.signal_850_edit.setText(f"{signal_850:.1f}")
-        
         # Calculate and display quality
+        status, color = SignalGenerator.get_quality_status(quality, assessment_method)
         if assessment_method == 0:  # Signal strength
-            avg_signal = (signal_750 + signal_850) / 2
-            status, color = SignalGenerator.get_quality_status(avg_signal, assessment_method)
             self.unit_label.setText("mV")
+            self.signal_quality_edit.setText(f"{quality:.1f}")
         else:  # SCI
-            sci_value = SignalGenerator.calculate_sci(signal_750, signal_850)
-            status, color = SignalGenerator.get_quality_status(sci_value, assessment_method)
             self.unit_label.setText("SCI")
+            self.signal_quality_edit.setText(f"{quality:.3f}")
         
         self.quality_label.setText(status)
         self.quality_label.setStyleSheet(f"border: 1px solid #ddd; padding: 5px; background-color: {color}; color: white; font-weight: bold;")
@@ -290,13 +270,12 @@ class QualifyApp(QWidget):
         
         # Reset channel data
         for channel in self.channels:
-            channel.signal_750nm = 0.0
-            channel.signal_850nm = 0.0
+            channel.signal_quality = 0.0
             channel.quality_status = "Unknown"
         
         # Update display
         for widget in self.channel_widgets:
-            widget.update_data(0.0, 0.0, self.assessment_method)
+            widget.update_data(0.0, self.assessment_method)
         
         self.ui.statusLabel.setText("更新状态：已重置")
         self.ui.statusLabel.setStyleSheet("color: #666;")
@@ -379,18 +358,13 @@ class QualifyApp(QWidget):
 
         self.brain_locate.clear_all_channel_quality()
         
-        for i, channel in enumerate(self.channels):
-            # Generate new signal values
-            signal_750 = SignalGenerator.generate_signal_strength()
-            signal_850 = SignalGenerator.generate_signal_strength()
-            
+        for i, channel in enumerate(self.channels):            
             # Update channel data
-            channel.signal_750nm = signal_750
-            channel.signal_850nm = signal_850
+            channel.signal_quality = data['fnirs'][i]
             
             # Update corresponding widget
             if i < len(self.channel_widgets):
-                status, color = self.channel_widgets[i].update_data(signal_750, signal_850, self.assessment_method)
+                status, color = self.channel_widgets[i].update_data(channel.signal_quality, self.assessment_method)
                 self.brain_locate.add_channel_quality([channel.sensor_channel, channel.detector_channel, color])
         self.brain_locate.paint_channel_quality()
         

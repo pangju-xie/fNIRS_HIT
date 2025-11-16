@@ -568,8 +568,7 @@ class MainWindow(QMainWindow):
             # 查询sensor状态
             if hasattr(self.qualify_widget, 'QualityQuary'):
                 self.qualify_widget.QualityQuary.connect(self.quary_sensor_quality)
-            # self.qualifyQuaryUpdate.connect(self.qualify_widget.update_signals)
-            self.qualifyQuaryUpdate.connect(lambda d: print(d))
+            self.qualifyQuaryUpdate.connect(self.qualify_widget.update_signals)
             # 采样按钮
             self.qualify_widget.ui.startButton.clicked.connect(self.network.sendStartSample) # type: ignore
             self.qualify_widget.ui.stopButton.clicked.connect(self.network.sendStopSample) # type: ignore
