@@ -357,6 +357,7 @@ class ConfigurationManager(QWidget, Ui_ConfigForm):
     
     def apply_channel_config(self):
         """Apply channel configuration"""
+        # 点击设置即执行, 不需要下位机反馈
         logger.info("Apply channel config called")
 
         try:

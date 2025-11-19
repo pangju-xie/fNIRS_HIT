@@ -83,9 +83,9 @@ class StateManager:
         valid_transitions = {
             WorkflowStates.DISCONNECTED: [WorkflowStates.CONNECTED],
             WorkflowStates.CONNECTED: [WorkflowStates.DISCONNECTED, WorkflowStates.CONFIGURED],
-            WorkflowStates.CONFIGURED: [WorkflowStates.DISCONNECTED, WorkflowStates.TESTED],
-            WorkflowStates.TESTED: [WorkflowStates.DISCONNECTED, WorkflowStates.ACQUIRED],
-            WorkflowStates.ACQUIRED: [WorkflowStates.DISCONNECTED, WorkflowStates.ANALYZED],
+            WorkflowStates.CONFIGURED: [WorkflowStates.DISCONNECTED, WorkflowStates.TESTED, WorkflowStates.CONNECTED],
+            WorkflowStates.TESTED: [WorkflowStates.DISCONNECTED, WorkflowStates.ACQUIRED, WorkflowStates.CONNECTED],
+            WorkflowStates.ACQUIRED: [WorkflowStates.DISCONNECTED, WorkflowStates.ANALYZED, WorkflowStates.CONNECTED],
             WorkflowStates.ANALYZED: [WorkflowStates.DISCONNECTED]
         }
         return target_state in valid_transitions.get(self.current_state, [])
@@ -584,7 +584,7 @@ class MainWindow(QMainWindow):
         try:
             if self.network and self.state_manager.current_state >= WorkflowStates.CONNECTED:
                 # 加载测试组件
-                self.state_manager.set_state(WorkflowStates.CONFIGURED)
+                self.state_manager.set_state(WorkflowStates.CONNECTED)  # 点击“设置”时重设为未配置
                 self._initialize_qualify_widget()
                 # 发送至设备
                 self.network.sendSampleRate(sample_data)
@@ -604,7 +604,6 @@ class MainWindow(QMainWindow):
                 if (sensor_name in self.state_manager.sensors and 
                     sensor_name == 'fnirs'):
                     self.state_manager.sensors[sensor_name].setSampleRate(rates)
-            
             self._check_configuration_complete()
     
     def on_channel_config_set_done(self, valid: bool):
@@ -616,7 +615,6 @@ class MainWindow(QMainWindow):
                 if sensor_name == 'fnirs':
                     montage = self.config_widget.get_fnirs_source_detector()
                     self.state_manager.sensors[sensor_name].setMontage(montage)
-            
             self._check_configuration_complete()
     
     def _check_configuration_complete(self):
@@ -628,7 +626,6 @@ class MainWindow(QMainWindow):
             
             self.config_widget.sample_rate_send_done = False # type: ignore
             self.config_widget.channel_config_send_done = False # type: ignore
-            
             self.state_manager.set_state(WorkflowStates.CONFIGURED)
             self._update_status("配置完成", "#4caf50")
             self.configurationChanged.emit()
