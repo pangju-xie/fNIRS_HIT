@@ -57,10 +57,10 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define POW_CTRL_Pin GPIO_PIN_2
-#define POW_CTRL_GPIO_Port GPIOE
-#define POW_KEY_Pin GPIO_PIN_3
+#define POW_KEY_Pin GPIO_PIN_2
 #define POW_KEY_GPIO_Port GPIOE
+#define POW_CTRL_Pin GPIO_PIN_3
+#define POW_CTRL_GPIO_Port GPIOE
 #define NIRS_START_Pin GPIO_PIN_0
 #define NIRS_START_GPIO_Port GPIOA
 #define NIRS_CS_Pin GPIO_PIN_1
@@ -68,37 +68,22 @@ void Error_Handler(void);
 #define NIRS_DRDY_Pin GPIO_PIN_4
 #define NIRS_DRDY_GPIO_Port GPIOA
 #define NIRS_DRDY_EXTI_IRQn EXTI4_IRQn
-#define LEDB_Pin GPIO_PIN_0
-#define LEDB_GPIO_Port GPIOB
-#define LEDG_Pin GPIO_PIN_1
-#define LEDG_GPIO_Port GPIOB
-#define LEDR_Pin GPIO_PIN_2
-#define LEDR_GPIO_Port GPIOB
-#define NIRS_RESET_Pin GPIO_PIN_11
-#define NIRS_RESET_GPIO_Port GPIOE
-#define NIRES_PWDN_Pin GPIO_PIN_14
-#define NIRES_PWDN_GPIO_Port GPIOE
-#define SDB_Pin GPIO_PIN_15
-#define SDB_GPIO_Port GPIOE
+#define VRPG_Pin GPIO_PIN_2
+#define VRPG_GPIO_Port GPIOB
+#define XLAT_Pin GPIO_PIN_7
+#define XLAT_GPIO_Port GPIOE
+#define BLANK_Pin GPIO_PIN_8
+#define BLANK_GPIO_Port GPIOE
 #define WIFI_CS_Pin GPIO_PIN_12
 #define WIFI_CS_GPIO_Port GPIOB
-#define ADS_CS4_Pin GPIO_PIN_15
-#define ADS_CS4_GPIO_Port GPIOA
-#define ADS_CS3_Pin GPIO_PIN_3
-#define ADS_CS3_GPIO_Port GPIOD
-#define ADS_CS1_Pin GPIO_PIN_4
-#define ADS_CS1_GPIO_Port GPIOD
-#define ADS_CS2_Pin GPIO_PIN_5
-#define ADS_CS2_GPIO_Port GPIOD
-#define ADS_RESET_Pin GPIO_PIN_6
-#define ADS_RESET_GPIO_Port GPIOD
-#define ADS_DRDY_Pin GPIO_PIN_7
-#define ADS_DRDY_GPIO_Port GPIOD
-#define ADS_DRDY_EXTI_IRQn EXTI9_5_IRQn
-#define ADS_START_Pin GPIO_PIN_6
-#define ADS_START_GPIO_Port GPIOB
-#define ADS_PWDN_Pin GPIO_PIN_7
-#define ADS_PWDN_GPIO_Port GPIOB
+#define WIFI_DRDY_Pin GPIO_PIN_10
+#define WIFI_DRDY_GPIO_Port GPIOD
+#define LEDB_Pin GPIO_PIN_11
+#define LEDB_GPIO_Port GPIOD
+#define LEDG_Pin GPIO_PIN_12
+#define LEDG_GPIO_Port GPIOD
+#define LEDR_Pin GPIO_PIN_13
+#define LEDR_GPIO_Port GPIOD
 
 /* USER CODE BEGIN Private defines */
 

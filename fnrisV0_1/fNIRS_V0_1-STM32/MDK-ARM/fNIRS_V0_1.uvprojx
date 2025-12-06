@@ -467,11 +467,6 @@
               </FileOption>
             </File>
             <File>
-              <FileName>i2c.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Core/Src/i2c.c</FilePath>
-            </File>
-            <File>
               <FileName>sdio.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Core/Src/sdio.c</FilePath>
@@ -638,16 +633,6 @@
               <FilePath>../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_exti.c</FilePath>
             </File>
             <File>
-              <FileName>stm32f4xx_hal_i2c.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f4xx_hal_i2c_ex.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c_ex.c</FilePath>
-            </File>
-            <File>
               <FileName>stm32f4xx_ll_sdmmc.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_sdmmc.c</FilePath>
@@ -693,16 +678,6 @@
           <GroupName>Hardware</GroupName>
           <Files>
             <File>
-              <FileName>ads1258.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Hardware\ads1258.c</FilePath>
-            </File>
-            <File>
-              <FileName>IS31FL.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Hardware\IS31FL.c</FilePath>
-            </File>
-            <File>
               <FileName>fNIRS.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Hardware\fNIRS.c</FilePath>
@@ -711,6 +686,16 @@
               <FileName>CSNP32.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Hardware\CSNP32.c</FilePath>
+            </File>
+            <File>
+              <FileName>tlc5940.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\tlc5940.c</FilePath>
+            </File>
+            <File>
+              <FileName>ads1258.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\ads1258.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -763,5 +748,14 @@
     </components>
     <files/>
   </RTE>
+
+  <LayerInfo>
+    <Layers>
+      <Layer>
+        <LayName>fNIRS_V0_1</LayName>
+        <LayPrjMark>1</LayPrjMark>
+      </Layer>
+    </Layers>
+  </LayerInfo>
 
 </Project>

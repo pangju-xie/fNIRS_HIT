@@ -10,6 +10,8 @@
 #include "transmit.h"
 #include "led.h"
 #include <math.h>
+#include "tlc5940.h"
+
 
 
 FNIRS_STRUCT g_fnirs_ctx;
@@ -67,7 +69,7 @@ void fnirs_struct_init(void){
 **************************************************/
 void nirs_init(void){
 	
-	LED_Init();																					//初始化IS31FL芯片
+	tlc5940_init(); 																		//初始化tlc5940芯片
 	ads1258init();																			//初始化ads1258芯片
 	DataFrameInit();																		//初始化指令帧数据结构
 //	fnirs_struct_init();																//初始化fnirs数据结构
@@ -81,20 +83,20 @@ void nirs_init(void){
 **************************************************/
 uint8_t nirs_set_sample_rate(uint8_t spr){
 	uint8_t ret = 0;
+  uint16_t set_value = 1000*32/g_fnirs_ctx.config.source / spr;
 	switch(spr){
 		case 1:
-			__HAL_TIM_SET_AUTORELOAD(&fNIRS_TIM, 1000-1);
 			g_fnirs_ctx.sample_rate = 10;
 			ret = 1;
 			break;
 		case 2:
-			__HAL_TIM_SET_AUTORELOAD(&fNIRS_TIM, 500-1);
 			g_fnirs_ctx.sample_rate = 20;
 			ret = 1;
 			break;
 		default:
 			break;
 	}
+	__HAL_TIM_SET_AUTORELOAD(g_tlc.tlctim, set_value-1);
 	return ret;
 }
 
@@ -148,8 +150,8 @@ uint8_t nirs_start(void){
 	DebugPrintf("_____fnirs start_______\r\n");
 	g_fnirs_ctx.state = START;													//切换fnirs状态
 	g_fnirs_ctx.tim_count = g_fnirs_ctx.config.source*2;//统计定时器触发次数
-	__HAL_TIM_SetCounter(&fNIRS_TIM, 0);								//清0定时器计数器
-	HAL_TIM_Base_Start_IT(&fNIRS_TIM);								
+	__HAL_TIM_SetCounter(g_tlc.tlctim, 0);								//清0定时器计数器
+	HAL_TIM_Base_Start_IT(g_tlc.tlctim);								
   g_fnirs_ctx.databuf.idx = 0;
   g_fnirs_ctx.databuf.SaveAddr = g_fnirs_ctx.databuf.send_buf[g_fnirs_ctx.databuf.idx].chn_data + DATA_PLACE;
 	//g_fnirs_ctx.databuf.buffer.idx = 1;									//先保存在第一缓存数组
@@ -163,9 +165,9 @@ uint8_t nirs_start(void){
 **************************************************/
 uint8_t nirs_stop(void){
 	g_fnirs_ctx.state = STOP;													//切换fnirs状态
-	SetLED_ALL(0);																		//关闭led和光电采样
+	tlcSetGS(0,g_tlc.red_led, 0, 0);																		//关闭led和光电采样
 	stopConversions();
-	HAL_TIM_Base_Stop_IT(&fNIRS_TIM);
+	HAL_TIM_Base_Stop_IT(g_tlc.tlctim);
 	DebugPrintf("_______fnirs stop__________\r\n");
 	return 1;
 }
@@ -235,7 +237,7 @@ void nirs_timer_handle(void){
 	if(d1 == 0){
 		//关闭上一个LED的IR光，并开启该LED的RED光
 		uint8_t idx2 = (s1-1)%g_fnirs_ctx.config.source;
-		SwitchDiffLED(idx2, idx1);
+    tlcSetGS(idx2,g_tlc.red_led, 0, 1);
 		set_ads_channel(&setchn);
 		HAL_Delay(1);
 		if(g_fnirs_ctx.config.open[idx1] == 1){
@@ -249,7 +251,8 @@ void nirs_timer_handle(void){
 	}
 	else{
 		//关闭该LED的RED光，并开启该LED的IR光
-		SwitchSameLED(idx1);
+    tlcSetGS(idx1,g_tlc.red_led, 1, 1);
+		//SwitchSameLED(idx1);
 		Delay_us(100);
 		if(g_fnirs_ctx.config.open[idx1] == 1){
 			ADS1258_START(HIGH);

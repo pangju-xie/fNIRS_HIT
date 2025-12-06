@@ -9,8 +9,6 @@
 #define LEN_ONE_DOT					(3)
 #define LEN_ONE_SOURCE			(LEN_ONE_DOT*2)
 
-#define fNIRS_TIM						htim9
-
 #define FNIRS_PERIOD				1
 
 typedef enum{

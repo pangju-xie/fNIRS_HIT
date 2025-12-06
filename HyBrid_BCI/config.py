@@ -916,7 +916,7 @@ def main():
     logger.info("Starting Device Configuration Manager v2.0.0")
     
     # Default sensor configuration
-    sensor_types = SensorTypes.FNIRS
+    sensor_types =SensorTypes.EEG_FNIRS
     
     try:
         # Create and show main window
