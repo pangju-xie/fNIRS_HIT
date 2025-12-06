@@ -357,6 +357,7 @@ class ConfigurationManager(QWidget, Ui_ConfigForm):
     
     def apply_channel_config(self):
         """Apply channel configuration"""
+        # 点击设置即执行, 不需要下位机反馈
         logger.info("Apply channel config called")
 
         try:
@@ -830,9 +831,9 @@ class ConfigurationManager(QWidget, Ui_ConfigForm):
         source_montage = {}
         detect_montage = {}
         for num, pos in self.config.enabled_channels['fnirssource'].items(): # type: ignore
-            source_montage['S'+num] = pos['position_3d']
+            source_montage['S'+str(num)] = pos['position_3d']
         for num, pos in self.config.enabled_channels['fnirsdetect'].items(): # type: ignore
-            detect_montage['D'+num] = pos['position_3d']
+            detect_montage['D'+str(num)] = pos['position_3d']
         return self.config.channel_counts['fnirs_sources'], self.config.channel_counts['fnirs_detectors'], source_montage, detect_montage, list(self.config.enabled_channels['fnirs'].keys()) # type: ignore
     
     def get_enabled_sensor_types(self) -> List[str]:

@@ -185,9 +185,9 @@ class fNIRS:
                     if val == 0:
                         val = 1  # 避免log(0)
                     
-                    val = val * 3300 / 0x780000  # 计算电压值, Vref=3.3V
+                    val = val * 3300 / 0x780000  # 计算电压值(mV), Vref=3.3V
                     dataline[0, wl_idx, ch_idx] = val
-            
+
             self._calculate_fnirs_data(dataline)
             
         except Exception as e:
@@ -198,28 +198,37 @@ class fNIRS:
             return np.zeros(self.channel_num)
         vol = np.zeros(self.channel_num)
         for ch_idx in range(self.channel_num):
-            vol[ch_idx] = np.mean(self.raw[-10:, :, ch_idx])
-        return vol
+            vol[ch_idx] = np.min(np.mean(self.raw[-10:, :, ch_idx], axis=0))
+        return vol  # todo: 数据为空时返回空ndarray可能报错, 改为直接补0; 若检测过程中断会发送先前数据, 此处需进行检测改发0
 
     def _calculate_sci(self):  # 获取头皮耦合指数
         # 使用最近的40个数据进行计算, 不足40则全返回0
+        # print(f"_calculate_sci raw.shape: {self.raw.shape}")
+        # print(f"_calculate_sci raw: {self.raw}")
+
         if self.raw.shape[0] < 40:
             return np.zeros(self.channel_num)
         sci = np.zeros(self.channel_num)
         t = self.time[-40:]
         for ch_idx in range(self.channel_num):
-            raw_750 = self.raw[-40:, 0, ch_idx].reshape(-1, 1)
-            raw_850 = self.raw[-40:, 1, ch_idx].reshape(-1, 1)
+            raw_750 = self.raw[-40:, 0, ch_idx]
+            raw_850 = self.raw[-40:, 1, ch_idx]
             # 等间距插值
             t_new = np.linspace(t[0], t[-1], 40)
             raw_750 = np.interp(t_new, t, raw_750)
             raw_850 = np.interp(t_new, t, raw_850)
+            # 计算od
+            od_750 = -np.log(raw_750 / np.mean(raw_750))
+            od_850 = -np.log(raw_850 / np.mean(raw_850))
+            # 替换nan为0
+            od_750[np.isnan(od_750)] = 0
+            od_850[np.isnan(od_850)] = 0
             # 0.5~2.5Hz滤波
             fil = signal.butter(4, [0.5, 2.5], 'bandpass', fs=self.sample_rate)
-            raw_750_fil = signal.filtfilt(fil[0], fil[1], raw_750)
-            raw_850_fil = signal.filtfilt(fil[0], fil[1], raw_850)
+            od_750 = signal.filtfilt(fil[0], fil[1], od_750)
+            od_850 = signal.filtfilt(fil[0], fil[1], od_850)
             # 计算SCI
-            sci[ch_idx] = np.corrcoef(raw_750_fil, raw_850_fil)[0, 1]
+            sci[ch_idx] = np.corrcoef(od_750, od_850)[0, 1]
         return sci
         
     def get_quality(self, method_index):

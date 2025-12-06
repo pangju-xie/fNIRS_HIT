@@ -377,7 +377,7 @@ class UdpPort(QWidget):
         if len(self.devices) == 0:
             logger.warning("No devices connected")
             return False
-        if sensor_type & self.devices[0].type != 0:
+        if sensor_type != self.devices[0].type:
             logger.warning(f"Data receive type mismatch, receive type:{sensor_type}, device type:{self.devices[0].type}")
             return False
         elif data:
