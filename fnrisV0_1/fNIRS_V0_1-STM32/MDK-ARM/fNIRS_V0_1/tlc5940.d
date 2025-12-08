@@ -1,5 +1,4 @@
-fnirs_v0_1/stm32f4xx_hal_adc_ex.o: \
-  ..\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_adc_ex.c \
+fnirs_v0_1/tlc5940.o: ..\Hardware\tlc5940.c ..\Core\Inc\main.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal.h \
   ..\Core\Inc\stm32f4xx_hal_conf.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_rcc.h \
@@ -35,4 +34,7 @@ fnirs_v0_1/stm32f4xx_hal_adc_ex.o: \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_spi.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim_ex.h \
-  ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_uart.h
+  ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_uart.h \
+  ..\Core\Inc\spi.h ..\Hardware\tlc5940.h ..\Core\Inc\tim.h \
+  D:\Keil_v5\ARM\ARMCLANG\include\string.h ..\utils\utils.h \
+  D:\Keil_v5\ARM\ARMCLANG\include\stdio.h

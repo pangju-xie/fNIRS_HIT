@@ -27,8 +27,6 @@ fnirs_v0_1/fnirs.o: ..\Hardware\fNIRS.c ..\Hardware\fnirs.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_flash.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_flash_ex.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_flash_ramfunc.h \
-  ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_i2c.h \
-  ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_i2c_ex.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_pwr.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_pwr_ex.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_sd.h \
@@ -45,4 +43,4 @@ fnirs_v0_1/fnirs.o: ..\Hardware\fNIRS.c ..\Hardware\fnirs.h \
   D:\Keil_v5\ARM\ARMCLANG\include\string.h \
   D:\Keil_v5\ARM\ARMCLANG\include\stdlib.h ..\utils\transmit.h \
   ..\Core\Inc\usart.h ..\utils\led.h ..\Core\Inc\gpio.h \
-  D:\Keil_v5\ARM\ARMCLANG\include\math.h
+  D:\Keil_v5\ARM\ARMCLANG\include\math.h ..\Hardware\tlc5940.h

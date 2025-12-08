@@ -37,9 +37,6 @@ uint8_t getRegisterValue(uint8_t address)
 void ads1258init(void)
 {
 	ADS1258_START(LOW);
-	ADS1258_RESET(LOW);
-	Delay_us(125);
-	ADS1258_RESET(HIGH);
 	Delay_us(25);
 	if(ADS1258_ID != readSingleRegister(REG_ADDR_ID)){
 		DebugPrintf("something wrong happened, spi transfer receive error.");
@@ -248,7 +245,6 @@ void sendCommand(uint8_t op_code)
  */
 void startConversions(void)
 {
-	ADS1258_PWDN(HIGH);/* Ensure device is not in PWDN mode */
 	ADS1258_START(HIGH);/* Begin continuous conversions */
 }
 

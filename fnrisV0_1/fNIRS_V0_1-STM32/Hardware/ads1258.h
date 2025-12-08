@@ -43,8 +43,6 @@
 #define ADS1258_SPI 			(hspi1)
 #define ADS1258_CS(x)			(HAL_GPIO_WritePin(NIRS_CS_GPIO_Port, NIRS_CS_Pin, x))	
 #define ADS1258_START(x) 	(HAL_GPIO_WritePin(NIRS_START_GPIO_Port, NIRS_START_Pin, x))
-#define ADS1258_RESET(x) 	(HAL_GPIO_WritePin(NIRS_RESET_GPIO_Port, NIRS_RESET_Pin, x))		
-#define ADS1258_PWDN(x) 	(HAL_GPIO_WritePin(NIRES_PWDN_GPIO_Port, NIRES_PWDN_Pin, x))	
 
 #define ReadNIRS()				(HAL_GPIO_ReadPin(NIRS_DRDY_GPIO_Port, NIRS_DRDY_Pin))
 
