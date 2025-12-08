@@ -101,7 +101,7 @@ circ_buf_result_t circular_buffer_reset(circular_buffer_t *cb);
  * @param len 数据长度
  * @return 实际写入的字节数，负值表示错误
  */
-int32_t circular_buffer_write(circular_buffer_t *cb, const uint8_t *data, uint32_t len);
+int circular_buffer_write(circular_buffer_t *cb, const uint8_t *data, uint32_t len);
 
 /**
  * @brief 向循环缓冲区强制写入数据（覆盖旧数据）
@@ -110,7 +110,7 @@ int32_t circular_buffer_write(circular_buffer_t *cb, const uint8_t *data, uint32
  * @param len 数据长度
  * @return 实际写入的字节数，负值表示错误
  */
-int32_t circular_buffer_write_force(circular_buffer_t *cb, const uint8_t *data, uint32_t len);
+int circular_buffer_write_force(circular_buffer_t *cb, const uint8_t *data, uint32_t len);
 
 /**
  * @brief 从循环缓冲区读取数据
@@ -119,7 +119,7 @@ int32_t circular_buffer_write_force(circular_buffer_t *cb, const uint8_t *data, 
  * @param len 要读取的字节数
  * @return 实际读取的字节数，负值表示错误
  */
-int32_t circular_buffer_read(circular_buffer_t *cb, uint8_t *data, uint32_t len);
+int circular_buffer_read(circular_buffer_t *cb, uint8_t *data, uint32_t len);
 
 /**
  * @brief 从循环缓冲区的指定位置查看字节（不移动读取位置）
@@ -136,7 +136,7 @@ circ_buf_result_t circular_buffer_peek(circular_buffer_t *cb, uint32_t offset, u
  * @param len 要丢弃的字节数
  * @return 实际丢弃的字节数，负值表示错误
  */
-int32_t circular_buffer_discard(circular_buffer_t *cb, uint32_t len);
+int circular_buffer_discard(circular_buffer_t *cb, uint32_t len);
 
 /**
  * @brief 在循环缓冲区中查找指定字节序列
@@ -146,21 +146,21 @@ int32_t circular_buffer_discard(circular_buffer_t *cb, uint32_t len);
  * @param start_offset 开始查找的偏移量
  * @return 找到的位置偏移量，-1表示未找到，负值表示错误
  */
-int32_t circular_buffer_find(circular_buffer_t *cb, const uint8_t *pattern, uint32_t pattern_len, uint32_t start_offset);
+int circular_buffer_find(circular_buffer_t *cb, const uint8_t *pattern, uint32_t pattern_len, uint32_t start_offset);
 
 /**
  * @brief 获取循环缓冲区中可用数据长度
  * @param cb 循环缓冲区指针
  * @return 可用数据长度，负值表示错误
  */
-int32_t circular_buffer_get_data_len(circular_buffer_t *cb);
+int circular_buffer_get_data_len(circular_buffer_t *cb);
 
 /**
  * @brief 获取循环缓冲区剩余空间大小
  * @param cb 循环缓冲区指针
  * @return 剩余空间大小，负值表示错误
  */
-int32_t circular_buffer_get_free_space(circular_buffer_t *cb);
+int circular_buffer_get_free_space(circular_buffer_t *cb);
 
 /**
  * @brief 检查循环缓冲区是否为空

@@ -36,4 +36,5 @@ fnirs_v0_1/key.o: ..\utils\Key.c ..\utils\Key.h ..\Core\Inc\main.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim_ex.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_uart.h \
   ..\utils\utils.h D:\Keil_v5\ARM\ARMCLANG\include\stdio.h \
-  ..\utils\led.h ..\Core\Inc\gpio.h
+  D:\Keil_v5\ARM\ARMCLANG\include\stdarg.h ..\utils\led.h \
+  ..\Core\Inc\gpio.h

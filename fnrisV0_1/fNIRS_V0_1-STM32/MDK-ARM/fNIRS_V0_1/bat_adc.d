@@ -36,4 +36,6 @@ fnirs_v0_1/bat_adc.o: ..\utils\BAT_ADC.c ..\utils\BAT_ADC.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim_ex.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_uart.h \
   D:\Keil_v5\ARM\ARMCLANG\include\stdio.h ..\Core\Inc\adc.h \
-  ..\Core\Inc\usart.h ..\utils\utils.h ..\utils\led.h ..\Core\Inc\gpio.h
+  ..\Core\Inc\usart.h ..\utils\utils.h \
+  D:\Keil_v5\ARM\ARMCLANG\include\stdarg.h ..\utils\led.h \
+  ..\Core\Inc\gpio.h

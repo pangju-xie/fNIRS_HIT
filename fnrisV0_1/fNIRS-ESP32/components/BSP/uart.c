@@ -85,7 +85,7 @@ static void uart_rx_task(void *arg){
         if (rx_bytes > 0) {
             
             // 将接收到的数据写入循环缓冲区
-            int32_t written = circular_buffer_write_force(&uart_rx_buffer, temp_buf, rx_bytes);
+            int written = circular_buffer_write_force(&uart_rx_buffer, temp_buf, rx_bytes);
             
             if (written < 0) {
                 ESP_LOGE(TAG, "Failed to write to circular buffer: %s", 
@@ -104,8 +104,8 @@ static void uart_rx_task(void *arg){
         // 定期检查缓冲区状态（可选的调试信息）
         static uint32_t debug_counter = 0;
         if (++debug_counter % 1000 == 0) {
-            int32_t data_len = circular_buffer_get_data_len(&uart_rx_buffer);
-            int32_t free_space = circular_buffer_get_free_space(&uart_rx_buffer);
+            int data_len = circular_buffer_get_data_len(&uart_rx_buffer);
+            int free_space = circular_buffer_get_free_space(&uart_rx_buffer);
             ESP_LOGD(TAG, "Buffer status: %d bytes used, %d bytes free", data_len, free_space);
         }
         
@@ -130,8 +130,8 @@ bool uart_rx_get_buffer_status(uint32_t *data_len, uint32_t *free_space)
         return false;
     }
     
-    int32_t len = circular_buffer_get_data_len(&uart_rx_buffer);
-    int32_t free = circular_buffer_get_free_space(&uart_rx_buffer);
+    int len = circular_buffer_get_data_len(&uart_rx_buffer);
+    int free = circular_buffer_get_free_space(&uart_rx_buffer);
     
     if (len < 0 || free < 0) {
         return false;

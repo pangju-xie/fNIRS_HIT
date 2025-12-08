@@ -37,7 +37,7 @@ fnirs_v0_1/transmit.o: ..\utils\transmit.c ..\utils\transmit.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim_ex.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_uart.h \
   ..\Core\Inc\spi.h D:\Keil_v5\ARM\ARMCLANG\include\string.h \
-  ..\utils\utils.h ..\utils\BAT_ADC.h ..\Core\Inc\adc.h \
-  ..\Hardware\fnirs.h ..\Hardware\CSNP32.h ..\Core\Inc\sdio.h \
-  ..\utils\led.h ..\Core\Inc\gpio.h \
-  D:\Keil_v5\ARM\ARMCLANG\include\math.h
+  ..\utils\utils.h D:\Keil_v5\ARM\ARMCLANG\include\stdarg.h \
+  ..\utils\BAT_ADC.h ..\Core\Inc\adc.h ..\Hardware\fnirs.h \
+  ..\Hardware\CSNP32.h ..\Core\Inc\sdio.h ..\utils\led.h \
+  ..\Core\Inc\gpio.h D:\Keil_v5\ARM\ARMCLANG\include\math.h
