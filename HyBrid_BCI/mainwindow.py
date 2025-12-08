@@ -16,6 +16,7 @@ import user
 import fNIRS
 from config import ConfigurationManager
 import qualify
+import display
 
 os.environ['NUMEXPR_MAX_THREADS'] = '16'
 
@@ -263,6 +264,7 @@ class MainWindow(QMainWindow):
         # 配置和测试组件将在设备连接后初始化
         self.config_widget = None
         self.qualify_widget = None
+        self.display_widget = None
     
     def _create_user_widget(self):
         """创建用户信息组件"""
@@ -441,8 +443,15 @@ class MainWindow(QMainWindow):
         if self.qualify_widget:
             self.component_manager.remove_component('qualify')
             # 清理布局中的测试组件
-            self.ui.clear_tab_content('test')
+            self.ui.clear_tab_content('qualify')
             self.qualify_widget = None
+
+        # 清理采样组件  
+        if self.display_widget:
+            self.component_manager.remove_component('display')
+            # 清理布局中的采样组件
+            self.ui.clear_tab_content('display')
+            self.display_widget = None
             
         logger.debug("会话组件清理完成")
     
@@ -454,6 +463,8 @@ class MainWindow(QMainWindow):
                 # 断开可能的信号连接
                 if hasattr(self.config_widget, 'OnConfigSet'):
                     self.config_widget.OnConfigSet.disconnect()
+                if hasattr(self.config_widget, 'OnConfigApplied'):
+                    self.config_widget.OnConfigApplied.disconnect()
                 self.config_widget = None
             except Exception as e:
                 logger.warning(f"清理配置组件连接失败: {e}")
@@ -461,7 +472,15 @@ class MainWindow(QMainWindow):
         # 检查测试组件
         if hasattr(self, 'qualify_widget') and self.qualify_widget is not None:
             try:
+                if hasattr(self.qualify_widget, 'QualityQuary'):
+                    self.qualify_widget.QualityQuary.disconnect()
                 self.qualify_widget = None
+            except Exception as e:
+                logger.warning(f"清理测试组件失败: {e}")
+
+        if hasattr(self, 'display_widget') and self.display_widget is not None:
+            try:
+                self.display_widget = None
             except Exception as e:
                 logger.warning(f"清理测试组件失败: {e}")
                 
@@ -579,6 +598,24 @@ class MainWindow(QMainWindow):
             logger.error(f"测试组件初始化失败: {e}")
             self.qualify_widget = None
     
+    def _initialize_display_widget(self):
+        """初始化采样组件"""
+        # 防止重复初始化
+        if self.display_widget is not None:
+            logger.debug("采样组件已存在，跳过重复初始化")
+            return
+            
+        try:
+            self.display_widget = display.DisplayWidget()
+            self.component_manager.add_component('display', self.display_widget, self.ui.acquisitionLayout) # type: ignore
+
+            logger.info("采样组件初始化成功")
+        except Exception as e:
+            logger.error(f"采样组件初始化失败: {e}")
+            self.display_widget = None
+    
+
+
     def on_config_set(self, sample_data, channel_config):
         """处理配置设置"""
         try:
