@@ -16,7 +16,7 @@
 #define ReadKey()								HAL_GPIO_ReadPin(POW_KEY_GPIO_Port, POW_KEY_Pin)
 #define SetKey(x)   						HAL_GPIO_WritePin(POW_CTRL_GPIO_Port, POW_CTRL_Pin, x)
 
-void SetLED(char chr);
+void set_led_color(char chr);
 void SwitchLED(void);
 uint8_t SwitchOn(uint16_t DelayTime);
 uint8_t SwitchOff(uint16_t DelayTime);

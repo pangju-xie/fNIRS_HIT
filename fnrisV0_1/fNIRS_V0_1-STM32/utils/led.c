@@ -7,7 +7,7 @@ static char cur_chr = 'o';
 static char pre_chr = 'o';
 
 
-void SetLED(char chr){
+void set_led_color(char chr){
 	switch(chr){
 		case 'r':
 		case 'R':
@@ -77,13 +77,13 @@ void SetLED(char chr){
 void SwitchLED(void){
 	if(cur_chr!= 'o'){
 		pre_chr = cur_chr;
-		SetLED('o');
+		set_led_color('o');
 	}
 	else{
 		if(pre_chr=='o'){
 			pre_chr = 'w';		//Ä¬ÈÏ°×¹â
 		}
-		SetLED(pre_chr);
+		set_led_color(pre_chr);
 	}
 	
 }
@@ -95,7 +95,7 @@ uint8_t SwitchOn(uint16_t DelayTime){
 			delay++;
 			HAL_Delay(1);
 			if(delay > DelayTime){
-				SetLED('g');
+				set_led_color('g');
 				SetKey(LEDON);
 				return 1;
 			}
@@ -111,7 +111,7 @@ uint8_t SwitchOff(uint16_t DelayTime){
 			delay++;
 			HAL_Delay(1);
 			if(delay > DelayTime){
-				SetLED('o');
+				set_led_color('o');
 				SetKey(LEDOFF);
 				return 1;
 			}
