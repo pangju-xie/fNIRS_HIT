@@ -36,5 +36,4 @@ fnirs_v0_1/led.o: ..\utils\led.c ..\Core\Inc\main.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim_ex.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_uart.h \
   ..\utils\led.h D:\Keil_v5\ARM\ARMCLANG\include\stdio.h \
-  ..\Core\Inc\gpio.h ..\utils\key.h ..\utils\utils.h \
-  D:\Keil_v5\ARM\ARMCLANG\include\stdarg.h
+  ..\Core\Inc\gpio.h ..\utils\key.h ..\utils\utils.h

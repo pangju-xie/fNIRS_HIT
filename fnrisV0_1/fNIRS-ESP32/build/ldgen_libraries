@@ -36,12 +36,12 @@ E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/esp_driver_i2s/libesp_driv
 E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/sdmmc/libsdmmc.a
 E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/esp_driver_sdmmc/libesp_driver_sdmmc.a
 E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/esp_driver_sdspi/libesp_driver_sdspi.a
+E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/esp_driver_sdio/libesp_driver_sdio.a
+E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/esp_driver_dac/libesp_driver_dac.a
 E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/esp_driver_rmt/libesp_driver_rmt.a
-E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/esp_driver_tsens/libesp_driver_tsens.a
 E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/esp_driver_sdm/libesp_driver_sdm.a
 E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/esp_driver_i2c/libesp_driver_i2c.a
 E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/esp_driver_ledc/libesp_driver_ledc.a
-E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/esp_driver_usb_serial_jtag/libesp_driver_usb_serial_jtag.a
 E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/driver/libdriver.a
 E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/esp_phy/libesp_phy.a
 E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/esp_vfs_console/libesp_vfs_console.a
@@ -78,8 +78,6 @@ E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/mqtt/libmqtt.a
 E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/nvs_sec_provider/libnvs_sec_provider.a
 E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/perfmon/libperfmon.a
 E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/spiffs/libspiffs.a
-E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/touch_element/libtouch_element.a
-E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/usb/libusb.a
 E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/wifi_provisioning/libwifi_provisioning.a
 E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/main/libmain.a
 E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/BSP/libBSP.a

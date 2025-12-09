@@ -129,7 +129,7 @@ uint8_t KEY_Scan(void)
 			key_return = LONG_KEY;
 			/*long time click function start*/
 			DebugPrintf("long time click, switch off.\r\n");
-			set_led_color('o');
+			SetLED('o');
 			SetKey(LEDOFF);
 			/*long time click function end*/
 			

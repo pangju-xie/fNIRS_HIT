@@ -3,9 +3,9 @@
 
 #include "driver/gpio.h"
 
-#define LED_R  (GPIO_NUM_9)
-#define LED_G  (GPIO_NUM_46)
-#define LED_B  (GPIO_NUM_3)
+#define LED_R  (GPIO_NUM_21)
+#define LED_G  (GPIO_NUM_22)
+#define LED_B  (GPIO_NUM_19)
 
 #define KEY_PIN             (GPIO_NUM_0)
 

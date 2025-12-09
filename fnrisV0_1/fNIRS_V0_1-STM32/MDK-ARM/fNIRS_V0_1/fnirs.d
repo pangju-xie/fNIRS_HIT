@@ -40,7 +40,6 @@ fnirs_v0_1/fnirs.o: ..\Hardware\fNIRS.c ..\Hardware\fnirs.h \
   D:\Keil_v5\ARM\ARMCLANG\include\assert.h \
   D:\Keil_v5\ARM\ARMCLANG\include\stdbool.h ..\Core\Inc\spi.h \
   ..\Hardware\is31fl.h ..\utils\utils.h \
-  D:\Keil_v5\ARM\ARMCLANG\include\stdarg.h \
   D:\Keil_v5\ARM\ARMCLANG\include\string.h \
   D:\Keil_v5\ARM\ARMCLANG\include\stdlib.h ..\utils\transmit.h \
   ..\Core\Inc\usart.h ..\utils\led.h ..\Core\Inc\gpio.h \

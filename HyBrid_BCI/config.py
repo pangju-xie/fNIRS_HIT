@@ -220,7 +220,6 @@ class ConfigurationManager(QWidget, Ui_ConfigForm):
     """Main configuration management class with enhanced error handling"""
     
     OnConfigSet = pyqtSignal(list, list)
-    
     OnConfigApplied = pyqtSignal(dict)
 
     def __init__(self, sensor_types: Optional[int] = None, parent=None):

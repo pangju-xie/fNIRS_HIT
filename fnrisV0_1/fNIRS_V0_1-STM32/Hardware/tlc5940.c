@@ -48,11 +48,10 @@ void tlc5940_init(void) {
   // 短暂延时确保芯片稳定
   HAL_Delay(10);
   
-  tlcSetGS(0, 0x0fff, 0, 0);
-  HAL_Delay(10);
   // 设置点校正（重要！）
   tlcSetDC(63, 63);  // 设置适当的点校正值，不要用最大值63
   HAL_Delay(10);
+    
   // 最后开启输出
   //SETBLANK(GPIO_OFF);
 }

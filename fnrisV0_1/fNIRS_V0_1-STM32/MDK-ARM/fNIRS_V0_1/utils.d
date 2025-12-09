@@ -36,7 +36,7 @@ fnirs_v0_1/utils.o: ..\utils\utils.c ..\utils\utils.h ..\Core\Inc\main.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim_ex.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_uart.h \
   D:\Keil_v5\ARM\ARMCLANG\include\stdio.h \
-  D:\Keil_v5\ARM\ARMCLANG\include\stdarg.h \
   D:\Keil_v5\ARM\ARMCLANG\include\stdlib.h \
   D:\Keil_v5\ARM\ARMCLANG\include\string.h \
-  D:\Keil_v5\ARM\ARMCLANG\include\time.h ..\Core\Inc\usart.h
+  D:\Keil_v5\ARM\ARMCLANG\include\time.h \
+  D:\Keil_v5\ARM\ARMCLANG\include\stdarg.h ..\Core\Inc\usart.h

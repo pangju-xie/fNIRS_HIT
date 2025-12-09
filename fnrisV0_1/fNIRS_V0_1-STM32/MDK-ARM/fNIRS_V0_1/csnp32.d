@@ -36,5 +36,4 @@ fnirs_v0_1/csnp32.o: ..\Hardware\CSNP32.c ..\Hardware\CSNP32.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim_ex.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_uart.h \
   ..\Core\Inc\sdio.h ..\utils\utils.h \
-  D:\Keil_v5\ARM\ARMCLANG\include\stdio.h \
-  D:\Keil_v5\ARM\ARMCLANG\include\stdarg.h
+  D:\Keil_v5\ARM\ARMCLANG\include\stdio.h

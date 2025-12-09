@@ -8,8 +8,8 @@ extern "C"
 
 #include "stdio.h"
 
-#define TXD_PIN         (GPIO_NUM_13)
-#define RXD_PIN         (GPIO_NUM_14)
+#define TXD_PIN         (GPIO_NUM_26)
+#define RXD_PIN         (GPIO_NUM_27)
 
 #define UART_NUM        UART_NUM_1
 

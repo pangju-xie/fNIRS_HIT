@@ -39,4 +39,4 @@ fnirs_v0_1/ads1258.o: ..\Hardware\ads1258.c ..\Hardware\ads1258.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_uart.h \
   ..\Core\Inc\spi.h D:\Keil_v5\ARM\ARMCLANG\include\string.h \
   ..\utils\utils.h D:\Keil_v5\ARM\ARMCLANG\include\stdio.h \
-  D:\Keil_v5\ARM\ARMCLANG\include\stdarg.h ..\Core\Inc\gpio.h
+  ..\Core\Inc\gpio.h

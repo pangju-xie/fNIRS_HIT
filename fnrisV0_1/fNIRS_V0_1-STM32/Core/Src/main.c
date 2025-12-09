@@ -67,7 +67,7 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-uint8_t g_timer_ready_flag = 0;
+uint8_t tim_ready = 0;
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
@@ -78,7 +78,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			key_state = KEY_Scan();		//按键检测
 			__cnt++;
 			if(key_state==0 && __cnt >1000){			
-				get_battery_status();		//10S检测一次电量
+				BatteryDetect();		//10S检测一次电量
 				//HAL_UART_Transmit(&huart2, txd, 30, 100);
 				__cnt = 0;
 			}
@@ -86,7 +86,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		
 	if(htim == g_tlc.tlctim)
 	{
-		g_timer_ready_flag = 1;
+		tim_ready = 1;
 	}
   if(htim == &htim2){
     SETBLANK(GPIO_ON);
@@ -138,7 +138,7 @@ int main(void)
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
 	SwitchOn(100);
-	detect_battery_status();
+	BatteryDetect();
 	HAL_TIM_Base_Start_IT(&htim6);
 	nirs_init();
 	sdio_init();
@@ -151,30 +151,16 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-
-    /* 检查UART接收是否完成 */
-    if (g_uart_rx_buffer.data_ready_flag) {
-        /* 输出接收到的数据长度信息 */
-        DebugPrintf("UART received %d bytes of data\r\n", g_uart_rx_buffer.write_index);
-        
-        /* 清除接收完成标志，准备接收下一帧数据 */
-        g_uart_rx_buffer.data_ready_flag = 0;
-        
-        /* 设置白色LED指示接收到数据 */
-        set_led_color('w');  /* 白色LED表示数据接收成功但尚未处理或响应 */
-        
-        /* 解码并处理接收到的命令 */
-        decode_received_command(g_uart_rx_buffer.buffer, g_uart_rx_buffer.write_index);
-    }
-
-    /* 检查定时器是否就绪（定时触发事件） */
-    if (g_timer_ready_flag) {
-        /* 清除定时器就绪标志 */
-        g_timer_ready_flag = 0;
-        
-        /* 执行fNIRS定时器处理函数 */
-        nirs_timer_handle();
-    }
+		if(uart_rx.flag){
+			DebugPrintf("receive %d bytes.", uart_rx.index);
+			uart_rx.flag = 0;
+			SetLED('w');			//若接收到串口数据但未返回串口数据，会发白光
+			DecodeCommand(uart_rx.buf, uart_rx.index);
+		}
+		if(tim_ready){
+			tim_ready = 0;
+			nirs_timer_handle();
+		}
 
     /* USER CODE END WHILE */
 
@@ -240,16 +226,10 @@ void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
-  HAL_TIM_Base_Stop_IT(&htim6);
-  HAL_TIM_Base_Stop_IT(&htim2);
-  
-	set_led_color('p');
+  __disable_irq();
+	SetLED('p');
   while (1)
   {
-    SwitchOff(500);
-    if(ReadKey() == 0){
-      __disable_irq();
-    }
   }
   /* USER CODE END Error_Handler_Debug */
 }

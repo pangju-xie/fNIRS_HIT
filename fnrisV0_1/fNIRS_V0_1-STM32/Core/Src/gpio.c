@@ -53,19 +53,13 @@ void MX_GPIO_Init(void)
   __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOE, POW_CTRL_Pin|XLAT_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOE, POW_CTRL_Pin|XLAT_Pin|BLANK_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(NIRS_START_GPIO_Port, NIRS_START_Pin, GPIO_PIN_RESET);
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(NIRS_CS_GPIO_Port, NIRS_CS_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOA, NIRS_START_Pin|NIRS_CS_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(VRPG_GPIO_Port, VRPG_Pin, GPIO_PIN_RESET);
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(BLANK_GPIO_Port, BLANK_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(WIFI_CS_GPIO_Port, WIFI_CS_Pin, GPIO_PIN_SET);

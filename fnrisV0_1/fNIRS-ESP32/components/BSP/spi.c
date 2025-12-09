@@ -55,7 +55,7 @@ void spi_init(void){
     gpio_set_pull_mode(SPI_CLK, GPIO_PULLUP_ONLY);
     gpio_set_pull_mode(SPI_CS, GPIO_PULLUP_ONLY);
 
-    ret=spi_slave_initialize(SPI3_HOST, &buscfg, &slvcfg, SPI_DMA_CH_AUTO);
+    ret=spi_slave_initialize(HSPI_HOST, &buscfg, &slvcfg, SPI_DMA_CH_AUTO);
     assert(ret==ESP_OK);
     ESP_LOGI(TAG, "SPI SLAVE INIT DONE.");
     vTaskDelay(1000/portTICK_PERIOD_MS);
@@ -87,7 +87,7 @@ static bool init_spi_rx_buffer(void)
 static void spi_slave_task(void *arg) {
     spi_slave_transaction_t t;
     memset(&t, 0, sizeof(t));
-    //uint8_t temp_buf[SPI_TEMP_BUF_SIZE];  // 临时接收缓冲区
+    uint8_t temp_buf[SPI_TEMP_BUF_SIZE];  // 临时接收缓冲区
     uint8_t* rx_buffer = (uint8_t*)malloc(1024); //SPI接收数组
     t.length = 1024 * 8; // 1290 bytes
     t.tx_buffer = NULL;
@@ -104,16 +104,16 @@ static void spi_slave_task(void *arg) {
 
     while (1) {
         // Wait for the master to initiate a transfer
-        esp_err_t ret = spi_slave_transmit(SPI3_HOST, &t, portMAX_DELAY);
+        esp_err_t ret = spi_slave_transmit(HSPI_HOST, &t, portMAX_DELAY);
         if(ret == ESP_OK){
-            int rx_bytes = t.trans_len/8;
+            int32_t rx_bytes = t.trans_len/8;
             ESP_LOGI(TAG, "Received %d bytes from STM32", rx_bytes);
             for(int i=0;i<rx_bytes;i++){
                 printf( "0x%02X ", rx_buffer[i]);
             }
             printf("\r\n");
             // 将接收到的数据写入循环缓冲区
-            int written = circular_buffer_write_force(&spi_rx_buffer, rx_buffer, rx_bytes);
+            int32_t written = circular_buffer_write_force(&spi_rx_buffer, rx_buffer, rx_bytes);
             
             if (written < 0) {
                 ESP_LOGE(TAG, "Failed to write to circular buffer: %s", 
@@ -132,8 +132,8 @@ static void spi_slave_task(void *arg) {
         // 定期检查缓冲区状态（可选的调试信息）
         static uint32_t debug_counter = 0;
         if (++debug_counter % 1000 == 0) {
-            int data_len = circular_buffer_get_data_len(&spi_rx_buffer);
-            int free_space = circular_buffer_get_free_space(&spi_rx_buffer);
+            int32_t data_len = circular_buffer_get_data_len(&spi_rx_buffer);
+            int32_t free_space = circular_buffer_get_free_space(&spi_rx_buffer);
             ESP_LOGD(TAG, "Buffer status: %d bytes used, %d bytes free", data_len, free_space);
         }
         

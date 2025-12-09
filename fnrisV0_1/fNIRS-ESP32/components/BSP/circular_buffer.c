@@ -112,7 +112,7 @@ circ_buf_result_t circular_buffer_reset(circular_buffer_t *cb)
     return CIRC_BUF_OK;
 }
 
-int circular_buffer_write(circular_buffer_t *cb, const uint8_t *data, uint32_t len)
+int32_t circular_buffer_write(circular_buffer_t *cb, const uint8_t *data, uint32_t len)
 {
     if (validate_buffer(cb) != CIRC_BUF_OK || data == NULL) {
         return -CIRC_BUF_ERROR_NULL_POINTER;
@@ -140,7 +140,7 @@ int circular_buffer_write(circular_buffer_t *cb, const uint8_t *data, uint32_t l
     return written;
 }
 
-int circular_buffer_write_force(circular_buffer_t *cb, const uint8_t *data, uint32_t len)
+int32_t circular_buffer_write_force(circular_buffer_t *cb, const uint8_t *data, uint32_t len)
 {
     if (validate_buffer(cb) != CIRC_BUF_OK || data == NULL) {
         return -CIRC_BUF_ERROR_NULL_POINTER;
@@ -168,7 +168,7 @@ int circular_buffer_write_force(circular_buffer_t *cb, const uint8_t *data, uint
     return written;
 }
 
-int circular_buffer_read(circular_buffer_t *cb, uint8_t *data, uint32_t len)
+int32_t circular_buffer_read(circular_buffer_t *cb, uint8_t *data, uint32_t len)
 {
     if (validate_buffer(cb) != CIRC_BUF_OK || data == NULL) {
         return -CIRC_BUF_ERROR_NULL_POINTER;
@@ -216,7 +216,7 @@ circ_buf_result_t circular_buffer_peek(circular_buffer_t *cb, uint32_t offset, u
     return CIRC_BUF_OK;
 }
 
-int circular_buffer_discard(circular_buffer_t *cb, uint32_t len)
+int32_t circular_buffer_discard(circular_buffer_t *cb, uint32_t len)
 {
     if (validate_buffer(cb) != CIRC_BUF_OK) {
         return -CIRC_BUF_ERROR_NULL_POINTER;
@@ -237,7 +237,7 @@ int circular_buffer_discard(circular_buffer_t *cb, uint32_t len)
     return len;
 }
 
-int circular_buffer_find(circular_buffer_t *cb, const uint8_t *pattern, uint32_t pattern_len, uint32_t start_offset)
+int32_t circular_buffer_find(circular_buffer_t *cb, const uint8_t *pattern, uint32_t pattern_len, uint32_t start_offset)
 {
     if (validate_buffer(cb) != CIRC_BUF_OK || pattern == NULL) {
         return -CIRC_BUF_ERROR_NULL_POINTER;
@@ -272,7 +272,7 @@ int circular_buffer_find(circular_buffer_t *cb, const uint8_t *pattern, uint32_t
     return -1;  // 未找到
 }
 
-int circular_buffer_get_data_len(circular_buffer_t *cb)
+int32_t circular_buffer_get_data_len(circular_buffer_t *cb)
 {
     if (validate_buffer(cb) != CIRC_BUF_OK) {
         return -CIRC_BUF_ERROR_NULL_POINTER;
@@ -281,7 +281,7 @@ int circular_buffer_get_data_len(circular_buffer_t *cb)
     return cb->data_len;
 }
 
-int circular_buffer_get_free_space(circular_buffer_t *cb)
+int32_t circular_buffer_get_free_space(circular_buffer_t *cb)
 {
     if (validate_buffer(cb) != CIRC_BUF_OK) {
         return -CIRC_BUF_ERROR_NULL_POINTER;
@@ -334,9 +334,9 @@ const char* circular_buffer_get_error_string(circ_buf_result_t result)
  * @param cb 循环缓冲区指针
  * @return 帧头位置偏移量，-1表示未找到
  */
-static int find_frame_header(circular_buffer_t *cb)
+static int32_t find_frame_header(circular_buffer_t *cb)
 {
-    int data_len = circular_buffer_get_data_len(cb);
+    int32_t data_len = circular_buffer_get_data_len(cb);
     if (data_len < 2) {
         return -1;
     }
@@ -368,10 +368,10 @@ static bool peek_byte_at_offset(circular_buffer_t *cb, uint32_t offset, uint8_t 
  */
 static frame_process_result_t  process_frame(circular_buffer_t *cb, uint32_t frame_start)
 {
-    int available_data = circular_buffer_get_data_len(cb);
+    int32_t available_data = circular_buffer_get_data_len(cb);
     
     // 检查是否有足够的数据来读取长度字段
-    if (available_data < (int)(frame_start + 11)) {
+    if (available_data < (int32_t)(frame_start + 11)) {
         ESP_LOGI(TAG, "No enough data. ");
         return FRAME_INCOMPLETE;  // 数据不够，等待更多数据
     }
@@ -387,27 +387,27 @@ static frame_process_result_t  process_frame(circular_buffer_t *cb, uint32_t fra
     uint16_t data_len = (len_high << 8) | len_low;
     
     // 计算完整帧长度
-    int total_frame_len = MIN_FRAME_SIZE + data_len;
+    uint32_t total_frame_len = MIN_FRAME_SIZE + data_len;
     
      // 验证帧长度合理性
     if (total_frame_len > MAX_FRAME_SIZE || data_len > MAX_FRAME_SIZE - 11) {
-        ESP_LOGE(TAG, "Frame too large: total=%d, data=%d", total_frame_len, data_len);
+        ESP_LOGE(TAG, "Frame too large: total=%ld, data=%d", total_frame_len, data_len);
         // 丢弃损坏的帧头，继续处理
         // circular_buffer_discard(cb, 1);
         return FRAME_INVALID;
     }
     
     // 检查是否接收到完整帧
-    if (available_data < (int)(frame_start + total_frame_len)) {
+    if (available_data < (int32_t)(frame_start + total_frame_len)) {
         ESP_LOGI(TAG, "data frame incomplete.");
         return FRAME_INCOMPLETE;  // 帧不完整，等待更多数据
     }
     
     // 先丢弃帧头之前的无效数据（但不要丢弃太多）
     if (frame_start > 0) {
-        int discarded = circular_buffer_discard(cb, frame_start);
+        int32_t discarded = circular_buffer_discard(cb, frame_start);
         if (discarded > 0) {
-            ESP_LOGW(TAG, "Discarded %d invalid bytes", discarded);
+            ESP_LOGW(TAG, "Discarded %ld invalid bytes", discarded);
         }
         // 更新frame_start，因为丢弃数据后位置变了
         frame_start = 0;
@@ -416,10 +416,10 @@ static frame_process_result_t  process_frame(circular_buffer_t *cb, uint32_t fra
     
     // 读取完整帧
     uint8_t frame_buf[MAX_FRAME_SIZE];
-    int read_len = circular_buffer_read(cb, frame_buf, total_frame_len);
+    int32_t read_len = circular_buffer_read(cb, frame_buf, total_frame_len);
     
-    if (read_len != total_frame_len) {
-        ESP_LOGE(TAG, "Frame read error: expected %d, got %d", total_frame_len, read_len);
+    if (read_len != (int32_t)total_frame_len) {
+        ESP_LOGE(TAG, "Frame read error: expected %ld, got %ld", total_frame_len, read_len);
         return FRAME_ERROR;
     }
     
@@ -432,7 +432,7 @@ static frame_process_result_t  process_frame(circular_buffer_t *cb, uint32_t fra
     // 验证长度字段
     uint16_t expected_data_len = (frame_buf[7] << 8) | frame_buf[8];
     if (expected_data_len != data_len) {
-        ESP_LOGE(TAG, "Frame length mismatch: expected %d, got %d", data_len, expected_data_len);
+        ESP_LOGE(TAG, "Frame length mismatch: expected %d, got %d", (int)data_len, (int)expected_data_len);
         return FRAME_ERROR;
     }
     
@@ -459,22 +459,22 @@ static frame_process_result_t  process_frame(circular_buffer_t *cb, uint32_t fra
  */
 void process_all_frames(circular_buffer_t *cb)
 {
-    int max_iterations = 20; // 防止无限循环
+    int32_t max_iterations = 20; // 防止无限循环
     
     while (max_iterations-- > 0 && !circular_buffer_is_empty(cb)) {
         // 查找帧头
-        int header_pos = find_frame_header(cb);
+        int32_t header_pos = find_frame_header(cb);
         
         if (header_pos == -1) {
             ESP_LOGE(TAG, "No frame header found in buffer");
             // 没有找到帧头，检查缓冲区是否需要清理
-            int data_len = circular_buffer_get_data_len(cb);
-            int free_space = circular_buffer_get_free_space(cb);
+            int32_t data_len = circular_buffer_get_data_len(cb);
+            int32_t free_space = circular_buffer_get_free_space(cb);
             
-            if (free_space < (int)(cb->buffer_size * 0.1) && data_len > MAX_FRAME_SIZE) {
+            if (free_space < (int32_t)(cb->buffer_size * 0.1) && data_len > MAX_FRAME_SIZE) {
                 uint32_t discard_len = data_len - MAX_FRAME_SIZE;
                 circular_buffer_discard(cb, discard_len);
-                ESP_LOGW(TAG, "Buffer cleanup: discarded %d bytes", (int)discard_len);
+                ESP_LOGW(TAG, "Buffer cleanup: discarded %ld bytes", discard_len);
             }
             break;
         }

@@ -34,11 +34,11 @@ endif()
 
 # Set path to fallback-tool for dependency-resolution.
 if(NOT DEFINED CMAKE_OBJDUMP)
-  set(CMAKE_OBJDUMP "D:/ProgramData/Espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/xtensa-esp32s3-elf-objdump.exe")
+  set(CMAKE_OBJDUMP "D:/ProgramData/Espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/xtensa-esp32-elf-objdump.exe")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/esp_system/port/soc/esp32s3/cmake_install.cmake")
+  include("E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/esp_system/port/soc/esp32/cmake_install.cmake")
 endif()
 
