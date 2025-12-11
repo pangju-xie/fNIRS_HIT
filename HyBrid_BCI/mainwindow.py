@@ -584,6 +584,9 @@ class MainWindow(QMainWindow):
                 self.config_widget.OnConfigApplied.connect(
                     self.qualify_widget.initialize_channels
                 )
+            self.qualify_widget.QualifyFinished.connect(lambda: self._initialize_display_widget())
+            self.qualify_widget.QualifyFinished.connect(lambda: self.state_manager.set_state(WorkflowStates.TESTED))
+            self.network.onDeviceSample.connect(self.qualify_widget.start_stop_handler)
             # 查询sensor状态
             if hasattr(self.qualify_widget, 'QualityQuary'):
                 self.qualify_widget.QualityQuary.connect(self.quary_sensor_quality)
@@ -859,8 +862,8 @@ class MainWindow(QMainWindow):
                 'analysis': lambda: self._progress_to_state(WorkflowStates.ANALYZED, "数据分析完成")
             }
             
-            if tab_name in progression_actions:
-                QTimer.singleShot(1500, progression_actions[tab_name])
+            # if tab_name in progression_actions:
+            #     QTimer.singleShot(1500, progression_actions[tab_name])
                 
         except Exception as e:
             logger.error(f"工作流进展处理失败: {e}")

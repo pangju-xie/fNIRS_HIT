@@ -136,7 +136,8 @@ class ChannelWidget(QWidget):
 class QualifyApp(QWidget):
     """Main application class for fNIRS channel quality assessment"""
 
-    QualityQuary = pyqtSignal(int)  # 后续加入其他传感器可能改为传dict
+    QualityQuary = pyqtSignal(int)  # 向mainwindow请求查询, 后续加入其他传感器可能改为传dict
+    QualifyFinished = pyqtSignal()  # 信号检测完成
     
     def __init__(self):
         super().__init__()
@@ -172,8 +173,8 @@ class QualifyApp(QWidget):
     
     def setup_connections(self):
         """Setup signal-slot connections"""
-        self.ui.startButton.clicked.connect(self.start_assessment)
-        self.ui.stopButton.clicked.connect(self.stop_assessment)
+        # self.ui.startButton.clicked.connect(self.start_assessment)
+        # self.ui.stopButton.clicked.connect(self.stop_assessment)
         self.ui.resetButton.clicked.connect(self.reset_channels)
         self.ui.completeButton.clicked.connect(self.complete_assessment)
         self.ui.methodComboBox.currentIndexChanged.connect(self.change_assessment_method)
@@ -235,7 +236,12 @@ class QualifyApp(QWidget):
         # Set layout to scroll area content
         self.ui.scrollAreaWidgetContents.setLayout(self.scroll_layout)
 
-    
+    def start_stop_handler(self, isStart: bool):
+        if isStart:
+            self.start_assessment()
+        else:
+            self.stop_assessment()
+
     def start_assessment(self):
         """Start real-time signal assessment"""
         if not self.is_running:
@@ -261,6 +267,7 @@ class QualifyApp(QWidget):
             
             # Stop timer
             self.update_timer.stop()
+            self.QualifyFinished.emit()  # 停止采集视为测试完成
             
             print("fNIRS channel quality assessment stopped")
     
