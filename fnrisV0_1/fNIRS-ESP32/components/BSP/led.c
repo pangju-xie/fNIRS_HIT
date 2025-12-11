@@ -14,7 +14,7 @@ static char* TAG = "LED";
 static char cur_chr = 'o';
 static char pre_chr = 'o';
 
-static xQueueHandle gpio_evt_queue = NULL;					//按键中断序列
+static QueueHandle_t gpio_evt_queue = NULL;					//按键中断序列
 
 static void IRAM_ATTR key_handler(void* arg){
     uint32_t gpio_num = (uint32_t) arg;

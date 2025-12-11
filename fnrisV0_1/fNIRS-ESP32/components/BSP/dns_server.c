@@ -152,5 +152,5 @@ static void my_dns_server(void *pvParameters)
 
 void dns_server_start(void)
 {
-    xTaskCreate(&my_dns_server, "dns_task", 2048, NULL, 5, NULL);
+    xTaskCreate(&my_dns_server, "dns_task", 4096, NULL, 5, NULL);
 }
