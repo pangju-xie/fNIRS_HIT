@@ -17,6 +17,7 @@ import fNIRS
 from config import ConfigurationManager
 import qualify
 import display
+from devicedata import DeviceData
 
 os.environ['NUMEXPR_MAX_THREADS'] = '16'
 
@@ -159,6 +160,7 @@ class MainWindow(QMainWindow):
         self.state_manager = StateManager()
         self.component_manager = ComponentManager(self)
         self.timers = {}  # 简化的定时器管理
+        self.deviceData = DeviceData()  # 设备数据管理
         
         # 设置UI
         self.ui = Ui_MainWindow()
@@ -463,8 +465,6 @@ class MainWindow(QMainWindow):
                 # 断开可能的信号连接
                 if hasattr(self.config_widget, 'OnConfigSet'):
                     self.config_widget.OnConfigSet.disconnect()
-                if hasattr(self.config_widget, 'OnConfigApplied'):
-                    self.config_widget.OnConfigApplied.disconnect()
                 self.config_widget = None
             except Exception as e:
                 logger.warning(f"清理配置组件连接失败: {e}")
@@ -556,7 +556,7 @@ class MainWindow(QMainWindow):
             return
             
         try:
-            self.config_widget = ConfigurationManager(sensor_types)
+            self.config_widget = ConfigurationManager(sensor_types, self.deviceData)
             self.component_manager.add_component('config', self.config_widget, self.ui.configLayout) # type: ignore
             
             if self.config_widget:
@@ -576,17 +576,17 @@ class MainWindow(QMainWindow):
             return
             
         try:
-            self.qualify_widget = qualify.QualifyApp()
+            self.qualify_widget = qualify.QualifyApp(self.deviceData)
             self.component_manager.add_component('qualify', self.qualify_widget, self.ui.testLayout) # type: ignore
 
             # config向qualify传递通道配置
             if self.qualify_widget and self.config_widget:
-                self.config_widget.OnConfigApplied.connect(
+                self.deviceData.nodeConfigChanged.connect(
                     self.qualify_widget.initialize_channels
                 )
-            self.qualify_widget.QualifyFinished.connect(lambda: self._initialize_display_widget())
             self.qualify_widget.QualifyFinished.connect(lambda: self.state_manager.set_state(WorkflowStates.TESTED))
-            self.network.onDeviceSample.connect(self.qualify_widget.start_stop_handler)
+            self.network.onDeviceSample.connect(lambda b: self.qualify_widget.start_stop_handler if (self.ui.tabWidget.currentIndex() == 2) else None)
+            self.network.onDeviceSample.connect(lambda b: self.state_manager.sensors['fnirs'].CleanData() if (self.ui.tabWidget.currentIndex() == 2 and b and 'fnirs' in self.state_manager.sensors) else None)  # 清除fnirs数据
             # 查询sensor状态
             if hasattr(self.qualify_widget, 'QualityQuary'):
                 self.qualify_widget.QualityQuary.connect(self.quary_sensor_quality)
@@ -607,10 +607,16 @@ class MainWindow(QMainWindow):
         if self.display_widget is not None:
             logger.debug("采样组件已存在，跳过重复初始化")
             return
-            
         try:
-            self.display_widget = display.DisplayWidget()
+            self.display_widget = display.DisplayWidget(self.deviceData)
             self.component_manager.add_component('display', self.display_widget, self.ui.acquisitionLayout) # type: ignore
+
+            self.network.onDeviceSample.connect(lambda b: self.qualify_widget.start_stop_handler if (self.ui.tabWidget.currentIndex() == 3) else None)
+            self.network.onDeviceSample.connect(lambda b: self.state_manager.sensors['fnirs'].CleanData() if (self.ui.tabWidget.currentIndex() == 3 and b and 'fnirs' in self.state_manager.sensors) else None)  # 清除fnirs数据
+
+            # 采样按钮
+            self.display_widget.ui.startButton.clicked.connect(self.network.sendStartSample) # type: ignore
+            self.display_widget.ui.stopButton.clicked.connect(self.network.sendStopSample) # type: ignore
 
             logger.info("采样组件初始化成功")
         except Exception as e:
@@ -672,6 +678,7 @@ class MainWindow(QMainWindow):
             
             # 初始化测试组件
             self._initialize_qualify_widget()
+            self._initialize_display_widget()
             
             logger.info("配置步骤完成")
     

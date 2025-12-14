@@ -25,7 +25,7 @@ from datetime import datetime
 
 from ui_display import Ui_DisplayWidget, SensorTypes
 from signal_processor import SignalProcessor, create_signal_processor
-
+from devicedata import DeviceData
 
 class DataGenerator(QThread):
     """Simulates real-time data acquisition"""
@@ -309,7 +309,7 @@ class DisplayWidget(QWidget):
     
     statusMessage = pyqtSignal(str)
     
-    def __init__(self, sensor_type=SensorTypes.FNIRS):
+    def __init__(self, sensor_type=SensorTypes.FNIRS, deviceData=None):
         super().__init__()
         self.sensor_type = sensor_type
         self.ui = Ui_DisplayWidget(sensor_type)
@@ -317,6 +317,11 @@ class DisplayWidget(QWidget):
         
         # CRITICAL: Set the main layout to the widget
         self.setLayout(self.ui.mainLayout)
+
+        if deviceData is None:
+            self.deviceData = DeviceData()
+        else:
+            self.deviceData = deviceData
         
         # Initialize signal processor
         active_signals = SensorTypes.get_active_signals(sensor_type)

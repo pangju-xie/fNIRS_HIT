@@ -154,6 +154,11 @@ class fNIRS:
         self.raw = np.array([]).reshape(0, len(self.struct.Wavelength), self.channel_num)
         self.OD = np.array([]).reshape(0, len(self.struct.Wavelength), self.channel_num)
         self.hemoglobin = np.array([]).reshape(0, 2, self.channel_num)  # 2 for Hb and HbO2
+
+    def CleanData(self):
+        self.raw = np.array([]).reshape(0, len(self.struct.Wavelength), self.channel_num)
+        self.OD = np.array([]).reshape(0, len(self.struct.Wavelength), self.channel_num)
+        self.hemoglobin = np.array([]).reshape(0, 2, self.channel_num)
         
     def updateData(self, packet_id, data):
         """更新传感器数据

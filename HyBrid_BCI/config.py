@@ -20,6 +20,7 @@ from PyQt5.QtCore import Qt, pyqtSignal
 import numpy as np
 from ui_config import Ui_ConfigForm, UIManager
 import locate
+from devicedata import DeviceData as DeviceData
 
 # Configure comprehensive logging
 import logging
@@ -219,10 +220,9 @@ def get_default_config_path(filename: str = "device_config.json") -> str:
 class ConfigurationManager(QWidget, Ui_ConfigForm):
     """Main configuration management class with enhanced error handling"""
     
-    OnConfigSet = pyqtSignal(list, list)
-    OnConfigApplied = pyqtSignal(dict)
+    OnConfigSet = pyqtSignal(list, list)  # 完成配置, 传递向下位机发送的采样率与通道, 如[4, 1, 1, 2], [4, 8, ...]
 
-    def __init__(self, sensor_types: Optional[int] = None, parent=None):
+    def __init__(self, sensor_types: Optional[int] = None, deviceData: DeviceData=None, parent=None):
         super().__init__(parent)
         
         logger.info("Initializing ConfigurationManager")
@@ -230,6 +230,10 @@ class ConfigurationManager(QWidget, Ui_ConfigForm):
         self.sensor_types = sensor_types
         self.sample_rate_send_done = False
         self.channel_config_send_done = False
+        if deviceData is None:
+            self.deviceData = DeviceData()
+        else:
+            self.deviceData = deviceData
         
         # Process sensor types
         if sensor_types is None:
@@ -364,7 +368,7 @@ class ConfigurationManager(QWidget, Ui_ConfigForm):
             config_order = self._generate_config_order()
             
             self.OnConfigSet.emit(sample_rate_order,config_order)
-            self.OnConfigApplied.emit(self.get_sensor_summary())
+            self.deviceData.node_config = self.get_sensor_summary()
             
         except Exception as e:
             logger.error(f"Failed to apply sampling rates: {e}")

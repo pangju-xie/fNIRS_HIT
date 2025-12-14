@@ -22,6 +22,7 @@ from PyQt5.QtGui import QFont, QColor
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLineEdit, QLabel
 from ui_qualify import Ui_Form
 import locate
+from devicedata import DeviceData
 
 
 class ChannelData:
@@ -139,7 +140,7 @@ class QualifyApp(QWidget):
     QualityQuary = pyqtSignal(int)  # 向mainwindow请求查询, 后续加入其他传感器可能改为传dict
     QualifyFinished = pyqtSignal()  # 信号检测完成
     
-    def __init__(self):
+    def __init__(self, deviceData: DeviceData=None):
         super().__init__()
         self.ui = Ui_Form()
         self.ui.setupUi(self)
@@ -149,6 +150,11 @@ class QualifyApp(QWidget):
         self.channel_widgets = []
         self.is_running = False
         self.assessment_method = 0
+
+        if deviceData is None:
+            self.deviceData = DeviceData()
+        else:
+            self.deviceData = deviceData
         
         # Setup timer for 1-second updates
         self.update_timer = QTimer()
@@ -173,21 +179,24 @@ class QualifyApp(QWidget):
     
     def setup_connections(self):
         """Setup signal-slot connections"""
-        # self.ui.startButton.clicked.connect(self.start_assessment)
-        # self.ui.stopButton.clicked.connect(self.stop_assessment)
+        #  todo: 当前启停回包经常丢失, 临时解注释
+        self.ui.startButton.clicked.connect(self.start_assessment)
+        self.ui.stopButton.clicked.connect(self.stop_assessment)
+
         self.ui.resetButton.clicked.connect(self.reset_channels)
         self.ui.completeButton.clicked.connect(self.complete_assessment)
         self.ui.methodComboBox.currentIndexChanged.connect(self.change_assessment_method)
     
-    def initialize_channels(self, node_config):
+    def initialize_channels(self):
         """Initialize channel data and widgets"""
         # Clear existing channels
         self.channels.clear()
         self.clear_channel_widgets()
         
-        # Create channel data
-        self.brain_locate.load_pairs_info(node_config['enabled_channels'])
-        for key, value in node_config['enabled_channels']['fnirs'].items():
+        # 构建通道显示界面
+        # todo: 这里可以后续进行精简
+        self.brain_locate.load_pairs_info(self.deviceData.node_config['enabled_channels'])
+        for key, value in self.deviceData.node_config['enabled_channels']['fnirs'].items():
             # "S1-D1": "FC1-C1"
             sensor_id = key.split('-')[0].strip('S')
             detector_id = key.split('-')[1].strip('D')
