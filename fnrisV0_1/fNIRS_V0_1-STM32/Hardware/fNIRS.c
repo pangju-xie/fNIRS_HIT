@@ -30,7 +30,7 @@
  * @note 用于统计多次采样的平均值
  */
 typedef struct {
-    int      sample_count;           /**< 采样次数计数器 */
+    uint32_t sample_count;           /**< 采样次数计数器 */
     uint32_t sample_buffer[ADS_SAMPLES_PER_LED];  /**< 原始采样值缓冲区 */
     uint32_t sample_sum;             /**< 采样值累加和 */
     uint32_t average_value;          /**< 平均采样值 */
@@ -43,6 +43,7 @@ typedef struct {
 FNIRS_STRUCT g_fnirs_ctx = {0};      /**< fNIRS全局上下文 */
 ADC_SAMPLE_DATA g_adc_sample = {0};  /**< ADC采样数据 */
 
+uint8_t g_fnirs_ready_flag = 0;      /*  fnirs单周期采样完成*/
 /******************************************************************************
  * 静态函数声明
  ******************************************************************************/
@@ -87,9 +88,13 @@ void nirs_data_collect(uint16_t GPIO_Pin)
             uint32_t adc_value = ((uint32_t)temp_buffer[0] << 16) |
                                  ((uint32_t)temp_buffer[1] << 8)  |
                                  (uint32_t)temp_buffer[2];
+            adc_value = adc_value & 0x00ffffff;
             
             g_adc_sample.sample_sum += adc_value;
             g_adc_sample.sample_count++;
+            if(g_adc_sample.sample_count>10){
+              ADS1258_START(LOW);
+            }
         }
         __HAL_GPIO_EXTI_CLEAR_IT(NIRS_DRDY_Pin);
     }
@@ -167,6 +172,7 @@ void nirs_init(void)
     ads1258init();           /* 初始化ADC */
     init_data_frame_module();         /* 初始化数据帧结构 */
     fnirs_struct_init();     /* 初始化fNIRS数据结构 */
+    sdio_init();              /* 初始化CSNP32 sd卡 */
     
     DebugPrintf("fNIRS  init done\r\n");
 }
@@ -200,9 +206,9 @@ uint8_t nirs_set_sample_rate(uint8_t sample_rate_hz)
     
     if (ret) {
         /* 计算并设置定时器重载值 */
-        uint16_t period_value = (1000 * 32) / g_fnirs_ctx.config.source_count / g_fnirs_ctx.sample_rate;
-        __HAL_TIM_SET_AUTORELOAD(g_tlc.tlctim, period_value - 1);
-        //DebugPrintf("采样率设置为: %d Hz, 定时器周期: %d\r\n", g_fnirs_ctx.sample_rate, period_value);
+        uint16_t period_value = (40000) / (g_fnirs_ctx.config.source_count * 2) / g_fnirs_ctx.sample_rate;
+        __HAL_TIM_SET_PRESCALER(g_tlc.tlctim, period_value - 1);
+        DebugPrintf("set sample rate: %d Hz\r\n", g_fnirs_ctx.sample_rate);
     }
     
     return ret;
@@ -223,9 +229,9 @@ uint8_t nirs_config(uint8_t* config_data, uint8_t data_len)
     g_fnirs_ctx.config.source_count = config_data[0];
     g_fnirs_ctx.config.detector_count = config_data[1];
     
-    if (g_fnirs_ctx.config.source_count > 20 || g_fnirs_ctx.config.detector_count > 16) {
-//        DebugPrintf("配置参数错误: 光源数=%d, 探测器数=%d\r\n", 
-//                   g_fnirs_ctx.config.source_count, g_fnirs_ctx.config.detector_count);
+    if (g_fnirs_ctx.config.source_count > 16 || g_fnirs_ctx.config.detector_count > 16) {
+        DebugPrintf("config para error: s_num=%d, d_num=%d\r\n", 
+                   g_fnirs_ctx.config.source_count, g_fnirs_ctx.config.detector_count);
         return 0;
     }
     
@@ -254,6 +260,7 @@ uint8_t nirs_config(uint8_t* config_data, uint8_t data_len)
             open_count + g_fnirs_ctx.config.detector_cumulative[source_idx];
     }
     
+    HAL_Delay(10);
     /* 更新缓冲区长度 */
     _fnirs_update_buffer_length();
     
@@ -273,9 +280,9 @@ uint8_t nirs_config(uint8_t* config_data, uint8_t data_len)
     /* 更新系统状态 */
     g_fnirs_ctx.state = FNIRS_STATE_READY;
     
-//    DebugPrintf("fNIRS配置完成: 光源=%d, 探测器=%d, 数据长度=%d\r\n", 
-//               g_fnirs_ctx.config.source_count, g_fnirs_ctx.config.detector_count, 
-//               g_fnirs_ctx.data_buffer.send_buffer_len);
+    DebugPrintf("fNIRS config done: s_num=%d, d_num=%d, dlen=%d\r\n", 
+               g_fnirs_ctx.config.source_count, g_fnirs_ctx.config.detector_count, 
+               g_fnirs_ctx.data_buffer.send_buffer_len);
     
     return 1;
 }
@@ -297,16 +304,14 @@ uint8_t nirs_start(void)
     g_fnirs_ctx.timer_count = 0;
     
     /* 重置定时器 */
-    __HAL_TIM_SetCounter(g_tlc.tlctim, 0);
-    HAL_TIM_Base_Start_IT(g_tlc.tlctim);
+    HAL_TIM_PWM_Start(g_tlc.tlctim, TIM_CHANNEL_1);
+    HAL_TIM_IC_Start_IT(g_tlc.tlctim, TIM_CHANNEL_2);
     
     /* 初始化数据缓冲区 */
     g_fnirs_ctx.data_buffer.buffer_idx = 0;
     g_fnirs_ctx.data_buffer.data_save_addr = 
-        g_fnirs_ctx.data_buffer.send_buffer[g_fnirs_ctx.data_buffer.buffer_idx].channel_data + FRAME_DATA_POSITION;
-    
-    /* 清零ADC采样数据 */
-    memset(&g_adc_sample, 0, sizeof(g_adc_sample));
+    g_fnirs_ctx.data_buffer.send_buffer[g_fnirs_ctx.data_buffer.buffer_idx].channel_data + FRAME_DATA_POSITION;
+    g_fnirs_ctx.data_buffer.period_counter = 0;
     
     return 1;
 }
@@ -324,7 +329,11 @@ uint8_t nirs_stop(void)
     
     /* 停止ADC转换和定时器 */
     stopConversions();
-    HAL_TIM_Base_Stop_IT(g_tlc.tlctim);
+    HAL_TIM_PWM_Stop(g_tlc.tlctim, TIM_CHANNEL_1);
+    HAL_TIM_IC_Stop_IT(g_tlc.tlctim, TIM_CHANNEL_2);
+    g_tlc.tlctim_polarity = TIM_INPUTCHANNELPOLARITY_RISING;
+    __HAL_TIM_SetCounter(g_tlc.tlctim, 0);
+    __HAL_TIM_SET_CAPTUREPOLARITY(g_tlc.tlctim, TIM_CHANNEL_2, TIM_ICPOLARITY_RISING);
     
     /* 更新系统状态 */
     g_fnirs_ctx.state = FNIRS_STATE_STOP;
@@ -362,13 +371,13 @@ static void _fnirs_process_adc_samples(uint8_t* save_addr)
 {
     if (g_adc_sample.sample_count > 0) {
         /* 计算平均值 */
-        g_adc_sample.average_value = g_adc_sample.sample_sum / g_adc_sample.sample_count;
+        g_adc_sample.average_value = (uint32_t)(g_adc_sample.sample_sum / g_adc_sample.sample_count);
         
         /* 保存3字节数据 */
         save_addr[0] = (g_adc_sample.average_value >> 16) & 0xFF;
         save_addr[1] = (g_adc_sample.average_value >> 8) & 0xFF;
         save_addr[2] = g_adc_sample.average_value & 0xFF;
-        
+//        DataConvert(10, save_addr);
         /* 重置采样数据 */
         g_adc_sample.sample_sum = 0;
         g_adc_sample.sample_count = 0;
@@ -382,16 +391,11 @@ static void _fnirs_process_adc_samples(uint8_t* save_addr)
  */
 static void _fnirs_handle_red_wavelength(uint8_t led_index, uint16_t detector_config)
 {
-    Delay_us(1);
-    ADS1258_START(LOW);  /* 停止ADC转换 */
-    
     /* 开启红光LED */
     tlcSetGS(led_index, g_tlc.red_led, 1, 1);
-    
     /* 设置ADC通道 */
     set_ads_channel(&detector_config);
-    
-    HAL_Delay(1);  /* 等待稳定 */
+    Delay_us(10);  /* 等待稳定 */
     
     /* 根据开启的探测器数量控制ADC转换 */
     uint8_t open_detectors = g_fnirs_ctx.config.detector_open[led_index];
@@ -407,13 +411,12 @@ static void _fnirs_handle_red_wavelength(uint8_t led_index, uint16_t detector_co
  */
 static void _fnirs_handle_ir_wavelength(uint8_t led_index, uint16_t detector_config)
 {
-    Delay_us(1);
-    ADS1258_START(LOW);  /* 停止ADC转换 */
-    
     /* 关闭红光LED，准备红外光采集 */
     tlcSetGS(led_index, g_tlc.red_led, 0, 1);
-    Delay_us(1);
-    
+    /* 设置ADC通道 */
+    set_ads_channel(&detector_config);
+    Delay_us(10);  /* 等待稳定 */
+  
     /* 根据开启的探测器数量控制ADC转换 */
     uint8_t open_detectors = g_fnirs_ctx.config.detector_open[led_index];
     if (open_detectors >= 1) {
@@ -427,12 +430,15 @@ static void _fnirs_handle_ir_wavelength(uint8_t led_index, uint16_t detector_con
  * @param srcbuf 源数据缓冲区指针
  * @note 处理数据包并发送到SPI和SD卡
  */
-void nirs_data_send(uint8_t* srcbuf)
+void nirs_data_send(void)
 {
     /* 指示灯闪烁 */
     SwitchLED();
     
-    /* 填充数据包编号（大端格式） */
+    /* 获取当前缓冲区配置 */
+    uint8_t* srcbuf = g_fnirs_ctx.data_buffer.send_buffer[g_fnirs_ctx.data_buffer.buffer_idx].channel_data;
+    
+  /* 填充数据包编号（大端格式） */
     uint32_t packet_number_be = ENDIAN_SWAP_32B(g_fnirs_ctx.data_buffer.period_counter);
     memcpy(srcbuf + g_fnirs_ctx.data_buffer.send_buffer_len - 6, 
            &packet_number_be, sizeof(packet_number_be));
@@ -445,6 +451,7 @@ void nirs_data_send(uint8_t* srcbuf)
     
     /* 通过SPI DMA发送数据 */
     spi_transmit_dma(srcbuf, g_fnirs_ctx.data_buffer.send_buffer_len, 1000);
+    DebugPrintf("Send data packet:%d.\r\n", g_fnirs_ctx.data_buffer.period_counter);
     
     /* 写入SD卡 */
     _fnirs_write_sd_card(srcbuf, g_fnirs_ctx.data_buffer.period_counter);
@@ -460,44 +467,56 @@ void nirs_data_send(uint8_t* srcbuf)
 
 /**
  * @brief 定时器中断处理函数
+ * @param flag 光源开关控制
  * @note 在定时器中断中调用，控制采集时序
  */
-void nirs_timer_handle(void)
+void nirs_timer_handle(uint8_t flag)
 {
     /* 检查系统状态 */
     if (g_fnirs_ctx.state != FNIRS_STATE_START) {
         return;
     }
-    
-    /* 计算当前处理的LED和波长类型 */
-    uint8_t half_cycle = g_fnirs_ctx.timer_count / 2;  /* 每个LED有两个波长周期 */
-    uint8_t wavelength_type = g_fnirs_ctx.timer_count % 2;  /* 0=红光, 1=红外光 */
-    uint8_t led_index = half_cycle % g_fnirs_ctx.config.source_count;
-    
-    /* 获取当前缓冲区和探测器配置 */
-    uint8_t* current_buffer = g_fnirs_ctx.data_buffer.send_buffer[g_fnirs_ctx.data_buffer.buffer_idx].channel_data;
-    uint16_t detector_config = g_fnirs_ctx.config.config[led_index];
-    
-    /* 根据波长类型处理 */
-    if (wavelength_type == LED_RED_WAVELENGTH) {
-        _fnirs_handle_red_wavelength(led_index, detector_config);
-    } else {
-        _fnirs_handle_ir_wavelength(led_index, detector_config);
-    }
-    
-    /* 处理之前采集的数据（除了第一个周期） */
-    if (g_fnirs_ctx.timer_count != 0) {
+    /* PWM上升沿，开启led  */
+    if(flag == 1){
+      /* 清零ADC采样数据 */
+      memset(&g_adc_sample, 0, sizeof(g_adc_sample));
+      
+       /* 计算当前处理的LED和波长类型 */
+      uint8_t half_cycle = g_fnirs_ctx.timer_count / 2;  /* 每个LED有两个波长周期 */
+      uint8_t wavelength_type = g_fnirs_ctx.timer_count % 2;  /* 0=红光, 1=红外光 */
+      uint8_t led_index = half_cycle % g_fnirs_ctx.config.source_count;
+      
+      /* 获取当前探测器配置 */
+      uint16_t detector_config = g_fnirs_ctx.config.config[led_index];
+      
+      /* 根据波长类型处理 */
+      if (wavelength_type == LED_RED_WAVELENGTH) {
+          _fnirs_handle_red_wavelength(led_index, detector_config);
+      } else {
+          _fnirs_handle_ir_wavelength(led_index, detector_config);
+      }
+      g_fnirs_ctx.timer_count++;
+      
+    }else if(flag == 2){ /* PWM下降沿，关闭led，并保存数据 */
+      
+      //DebugPrintf("close led and stop adc\r\n");
+      tlcSetGS(0, g_tlc.red_led, 0, 0); /* 关闭所有LED */
+      ADS1258_START(LOW);               /* 停止ADC转换 */
+      
+      /* 处理之前采集的数据（除了第一个周期） */
+      if (g_fnirs_ctx.timer_count != 0) {
         _fnirs_process_adc_samples(g_fnirs_ctx.data_buffer.data_save_addr);
         g_fnirs_ctx.data_buffer.data_save_addr += 3;  /* 移动到下一个数据位置 */
         
-        /* 检查是否完成一轮完整的采集 */
+        /* 检查是否完成一轮完整的采集 */    
         uint8_t total_cycles = g_fnirs_ctx.config.source_count * 2;
         if (g_fnirs_ctx.timer_count % total_cycles == 0) {
-            nirs_data_send(current_buffer);
+          g_fnirs_ready_flag = 1;
+            //nirs_data_send();
         }
+      }
     }
-    
-    g_fnirs_ctx.timer_count++;
+   
 }
 
 /**
@@ -522,7 +541,7 @@ static void _fnirs_write_sd_card(uint8_t* data_buffer, uint32_t period_number)
     if (batch_offset == sd_card->batches_per_block - 1) {
         uint32_t block_address = sd_card->sd_base_address + block_offset * sd_card->blocks_to_write;
         
-        if (!sdio_write(sd_card->tx_buffer[sd_card->buffer_idx].buffer, 
+        if (HAL_OK != sdio_write(sd_card->tx_buffer[sd_card->buffer_idx].buffer, 
                        block_address, sd_card->blocks_to_write)) {
             DebugPrintf("SD card write error\r\n");
         }

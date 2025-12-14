@@ -15,11 +15,13 @@ TLC_TYPEDEF g_tlc;
 void init_tlc_struct(void) {
   g_tlc.tlcspi = &hspi1;
   g_tlc.gsclk = &htim1;
-  g_tlc.tlctim = &htim9;
+  g_tlc.tlctim = &htim4;
   g_tlc.tim_chn = TIM_CHANNEL_1;
   g_tlc.freq = 10;           // 默认频率 10Hz
   g_tlc.red_led = 0x0fff;       // 红光LED电流 120mA
   g_tlc.ir_led  = 0x3f;        // 红外LED电流 60mA
+  g_tlc.tlctim_polarity = TIM_INPUTCHANNELPOLARITY_RISING;  //默认优先上升沿捕获
+  
   
   // 清零所有数据缓冲区
   memset(g_tlc.write_data, 0, MAX_TLC_LEN);
@@ -48,10 +50,10 @@ void tlc5940_init(void) {
   // 短暂延时确保芯片稳定
   HAL_Delay(10);
   
-  tlcSetGS(0, 0x0fff, 0, 0);
+  tlcSetGS(0, g_tlc.red_led, 0, 0);
   HAL_Delay(10);
   // 设置点校正（重要！）
-  tlcSetDC(63, 63);  // 设置适当的点校正值，不要用最大值63
+  tlcSetDC(g_tlc.ir_led, g_tlc.ir_led);  // 设置适当的点校正值，不要用最大值63
   HAL_Delay(10);
   // 最后开启输出
   //SETBLANK(GPIO_OFF);
@@ -65,7 +67,7 @@ void tlc_set_frequency(uint16_t frequency) {
   if (frequency == 0) return; // 防止除零错误
   
   g_tlc.freq = frequency;
-  uint16_t set_value = 36000 / frequency - 1;
+  uint16_t set_value = 40000 / frequency - 1;
   __HAL_TIM_SET_PRESCALER(g_tlc.tlctim, set_value);
 }
 

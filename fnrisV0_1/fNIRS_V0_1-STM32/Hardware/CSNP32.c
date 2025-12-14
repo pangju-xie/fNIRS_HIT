@@ -218,7 +218,7 @@ HAL_StatusTypeDef sdio_write(uint8_t* write_buffer,
         return HAL_ERROR;
     }
     
-    DebugPrintf("SD card writing: Address=%lu, Block Count=%u...\r\n", 
+    DebugPrintf("\r\nSD card writing: Address=%lu, Block Count=%u...\r\n", 
                (unsigned long)block_addr, block_count);
     
     /* Write data using DMA with retry mechanism */

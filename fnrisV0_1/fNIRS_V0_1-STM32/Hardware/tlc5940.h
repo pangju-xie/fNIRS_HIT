@@ -25,18 +25,19 @@ extern "C" {
 
 /* TLC5940 控制结构体 */
 typedef struct {
-  SPI_HandleTypeDef* tlcspi;         // SPI 句柄
-  TIM_HandleTypeDef* gsclk;          // GSCLK 定时器句柄
-  TIM_HandleTypeDef* tlctim;         // TLC 控制定时器句柄
-  uint32_t tim_chn;                  // 定时器通道
-  uint16_t red_led;                   // 红光LED电流设置
-  uint8_t ir_led;                    // 红外LED电流设置
-  uint8_t freq;                      // 刷新频率
-  uint8_t write_data[MAX_TLC_LEN];   // 写入数据缓冲区
-  uint16_t red_gs_ctrl[CHANNEL_NUM]; // 红光灰度控制值
-  uint8_t red_dc_ctrl[CHANNEL_NUM];  // 红光电校正值
-  uint16_t ir_gs_ctrl[CHANNEL_NUM];  // 红外灰度控制值
-  uint8_t ir_dc_ctrl[CHANNEL_NUM];   // 红外点校正值
+  SPI_HandleTypeDef* tlcspi;          // SPI 句柄
+  TIM_HandleTypeDef* gsclk;           // GSCLK 定时器句柄
+  TIM_HandleTypeDef* tlctim;          // TLC 控制定时器句柄
+  uint32_t tim_chn;                   // 定时器通道
+  uint16_t red_led;                    // 红光LED电流设置
+  uint8_t ir_led;                     // 红外LED电流设置
+  uint8_t freq;                       // 刷新频率
+  uint8_t write_data[MAX_TLC_LEN];    // 写入数据缓冲区
+  uint16_t red_gs_ctrl[CHANNEL_NUM];  // 红光灰度控制值
+  uint8_t red_dc_ctrl[CHANNEL_NUM];   // 红光电校正值
+  uint16_t ir_gs_ctrl[CHANNEL_NUM];   // 红外灰度控制值
+  uint8_t ir_dc_ctrl[CHANNEL_NUM];    // 红外点校正值
+  uint32_t tlctim_polarity;           // 定时器输入捕获边沿
 } TLC_TYPEDEF;
 
 extern TLC_TYPEDEF g_tlc;

@@ -38,12 +38,12 @@ typedef struct {
  * @note 管理SD卡的读写缓冲区和状态信息
  */
 typedef struct {
-    uint32_t sd_base_address;            /**< SD卡基地址（块地址） */
-    uint16_t buffer_size;          /**< 总缓冲区大小（字节） */
-    uint8_t  batches_per_block;          /**< 每个块包含的数据包批次数 */
-    uint8_t  blocks_to_write;            /**< 每次写入的块数 */
-    uint8_t  buffer_idx;         /**< 当前激活的缓冲区索引（0-2） */
-    SD_BLOCK_BUFFER tx_buffer[3];        /**< 三重缓冲区，用于乒乓操作 */
+    uint32_t sd_base_address;             /**< SD卡基地址（块地址） */
+    uint16_t buffer_size;                 /**< 总缓冲区大小（字节） */
+    uint8_t  batches_per_block;           /**< 每个块包含的数据包批次数 */
+    uint8_t  blocks_to_write;             /**< 每次写入的块数 */
+    uint8_t  buffer_idx;                  /**< 当前激活的缓冲区索引（0-2） */
+    SD_BLOCK_BUFFER tx_buffer[3];         /**< 三重缓冲区，用于乒乓操作 */
 } SD_CARD_STRUCT;
 
 /******************************************************************************

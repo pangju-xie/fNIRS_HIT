@@ -62,7 +62,9 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 {
     if (huart->Instance == T_UART.Instance) {
         g_uart_tx_complete = 1;     /* 设置UART发送完成标志 */
-    } else if (huart->Instance == DEBUG_UART.Instance) {
+    } 
+    
+    else if (huart->Instance == DEBUG_UART.Instance) {
         g_debug_buffer.dma_busy = 0;  /* 清除DMA忙标志 */
         
         /* 检查是否还有数据需要发送 */
@@ -113,7 +115,7 @@ void HAL_UART_RxIdleCallback(UART_HandleTypeDef *huart)
             /* 重新启动DMA接收 */
             HAL_UART_Receive_DMA(&T_UART, g_uart_rx_buffer_raw, RX_BUFFER_SIZE);
             
-            DebugPrintf("UART received %d bytes (idle interrupt)\r\n", 
+            DebugPrintf("UART received %d bytes\r\n", 
                        g_uart_rx_buffer.write_index);
         }
     }
@@ -146,14 +148,9 @@ HAL_StatusTypeDef spi_transmit_dma(uint8_t *data, uint32_t length, uint32_t time
             result = HAL_SPI_Transmit_DMA(&T_SPI, data, length + 4);
             
             if (result == HAL_OK) {
-                DebugPrintf("SPI transmit started: %lu bytes\r\n", 
+                DebugPrintf("SPI transmit started: %lu bytes. ", 
                            (unsigned long)length + 4);
                 return result;          /* 发送成功启动 */
-            } else {
-                DebugPrintf("SPI transmit start failed (Error: 0x%08lX)\r\n", 
-                           (unsigned long)result);
-                g_spi_tx_complete = 1;  /* 恢复发送完成标志 */
-                SPI_CS_DISABLE();       /* 释放片选信号 */
             }
         }
         
@@ -161,7 +158,7 @@ HAL_StatusTypeDef spi_transmit_dma(uint8_t *data, uint32_t length, uint32_t time
         delay_microseconds(100);        /* 短暂延时后重试 */
     }
     
-    DebugPrintf("SPI transmit timeout after %lu retries\r\n", 
+    DebugPrintf("SPI transmit timeout after %lu retries", 
                (unsigned long)retry_count);
     return result;
 }
@@ -193,10 +190,6 @@ HAL_StatusTypeDef uart_transmit_dma(uint8_t *data, uint32_t length, uint32_t tim
                 DebugPrintf("UART transmit started: %lu bytes\r\n", 
                            (unsigned long)length);
                 return result;          /* 发送成功启动 */
-            } else {
-                DebugPrintf("UART transmit start failed (Error: 0x%08lX)\r\n", 
-                           (unsigned long)result);
-                g_uart_tx_complete = 1; /* 恢复发送完成标志 */
             }
         }
         
@@ -204,7 +197,7 @@ HAL_StatusTypeDef uart_transmit_dma(uint8_t *data, uint32_t length, uint32_t tim
         delay_microseconds(100);        /* 短暂延时后重试 */
     }
     
-    DebugPrintf("UART transmit timeout after %lu retries\r\n", 
+    DebugPrintf("UART transmit timeout after %lu retries", 
                (unsigned long)retry_count);
     return result;
 }
@@ -239,7 +232,7 @@ void generate_crc16_table(uint16_t polynomial)
         g_crc16_table[i] = remainder;  /* 存储到查找表 */
     }
     
-    DebugPrintf("CRC16 table generated with polynomial 0x%04X\r\n", polynomial);
+    DebugPrintf("CRC16 table generated with polynomial 0x%04X", polynomial);
 }
 
 /**
@@ -501,6 +494,7 @@ uint8_t handle_channel_config_command(uint8_t *data, SENSOR_TYPE sensor_type, ui
         }
     }
     
+    
     return result;
 }
 
@@ -553,9 +547,7 @@ void encode_command_response(TRANSMIT_COMMAND command, uint8_t response_data)
     *(uint16_t *)(g_response_frame + 10) = ENDIAN_SWAP_16B(crc_value);
     
     /* 发送响应帧 */
-    if (uart_transmit_dma(g_response_frame, 12, 1000) != HAL_OK) {
-        DebugPrintf("Failed to send command response\r\n");
-    } else {
+    if (uart_transmit_dma(g_response_frame, 12, 100) == HAL_OK) {
         set_led_color('g');  /* 设置绿色LED指示发送成功 */
         DebugPrintf("Command response sent successfully\r\n");
     }
@@ -571,6 +563,27 @@ void decode_received_command(uint8_t *data, int length)
     static uint8_t is_initialized = 0;  /* 初始化状态标志 */
     uint32_t package_number = 0;
     uint8_t response = 0;
+    
+//    /* 去除开头的0x00数据 */
+//    int valid_start_index = 0;
+//    while (valid_start_index < length && data[valid_start_index] == 0x00) {
+//        valid_start_index++;
+//    }
+//    
+//    /* 如果全部是0x00，直接返回 */
+//    if (valid_start_index >= length) {
+//        set_led_color('g');
+//        return;
+//    }
+//    
+//    /* 如果有效数据在中间，需要调整指针和数据长度 */
+//    if (valid_start_index > 0) {
+//        data = &data[valid_start_index];
+//        length = length - valid_start_index;
+//        
+//        DebugPrintf("Trimmed %d leading 0x00 bytes, new length: %d\r\n", 
+//                   valid_start_index, length);
+//    }
     
     /* 检查最小数据长度 */
     if (length < FRAME_FIXED_HEADER_LENGTH) {

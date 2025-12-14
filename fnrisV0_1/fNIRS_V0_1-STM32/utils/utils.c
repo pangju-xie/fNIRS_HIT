@@ -23,7 +23,7 @@
  * 宏定义
  ******************************************************************************/
 
-#define DEBUG                              /**< 调试模式宏定义，启用调试输出功能 */
+//#define DEBUG                              /**< 调试模式宏定义，启用调试输出功能 */
 
 #define CRC8_POLYNOMIAL          0xD5      /**< CRC8多项式：0xD5 (x^8 + x^7 + x^6 + x^4 + x^2 + 1) */
 #define CRC8_TABLE_SIZE          256       /**< CRC8查找表大小 */
@@ -95,29 +95,28 @@ void user_delay_us(uint32_t microseconds)
  */
 void delay_microseconds(uint32_t delay_us)
 {
-    uint32_t start_val, tick_count, delay_cycles, wait_val;
-    uint32_t sys_clock = HAL_RCC_GetSysClockFreq();
+    uint32_t start_tick = HAL_GetTick();
+    uint32_t wait_ticks = (delay_us + 500) / 1000;  // 向上取整到毫秒
     
-    start_val = SysTick->VAL;      /* 获取SysTick当前值 */
-    tick_count = HAL_GetTick();    /* 获取当前tick计数 */
-    
-    /* 计算需要的时钟周期数 */
-    delay_cycles = delay_us * (sys_clock / 1000000);  /* 转换为时钟周期 */
-    
-    if (delay_cycles > start_val) {
-        /* 延时需要跨越tick边界 */
-        while (HAL_GetTick() == tick_count) {
-            /* 等待tick计数变化 */
-        }
-        wait_val = SysTick->LOAD + start_val - delay_cycles;
-        while (wait_val < SysTick->VAL) {
-            /* 等待SysTick计数到指定值 */
-        }
-    } else {
-        /* 延时在当前tick周期内完成 */
-        wait_val = start_val - delay_cycles;
-        while (wait_val < SysTick->VAL && HAL_GetTick() == tick_count) {
-            /* 等待SysTick计数到指定值，同时检查tick是否变化 */
+    if(wait_ticks == 0)
+    {
+        // 小于1ms的延时使用忙等待
+        uint32_t cycles = delay_us * (SystemCoreClock / 1000000 / 5);
+        for(volatile uint32_t i = 0; i < cycles; i++);
+    }
+    else
+    {
+        // 大于等于1ms的延时使用HAL_Delay
+        HAL_Delay(wait_ticks);
+        
+        // 微调剩余时间
+        uint32_t elapsed = HAL_GetTick() - start_tick;
+        uint32_t remaining_us = delay_us - (elapsed * 1000);
+        
+        if(remaining_us > 0)
+        {
+            uint32_t cycles = remaining_us * (SystemCoreClock / 1000000 / 5);
+            for(volatile uint32_t i = 0; i < cycles; i++);
         }
     }
 }

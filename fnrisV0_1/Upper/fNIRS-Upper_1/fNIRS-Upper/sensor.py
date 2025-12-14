@@ -40,7 +40,7 @@ class Sensor:
             for i in range(self.channel_len * 2):  # 遍历数据: ch1-red, ch1-ir, ch2-red, ...  每段数据3个字节
                 val = data[i*3+2] | (data[i*3+1] << 8) | (data[i*3+0] << 16)    #24位补码
                 # 计算数据值，手册P25
-                if(val > 0X7FFFFF):
+                if(val & 0x800000):  # 负数
                     val = 0XFFFFFF - val    # val为负数，转为正数
                 if val == 0:
                     val = 1

@@ -103,6 +103,7 @@ void ads1258init(void)
     
     /* 配置初始寄存器设置 */
     uint8_t initRegisterMap[NUM_REGISTERS] = {0};
+    memset(initRegisterMap, 0, NUM_REGISTERS);
     initRegisterMap[REG_ADDR_CONFIG0] = CONFIG0_BYPAS_MASK |   /* 外部多路复用器 */
                                         CONFIG0_CHOP_MASK  |   /* 启用斩波功能 */
                                         CONFIG0_STAT_MASK;     /* 读取数据时包含状态字节 */
@@ -110,8 +111,8 @@ void ads1258init(void)
     initRegisterMap[REG_ADDR_CONFIG1] = CONFIG1_DLY_0us |      /* 无通道转换延迟 */
                                         CONFIG1_DRATE_23739SPS; /* 23739 SPS采样率 */
     
-    initRegisterMap[REG_ADDR_MUXSG0]  = MUXSG0_DEFAULT;        /* 单端通道0-7全开 */
-    initRegisterMap[REG_ADDR_MUXSG1]  = MUXSG1_DEFAULT;        /* 单端通道8-15全开 */
+//    initRegisterMap[REG_ADDR_MUXSG0]  = MUXSG0_DEFAULT;        /* 单端通道0-7全开 */
+//    initRegisterMap[REG_ADDR_MUXSG1]  = MUXSG1_DEFAULT;        /* 单端通道8-15全开 */
     
     /* 写入可写寄存器 (跳过只读的ID寄存器) */
     writeMultipleRegisters(REG_ADDR_CONFIG0, NUM_REGISTERS - 1, initRegisterMap);
@@ -192,8 +193,8 @@ void count_channel_info(void)
         channel.d2chn = channel.chn_map[channel.num - 2]; /* 倒数第二个通道 */
     }
     
-    DebugPrintf("channel count done: total num=%d, mask=0x%08lX, d2chn=0x%02X\r\n", 
-               channel.num, channel.mask, channel.d2chn);
+//    DebugPrintf("channel count done: total num=%d, mask=0x%08lX, d2chn=0x%02X\r\n", 
+//               channel.num, channel.mask, channel.d2chn);
 }
 
 /**
@@ -212,8 +213,8 @@ void set_ads_channel(uint16_t *buf_cfg)
     /* 重新统计通道信息 */
     count_channel_info();
     
-    DebugPrintf("channel set Done: MUXSG0=0x%02X, MUXSG1=0x%02X\r\n", 
-               registerMap[REG_ADDR_MUXSG0], registerMap[REG_ADDR_MUXSG1]);
+//    DebugPrintf("channel set Done: MUXSG0=0x%02X, MUXSG1=0x%02X\r\n", 
+//               registerMap[REG_ADDR_MUXSG0], registerMap[REG_ADDR_MUXSG1]);
 }
 
 /**
@@ -291,8 +292,8 @@ void writeSingleRegister(uint8_t address, uint8_t data)
     /* 执行SPI传输 */
     _ads1258_spi_transfer(tx_data, rx_data, 2);
     
-    /* 更新寄存器映射表 */
-    registerMap[address] = data;
+//    /* 更新寄存器映射表 */
+//    registerMap[address] = data;
 }
 
 /**
@@ -320,8 +321,8 @@ void writeMultipleRegisters(uint8_t startAddress, uint8_t count, uint8_t regData
     /* 执行SPI传输 */
     _ads1258_spi_transfer(tx_data, rx_data, count + 1);
     
-    /* 更新寄存器映射表 */
-    memcpy(registerMap + startAddress, regData, count);
+//    /* 更新寄存器映射表 */
+//    memcpy(registerMap + startAddress, regData, count);
 }
 
 /**
@@ -377,28 +378,27 @@ float ReadDataDirect(uint8_t data[])
     Delay_us(1);
     
     /* 执行SPI传输 */
-    ADS1258_CS(LOW);
-    HAL_SPI_TransmitReceive(&ADS1258_SPI, tx_data, rx_data, 4, 100);
-    ADS1258_CS(HIGH);
+    _ads1258_spi_transfer(tx_data, rx_data, 4);
     
     /* 提取通道ID */
     channel_id = rx_data[0] & STATUS_CHID_MASK;
     
-    /* 查找通道在映射表中的位置并存储数据 */
-    for (uint8_t i = 0; i < channel.num; i++) {
-        if (channel_id == channel.chn_map[i]) {
-            uint8_t data_index = i * 3;  /* 每个通道3字节数据 */
-            memcpy(data + data_index, rx_data + 1, 3);
-            voltage = DataConvert(channel_id, data + data_index);
-            break;
-        }
-    }
-    
-    /* 检查是否完成一轮扫描 */
-    if (channel.num > 1 && channel_id == channel.d2chn) {
-        ADS1258_START(LOW);  /* 停止转换 */
-        datadone = 1;        /* 设置完成标志 */
-    }
+    memcpy(data, rx_data + 1, 3);
+//    voltage = DataConvert(channel_id, data);
+//    /* 查找通道在映射表中的位置并存储数据 */
+//    for (uint8_t i = 0; i < channel.num; i++) {
+//        if (channel_id == channel.chn_map[i]) {
+//            uint8_t data_index = i * 3;  /* 每个通道3字节数据 */
+//            memcpy(data + data_index, rx_data + 1, 3);
+//            voltage = DataConvert(channel_id, data + data_index);
+//            break;
+//        }
+//    }
+//    /* 检查是否完成一轮扫描 */
+//    if (channel.num > 1 && channel_id == channel.d2chn) {
+//        ADS1258_START(LOW);  /* 停止转换 */
+//        datadone = 1;        /* 设置完成标志 */
+//    }
     
     return voltage;
 }
@@ -511,10 +511,10 @@ float DataConvert(uint8_t chn, uint8_t data[])
                 
                 /* 输出调试信息 */
                 if (chn < STATUS_CHID_DIFF7) {
-                    //DebugPrintf("差分通道 %d: 0x%06lX = %.2fmV\r\n", chn, raw_value, result);
+                    DebugPrintf("diff channel %d: 0x%06lX = %.2fmV\r\n", chn, raw_value, result);
                 } else {
                     uint8_t single_channel = chn - STATUS_CHID_DIFF7;
-                    //DebugPrintf("单端通道 %d: %.2fmV\r\n", single_channel, result);
+                    DebugPrintf("single channel %d: %.2fmV\r\n", single_channel, result);
                 }
             }
             break;

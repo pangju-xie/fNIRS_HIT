@@ -84,15 +84,37 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			}
 		}
 		
-	if(htim == g_tlc.tlctim)
-	{
-		g_timer_ready_flag = 1;
-	}
+//	if(htim == g_tlc.tlctim)
+//	{
+//		g_timer_ready_flag = 1;
+//	}
   if(htim == &htim2){
     SETBLANK(GPIO_ON);
     SETBLANK(GPIO_OFF);
   }
 
+}
+void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
+{
+  if(htim == g_tlc.tlctim)
+  {
+    // 判断边沿类型
+    if(g_tlc.tlctim_polarity == TIM_ICPOLARITY_RISING)
+    {
+      g_timer_ready_flag = 1;
+      // 切换为下降沿检测
+      __HAL_TIM_SET_CAPTUREPOLARITY(g_tlc.tlctim, TIM_CHANNEL_2, TIM_ICPOLARITY_FALLING);
+      g_tlc.tlctim_polarity = TIM_INPUTCHANNELPOLARITY_FALLING;
+    }
+    else
+    {
+      // 下降沿处理
+      g_timer_ready_flag = 2;
+      // 切换为上升沿检测
+      __HAL_TIM_SET_CAPTUREPOLARITY(g_tlc.tlctim, TIM_CHANNEL_2, TIM_ICPOLARITY_RISING);
+      g_tlc.tlctim_polarity = TIM_INPUTCHANNELPOLARITY_RISING;
+    }
+  }
 }
 /* USER CODE END 0 */
 
@@ -104,7 +126,10 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-
+  /* 若用cubemx重新生成配置后，需要修改sdio.c内
+      hsd.Init.BusWide = SDIO_BUS_WIDE_4B;
+      中SDIO_BUS_WIDE_4B改为SDIO_BUS_WIDE_1B。
+      否则会报错无法正常运行。 */
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -133,29 +158,31 @@ int main(void)
   MX_USART3_UART_Init();
   MX_USART2_UART_Init();
   MX_TIM6_Init();
-  MX_TIM9_Init();
   MX_TIM1_Init();
   MX_TIM2_Init();
+  MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
 	SwitchOn(100);
 	detect_battery_status();
 	HAL_TIM_Base_Start_IT(&htim6);
 	nirs_init();
-	sdio_init();
 	DebugPrintf("stm32 init done.");
-	
-
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-
+//    for(uint8_t i = 0; i<16; i++){
+//      tlcSetGS(i, 0x0fff, 1, 1);
+//      HAL_Delay(1000);
+//      tlcSetGS(i, 0x0fff, 0, 1);
+//      HAL_Delay(1000);
+//    }
     /* 检查UART接收是否完成 */
     if (g_uart_rx_buffer.data_ready_flag) {
         /* 输出接收到的数据长度信息 */
-        DebugPrintf("UART received %d bytes of data\r\n", g_uart_rx_buffer.write_index);
+        DebugPrintf("UART received %d bytes of data", g_uart_rx_buffer.write_index);
         
         /* 清除接收完成标志，准备接收下一帧数据 */
         g_uart_rx_buffer.data_ready_flag = 0;
@@ -169,11 +196,16 @@ int main(void)
 
     /* 检查定时器是否就绪（定时触发事件） */
     if (g_timer_ready_flag) {
+        uint8_t flag = g_timer_ready_flag;
         /* 清除定时器就绪标志 */
         g_timer_ready_flag = 0;
-        
+      
         /* 执行fNIRS定时器处理函数 */
-        nirs_timer_handle();
+          nirs_timer_handle(flag);
+    }
+    if(g_fnirs_ready_flag){
+      nirs_data_send();
+      g_fnirs_ready_flag = 0;
     }
 
     /* USER CODE END WHILE */

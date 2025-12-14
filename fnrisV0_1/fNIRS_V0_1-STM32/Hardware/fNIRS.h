@@ -99,7 +99,7 @@ typedef struct {
  * 全局变量声明
  ******************************************************************************/
 extern FNIRS_STRUCT fnirs_system;   /**< 全局fNIRS系统实例 */
-
+extern uint8_t g_fnirs_ready_flag;  /*  fnirs单周期采样完成*/
 /******************************************************************************
  * 函数声明
  ******************************************************************************/
@@ -161,10 +161,17 @@ uint8_t nirs_get_state(void);
 uint16_t nirs_get_len(void);
 
 /**
+ * @brief 发送fNIRS数据
+ * @note 处理数据包并发送到SPI和SD卡
+ */
+void nirs_data_send(void);
+  
+/**
  * @brief 定时器中断处理函数
+ * @param flag 光源开关控制
  * @note  在定时器中断中调用，处理数据采集时序
  */
-void nirs_timer_handle(void);
+void nirs_timer_handle(uint8_t flag);
 
 /**
  * @brief 脑氧数据采集函数

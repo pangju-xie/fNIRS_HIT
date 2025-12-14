@@ -37,4 +37,5 @@ fnirs_v0_1/tlc5940.o: ..\Hardware\tlc5940.c ..\Core\Inc\main.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_uart.h \
   ..\Core\Inc\spi.h ..\Hardware\tlc5940.h ..\Core\Inc\tim.h \
   D:\Keil_v5\ARM\ARMCLANG\include\string.h ..\utils\utils.h \
-  D:\Keil_v5\ARM\ARMCLANG\include\stdio.h
+  D:\Keil_v5\ARM\ARMCLANG\include\stdio.h \
+  D:\Keil_v5\ARM\ARMCLANG\include\stdarg.h

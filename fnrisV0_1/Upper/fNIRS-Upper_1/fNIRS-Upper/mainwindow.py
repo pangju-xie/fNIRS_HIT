@@ -135,7 +135,7 @@ if __name__ == '__main__':
 
     # 电量轮询
     batteryQuaryTimer = QTimer()
-    batteryQuaryTimer.setInterval(10000)
+    batteryQuaryTimer.setInterval(60000)
     batteryQuaryTimer.timeout.connect(Network.sendBatteryQuery)
     batteryQuaryTimer.start()
 

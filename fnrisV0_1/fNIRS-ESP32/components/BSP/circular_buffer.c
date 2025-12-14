@@ -438,11 +438,11 @@ static frame_process_result_t  process_frame(circular_buffer_t *cb, uint32_t fra
     
 // 打印接收到的数据（调试用）
     ESP_LOGI(TAG, "Received valid frame: %d bytes", total_frame_len);
-    printf("FRAME DATA: ");
-    for (uint32_t i = 0; i < total_frame_len; i++) {
-        printf("%02X ", frame_buf[i]);
-    }
-    printf("\r\n");
+    // printf("FRAME DATA: ");
+    // for (uint32_t i = 0; i < total_frame_len; i++) {
+    //     printf("%02X ", frame_buf[i]);
+    // }
+    // printf("\r\n");
     
     // 发送UDP数据
     udp_safe_send(frame_buf, total_frame_len);

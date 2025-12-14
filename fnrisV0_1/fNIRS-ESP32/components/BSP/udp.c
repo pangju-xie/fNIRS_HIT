@@ -129,11 +129,11 @@ static void udp_receice_task(void *arg){
 			 	inet_ntoa_r(((struct sockaddr_in *)&broad_adr)->sin_addr, addr_str, sizeof(addr_str) - 1);
 				ESP_LOGI(TAG, "Received %d bytes data from ip:%s", len, addr_str);
 			}
-			printf("read data:");
-			for(int i = 0;i<len && i<15 ;i++){
-				printf("%2x ", data[i]);
-			}
-			printf(".\r\n");
+			// printf("read data:");
+			// for(int i = 0;i<len && i<15 ;i++){
+			// 	printf("%2x ", data[i]);
+			// }
+			// printf(".\r\n");
             data[len] = 0;
 			int ret = DecodeCommand(data, len);
 			if(ret<0){

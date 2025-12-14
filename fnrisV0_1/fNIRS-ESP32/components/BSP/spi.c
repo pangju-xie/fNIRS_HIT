@@ -107,8 +107,8 @@ static void spi_slave_task(void *arg) {
         esp_err_t ret = spi_slave_transmit(SPI3_HOST, &t, portMAX_DELAY);
         if(ret == ESP_OK){
             int rx_bytes = t.trans_len/8;
-            ESP_LOGI(TAG, "Received %d bytes from STM32", rx_bytes);
-            for(int i=0;i<rx_bytes;i++){
+            printf(TAG, "Received %d bytes from STM32", rx_bytes);
+            for(int i=rx_bytes-6;i<rx_bytes;i++){
                 printf( "0x%02X ", rx_buffer[i]);
             }
             printf("\r\n");
