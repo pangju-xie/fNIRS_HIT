@@ -448,10 +448,10 @@ int32_t readData(uint8_t status[], uint8_t data[], readMode mode);
 /**
  * @brief 直接读取数据
  * @param data 数据存储数组
- * @return 转换后的浮点电压值
+ * @return 通道号
  * @note 使用直接读取模式获取转换数据并转换为电压值
  */
-float ReadDataDirect(uint8_t data[]);
+uint8_t ReadDataDirect(uint8_t data[]);
 
 /**
  * @brief 命令模式读取数据

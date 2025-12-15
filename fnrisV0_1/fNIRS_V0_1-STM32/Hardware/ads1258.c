@@ -364,7 +364,7 @@ void stopConversions(void)
  * @return 转换后的电压值（单位：mV）
  * @note 使用直接读取模式获取转换数据
  */
-float ReadDataDirect(uint8_t data[])
+uint8_t ReadDataDirect(uint8_t data[])
 {
     uint8_t tx_data[4] = {0};
     uint8_t rx_data[4] = {0};
@@ -400,7 +400,7 @@ float ReadDataDirect(uint8_t data[])
 //        datadone = 1;        /* 设置完成标志 */
 //    }
     
-    return voltage;
+    return channel_id - STATUS_CHID_AIN0;
 }
 
 /**

@@ -163,9 +163,9 @@ class UdpPort(QWidget):
             return
         # CRC校验
         crc16 = self.crc.crc16(datagram, len(datagram) - 2)
-        if crc16 != (datagram[-2] << 8) + datagram[-1]:
-            print("CRC error")
-            return
+        # if crc16 != (datagram[-2] << 8) + datagram[-1]:
+        #     print("CRC error")
+        #     return
         
         # 解析数据: dg[6]为指令类型])
         if datagram[POS_CMD] == 0xB0:  # 连接反馈

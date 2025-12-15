@@ -4,7 +4,7 @@ from PyQt5.QtCore import Qt, pyqtSignal
 import pyqtgraph as pg
 import numpy as np
 
-TIME_WINDOW = 500
+TIME_WINDOW = 100
 
 class SensorWidget(QWidget):
     onSampleRateSet = pyqtSignal(list, int, int) # id, type, sampleRate

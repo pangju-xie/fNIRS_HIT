@@ -20,6 +20,7 @@
 #define LED_IR_WAVELENGTH       1      /**< 红外光LED标识 */
 
 #define ADS_SAMPLES_PER_LED     16     /**< 每个LED的平均采样次数 */
+#define FNIRS_DETECTOR_NUM      16     /**< fnirs系统的最大探测器数量>*/
 
 /******************************************************************************
  * 数据结构定义
@@ -31,7 +32,7 @@
  */
 typedef struct {
     uint32_t sample_count;           /**< 采样次数计数器 */
-    uint32_t sample_buffer[ADS_SAMPLES_PER_LED];  /**< 原始采样值缓冲区 */
+    //uint32_t sample_buffer[ADS_SAMPLES_PER_LED];  /**< 原始采样值缓冲区 */
     uint32_t sample_sum;             /**< 采样值累加和 */
     uint32_t average_value;          /**< 平均采样值 */
 } ADC_SAMPLE_DATA;
@@ -41,7 +42,7 @@ typedef struct {
  ******************************************************************************/
 
 FNIRS_STRUCT g_fnirs_ctx = {0};      /**< fNIRS全局上下文 */
-ADC_SAMPLE_DATA g_adc_sample = {0};  /**< ADC采样数据 */
+ADC_SAMPLE_DATA g_adc_sample[FNIRS_DETECTOR_NUM] = {0};  /**< ADC采样数据 */
 
 uint8_t g_fnirs_ready_flag = 0;      /*  fnirs单周期采样完成*/
 /******************************************************************************
@@ -52,7 +53,7 @@ static void _fnirs_init_default_config(void);
 static void _fnirs_update_buffer_length(void);
 static void _fnirs_handle_red_wavelength(uint8_t led_index, uint16_t detector_config);
 static void _fnirs_handle_ir_wavelength(uint8_t led_index, uint16_t detector_config);
-static void _fnirs_process_adc_samples(uint8_t* save_addr);
+static void _fnirs_process_adc_samples(uint8_t i, uint8_t* save_addr);
 static void _fnirs_write_sd_card(uint8_t* data_buffer, uint32_t period_number);
 
 /******************************************************************************
@@ -82,19 +83,20 @@ void nirs_data_collect(uint16_t GPIO_Pin)
         if (!ReadNIRS()) {  /* 检查DRDY引脚是否为低电平（数据就绪） */
             /* 读取ADC数据并累加 */
             uint8_t temp_buffer[3] = {0};
-            ReadDataDirect(temp_buffer);
-            
-            /* 将3字节数据转换为24位整数 */
-            uint32_t adc_value = ((uint32_t)temp_buffer[0] << 16) |
-                                 ((uint32_t)temp_buffer[1] << 8)  |
-                                 (uint32_t)temp_buffer[2];
-            adc_value = adc_value & 0x00ffffff;
-            
-            g_adc_sample.sample_sum += adc_value;
-            g_adc_sample.sample_count++;
-            if(g_adc_sample.sample_count>10){
-              ADS1258_START(LOW);
+            uint8_t ch_id = ReadDataDirect(temp_buffer);
+            if(ch_id >= 0 && ch_id<=15){
+              /* 将3字节数据转换为24位整数 */
+              uint32_t adc_value = ((uint32_t)temp_buffer[0] << 16) |
+                                   ((uint32_t)temp_buffer[1] << 8)  |
+                                   (uint32_t)temp_buffer[2];
+              adc_value = adc_value & 0x00ffffff;
+              
+              g_adc_sample[ch_id].sample_sum += adc_value;
+              g_adc_sample[ch_id].sample_count++;
             }
+//            if(g_adc_sample[ch_id].sample_count>10){
+//              ADS1258_START(LOW);
+//            }
         }
         __HAL_GPIO_EXTI_CLEAR_IT(NIRS_DRDY_Pin);
     }
@@ -367,20 +369,20 @@ uint16_t nirs_get_len(void)
  * @brief 处理ADC采样数据并计算平均值
  * @param save_addr 数据保存地址
  */
-static void _fnirs_process_adc_samples(uint8_t* save_addr)
+static void _fnirs_process_adc_samples(uint8_t i, uint8_t* save_addr)
 {
-    if (g_adc_sample.sample_count > 0) {
+    if (g_adc_sample[i].sample_count > 0) {
         /* 计算平均值 */
-        g_adc_sample.average_value = (uint32_t)(g_adc_sample.sample_sum / g_adc_sample.sample_count);
+        g_adc_sample[i].average_value = (uint32_t)(g_adc_sample[i].sample_sum / g_adc_sample[i].sample_count);
         
         /* 保存3字节数据 */
-        save_addr[0] = (g_adc_sample.average_value >> 16) & 0xFF;
-        save_addr[1] = (g_adc_sample.average_value >> 8) & 0xFF;
-        save_addr[2] = g_adc_sample.average_value & 0xFF;
+        save_addr[0] = (g_adc_sample[i].average_value >> 16) & 0xFF;
+        save_addr[1] = (g_adc_sample[i].average_value >> 8) & 0xFF;
+        save_addr[2] = g_adc_sample[i].average_value & 0xFF;
 //        DataConvert(10, save_addr);
         /* 重置采样数据 */
-        g_adc_sample.sample_sum = 0;
-        g_adc_sample.sample_count = 0;
+        g_adc_sample[i].sample_sum = 0;
+        g_adc_sample[i].sample_count = 0;
     }
 }
 
@@ -476,25 +478,38 @@ void nirs_timer_handle(uint8_t flag)
     if (g_fnirs_ctx.state != FNIRS_STATE_START) {
         return;
     }
+    static uint8_t half_cycle = 0, wavelength_type = 0, led_index = 0;
+    static uint16_t open_detectors = 0;
+    
     /* PWM上升沿，开启led  */
     if(flag == 1){
       /* 清零ADC采样数据 */
       memset(&g_adc_sample, 0, sizeof(g_adc_sample));
       
-       /* 计算当前处理的LED和波长类型 */
-      uint8_t half_cycle = g_fnirs_ctx.timer_count / 2;  /* 每个LED有两个波长周期 */
-      uint8_t wavelength_type = g_fnirs_ctx.timer_count % 2;  /* 0=红光, 1=红外光 */
-      uint8_t led_index = half_cycle % g_fnirs_ctx.config.source_count;
       
-      /* 获取当前探测器配置 */
-      uint16_t detector_config = g_fnirs_ctx.config.config[led_index];
+     /* 计算当前处理的LED和波长类型 */
+      half_cycle = g_fnirs_ctx.timer_count / 2;  /* 每个LED有两个波长周期 */
+      wavelength_type = g_fnirs_ctx.timer_count % 2;  /* 0=红光, 1=红外光 */
+      led_index = half_cycle % g_fnirs_ctx.config.source_count;
+      
+      /* 根据开启的探测器数量控制ADC转换 */
+      open_detectors = g_fnirs_ctx.config.detector_open[led_index];
       
       /* 根据波长类型处理 */
       if (wavelength_type == LED_RED_WAVELENGTH) {
-          _fnirs_handle_red_wavelength(led_index, detector_config);
+        /* 开启红光LED */
+          tlcSetGS(led_index, g_tlc.red_led, 1, 1);
       } else {
-          _fnirs_handle_ir_wavelength(led_index, detector_config);
+        /* 开启红外光LED */
+          tlcSetGS(led_index, g_tlc.red_led, 0, 1);
       }
+      /* 设置ADC通道 */
+      set_ads_channel(&g_fnirs_ctx.config.config[led_index]);
+      Delay_us(10);  /* 等待稳定 */
+      if (open_detectors) {
+          ADS1258_START(HIGH);  /* 开始ADC转换 */
+      }
+      
       g_fnirs_ctx.timer_count++;
       
     }else if(flag == 2){ /* PWM下降沿，关闭led，并保存数据 */
@@ -505,14 +520,21 @@ void nirs_timer_handle(uint8_t flag)
       
       /* 处理之前采集的数据（除了第一个周期） */
       if (g_fnirs_ctx.timer_count != 0) {
-        _fnirs_process_adc_samples(g_fnirs_ctx.data_buffer.data_save_addr);
-        g_fnirs_ctx.data_buffer.data_save_addr += 3;  /* 移动到下一个数据位置 */
+        uint8_t count = 0;
+        for(uint8_t i = 0; i<16;i++){
+          if(g_adc_sample[i].sample_count){
+            _fnirs_process_adc_samples(i, g_fnirs_ctx.data_buffer.data_save_addr + wavelength_type*3 + count * 6 );
+            count++;
+          }
+        }
+        if(wavelength_type == 1){
+          g_fnirs_ctx.data_buffer.data_save_addr += count*6;  /* 移动到下一个数据位置 */
+        }
         
         /* 检查是否完成一轮完整的采集 */    
         uint8_t total_cycles = g_fnirs_ctx.config.source_count * 2;
         if (g_fnirs_ctx.timer_count % total_cycles == 0) {
           g_fnirs_ready_flag = 1;
-            //nirs_data_send();
         }
       }
     }
