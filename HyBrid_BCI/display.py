@@ -25,101 +25,33 @@ from datetime import datetime
 
 from ui_display import Ui_DisplayWidget, SensorTypes
 from signal_processor import SignalProcessor, create_signal_processor
-from devicedata import DeviceData
-
-class DataGenerator(QThread):
-    """Simulates real-time data acquisition"""
     
-    dataReady = pyqtSignal(np.ndarray)
-    
-    def __init__(self, sensor_type, sample_rate=100):
-        super().__init__()
-        
-        self.sensor_type = sensor_type
-        self.sample_rate = sample_rate
-        self.running = False
-        self.time_counter = 0
-        
-        # Determine number of channels based on sensor type
-        active_signals = SensorTypes.get_active_signals(sensor_type)
-        self.num_channels = self._get_channel_count(active_signals)
-        
-    def _get_channel_count(self, active_signals):
-        """Calculate total channel count based on active signals"""
-        count = 0
-        if 'eeg' in active_signals:
-            count += 8  # 8 EEG channels
-        if 'semg' in active_signals:
-            count += 4  # 4 sEMG channels
-        if 'fnirs' in active_signals:
-            count += 14  # 7 fNIRS channels × 2 (HbO + Hb)
-        return count
-        
-    def run(self):
-        """Main thread execution"""
-        while self.running:
-            if self.running:
-                self.generate_data()
-            self.msleep(1000 // self.sample_rate)
-            
-    def generate_data(self):
-        """Generate synthetic multi-channel data"""
-        if not self.running:
-            return
-            
-        t = self.time_counter / self.sample_rate
-        data = np.zeros(self.num_channels)
-        
-        for i in range(self.num_channels):
-            freq1 = 0.1 + i * 0.05
-            freq2 = 1.0 + i * 0.1
-            
-            signal_component = (np.sin(2 * np.pi * freq1 * t) + 
-                              0.3 * np.sin(2 * np.pi * freq2 * t))
-            noise = np.random.normal(0, 0.1)
-            data[i] = signal_component + noise
-            
-        self.dataReady.emit(data)
-        self.time_counter += 1
-    
-    def start_acquisition(self):
-        """Start data acquisition"""
-        self.running = True
-        if not self.isRunning():
-            self.start()
-    
-    def stop_acquisition(self):
-        """Stop data acquisition"""
-        self.running = False
-        if self.isRunning():
-            self.quit()
-            self.wait()
-
-
 class BasePlotCanvas(FigureCanvas):
     """Base class for plotting canvases with sweep mode"""
     
-    def __init__(self, parent, num_channels, channel_labels, width=15, height=8, dpi=100):
+    def __init__(self, parent, num_channels, channel_labels, frequency = 10, time = 30, width=15, height=8, dpi=100):
         self.fig = Figure(figsize=(width, height), dpi=dpi, facecolor='white')
         super().__init__(self.fig)
         self.setParent(parent)
         
         self.num_channels = num_channels
         self.channel_labels = channel_labels
-        self.max_points = 12000  # 120s * 100 samples/s
+        self.frequency = frequency  # Samples per second
+        self.time = time  # Total time in seconds
+        self.max_points = int(self.time * self.frequency)  # 120s * 10 samples/s
         self.data_index = 0
         self.sweep_position = 0  # Current position in sweep mode
         self.mutex = QMutex()  # Thread-safe mutex
         
         # Performance optimization
         self.update_counter = 0
-        self.skip_frames = 2  # Update display every N frames to reduce lag
+        self.skip_frames = 1  # Update display every N frames to reduce lag
         
         self.axes = self.fig.add_subplot(111)
         self.axes.set_facecolor('white')
         self.axes.set_xlabel('Time (s)')
         
-        self.time_data = np.arange(self.max_points) / 100.0  # Fixed time axis (0-120s)
+        self.time_data = np.arange(self.max_points) / self.frequency  # Fixed time axis (0-120s)
         self.channel_data = {}
         self.channel_lines = {}
         self.sweep_line = None  # Vertical line showing current position
@@ -140,7 +72,7 @@ class BasePlotCanvas(FigureCanvas):
 class FNIRSPlotCanvas(BasePlotCanvas):
     """Canvas for fNIRS signals with HbO/Hb pairs - sweep mode"""
     
-    def __init__(self, parent, channels, width=15, height=8, dpi=100):
+    def __init__(self, parent, channels, frequency = 10, time = 30, width=15, height=8, dpi=100):
         self.channel_offset = 20.0  # Double the offset for better spacing
         self.physical_channels = channels
         num_channels = len(channels) * 2  # HbO + Hb for each channel
@@ -148,17 +80,17 @@ class FNIRSPlotCanvas(BasePlotCanvas):
         # Create labels for HbO and Hb
         labels = []
         for ch in channels:
-            labels.append(f"{ch}_HbO")
             labels.append(f"{ch}_Hb")
+            labels.append(f"{ch}_HbO")
         
-        super().__init__(parent, num_channels, labels, width, height, dpi)
+        super().__init__(parent, num_channels, labels, frequency, time, width, height, dpi)
         
-        self.colors = ['red', 'blue']  # HbO: red, Hb: blue
+        self.colors = ['blue', 'red']  # HbO: red, Hb: blue
         self.initialize_channels()
         
     def initialize_channels(self):
         """Initialize channel data and plot lines"""
-        self.axes.set_xlim((0, 120))  # 0-120 seconds
+        self.axes.set_xlim((0, self.time))  # 0-120 seconds
         # Add extra space at the top for better visibility (double offset)
         y_min = -self.channel_offset
         y_max = (len(self.physical_channels) - 1) * self.channel_offset * 2 + self.channel_offset
@@ -194,11 +126,11 @@ class FNIRSPlotCanvas(BasePlotCanvas):
             current_time = self.time_data[self.sweep_position]
             
             # Update data at current position
-            for i, value in enumerate(new_data):
-                if i < self.num_channels:
-                    channel_group = i // 2
-                    offset_value = value + channel_group * self.channel_offset * 2
-                    self.channel_data[i][self.sweep_position] = offset_value
+            for i in range(self.num_channels):
+                hb_hbo = i%2
+                channel_group = i // 2
+                offset_value = new_data[hb_hbo, channel_group] + channel_group * self.channel_offset * 2
+                self.channel_data[i][self.sweep_position] = offset_value
             
             # Only update line data if we're going to draw
             if should_draw:
@@ -209,7 +141,7 @@ class FNIRSPlotCanvas(BasePlotCanvas):
                 self.sweep_line.set_xdata([current_time, current_time])
             
             # Clear a small region ahead of the sweep line (creates the "erasing" effect)
-            clear_width = 200  # Adjusted for longer time scale
+            clear_width = self.frequency  # Adjusted for longer time scale
             for i in range(clear_width):
                 clear_pos = (self.sweep_position + i + 1) % self.max_points
                 for j in range(self.num_channels):
@@ -229,16 +161,16 @@ class FNIRSPlotCanvas(BasePlotCanvas):
 class EEGPlotCanvas(BasePlotCanvas):
     """Canvas for EEG signals - sweep mode"""
     
-    def __init__(self, parent, channels, width=15, height=8, dpi=100):
+    def __init__(self, parent, channels, frequency = 1000, time = 10, width=15, height=8, dpi=100):
         self.channel_offset = 100.0  # Double the offset for better spacing
         labels = [f"EEG-{ch}" for ch in channels]
         
-        super().__init__(parent, len(channels), labels, width, height, dpi)
+        super().__init__(parent, len(channels), labels, frequency, time, width, height, dpi)
         self.initialize_channels()
         
     def initialize_channels(self):
         """Initialize channel data and plot lines"""
-        self.axes.set_xlim((0, 120))  # 0-120 seconds
+        self.axes.set_xlim((0, self.time))  # 0-120 seconds
         # Add extra space at the top for better visibility (double offset)
         y_min = -self.channel_offset
         y_max = (self.num_channels - 1) * self.channel_offset + self.channel_offset
@@ -308,33 +240,41 @@ class DisplayWidget(QWidget):
     """Main display widget - handles interaction logic"""
     
     statusMessage = pyqtSignal(str)
+    OnSampleStart = pyqtSignal(bool)
     
-    def __init__(self, sensor_type=SensorTypes.FNIRS, deviceData=None):
+    def __init__(self, sensor_type=SensorTypes.FNIRS, sensor_info = {}):
         super().__init__()
         self.sensor_type = sensor_type
+        self.channels = {}
+        self.signal_processor = {}
+        self.sample_rate = {}
+        self.plot_canvas = {}
+        
+        self.startflag = 0
         self.ui = Ui_DisplayWidget(sensor_type)
         self.ui.setupUi(self)
-        
+
         # CRITICAL: Set the main layout to the widget
         self.setLayout(self.ui.mainLayout)
-
-        if deviceData is None:
-            self.deviceData = DeviceData()
-        else:
-            self.deviceData = deviceData
         
         # Initialize signal processor
-        active_signals = SensorTypes.get_active_signals(sensor_type)
-        num_channels = self._get_total_channels(active_signals)
-        self.signal_processor = create_signal_processor(sample_rate=100, num_channels=num_channels)
+        self.active_signals = SensorTypes.get_active_signals(sensor_type)
+        
+        layout = QVBoxLayout(self.ui.plotWidget)
+        for types in self.active_signals:
+            self.channels[types] = sensor_info[types].get_channels()
+            self.sample_rate[types] = sensor_info[types].getSampleRate()
+            self.signal_processor[types] = create_signal_processor(sample_rate = self.sample_rate[types],
+                                                          num_channels = len(self.channels[types]))
+            if types == 'fnirs':
+                self.plot_canvas[types] = FNIRSPlotCanvas(self.ui.plotWidget, self.channels[types], frequency=self.sample_rate[types], time=30, width=12, height=6)
+            elif types == 'eeg':
+                self.plot_canvas[types] = EEGPlotCanvas(self.ui.plotWidget, self.channels[types], frequency=self.sample_rate[types], time=10, width=12, height=6)
+            layout.addWidget(self.plot_canvas[types])
         
         # Initialize components
-        self.data_generator = DataGenerator(sensor_type)
-        self.recorded_data = []
+        self.recorded_data = {}
         self.is_recording = False
-        
-        # Setup plot canvas
-        self.setup_plot_canvas()
         
         # Connect signals
         self.connect_signals()
@@ -342,37 +282,6 @@ class DisplayWidget(QWidget):
         # Initialize UI state
         self.initialize_ui_state()
         
-    def _get_total_channels(self, active_signals):
-        """Calculate total number of channels"""
-        count = 0
-        if 'eeg' in active_signals:
-            count += 8
-        if 'semg' in active_signals:
-            count += 4
-        if 'fnirs' in active_signals:
-            count += 14
-        return count
-        
-    def setup_plot_canvas(self):
-        """Initialize the plotting canvas based on sensor type"""
-        active_signals = SensorTypes.get_active_signals(self.sensor_type)
-        
-        if 'fnirs' in active_signals:
-            channels = ['S1-D1', 'S1-D2', 'S2-D1', 'S2-D2', 'S3-D1', 'S3-D3', 'S3-D4']
-            self.plot_canvas = FNIRSPlotCanvas(self.ui.plotWidget, channels, width=12, height=6)
-        elif 'eeg' in active_signals:
-            channels = [f"Ch{i+1}" for i in range(8)]
-            self.plot_canvas = EEGPlotCanvas(self.ui.plotWidget, channels, width=12, height=6)
-        else:
-            # Default fallback
-            channels = [f"Ch{i+1}" for i in range(4)]
-            self.plot_canvas = EEGPlotCanvas(self.ui.plotWidget, channels, width=12, height=6)
-        
-        layout = QVBoxLayout(self.ui.plotWidget)
-        layout.addWidget(self.plot_canvas)
-        
-        # Connect data generator
-        self.data_generator.dataReady.connect(self.on_new_data)
         
     def connect_signals(self):
         """Connect UI signals to their respective slots"""
@@ -472,61 +381,29 @@ class DisplayWidget(QWidget):
         
         if processor_filter_type:
             # Setup filter for appropriate channel range
-            channel_range = self._get_channel_range(signal_key)
-            for ch in channel_range:
+            for ch in self.channels[signal_key]:
                 try:
-                    self.signal_processor.setup_online_filter(ch, processor_filter_type, **params)
+                    self.signal_processor[signal_key].setup_online_filter(ch, processor_filter_type, **params)
                 except Exception as e:
                     self.emit_status_message(f"Filter setup error: {str(e)}")
     
     def clear_online_filter(self, signal_key):
         """Clear online filter for a specific signal type"""
-        channel_range = self._get_channel_range(signal_key)
-        for ch in channel_range:
-            self.signal_processor.clear_online_filter(ch) # type: ignore
-    
-    def _get_channel_range(self, signal_key):
-        """Get channel index range for a signal type"""
-        active_signals = SensorTypes.get_active_signals(self.sensor_type)
-        
-        start_idx = 0
-        if signal_key == 'eeg' and 'eeg' in active_signals:
-            return range(start_idx, start_idx + 8)
-        
-        if 'eeg' in active_signals:
-            start_idx += 8
-            
-        if signal_key == 'semg' and 'semg' in active_signals:
-            return range(start_idx, start_idx + 4)
-        
-        if 'semg' in active_signals:
-            start_idx += 4
-            
-        if signal_key == 'fnirs' and 'fnirs' in active_signals:
-            return range(start_idx, start_idx + 14)
-        
-        return range(0)
-        
-    def start_acquisition(self):
-        """Start data acquisition"""
-        self.data_generator.start_acquisition()
+        for ch in self.channels[signal_key]:
+            self.signal_processor[signal_key].clear_online_filter(ch) # type: ignore
+
+    def set_start_control_states(self):
+        """Set UI states when starting acquisition"""
         self.ui.set_control_states(
             start_enabled=False,
             stop_enabled=True,
             reset_enabled=True,
             record_enabled=True,
             save_enabled=False
-        )
-        self.emit_status_message("Acquiring data...")
+        )    
         
-    def stop_acquisition(self):
-        """Stop data acquisition"""
-        self.data_generator.stop_acquisition()
-        
-        # Wait for the thread to properly finish
-        if self.data_generator.isRunning():
-            self.data_generator.wait(1000)  # Wait up to 1 second
-        
+    def set_stop_control_states(self):
+        """Set UI states when stopping acquisition"""
         self.ui.set_control_states(
             start_enabled=True,
             stop_enabled=False,
@@ -534,26 +411,34 @@ class DisplayWidget(QWidget):
             record_enabled=False,
             save_enabled=True if self.recorded_data else False
         )
+        
+    def start_acquisition(self):
+        """Start data acquisition"""
+        self.startflag = 1
+        self.OnSampleStart.emit(True)
+        self.emit_status_message("Acquiring data...")
+        
+    def stop_acquisition(self):
+        """Stop data acquisition"""
+        self.startflag = 0
+        self.OnSampleStart.emit(False)
+        
         self.emit_status_message("Data acquisition stopped")
         
     def reset_system(self):
         """Reset the entire system"""
-        # Stop data generator first
-        if self.data_generator.running:
-            self.data_generator.stop_acquisition()
-            if self.data_generator.isRunning():
-                self.data_generator.wait(1000)
-        
         # Reset state
         self.is_recording = False
         self.recorded_data.clear()
         
         # Clear plot with mutex protection
         if hasattr(self, 'plot_canvas'):
-            self.plot_canvas.clear_plot()
+            for canvas in self.plot_canvas.values():
+                canvas.clear_plot()
         
         # Reset filters
-        self.signal_processor.reset_online_filters()
+        for types in self.active_signals:
+            self.signal_processor[types].reset_online_filters()
         
         # Update UI
         self.ui.recordButton.setText("记录")
@@ -578,22 +463,23 @@ class DisplayWidget(QWidget):
     
     def on_new_data(self, data):
         """Handle new data from generator - with error handling"""
-        try:
+        # try:
             # Apply real-time filtering
-            processed_data = data.copy()
+        processed_data = data.copy()
+        for types in self.active_signals:
             for ch in range(len(processed_data)):
-                processed_data[ch] = self.signal_processor.process_sample_online(ch, processed_data[ch])
-            
-            # Record data if recording is enabled
+                processed_data[ch] = self.signal_processor[types].process_sample_online(ch, processed_data[ch])
+        
+        # Record data if recording is enabled
             if self.is_recording:
-                self.recorded_data.append(processed_data.copy())
-            
-            # Update plot (will skip if mutex is locked)
+                self.recorded_data[types].append(processed_data.copy())
+        
+        # Update plot (will skip if mutex is locked)
             if hasattr(self, 'plot_canvas'):
-                self.plot_canvas.update_data(processed_data)
-        except Exception as e:
-            print(f"Error in on_new_data: {e}")
-            # Don't crash the application on data processing errors
+                self.plot_canvas[types].update_data(processed_data)
+        # except Exception as e:
+        #     print(f"Error in on_new_data: {e}")
+        #     # Don't crash the application on data processing errors
     
     def save_data(self):
         """Save recorded data to file"""
@@ -601,56 +487,48 @@ class DisplayWidget(QWidget):
             QMessageBox.warning(self, "Warning", "No data to save.")
             return
         
-        filename, _ = QFileDialog.getSaveFileName(
-            self, "Save Data", 
-            f"signal_data_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
-            "CSV Files (*.csv);;JSON Files (*.json)"
-        )
+        # filename, _ = QFileDialog.getSaveFileName(
+        #     self, "Save Data", 
+        #     f"signal_data_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
+        #     "CSV Files (*.csv);;JSON Files (*.json)"
+        # )
         
-        if filename:
-            try:
-                data_to_save = np.array(self.recorded_data)
+        # if filename:
+        #     try:
+        #         data_to_save = np.array(self.recorded_data)
                 
-                if filename.endswith('.json'):
-                    save_dict = {
-                        'data': data_to_save.tolist(),
-                        'metadata': {
-                            'timestamp': datetime.now().isoformat(),
-                            'sample_rate': self.signal_processor.sample_rate,
-                            'sensor_type': self.sensor_type,
-                            'num_channels': data_to_save.shape[1] if data_to_save.ndim > 1 else 1,
-                            'signal_type': self.ui.get_signal_type(),
-                            'num_samples': len(data_to_save),
-                            'active_filters': self.ui.get_active_filter_params()
-                        }
-                    }
-                    with open(filename, 'w') as f:
-                        json.dump(save_dict, f, indent=2)
-                else:
-                    if data_to_save.ndim == 1:
-                        data_to_save = data_to_save.reshape(-1, 1)
-                    df = pd.DataFrame(data_to_save, 
-                                    columns=[f'Channel_{i+1}' for i in range(data_to_save.shape[1])])
-                    df['Time'] = np.arange(len(df)) / self.signal_processor.sample_rate
-                    df.to_csv(filename, index=False)
+        #         if filename.endswith('.json'):
+        #             save_dict = {
+        #                 'data': data_to_save.tolist(),
+        #                 'metadata': {
+        #                     'timestamp': datetime.now().isoformat(),
+        #                     'sample_rate': self.signal_processor.sample_rate,
+        #                     'sensor_type': self.sensor_type,
+        #                     'num_channels': data_to_save.shape[1] if data_to_save.ndim > 1 else 1,
+        #                     'signal_type': self.ui.get_signal_type(),
+        #                     'num_samples': len(data_to_save),
+        #                     'active_filters': self.ui.get_active_filter_params()
+        #                 }
+        #             }
+        #             with open(filename, 'w') as f:
+        #                 json.dump(save_dict, f, indent=2)
+        #         else:
+        #             if data_to_save.ndim == 1:
+        #                 data_to_save = data_to_save.reshape(-1, 1)
+        #             df = pd.DataFrame(data_to_save, 
+        #                             columns=[f'Channel_{i+1}' for i in range(data_to_save.shape[1])])
+        #             df['Time'] = np.arange(len(df)) / self.signal_processor.sample_rate
+        #             df.to_csv(filename, index=False)
                 
-                QMessageBox.information(self, "Success", f"Data saved to {filename}")
-                self.emit_status_message(f"Data saved: {len(data_to_save)} samples")
+        #         QMessageBox.information(self, "Success", f"Data saved to {filename}")
+        #         self.emit_status_message(f"Data saved: {len(data_to_save)} samples")
                 
-            except Exception as e:
-                QMessageBox.critical(self, "Error", f"Failed to save data: {str(e)}")
+        #     except Exception as e:
+        #         QMessageBox.critical(self, "Error", f"Failed to save data: {str(e)}")
     
     def closeEvent(self, event): # type: ignore
         """Handle widget close event - ensure clean shutdown"""
-        try:
-            if hasattr(self, 'data_generator') and self.data_generator.running:
-                self.data_generator.stop_acquisition()
-                if self.data_generator.isRunning():
-                    self.data_generator.wait(2000)  # Wait up to 2 seconds for thread to finish
-            event.accept()
-        except Exception as e:
-            print(f"Error during close: {e}")
-            event.accept()  # Accept anyway to prevent hanging
+        event.accept()  # Accept anyway to prevent hanging
 
 
 class MainApplication(QMainWindow):
@@ -692,11 +570,6 @@ class MainApplication(QMainWindow):
     def closeEvent(self, event): # type: ignore
         """Handle application close event - ensure clean shutdown"""
         try:
-            if hasattr(self.display_widget, 'data_generator'):
-                if self.display_widget.data_generator.running:
-                    self.display_widget.data_generator.stop_acquisition()
-                    if self.display_widget.data_generator.isRunning():
-                        self.display_widget.data_generator.wait(2000)
             event.accept()
         except Exception as e:
             print(f"Error during application close: {e}")

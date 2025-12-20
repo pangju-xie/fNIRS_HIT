@@ -364,10 +364,10 @@ class ConfigurationManager(QWidget, Ui_ConfigForm):
         logger.info("Apply channel config called")
 
         try:
-            sample_rate_order = self._generate_sample_rate_order()
-            config_order = self._generate_config_order()
+            self.sample_rate_order = self._generate_sample_rate_order()
+            self.config_order = self._generate_config_order()
             
-            self.OnConfigSet.emit(sample_rate_order,config_order)
+            self.OnConfigSet.emit(self.sample_rate_order, self.config_order)
             self.deviceData.node_config = self.get_sensor_summary()
             
         except Exception as e:

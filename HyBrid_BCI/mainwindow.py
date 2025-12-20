@@ -3,6 +3,7 @@
 import sys
 import logging
 import os
+import numpy as np
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTimer, pyqtSignal, QSettings
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QMessageBox, 
@@ -152,6 +153,7 @@ class MainWindow(QMainWindow):
     batteryLevelChanged = pyqtSignal(int)
     configurationChanged = pyqtSignal()
     qualifyQuaryUpdate = pyqtSignal(dict)
+    displayUpdate = pyqtSignal(np.ndarray)
     
     def __init__(self):
         super().__init__()
@@ -480,6 +482,10 @@ class MainWindow(QMainWindow):
 
         if hasattr(self, 'display_widget') and self.display_widget is not None:
             try:
+                if hasattr(self.display_widget, 'OnSampleStart'):
+                    self.display_widget.OnSampleStart.disconnect()
+                if hasattr(self, 'displayUpdate'):
+                    self.displayUpdate.disconnect()
                 self.display_widget = None
             except Exception as e:
                 logger.warning(f"清理测试组件失败: {e}")
@@ -608,20 +614,29 @@ class MainWindow(QMainWindow):
             logger.debug("采样组件已存在，跳过重复初始化")
             return
         try:
-            self.display_widget = display.DisplayWidget(self.deviceData)
+            self.display_widget = display.DisplayWidget(self.state_manager.sensor_type, self.state_manager.sensors)
             self.component_manager.add_component('display', self.display_widget, self.ui.acquisitionLayout) # type: ignore
 
-            self.network.onDeviceSample.connect(lambda b: self.qualify_widget.start_stop_handler if (self.ui.tabWidget.currentIndex() == 3) else None)
-            self.network.onDeviceSample.connect(lambda b: self.state_manager.sensors['fnirs'].CleanData() if (self.ui.tabWidget.currentIndex() == 3 and b and 'fnirs' in self.state_manager.sensors) else None)  # 清除fnirs数据
-
-            # 采样按钮
-            self.display_widget.ui.startButton.clicked.connect(self.network.sendStartSample) # type: ignore
-            self.display_widget.ui.stopButton.clicked.connect(self.network.sendStopSample) # type: ignore
+            # self.network.onDeviceSample.connect(lambda b: self.qualify_widget.start_stop_handler if (self.ui.tabWidget.currentIndex() == 3) else None)
+            # self.network.onDeviceSample.connect(lambda b: self.state_manager.sensors['fnirs'].CleanData() if (self.ui.tabWidget.currentIndex() == 3 and b and 'fnirs' in self.state_manager.sensors) else None)  # 清除fnirs数据
+            if self.display_widget:
+                self.display_widget.OnSampleStart.connect(self.on_sample_start_set)
+                self.displayUpdate.connect(self.display_widget.on_new_data)
+            # # 采样按钮
+            # self.display_widget.ui.startButton.clicked.connect(self.network.sendStartSample) # type: ignore
+            # self.display_widget.ui.stopButton.clicked.connect(self.network.sendStopSample) # type: ignore
 
             logger.info("采样组件初始化成功")
         except Exception as e:
             logger.error(f"采样组件初始化失败: {e}")
             self.display_widget = None
+            
+    def on_sample_start_set(self, if_start: bool):
+        if if_start:
+            self.network.sendStartSample()
+        else:
+            self.network.sendStopSample()
+        logger.info(f"采样设置: {'开始' if if_start else '停止'}")
     
 
 
@@ -631,14 +646,26 @@ class MainWindow(QMainWindow):
             if self.network and self.state_manager.current_state >= WorkflowStates.CONNECTED:
                 # 加载测试组件
                 self.state_manager.set_state(WorkflowStates.CONNECTED)  # 点击“设置”时重设为未配置
-                self._initialize_qualify_widget()
+                # self._initialize_qualify_widget()
                 # 发送至设备
-                self.network.sendSampleRate(sample_data)
                 self.network.sendChannelConfig(channel_config)
-                logger.info("配置已发送到设备")
+                logger.info("通道配置已发送到设备")
                 
         except Exception as e:
             logger.error(f"配置设置失败: {e}")
+    
+    def on_channel_config_set_done(self, valid: bool):
+        """处理通道配置完成"""
+        if self.config_widget and valid:
+            self.config_widget.channel_config_send_done = valid
+            # 设置传感器配置
+            for sensor_name in self.state_manager.sensors.keys():
+                if sensor_name == 'fnirs':
+                    montage = self.config_widget.get_fnirs_source_detector()
+                    self.state_manager.sensors[sensor_name].setMontage(montage)
+            
+            self.network.sendSampleRate(self.config_widget.sample_rate_order) # type: ignore
+            # self._check_configuration_complete()
     
     def on_sample_rate_set_done(self, valid: bool):
         """处理采样率设置完成"""
@@ -650,25 +677,7 @@ class MainWindow(QMainWindow):
                 if (sensor_name in self.state_manager.sensors and 
                     sensor_name == 'fnirs'):
                     self.state_manager.sensors[sensor_name].setSampleRate(rates)
-            self._check_configuration_complete()
-    
-    def on_channel_config_set_done(self, valid: bool):
-        """处理通道配置完成"""
-        if self.config_widget and valid:
-            self.config_widget.channel_config_send_done = valid
-            # 设置传感器配置
-            for sensor_name in self.state_manager.sensors.keys():
-                if sensor_name == 'fnirs':
-                    montage = self.config_widget.get_fnirs_source_detector()
-                    self.state_manager.sensors[sensor_name].setMontage(montage)
-            self._check_configuration_complete()
-    
-    def _check_configuration_complete(self):
-        """检查配置是否完成"""
-        if (hasattr(self.config_widget, 'sample_rate_send_done') and
-            hasattr(self.config_widget, 'channel_config_send_done') and
-            self.config_widget.sample_rate_send_done and  # type: ignore
-            self.config_widget.channel_config_send_done): # type: ignore
+    #         self._check_configuration_complete()
             
             self.config_widget.sample_rate_send_done = False # type: ignore
             self.config_widget.channel_config_send_done = False # type: ignore
@@ -686,6 +695,17 @@ class MainWindow(QMainWindow):
     
     def on_sample_start_stop(self, is_start: bool):
         """处理数据采样开始/停止"""
+        if self.state_manager.is_shutting_down:
+            return
+        
+        if self.ui.tabWidget.currentIndex() == 3 and self.display_widget:
+            if is_start:
+                self.display_widget.set_start_control_states()
+                self._update_status("数据采样中...", "#4caf50")
+            else:
+                self.display_widget.set_stop_control_states()
+                self._update_status("数据采样已停止", "#2196f3")
+            
         status = "开始" if is_start else "停止"
         logger.info(f"数据采样{status}")
     
@@ -695,8 +715,10 @@ class MainWindow(QMainWindow):
             if sensor_type == SensorTypes.FNIRS:
                 if 'fnirs' in self.state_manager.sensors:
                     self.state_manager.sensors['fnirs'].updateData(packet_id, data)
+                    if self.display_widget and self.display_widget.startflag:
+                        self.displayUpdate.emit(self.state_manager.sensors['fnirs'].hemoglobin[-1,:,:])
         except Exception as e:
-            logger.error(f"数据处理失败: {e}")
+            logger.error(f"数据处理失败: {e}") 
     
     def on_data_patched(self, sensor_type, packet_id, data):
         """处理数据修补"""
