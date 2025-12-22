@@ -72,8 +72,8 @@ class BasePlotCanvas(FigureCanvas):
 class FNIRSPlotCanvas(BasePlotCanvas):
     """Canvas for fNIRS signals with HbO/Hb pairs - sweep mode"""
     
-    def __init__(self, parent, channels, frequency = 10, time = 30, width=15, height=8, dpi=100):
-        self.channel_offset = 20.0  # Double the offset for better spacing
+    def __init__(self, parent, channels, frequency = 10, time = 30, offset = 10.0, width=15, height=8, dpi=100):
+        self.channel_offset = offset  # Double the offset for better spacing
         self.physical_channels = channels
         num_channels = len(channels) * 2  # HbO + Hb for each channel
         
@@ -111,6 +111,18 @@ class FNIRSPlotCanvas(BasePlotCanvas):
         self.sweep_line = self.axes.axvline(x=0, color='green', linestyle='--', linewidth=1, alpha=0.7)
         
         self.fig.tight_layout()
+        
+    def modify_ylim(self, value):
+        self.axes.set_xlim((0, self.time))  # 0-120 seconds
+        # Add extra space at the top for better visibility (double offset)
+        self.channel_offset = value
+        y_min = -self.channel_offset
+        y_max = (len(self.physical_channels) - 1) * self.channel_offset * 2 + self.channel_offset
+        self.axes.set_ylim((y_min, y_max)) # type: ignore
+        self.axes.set_yticks(
+            np.arange(0, len(self.physical_channels) * self.channel_offset * 2, self.channel_offset * 2),
+            self.physical_channels
+        )
         
     def update_data(self, new_data):
         """Update plot with new data point - optimized sweep mode"""
@@ -156,6 +168,18 @@ class FNIRSPlotCanvas(BasePlotCanvas):
                 self.draw_idle()
         finally:
             self.mutex.unlock()
+    
+    def clear_plot(self):
+        """Clear all plotted data"""
+        locker = QMutexLocker(self.mutex)
+        for i in range(self.num_channels):
+            self.channel_data[i] = np.full(self.max_points, np.nan)  # Use NaN instead of zeros
+            self.channel_lines[i].set_data(self.time_data, self.channel_data[i])
+        self.data_index = 0
+        self.sweep_position = 0
+        if self.sweep_line:
+            self.sweep_line.set_xdata([0, 0])
+        self.draw_idle()
 
 
 class EEGPlotCanvas(BasePlotCanvas):
@@ -241,10 +265,12 @@ class DisplayWidget(QWidget):
     
     statusMessage = pyqtSignal(str)
     OnSampleStart = pyqtSignal(bool)
+    OnSamplePatch = pyqtSignal(int, list)  
     
     def __init__(self, sensor_type=SensorTypes.FNIRS, sensor_info = {}):
         super().__init__()
         self.sensor_type = sensor_type
+        self.sensor_info = sensor_info
         self.channels = {}
         self.signal_processor = {}
         self.sample_rate = {}
@@ -254,6 +280,8 @@ class DisplayWidget(QWidget):
         self.ui = Ui_DisplayWidget(sensor_type)
         self.ui.setupUi(self)
 
+        self.ui.signalTypeCombo.currentTextChanged.connect(self.on_signal_type_changed)
+        self.ui.fnirs_spinbox.valueChanged.connect(self.on_ylim_changed)
         # CRITICAL: Set the main layout to the widget
         self.setLayout(self.ui.mainLayout)
         
@@ -267,13 +295,13 @@ class DisplayWidget(QWidget):
             self.signal_processor[types] = create_signal_processor(sample_rate = self.sample_rate[types],
                                                           num_channels = len(self.channels[types]))
             if types == 'fnirs':
-                self.plot_canvas[types] = FNIRSPlotCanvas(self.ui.plotWidget, self.channels[types], frequency=self.sample_rate[types], time=30, width=12, height=6)
+                offset = self.ui.fnirs_spinbox.value()
+                self.plot_canvas[types] = FNIRSPlotCanvas(self.ui.plotWidget, self.channels[types], frequency=self.sample_rate[types], time=30, offset=offset, width=12, height=6)
             elif types == 'eeg':
                 self.plot_canvas[types] = EEGPlotCanvas(self.ui.plotWidget, self.channels[types], frequency=self.sample_rate[types], time=10, width=12, height=6)
             layout.addWidget(self.plot_canvas[types])
         
         # Initialize components
-        self.recorded_data = {}
         self.is_recording = False
         
         # Connect signals
@@ -288,8 +316,8 @@ class DisplayWidget(QWidget):
         self.ui.startButton.clicked.connect(self.start_acquisition)
         self.ui.stopButton.clicked.connect(self.stop_acquisition)
         self.ui.resetButton.clicked.connect(self.reset_system)
-        self.ui.recordButton.clicked.connect(self.toggle_recording)
-        self.ui.saveButton.clicked.connect(self.save_data)
+        self.ui.recordButton.clicked.connect(self.record_data)
+        # self.ui.saveButton.clicked.connect(self.save_data)
         self.ui.applyButton.clicked.connect(self.apply_filter_settings)
         
         # Connect checkbox changes
@@ -302,13 +330,24 @@ class DisplayWidget(QWidget):
             start_enabled=True,
             stop_enabled=False,
             reset_enabled=False,
-            record_enabled=False,
-            save_enabled=False
+            record_enabled=False
         )
         
     def emit_status_message(self, message):
         """Emit status message"""
         self.statusMessage.emit(message)
+        
+    def on_signal_type_changed(self):
+        for types in self.active_signals:
+            if types in self.plot_canvas:
+                self.plot_canvas[types].clear_plot()
+                
+    def on_ylim_changed(self):
+        """Handle Y-axis limit change for fNIRS plot"""
+        if 'fnirs' in self.plot_canvas:
+            value = self.ui.fnirs_spinbox.value()
+            self.plot_canvas['fnirs'].modify_ylim(value)
+        
         
     def on_filter_enabled_changed(self, signal_key, enabled):
         """Handle filter enable/disable - with QMutex protection"""
@@ -390,7 +429,7 @@ class DisplayWidget(QWidget):
     def clear_online_filter(self, signal_key):
         """Clear online filter for a specific signal type"""
         for ch in self.channels[signal_key]:
-            self.signal_processor[signal_key].clear_online_filter(ch) # type: ignore
+            self.signal_processor[signal_key].reset_online_filters(ch) # type: ignore
 
     def set_start_control_states(self):
         """Set UI states when starting acquisition"""
@@ -398,8 +437,7 @@ class DisplayWidget(QWidget):
             start_enabled=False,
             stop_enabled=True,
             reset_enabled=True,
-            record_enabled=True,
-            save_enabled=False
+            record_enabled=True
         )    
         
     def set_stop_control_states(self):
@@ -408,20 +446,26 @@ class DisplayWidget(QWidget):
             start_enabled=True,
             stop_enabled=False,
             reset_enabled=False,
-            record_enabled=False,
-            save_enabled=True if self.recorded_data else False
+            record_enabled=False
         )
         
     def start_acquisition(self):
         """Start data acquisition"""
         self.startflag = 1
         self.OnSampleStart.emit(True)
+        for types in self.active_signals:
+            self.plot_canvas[types].clear_plot()
         self.emit_status_message("Acquiring data...")
         
     def stop_acquisition(self):
         """Stop data acquisition"""
         self.startflag = 0
         self.OnSampleStart.emit(False)
+        if self.is_recording:
+            self.is_recording = False
+            for types in self.active_signals:
+                if types == 'fnirs' and self.sensor_info[types].get_packet.shape[0] > 0:
+                    self.OnSamplePatch.emit(SensorTypes.FNIRS, self.sensor_info[types].get_packet)
         
         self.emit_status_message("Data acquisition stopped")
         
@@ -429,7 +473,10 @@ class DisplayWidget(QWidget):
         """Reset the entire system"""
         # Reset state
         self.is_recording = False
-        self.recorded_data.clear()
+        
+        for types in self.active_signals:
+            if 'fnirs' == types:
+                self.sensor_info[types].CleanData()
         
         # Clear plot with mutex protection
         if hasattr(self, 'plot_canvas'):
@@ -443,23 +490,29 @@ class DisplayWidget(QWidget):
         # Update UI
         self.ui.recordButton.setText("记录")
         self.ui.set_control_states(
-            start_enabled=True,
-            stop_enabled=False,
-            reset_enabled=False,
-            record_enabled=False,
-            save_enabled=False
+            start_enabled=False,
+            stop_enabled= True,
+            reset_enabled=True,
+            record_enabled=True
         )
         self.emit_status_message("System reset")
         
-    def toggle_recording(self):
+    def record_data(self):
         """Toggle data recording"""
-        self.is_recording = not self.is_recording
+        self.is_recording  = True
         if self.is_recording:
-            self.ui.recordButton.setText("停止记录")
+            self.ui.recordButton.setText("开始记录")
             self.emit_status_message("Recording data...")
+            if 'fnirs' in self.active_signals:
+                self.sensor_info['fnirs'].StartRecord()
+            self.ui.set_control_states(
+            start_enabled=False,
+            stop_enabled= True,
+            reset_enabled=False,
+            record_enabled=False
+        )
         else:
             self.ui.recordButton.setText("记录")
-            self.emit_status_message(f"Recording stopped. {len(self.recorded_data)} samples recorded")
     
     def on_new_data(self, data):
         """Handle new data from generator - with error handling"""
@@ -470,10 +523,6 @@ class DisplayWidget(QWidget):
             for ch in range(len(processed_data)):
                 processed_data[ch] = self.signal_processor[types].process_sample_online(ch, processed_data[ch])
         
-        # Record data if recording is enabled
-            if self.is_recording:
-                self.recorded_data[types].append(processed_data.copy())
-        
         # Update plot (will skip if mutex is locked)
             if hasattr(self, 'plot_canvas'):
                 self.plot_canvas[types].update_data(processed_data)
@@ -483,48 +532,12 @@ class DisplayWidget(QWidget):
     
     def save_data(self):
         """Save recorded data to file"""
-        if not self.recorded_data:
-            QMessageBox.warning(self, "Warning", "No data to save.")
-            return
+        self.is_recording = False
         
-        # filename, _ = QFileDialog.getSaveFileName(
-        #     self, "Save Data", 
-        #     f"signal_data_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
-        #     "CSV Files (*.csv);;JSON Files (*.json)"
-        # )
-        
-        # if filename:
-        #     try:
-        #         data_to_save = np.array(self.recorded_data)
-                
-        #         if filename.endswith('.json'):
-        #             save_dict = {
-        #                 'data': data_to_save.tolist(),
-        #                 'metadata': {
-        #                     'timestamp': datetime.now().isoformat(),
-        #                     'sample_rate': self.signal_processor.sample_rate,
-        #                     'sensor_type': self.sensor_type,
-        #                     'num_channels': data_to_save.shape[1] if data_to_save.ndim > 1 else 1,
-        #                     'signal_type': self.ui.get_signal_type(),
-        #                     'num_samples': len(data_to_save),
-        #                     'active_filters': self.ui.get_active_filter_params()
-        #                 }
-        #             }
-        #             with open(filename, 'w') as f:
-        #                 json.dump(save_dict, f, indent=2)
-        #         else:
-        #             if data_to_save.ndim == 1:
-        #                 data_to_save = data_to_save.reshape(-1, 1)
-        #             df = pd.DataFrame(data_to_save, 
-        #                             columns=[f'Channel_{i+1}' for i in range(data_to_save.shape[1])])
-        #             df['Time'] = np.arange(len(df)) / self.signal_processor.sample_rate
-        #             df.to_csv(filename, index=False)
-                
-        #         QMessageBox.information(self, "Success", f"Data saved to {filename}")
-        #         self.emit_status_message(f"Data saved: {len(data_to_save)} samples")
-                
-        #     except Exception as e:
-        #         QMessageBox.critical(self, "Error", f"Failed to save data: {str(e)}")
+        for types in self.active_signals:
+            if types == 'fnirs':
+                self.sensor_info[types].save_data(data_type = 'csv')
+
     
     def closeEvent(self, event): # type: ignore
         """Handle widget close event - ensure clean shutdown"""

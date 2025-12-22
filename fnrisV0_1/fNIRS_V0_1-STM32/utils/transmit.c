@@ -563,6 +563,7 @@ void decode_received_command(uint8_t *data, int length)
     static uint8_t is_initialized = 0;  /* 初始化状态标志 */
     uint32_t package_number = 0;
     uint8_t response = 0;
+    SENSOR_TYPE sub_sensor_type = 0;
     
 //    /* 去除开头的0x00数据 */
 //    int valid_start_index = 0;
@@ -659,9 +660,12 @@ void decode_received_command(uint8_t *data, int length)
             
         case CMD_SUPPLEMENTARY:
             /* 提取数据包编号并反转字节序 */
-            memcpy((uint8_t *)&package_number, data + FRAME_DATA_POSITION + 1, 4);
-            reverse_array((uint8_t *)&package_number, 4);
-            handle_data_supplement_request(sensor_type, package_number);
+            sub_sensor_type = data[FRAME_DATA_POSITION];
+            for(uint8_t i = 1; i< data_length; i+=4){
+              memcpy((uint8_t *)&package_number, data + FRAME_DATA_POSITION + i, 4);
+              reverse_array((uint8_t *)&package_number, 4);
+              handle_data_supplement_request(sub_sensor_type, package_number);
+            }
             break;
             
         default:

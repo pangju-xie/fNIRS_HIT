@@ -547,8 +547,9 @@ class UdpPort(QWidget):
             logger.info(f"Channel config sent for all type")
         return success
     
-    def sendDataPatching(self, sensor_type: int, patch_data: int) -> bool:
-        data = [sensor_type, (patch_data>>24) & 0xFF, (patch_data>>16) & 0xFF, (patch_data>>8) & 0xFF, patch_data & 0xFF]
+    def sendDataPatching(self, sensor_type: int, patch_data: list) -> bool:
+        data = [sensor_type]
+        data.extend(patch_data)
         success = self._send_command(Commands.DATA_PATCHING, data)
         if success:
             logger.info(f"Data patching sent for type {sensor_type}")

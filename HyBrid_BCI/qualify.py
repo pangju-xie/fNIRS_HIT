@@ -134,6 +134,7 @@ class ChannelWidget(QWidget):
         self.quality_label.setText(status)
         self.quality_label.setStyleSheet(f"border: 1px solid #ddd; padding: 5px; background-color: {color}; color: white; font-weight: bold;")
         return status, color
+    
 class QualifyApp(QWidget):
     """Main application class for fNIRS channel quality assessment"""
 

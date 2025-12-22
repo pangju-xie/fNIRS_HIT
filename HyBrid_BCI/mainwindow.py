@@ -20,6 +20,8 @@ import qualify
 import display
 from devicedata import DeviceData
 
+from class_info import *
+
 os.environ['NUMEXPR_MAX_THREADS'] = '16'
 
 # Configure logging
@@ -33,69 +35,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Constants
-class WorkflowStates:
-    """工作流状态定义"""
-    DISCONNECTED = 0
-    CONNECTED = 1
-    CONFIGURED = 2
-    TESTED = 3
-    ACQUIRED = 4
-    ANALYZED = 5
-
-class SensorTypes:
-    """传感器类型定义"""
-    NotInit = 0
-    EEG = 1
-    SEMG = 2
-    EEG_SEMG = 3
-    FNIRS = 4
-    EEG_FNIRS = 5
-    SEMG_FNIRS = 6
-    EEG_SEMG_FNIRS = 7
-
-class StateManager:
-    """状态管理器"""
-    
-    def __init__(self):
-        self.current_state = WorkflowStates.DISCONNECTED
-        self.sensor_type = SensorTypes.NotInit
-        self.sensors = {}
-        self.is_connecting = False
-        self.is_disconnecting = False
-        self.is_shutting_down = False
-        self.state_callbacks = []
-    
-    def register_callback(self, callback):
-        """注册状态变更回调"""
-        self.state_callbacks.append(callback)
-    
-    def set_state(self, new_state):
-        """设置新状态并通知回调"""
-        if self.current_state != new_state:
-            old_state = self.current_state
-            self.current_state = new_state
-            for callback in self.state_callbacks:
-                try:
-                    callback(old_state, new_state)
-                except Exception as e:
-                    logger.error(f"状态回调执行失败: {e}")
-    
-    def can_transition_to(self, target_state):
-        """检查是否可以转换到目标状态"""
-        valid_transitions = {
-            WorkflowStates.DISCONNECTED: [WorkflowStates.CONNECTED],
-            WorkflowStates.CONNECTED: [WorkflowStates.DISCONNECTED, WorkflowStates.CONFIGURED],
-            WorkflowStates.CONFIGURED: [WorkflowStates.DISCONNECTED, WorkflowStates.TESTED, WorkflowStates.CONNECTED],
-            WorkflowStates.TESTED: [WorkflowStates.DISCONNECTED, WorkflowStates.ACQUIRED, WorkflowStates.CONNECTED],
-            WorkflowStates.ACQUIRED: [WorkflowStates.DISCONNECTED, WorkflowStates.ANALYZED, WorkflowStates.CONNECTED],
-            WorkflowStates.ANALYZED: [WorkflowStates.DISCONNECTED]
-        }
-        return target_state in valid_transitions.get(self.current_state, [])
-
 class ComponentManager:
-    """组件管理器 - 简化版本"""
-    
     def __init__(self, main_window):
         self.main_window = main_window
         self.components = {}
@@ -142,11 +82,11 @@ class ComponentManager:
         for name in list(self.components.keys()):
             self.remove_component(name)
 
+
 class MainWindow(QMainWindow):
     """
-    主窗口 - 优化的响应式设计
+    主窗口
     """
-    
     # 定义信号
     deviceConnectionChanged = pyqtSignal(bool)
     workflowStateChanged = pyqtSignal(int, int)  # old_state, new_state
@@ -293,6 +233,11 @@ class MainWindow(QMainWindow):
         self.timers['battery_query'] = QTimer()
         self.timers['battery_query'].timeout.connect(self.query_battery)
         self.timers['battery_query'].setInterval(10000)
+        
+        # 补包超时定时器
+        self.timers['data_patch_timeout'] = QTimer()
+        self.timers['data_patch_timeout'].timeout.connect(self.on_data_patch_timeout)
+        self.timers['data_patch_timeout'].setInterval(3000)
     
     def _on_state_changed(self, old_state, new_state):
         """状态变更回调"""
@@ -622,6 +567,7 @@ class MainWindow(QMainWindow):
             if self.display_widget:
                 self.display_widget.OnSampleStart.connect(self.on_sample_start_set)
                 self.displayUpdate.connect(self.display_widget.on_new_data)
+                self.display_widget.OnSamplePatch.connect(self.network.sendDataPatching)  # type: ignore
             # # 采样按钮
             # self.display_widget.ui.startButton.clicked.connect(self.network.sendStartSample) # type: ignore
             # self.display_widget.ui.stopButton.clicked.connect(self.network.sendStopSample) # type: ignore
@@ -638,8 +584,6 @@ class MainWindow(QMainWindow):
             self.network.sendStopSample()
         logger.info(f"采样设置: {'开始' if if_start else '停止'}")
     
-
-
     def on_config_set(self, sample_data, channel_config):
         """处理配置设置"""
         try:
@@ -704,6 +648,8 @@ class MainWindow(QMainWindow):
                 self._update_status("数据采样中...", "#4caf50")
             else:
                 self.display_widget.set_stop_control_states()
+                # self.display_widget.is_recording = False
+                # self.display_widget.save_data()
                 self._update_status("数据采样已停止", "#2196f3")
             
         status = "开始" if is_start else "停止"
@@ -711,18 +657,33 @@ class MainWindow(QMainWindow):
     
     def on_data_received(self, sensor_type, packet_id, data):
         """处理接收到的数据"""
-        try:
-            if sensor_type == SensorTypes.FNIRS:
-                if 'fnirs' in self.state_manager.sensors:
-                    self.state_manager.sensors['fnirs'].updateData(packet_id, data)
-                    if self.display_widget and self.display_widget.startflag:
-                        self.displayUpdate.emit(self.state_manager.sensors['fnirs'].hemoglobin[-1,:,:])
-        except Exception as e:
-            logger.error(f"数据处理失败: {e}") 
+        if sensor_type == SensorTypes.FNIRS and 'fnirs' in self.state_manager.sensors:
+            self.state_manager.sensors['fnirs'].updateData(packet_id, data)
+            if self.display_widget and self.display_widget.startflag:
+                display_signal_type = self.display_widget.ui.get_signal_type()
+                if display_signal_type == '原始光强':
+                    self.displayUpdate.emit(self.state_manager.sensors['fnirs'].raw[-1,:,:])
+                elif display_signal_type == '光密度OD':
+                    self.displayUpdate.emit(self.state_manager.sensors['fnirs'].OD[-1,:,:])
+                elif display_signal_type == '血红蛋白浓度':
+                    self.displayUpdate.emit(self.state_manager.sensors['fnirs'].hemoglobin[-1,:,:])
+        
     
     def on_data_patched(self, sensor_type, packet_id, data):
         """处理数据修补"""
-        logger.debug(f"数据修补: {sensor_type}, {packet_id}")
+        if sensor_type == SensorTypes.FNIRS and 'fnirs' in self.state_manager.sensors:
+            self.timer['data_patch_timeout'].restart()
+            self.state_manager.sensors['fnirs'].patchData(packet_id, data)
+            
+    def on_data_patch_timeout(self):
+        """处理数据修补超时"""
+        if 'fnirs' in self.state_manager.sensors:
+            patch_size = self.state_manager.sensors['fnirs'].get_packet.shape[0]
+            if patch_size > 0:
+                self.network.sendDataPatching(SensorTypes.FNIRS, self.state_manager.sensors['fnirs'].get_packet) # type: ignore
+            else:
+                self.state_manager.sensors['fnirs'].save_data(data_type='csv')
+                self.timers['data_patch_timeout'].stop()
     
     def on_battery_updated(self, battery_level):
         """处理电池电量更新"""
@@ -1118,9 +1079,9 @@ def main():
         app = QApplication(sys.argv)
         
         # 设置应用程序属性
-        app.setApplicationName("fNIRS Data Acquisition System")
-        app.setApplicationVersion("3.1")
-        app.setOrganizationName("fNIRS Solutions")
+        app.setApplicationName("fNIRS 信号采集系统")
+        app.setApplicationVersion("1.1")
+        # app.setOrganizationName("fNIRS Solutions")
         
         # 启用高DPI缩放
         app.setAttribute(QtCore.Qt.ApplicationAttribute.AA_EnableHighDpiScaling, True)
@@ -1130,7 +1091,7 @@ def main():
         window = MainWindow()
         window.show()
         
-        logger.info("应用程序启动成功 - 优化响应式设计")
+        logger.info("应用程序启动成功")
         
         # 启动事件循环
         sys.exit(app.exec_())

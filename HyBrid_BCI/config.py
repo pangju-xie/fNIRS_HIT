@@ -21,6 +21,7 @@ import numpy as np
 from ui_config import Ui_ConfigForm, UIManager
 import locate
 from devicedata import DeviceData as DeviceData
+from class_info import SensorTypes
 
 # Configure comprehensive logging
 import logging
@@ -33,17 +34,6 @@ logging.basicConfig(
     ]
 )
 logger = logging.getLogger(__name__)
-
-class SensorTypes:
-    """Define sensor types as bit flags"""
-    NotInit = 0
-    EEG = 1
-    SEMG = 2
-    EEG_SEMG = 3
-    FNIRS = 4
-    EEG_FNIRS = 5
-    SEMG_FNIRS = 6
-    EEG_SEMG_FNIRS = 7
 
 
 class SensorType(Enum):

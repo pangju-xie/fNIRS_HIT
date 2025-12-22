@@ -1,0 +1,98 @@
+{
+  "enabled_sensor_types": [
+    "fnirs"
+  ],
+  "sampling_rates": {
+    "fnirs": 10
+  },
+  "channel_counts": {
+    "fnirs_sources": 2,
+    "fnirs_detectors": 2
+  },
+  "enabled_channels": {
+    "fnirs": {
+      "S1-D1": {
+        "node_pair": "FCz-FC2",
+        "distance": 34
+      },
+      "S1-D2": {
+        "node_pair": "FCz-Cz",
+        "distance": 35
+      },
+      "S2-D1": {
+        "node_pair": "C2-FC2",
+        "distance": 34
+      },
+      "S2-D2": {
+        "node_pair": "C2-Cz",
+        "distance": 35
+      }
+    },
+    "fnirssource": {
+      "1": {
+        "node_name": "FCz",
+        "position_3d": [
+          0,
+          34,
+          81
+        ]
+      },
+      "2": {
+        "node_name": "C2",
+        "position_3d": [
+          34,
+          0,
+          81
+        ]
+      }
+    },
+    "fnirsdetect": {
+      "1": {
+        "node_name": "FC2",
+        "position_3d": [
+          33,
+          33,
+          74
+        ]
+      },
+      "2": {
+        "node_name": "Cz",
+        "position_3d": [
+          0,
+          0,
+          88
+        ]
+      }
+    },
+    "eeg": {}
+  },
+  "sensor_configs": {
+    "fnirs": {
+      "color": [
+        "#E91E63",
+        "#1040ff"
+      ],
+      "prefix": [
+        "S",
+        "D"
+      ],
+      "max_channels": 0,
+      "min_channels": 0,
+      "channels_per_row": 8,
+      "max_sources": 32,
+      "max_detectors": 32,
+      "min_sources": 1,
+      "min_detectors": 1
+    }
+  },
+  "metadata": {
+    "total_channels": {
+      "fnirs": 4
+    },
+    "configuration_timestamp": "周一 12月 22 16:01:17 2025",
+    "enabled_sensors": [
+      "fnirs"
+    ],
+    "version": "2.0"
+  }
+}

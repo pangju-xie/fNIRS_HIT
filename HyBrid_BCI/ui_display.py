@@ -7,34 +7,8 @@ including EEG, sEMG, and fNIRS signals with dict-based parameter management.
 """
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-
-
-class SensorTypes:
-    """传感器类型定义"""
-    NotInit = 0
-    EEG = 1
-    SEMG = 2
-    EEG_SEMG = 3
-    FNIRS = 4
-    EEG_FNIRS = 5
-    SEMG_FNIRS = 6
-    EEG_SEMG_FNIRS = 7
+from class_info import SensorTypes
     
-    @classmethod
-    def get_active_signals(cls, sensor_type):
-        """根据传感器类型获取激活的信号列表"""
-        signal_map = {
-            cls.NotInit: [],
-            cls.EEG: ['eeg'],
-            cls.SEMG: ['semg'],
-            cls.EEG_SEMG: ['eeg', 'semg'],
-            cls.FNIRS: ['fnirs'],
-            cls.EEG_FNIRS: ['eeg', 'fnirs'],
-            cls.SEMG_FNIRS: ['semg', 'fnirs'],
-            cls.EEG_SEMG_FNIRS: ['eeg', 'semg', 'fnirs']
-        }
-        return signal_map.get(sensor_type, [])
-
 
 class Ui_DisplayWidget(object):
     """UI class for the Display Widget - handles only UI setup and styling"""
@@ -137,6 +111,11 @@ class Ui_DisplayWidget(object):
         spacer = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.controlLayout.addItem(spacer)
         
+        self._create_ylim_spinbox()
+        # Add horizontal spacer
+        spacer = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.controlLayout.addItem(spacer)
+        
         # Filter enable checkboxes
         self._create_filter_checkboxes()
         
@@ -179,15 +158,16 @@ class Ui_DisplayWidget(object):
         self.stopButton.setFocusPolicy(QtCore.Qt.FocusPolicy.StrongFocus)
         self.controlLayout.addWidget(self.stopButton)
         
-        self.saveButton = QtWidgets.QPushButton("保存")
-        self.saveButton.setObjectName("saveButton")
-        self.saveButton.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
-        self.saveButton.setToolTip("Save recorded data to file")
-        self.saveButton.setEnabled(False)
-        self.saveButton.setFocusPolicy(QtCore.Qt.FocusPolicy.NoFocus)
-        self.controlLayout.addWidget(self.saveButton)
+    def _create_ylim_spinbox(self):
+        self.ylimlabel = QtWidgets.QLabel("Y轴范围:")
+        self.ylimlabel.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
+        self.controlLayout.addWidget(self.ylimlabel)
         
-        
+        self.fnirs_spinbox = QtWidgets.QSpinBox()
+        self.fnirs_spinbox.setRange(0, 5000)
+        self.fnirs_spinbox.setValue(10)
+        self.controlLayout.addWidget(self.fnirs_spinbox)
+
     def _create_filter_checkboxes(self):
         """Create filter enable checkboxes"""
         filter_layout = QtWidgets.QHBoxLayout()
@@ -376,8 +356,7 @@ class Ui_DisplayWidget(object):
             'startButton': '开始',
             'resetButton': '复位',
             'recordButton': '记录',
-            'stopButton': '停止',
-            'saveButton': '保存'
+            'stopButton': '停止'
         }
         
         for button_name, text in button_texts.items():
@@ -412,8 +391,7 @@ class Ui_DisplayWidget(object):
             'startButton': True,
             'resetButton': False,
             'recordButton': False,
-            'stopButton': False,
-            'saveButton': False
+            'stopButton': False
         }
         
         for button_name, enabled in button_states.items():
@@ -474,7 +452,7 @@ class Ui_DisplayWidget(object):
         tab_order = []
         
         # Control buttons
-        for button_name in ['startButton', 'resetButton', 'recordButton', 'stopButton', 'saveButton']:
+        for button_name in ['startButton', 'resetButton', 'recordButton', 'stopButton']:
             if hasattr(self, button_name):
                 tab_order.append(getattr(self, button_name))
         
@@ -581,7 +559,7 @@ class Ui_DisplayWidget(object):
     def get_control_states(self):
         """Get current state of control buttons"""
         states = {}
-        button_names = ['startButton', 'resetButton', 'recordButton', 'stopButton', 'saveButton']
+        button_names = ['startButton', 'resetButton', 'recordButton', 'stopButton']
         
         for button_name in button_names:
             if hasattr(self, button_name):
@@ -595,8 +573,7 @@ class Ui_DisplayWidget(object):
             'start_enabled': 'startButton',
             'stop_enabled': 'stopButton',
             'reset_enabled': 'resetButton',
-            'record_enabled': 'recordButton',
-            'save_enabled': 'saveButton'
+            'record_enabled': 'recordButton'
         }
         
         for state_name, enabled in states.items():

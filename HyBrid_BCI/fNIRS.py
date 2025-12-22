@@ -72,15 +72,26 @@ class fNIRS:
         self.sample_rate = sample_rate  # 采样率
         self.set_done = False
         
+        self.record_time = 0  # 记录时间
+        
         self.time = np.array([])
         self.raw = np.array([]).reshape(0, 0, 0)  # [time, wavelength, channel]
         self.OD = np.array([]).reshape(0, 0, 0)   # [time, wavelength, channel]
         self.hemoglobin = np.array([]).reshape(0, 0, 0)  # [time, chromophore, channel]
+        self.base_hemo = np.array([]).reshape(0, 0, 0)  # 基线血红蛋白浓度 [chromophore, channel]
         self.get_packet = np.array([])
+        
         
         # SNIRF相关属性
         self.subject_info = subject_info    
         self.measurement_info = {}
+        
+    def StartRecord(self):
+        """开始记录数据"""
+        self.record_time = self.time[-1] if len(self.time) > 0 else 0 # type: ignore
+        self.start_record_locate_time = len(self.time) # type: ignore
+        self.get_packet = np.array([])
+        logger.info("fNIRS start recording.")
         
     def getSampleRate(self):
         """获取采样率"""
@@ -159,25 +170,28 @@ class fNIRS:
         self.raw = np.array([]).reshape(0, len(self.struct.Wavelength), self.channel_num)
         self.OD = np.array([]).reshape(0, len(self.struct.Wavelength), self.channel_num)
         self.hemoglobin = np.array([]).reshape(0, 2, self.channel_num)
+        self.get_packet = np.array([])
+        self.time = np.array([])
         
-    def updateData(self, packet_id, data):
-        """更新传感器数据
+    def patchData(self, packet_id, data):
+        """修补丢失的数据包
         
         Args:
+            packet_id: 数据包ID
             data: 原始数据包 (字节数组)
         """
         if not self.set_done:
             raise RuntimeError("Channel configuration not set.")
         
-        try:
-            # 解析包ID
-            self.get_packet = np.append(self.get_packet, packet_id)
-            times = (packet_id - self.get_packet[0]) / self.sample_rate
-            self.time = np.append(self.time, times) # type: ignore
+        if packet_id in self.get_packet:
+            self.get_packet = self.get_packet[self.get_packet != packet_id] # 移除已补包ID
+            
+            logger.info(f"fNIRS patch id {packet_id} ")
+            patch_place = packet_id - int(self.record_time * self.sample_rate) + self.start_record_locate_time # type: ignore
             
             # 初始化数据行
             dataline = np.zeros((1, len(self.struct.Wavelength), self.channel_num))
-            
+            dataline[0] = packet_id # 先填充为上一个数据，防止数据缺失
             # 处理每个通道的红光和红外光数据
             for ch_idx in range(self.channel_num):
                 for wl_idx in range(len(self.struct.Wavelength)):
@@ -190,13 +204,57 @@ class fNIRS:
                     if val == 0:
                         val = 1  # 避免log(0)
                     
-                    val = val * 3300 / 0x780000  # 计算电压值(mV), Vref=3.3V
+                    val = val * 5000 / 0x780000  # 计算电压值(mV), Vref=3.3V
                     dataline[0, wl_idx, ch_idx] = val
+            # dataline[0,0,0] = packet_id  # 恢复包ID
+            np.insert(self.raw, patch_place, dataline, axis=0)
+        
+    
+    def updateData(self, packet_id, data):
+        """更新传感器数据
+        
+        Args:
+            data: 原始数据包 (字节数组)
+        """
+        if not self.set_done:
+            raise RuntimeError("Channel configuration not set.")
+        
+        # 解析包ID
+        last_packet_id = self.get_packet[-1] if len(self.get_packet) > 0 else -1
+        logger.info(f"fNIRS received packet ID: {packet_id}")
+        if packet_id != int(last_packet_id + 1):
+            for missing_id in range(int(last_packet_id + 1), packet_id):
+                logger.warning(f"fNIRS missing packet ID: {missing_id}, packets id: {self.get_packet}")
+                self.get_packet = np.append(self.get_packet, missing_id)
+                times = (missing_id - self.get_packet[0]) / self.sample_rate
+                self.time = np.append(self.time, times) # type: ignore
+                
+        self.get_packet = np.append(self.get_packet, packet_id)
+        times = (packet_id - self.get_packet[0]) / self.sample_rate
+        self.time = np.append(self.time, times) # type: ignore
+        
+        # 初始化数据行
+        dataline = np.zeros((1, len(self.struct.Wavelength), self.channel_num))
+        # dataline[0] = packet_id # 先填充为上一个数据，防止数据缺失
+        # 处理每个通道的红光和红外光数据
+        for ch_idx in range(self.channel_num):
+            for wl_idx in range(len(self.struct.Wavelength)):
+                data_idx = ch_idx * len(self.struct.Wavelength) + wl_idx
+                val = data[data_idx*3+2] | (data[data_idx*3+1] << 8) | (data[data_idx*3+0] << 16)  # 24位补码
+                
+                # 计算数据值
+                if val > 0X7FFFFF:
+                    val = 0XFFFFFF - val  # 负数转正数
+                if val == 0:
+                    val = 1  # 避免log(0)
+                
+                val = val * 5000 / 0x780000  # 计算电压值(mV), Vref=3.3V
+                dataline[0, wl_idx, ch_idx] = val
 
-            self._calculate_fnirs_data(dataline)
+        self._calculate_fnirs_data(dataline)
+        
+        return dataline
             
-        except Exception as e:
-            logger.error(f"Error updating data: {e}")
 
     def _calculate_strength(self):  # 获取一段时间内的平均原始光强
         if self.raw.shape[0] < 10:
@@ -249,9 +307,10 @@ class fNIRS:
         """计算fNIRS数据"""
         # 添加原始数据
         self.raw = np.concatenate((self.raw, dataline), axis=0)
-        
+        # packet_id = int(dataline[0, 0, 0])
         # 计算光学密度
         OD = -np.log(dataline)
+        # OD[0, 0, 0] = packet_id  # 恢复包ID
         self.OD = np.concatenate((self.OD, OD), axis=0)
         
         # 计算血红蛋白浓度
@@ -261,6 +320,12 @@ class fNIRS:
             hb_values = np.dot(self.struct.get_D_matrix(), od_channel)
             hemoglobin[0, :, ch_idx] = hb_values
         
+        # hemoglobin[0,0,0] = packet_id  # 恢复包ID
+        if(self.hemoglobin.shape[0]==0):
+            self.base_hemo = hemoglobin.copy()
+        
+        hemoglobin = hemoglobin - self.base_hemo
+        # hemoglobin[0,0,0] = packet_id  # 恢复包ID
         self.hemoglobin = np.concatenate((self.hemoglobin, hemoglobin), axis=0)
     
     def exportData(self, subfileix='XFW', file_path=None, data_type='snirf'):

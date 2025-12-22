@@ -3688,166 +3688,166 @@ Image Symbol Table
     [Anonymous Symbol]                       0x0800a52c   Section        0  bat_adc.o(.text.convert_voltage_to_percentage)
     [Anonymous Symbol]                       0x0800a5b8   Section        0  ads1258.o(.text.count_channel_info)
     [Anonymous Symbol]                       0x0800a6b4   Section        0  transmit.o(.text.decode_received_command)
-    [Anonymous Symbol]                       0x0800a8ac   Section        0  utils.o(.text.delay_microseconds)
-    [Anonymous Symbol]                       0x0800a98c   Section        0  bat_adc.o(.text.detect_battery_status)
-    [Anonymous Symbol]                       0x0800aa5c   Section        0  bat_adc.o(.text.determine_battery_status)
-    [Anonymous Symbol]                       0x0800aa98   Section        0  transmit.o(.text.encode_command_response)
-    [Anonymous Symbol]                       0x0800aaf8   Section        0  fnirs.o(.text.fnirs_struct_init)
-    [Anonymous Symbol]                       0x0800ab4c   Section        0  transmit.o(.text.generate_crc16_table)
-    [Anonymous Symbol]                       0x0800abdc   Section        0  bat_adc.o(.text.get_battery_percentage)
-    [Anonymous Symbol]                       0x0800abe8   Section        0  bat_adc.o(.text.get_battery_status)
-    [Anonymous Symbol]                       0x0800ac00   Section        0  transmit.o(.text.handle_channel_config_command)
-    [Anonymous Symbol]                       0x0800add0   Section        0  bat_adc.o(.text.handle_critical_battery_level)
-    [Anonymous Symbol]                       0x0800ae3c   Section        0  transmit.o(.text.handle_data_supplement_request)
-    [Anonymous Symbol]                       0x0800ae88   Section        0  bat_adc.o(.text.handle_low_battery_warning)
-    [Anonymous Symbol]                       0x0800aeec   Section        0  transmit.o(.text.handle_sample_rate_command)
-    [Anonymous Symbol]                       0x0800b048   Section        0  transmit.o(.text.init_data_frame)
-    [Anonymous Symbol]                       0x0800b0b0   Section        0  transmit.o(.text.init_data_frame_module)
-    [Anonymous Symbol]                       0x0800b13c   Section        0  tlc5940.o(.text.init_tlc_struct)
-    [Anonymous Symbol]                       0x0800b1e0   Section        0  main.o(.text.main)
-    [Anonymous Symbol]                       0x0800b2d8   Section        0  fnirs.o(.text.nirs_config)
-    [Anonymous Symbol]                       0x0800b4cc   Section        0  fnirs.o(.text.nirs_data_collect)
-    [Anonymous Symbol]                       0x0800b57c   Section        0  fnirs.o(.text.nirs_data_send)
-    [Anonymous Symbol]                       0x0800b648   Section        0  fnirs.o(.text.nirs_init)
-    [Anonymous Symbol]                       0x0800b66c   Section        0  fnirs.o(.text.nirs_set_sample_rate)
-    [Anonymous Symbol]                       0x0800b71c   Section        0  fnirs.o(.text.nirs_start)
-    [Anonymous Symbol]                       0x0800b77c   Section        0  fnirs.o(.text.nirs_stop)
-    [Anonymous Symbol]                       0x0800b7fc   Section        0  fnirs.o(.text.nirs_timer_handle)
-    [Anonymous Symbol]                       0x0800ba3c   Section        0  ads1258.o(.text.readMultipleRegisters)
-    [Anonymous Symbol]                       0x0800bac4   Section        0  ads1258.o(.text.readSingleRegister)
-    [Anonymous Symbol]                       0x0800bb34   Section        0  utils.o(.text.reverse_array)
-    [Anonymous Symbol]                       0x0800bb80   Section        0  fnirs.o(.text.sd_read_nirs)
-    [Anonymous Symbol]                       0x0800bc44   Section        0  csnp32.o(.text.sdio_init)
-    [Anonymous Symbol]                       0x0800bed4   Section        0  csnp32.o(.text.sdio_read)
-    [Anonymous Symbol]                       0x0800c024   Section        0  csnp32.o(.text.sdio_write)
-    [Anonymous Symbol]                       0x0800c244   Section        0  ads1258.o(.text.set_ads_channel)
-    [Anonymous Symbol]                       0x0800c268   Section        0  led.o(.text.set_led_color)
-    [Anonymous Symbol]                       0x0800c518   Section        0  transmit.o(.text.spi_transmit_dma)
-    [Anonymous Symbol]                       0x0800c5cc   Section        0  utils.o(.text.start_debug_dma_transfer)
-    [Anonymous Symbol]                       0x0800c6c8   Section        0  ads1258.o(.text.stopConversions)
-    [Anonymous Symbol]                       0x0800c6dc   Section        0  tlc5940.o(.text.tlc5940_init)
-    [Anonymous Symbol]                       0x0800c788   Section        0  tlc5940.o(.text.tlcSetDC)
-    [Anonymous Symbol]                       0x0800c90c   Section        0  tlc5940.o(.text.tlcSetGS)
-    [Anonymous Symbol]                       0x0800ca20   Section        0  transmit.o(.text.uart_transmit_dma)
-    [Anonymous Symbol]                       0x0800cac0   Section        0  ads1258.o(.text.writeMultipleRegisters)
-    [Anonymous Symbol]                       0x0800cb40   Section        0  tlc5940.o(.text.writeTLC)
-    i.__hardfp_ceil                          0x0800cbd8   Section        0  ceil.o(i.__hardfp_ceil)
-    i.__scatterload_copy                     0x0800ccf0   Section       14  handlers.o(i.__scatterload_copy)
-    i.__scatterload_null                     0x0800ccfe   Section        2  handlers.o(i.__scatterload_null)
-    i.__scatterload_zeroinit                 0x0800cd00   Section       14  handlers.o(i.__scatterload_zeroinit)
-    DMA_CalcBaseAndBitshift.flagBitshiftOffset 0x0800cd26   Data           8  stm32f4xx_hal_dma.o(.rodata.DMA_CalcBaseAndBitshift.flagBitshiftOffset)
-    [Anonymous Symbol]                       0x0800cd26   Section        0  stm32f4xx_hal_dma.o(.rodata.DMA_CalcBaseAndBitshift.flagBitshiftOffset)
-    g_battery_voltage_thresholds             0x0800cd2e   Data          22  bat_adc.o(.rodata.g_battery_voltage_thresholds)
-    [Anonymous Symbol]                       0x0800cd2e   Section        0  bat_adc.o(.rodata.g_battery_voltage_thresholds)
-    .L.str                                   0x0800cd44   Data          17  main.o(.rodata.str1.1)
-    [Anonymous Symbol]                       0x0800cd44   Section        0  main.o(.rodata.str1.1)
-    .L.str.1                                 0x0800cd55   Data          31  main.o(.rodata.str1.1)
-    .L.str.7                                 0x0800cd74   Data          23  fnirs.o(.rodata.str1.1)
-    [Anonymous Symbol]                       0x0800cd74   Section        0  fnirs.o(.rodata.str1.1)
-    .L.str.5                                 0x0800cd8b   Data          26  fnirs.o(.rodata.str1.1)
-    .L.str.6                                 0x0800cda5   Data          24  fnirs.o(.rodata.str1.1)
-    .L.str.3                                 0x0800cdbd   Data          40  fnirs.o(.rodata.str1.1)
-    .L.str.4                                 0x0800cde5   Data          49  fnirs.o(.rodata.str1.1)
-    .L.str                                   0x0800ce16   Data          19  fnirs.o(.rodata.str1.1)
-    .L.str.8                                 0x0800ce29   Data          21  fnirs.o(.rodata.str1.1)
-    .L.str.9                                 0x0800ce3e   Data          22  fnirs.o(.rodata.str1.1)
-    .L.str.2                                 0x0800ce54   Data          25  fnirs.o(.rodata.str1.1)
-    .L.str.1                                 0x0800ce6d   Data          27  fnirs.o(.rodata.str1.1)
-    .L.str.9                                 0x0800ce88   Data          54  csnp32.o(.rodata.str1.1)
-    [Anonymous Symbol]                       0x0800ce88   Section        0  csnp32.o(.rodata.str1.1)
-    .L.str.12                                0x0800cebe   Data          39  csnp32.o(.rodata.str1.1)
-    .L.str.40                                0x0800cee5   Data          57  csnp32.o(.rodata.str1.1)
-    .L.str.10                                0x0800cf1e   Data          66  csnp32.o(.rodata.str1.1)
-    .L.str.23                                0x0800cf60   Data          58  csnp32.o(.rodata.str1.1)
-    .L.str.29                                0x0800cf9a   Data          50  csnp32.o(.rodata.str1.1)
-    .L.str.35                                0x0800cfcc   Data          52  csnp32.o(.rodata.str1.1)
-    .L.str.2                                 0x0800d000   Data          29  csnp32.o(.rodata.str1.1)
-    .L.str.13                                0x0800d01d   Data          28  csnp32.o(.rodata.str1.1)
-    .L.str.18                                0x0800d039   Data          30  csnp32.o(.rodata.str1.1)
-    .L.str.26                                0x0800d057   Data          56  csnp32.o(.rodata.str1.1)
-    .L.str.1                                 0x0800d08f   Data          58  csnp32.o(.rodata.str1.1)
-    .L.str.3                                 0x0800d0c9   Data          32  csnp32.o(.rodata.str1.1)
-    .L.str.14                                0x0800d0e9   Data          29  csnp32.o(.rodata.str1.1)
-    .L.str.8                                 0x0800d106   Data          34  csnp32.o(.rodata.str1.1)
-    .L.str.16                                0x0800d128   Data          30  csnp32.o(.rodata.str1.1)
-    .L.str.5                                 0x0800d146   Data          26  csnp32.o(.rodata.str1.1)
-    .L.str.7                                 0x0800d17c   Data          28  csnp32.o(.rodata.str1.1)
-    .L.str.15                                0x0800d198   Data          28  csnp32.o(.rodata.str1.1)
-    .L.str.17                                0x0800d1b4   Data          30  csnp32.o(.rodata.str1.1)
-    .L.str.25                                0x0800d1d2   Data          37  csnp32.o(.rodata.str1.1)
-    .L.str.11                                0x0800d20f   Data          43  csnp32.o(.rodata.str1.1)
-    .L.str.22                                0x0800d23a   Data          45  csnp32.o(.rodata.str1.1)
-    .L.str                                   0x0800d27d   Data          53  csnp32.o(.rodata.str1.1)
-    .L.str.30                                0x0800d2b2   Data          26  csnp32.o(.rodata.str1.1)
-    .L.str.24                                0x0800d2cc   Data          32  csnp32.o(.rodata.str1.1)
-    .L.str.36                                0x0800d2ec   Data          27  csnp32.o(.rodata.str1.1)
-    .L.str.19                                0x0800d307   Data          25  csnp32.o(.rodata.str1.1)
-    .L.str.4                                 0x0800d320   Data          32  csnp32.o(.rodata.str1.1)
-    .L.str.6                                 0x0800d340   Data          33  csnp32.o(.rodata.str1.1)
-    .L.str.27                                0x0800d361   Data          36  csnp32.o(.rodata.str1.1)
-    .L.str.33                                0x0800d385   Data          37  csnp32.o(.rodata.str1.1)
-    .L.str.31                                0x0800d3aa   Data          40  csnp32.o(.rodata.str1.1)
-    .L.str.37                                0x0800d3d2   Data          42  csnp32.o(.rodata.str1.1)
-    .L.str.38                                0x0800d3fc   Data          39  csnp32.o(.rodata.str1.1)
-    .L.str.32                                0x0800d423   Data          40  csnp32.o(.rodata.str1.1)
-    .L.str.41                                0x0800d44b   Data          41  csnp32.o(.rodata.str1.1)
-    .L.str.28                                0x0800d474   Data          32  csnp32.o(.rodata.str1.1)
-    .L.str.34                                0x0800d494   Data          33  csnp32.o(.rodata.str1.1)
-    .L.str.42                                0x0800d49d   Data          22  csnp32.o(.rodata.str1.1)
-    .L.str.43                                0x0800d4b3   Data          24  csnp32.o(.rodata.str1.1)
-    .L.str.39                                0x0800d4b5   Data          30  csnp32.o(.rodata.str1.1)
-    .L.str.44                                0x0800d4cb   Data          28  csnp32.o(.rodata.str1.1)
-    .L.str.21                                0x0800d4d3   Data          12  csnp32.o(.rodata.str1.1)
-    .L.str.20                                0x0800d4d7   Data           8  csnp32.o(.rodata.str1.1)
-    [Anonymous Symbol]                       0x0800d4df   Section        0  ads1258.o(.rodata.str1.1)
-    .L.str                                   0x0800d512   Data          66  ads1258.o(.rodata.str1.1)
-    .L.str.12                                0x0800d554   Data          52  ads1258.o(.rodata.str1.1)
-    .L.str.4                                 0x0800d582   Data          51  ads1258.o(.rodata.str1.1)
-    .L.str.5                                 0x0800d5b5   Data          27  ads1258.o(.rodata.str1.1)
-    .L.str.2                                 0x0800d5c8   Data          43  ads1258.o(.rodata.str1.1)
-    .L.str.6                                 0x0800d5d0   Data           5  ads1258.o(.rodata.str1.1)
-    .L.str.7                                 0x0800d5d5   Data           4  ads1258.o(.rodata.str1.1)
-    .L.str.8                                 0x0800d5f3   Data          44  ads1258.o(.rodata.str1.1)
-    .L.str.9                                 0x0800d61f   Data          41  ads1258.o(.rodata.str1.1)
-    .L.str.10                                0x0800d62e   Data          36  ads1258.o(.rodata.str1.1)
-    .L.str.3                                 0x0800d648   Data          20  ads1258.o(.rodata.str1.1)
-    .L.str.11                                0x0800d652   Data          28  ads1258.o(.rodata.str1.1)
-    .L.str.1                                 0x0800d65c   Data          34  ads1258.o(.rodata.str1.1)
-    .L.str                                   0x0800d6a2   Data          56  bat_adc.o(.rodata.str1.1)
-    [Anonymous Symbol]                       0x0800d6a2   Section        0  bat_adc.o(.rodata.str1.1)
-    .L.str.3                                 0x0800d6da   Data          38  bat_adc.o(.rodata.str1.1)
-    .L.str.2                                 0x0800d700   Data          34  bat_adc.o(.rodata.str1.1)
-    .L.str.4                                 0x0800d722   Data          57  bat_adc.o(.rodata.str1.1)
-    .L.str.1                                 0x0800d75b   Data          27  bat_adc.o(.rodata.str1.1)
-    .L.str.1                                 0x0800d776   Data          31  key.o(.rodata.str1.1)
-    [Anonymous Symbol]                       0x0800d776   Section        0  key.o(.rodata.str1.1)
-    .L.str                                   0x0800d795   Data          16  key.o(.rodata.str1.1)
-    .L.str.2                                 0x0800d7a5   Data          14  key.o(.rodata.str1.1)
-    .L.str.20                                0x0800d7b3   Data          63  transmit.o(.rodata.str1.1)
-    [Anonymous Symbol]                       0x0800d7b3   Section        0  transmit.o(.rodata.str1.1)
-    .L.str.18                                0x0800d7f2   Data          50  transmit.o(.rodata.str1.1)
-    .L.str.6                                 0x0800d88d   Data          33  transmit.o(.rodata.str1.1)
-    .L.str.23                                0x0800d89c   Data          26  transmit.o(.rodata.str1.1)
-    .L.str.7                                 0x0800d8ae   Data          52  transmit.o(.rodata.str1.1)
-    .L.str.19                                0x0800d8b6   Data          52  transmit.o(.rodata.str1.1)
-    .L.str.8                                 0x0800d8e2   Data          35  transmit.o(.rodata.str1.1)
-    .L.str.14                                0x0800d8ea   Data          49  transmit.o(.rodata.str1.1)
-    .L.str.13                                0x0800d91b   Data          26  transmit.o(.rodata.str1.1)
-    .L.str.12                                0x0800d935   Data          31  transmit.o(.rodata.str1.1)
-    .L.str.16                                0x0800d954   Data          46  transmit.o(.rodata.str1.1)
-    .L.str.15                                0x0800d982   Data          47  transmit.o(.rodata.str1.1)
-    .L.str.22                                0x0800d9b1   Data          48  transmit.o(.rodata.str1.1)
-    .L.str.9                                 0x0800d9e1   Data          54  transmit.o(.rodata.str1.1)
-    .L.str.21                                0x0800da17   Data          48  transmit.o(.rodata.str1.1)
-    .L.str.11                                0x0800da47   Data          49  transmit.o(.rodata.str1.1)
-    .L.str                                   0x0800da78   Data          25  transmit.o(.rodata.str1.1)
-    .L.str.3                                 0x0800da91   Data          35  transmit.o(.rodata.str1.1)
-    .L.str.10                                0x0800dab4   Data          45  transmit.o(.rodata.str1.1)
-    .L.str.17                                0x0800dae1   Data          37  transmit.o(.rodata.str1.1)
-    .L.str.1                                 0x0800db06   Data          34  transmit.o(.rodata.str1.1)
-    .L.str.5                                 0x0800db28   Data          45  transmit.o(.rodata.str1.1)
-    .L.str.2                                 0x0800db55   Data          39  transmit.o(.rodata.str1.1)
-    .L.str.4                                 0x0800db7c   Data          40  transmit.o(.rodata.str1.1)
+    [Anonymous Symbol]                       0x0800a8e4   Section        0  utils.o(.text.delay_microseconds)
+    [Anonymous Symbol]                       0x0800a9c4   Section        0  bat_adc.o(.text.detect_battery_status)
+    [Anonymous Symbol]                       0x0800aa94   Section        0  bat_adc.o(.text.determine_battery_status)
+    [Anonymous Symbol]                       0x0800aad0   Section        0  transmit.o(.text.encode_command_response)
+    [Anonymous Symbol]                       0x0800ab30   Section        0  fnirs.o(.text.fnirs_struct_init)
+    [Anonymous Symbol]                       0x0800ab84   Section        0  transmit.o(.text.generate_crc16_table)
+    [Anonymous Symbol]                       0x0800ac14   Section        0  bat_adc.o(.text.get_battery_percentage)
+    [Anonymous Symbol]                       0x0800ac20   Section        0  bat_adc.o(.text.get_battery_status)
+    [Anonymous Symbol]                       0x0800ac38   Section        0  transmit.o(.text.handle_channel_config_command)
+    [Anonymous Symbol]                       0x0800ae08   Section        0  bat_adc.o(.text.handle_critical_battery_level)
+    [Anonymous Symbol]                       0x0800ae74   Section        0  transmit.o(.text.handle_data_supplement_request)
+    [Anonymous Symbol]                       0x0800aec0   Section        0  bat_adc.o(.text.handle_low_battery_warning)
+    [Anonymous Symbol]                       0x0800af24   Section        0  transmit.o(.text.handle_sample_rate_command)
+    [Anonymous Symbol]                       0x0800b080   Section        0  transmit.o(.text.init_data_frame)
+    [Anonymous Symbol]                       0x0800b0e8   Section        0  transmit.o(.text.init_data_frame_module)
+    [Anonymous Symbol]                       0x0800b174   Section        0  tlc5940.o(.text.init_tlc_struct)
+    [Anonymous Symbol]                       0x0800b218   Section        0  main.o(.text.main)
+    [Anonymous Symbol]                       0x0800b310   Section        0  fnirs.o(.text.nirs_config)
+    [Anonymous Symbol]                       0x0800b504   Section        0  fnirs.o(.text.nirs_data_collect)
+    [Anonymous Symbol]                       0x0800b5b4   Section        0  fnirs.o(.text.nirs_data_send)
+    [Anonymous Symbol]                       0x0800b680   Section        0  fnirs.o(.text.nirs_init)
+    [Anonymous Symbol]                       0x0800b6a4   Section        0  fnirs.o(.text.nirs_set_sample_rate)
+    [Anonymous Symbol]                       0x0800b754   Section        0  fnirs.o(.text.nirs_start)
+    [Anonymous Symbol]                       0x0800b7b4   Section        0  fnirs.o(.text.nirs_stop)
+    [Anonymous Symbol]                       0x0800b834   Section        0  fnirs.o(.text.nirs_timer_handle)
+    [Anonymous Symbol]                       0x0800ba74   Section        0  ads1258.o(.text.readMultipleRegisters)
+    [Anonymous Symbol]                       0x0800bafc   Section        0  ads1258.o(.text.readSingleRegister)
+    [Anonymous Symbol]                       0x0800bb6c   Section        0  utils.o(.text.reverse_array)
+    [Anonymous Symbol]                       0x0800bbb8   Section        0  fnirs.o(.text.sd_read_nirs)
+    [Anonymous Symbol]                       0x0800bc7c   Section        0  csnp32.o(.text.sdio_init)
+    [Anonymous Symbol]                       0x0800bf0c   Section        0  csnp32.o(.text.sdio_read)
+    [Anonymous Symbol]                       0x0800c05c   Section        0  csnp32.o(.text.sdio_write)
+    [Anonymous Symbol]                       0x0800c27c   Section        0  ads1258.o(.text.set_ads_channel)
+    [Anonymous Symbol]                       0x0800c2a0   Section        0  led.o(.text.set_led_color)
+    [Anonymous Symbol]                       0x0800c550   Section        0  transmit.o(.text.spi_transmit_dma)
+    [Anonymous Symbol]                       0x0800c604   Section        0  utils.o(.text.start_debug_dma_transfer)
+    [Anonymous Symbol]                       0x0800c700   Section        0  ads1258.o(.text.stopConversions)
+    [Anonymous Symbol]                       0x0800c714   Section        0  tlc5940.o(.text.tlc5940_init)
+    [Anonymous Symbol]                       0x0800c7c0   Section        0  tlc5940.o(.text.tlcSetDC)
+    [Anonymous Symbol]                       0x0800c944   Section        0  tlc5940.o(.text.tlcSetGS)
+    [Anonymous Symbol]                       0x0800ca58   Section        0  transmit.o(.text.uart_transmit_dma)
+    [Anonymous Symbol]                       0x0800caf8   Section        0  ads1258.o(.text.writeMultipleRegisters)
+    [Anonymous Symbol]                       0x0800cb78   Section        0  tlc5940.o(.text.writeTLC)
+    i.__hardfp_ceil                          0x0800cc10   Section        0  ceil.o(i.__hardfp_ceil)
+    i.__scatterload_copy                     0x0800cd28   Section       14  handlers.o(i.__scatterload_copy)
+    i.__scatterload_null                     0x0800cd36   Section        2  handlers.o(i.__scatterload_null)
+    i.__scatterload_zeroinit                 0x0800cd38   Section       14  handlers.o(i.__scatterload_zeroinit)
+    DMA_CalcBaseAndBitshift.flagBitshiftOffset 0x0800cd5e   Data           8  stm32f4xx_hal_dma.o(.rodata.DMA_CalcBaseAndBitshift.flagBitshiftOffset)
+    [Anonymous Symbol]                       0x0800cd5e   Section        0  stm32f4xx_hal_dma.o(.rodata.DMA_CalcBaseAndBitshift.flagBitshiftOffset)
+    g_battery_voltage_thresholds             0x0800cd66   Data          22  bat_adc.o(.rodata.g_battery_voltage_thresholds)
+    [Anonymous Symbol]                       0x0800cd66   Section        0  bat_adc.o(.rodata.g_battery_voltage_thresholds)
+    .L.str                                   0x0800cd7c   Data          17  main.o(.rodata.str1.1)
+    [Anonymous Symbol]                       0x0800cd7c   Section        0  main.o(.rodata.str1.1)
+    .L.str.1                                 0x0800cd8d   Data          31  main.o(.rodata.str1.1)
+    .L.str.7                                 0x0800cdac   Data          23  fnirs.o(.rodata.str1.1)
+    [Anonymous Symbol]                       0x0800cdac   Section        0  fnirs.o(.rodata.str1.1)
+    .L.str.5                                 0x0800cdc3   Data          26  fnirs.o(.rodata.str1.1)
+    .L.str.6                                 0x0800cddd   Data          24  fnirs.o(.rodata.str1.1)
+    .L.str.3                                 0x0800cdf5   Data          40  fnirs.o(.rodata.str1.1)
+    .L.str.4                                 0x0800ce1d   Data          49  fnirs.o(.rodata.str1.1)
+    .L.str                                   0x0800ce4e   Data          19  fnirs.o(.rodata.str1.1)
+    .L.str.8                                 0x0800ce61   Data          21  fnirs.o(.rodata.str1.1)
+    .L.str.9                                 0x0800ce76   Data          22  fnirs.o(.rodata.str1.1)
+    .L.str.2                                 0x0800ce8c   Data          25  fnirs.o(.rodata.str1.1)
+    .L.str.1                                 0x0800cea5   Data          27  fnirs.o(.rodata.str1.1)
+    .L.str.9                                 0x0800cec0   Data          54  csnp32.o(.rodata.str1.1)
+    [Anonymous Symbol]                       0x0800cec0   Section        0  csnp32.o(.rodata.str1.1)
+    .L.str.12                                0x0800cef6   Data          39  csnp32.o(.rodata.str1.1)
+    .L.str.40                                0x0800cf1d   Data          57  csnp32.o(.rodata.str1.1)
+    .L.str.10                                0x0800cf56   Data          66  csnp32.o(.rodata.str1.1)
+    .L.str.23                                0x0800cf98   Data          58  csnp32.o(.rodata.str1.1)
+    .L.str.29                                0x0800cfd2   Data          50  csnp32.o(.rodata.str1.1)
+    .L.str.35                                0x0800d004   Data          52  csnp32.o(.rodata.str1.1)
+    .L.str.2                                 0x0800d038   Data          29  csnp32.o(.rodata.str1.1)
+    .L.str.13                                0x0800d055   Data          28  csnp32.o(.rodata.str1.1)
+    .L.str.18                                0x0800d071   Data          30  csnp32.o(.rodata.str1.1)
+    .L.str.26                                0x0800d08f   Data          56  csnp32.o(.rodata.str1.1)
+    .L.str.1                                 0x0800d0c7   Data          58  csnp32.o(.rodata.str1.1)
+    .L.str.3                                 0x0800d101   Data          32  csnp32.o(.rodata.str1.1)
+    .L.str.14                                0x0800d121   Data          29  csnp32.o(.rodata.str1.1)
+    .L.str.8                                 0x0800d13e   Data          34  csnp32.o(.rodata.str1.1)
+    .L.str.16                                0x0800d160   Data          30  csnp32.o(.rodata.str1.1)
+    .L.str.5                                 0x0800d17e   Data          26  csnp32.o(.rodata.str1.1)
+    .L.str.7                                 0x0800d1b4   Data          28  csnp32.o(.rodata.str1.1)
+    .L.str.15                                0x0800d1d0   Data          28  csnp32.o(.rodata.str1.1)
+    .L.str.17                                0x0800d1ec   Data          30  csnp32.o(.rodata.str1.1)
+    .L.str.25                                0x0800d20a   Data          37  csnp32.o(.rodata.str1.1)
+    .L.str.11                                0x0800d247   Data          43  csnp32.o(.rodata.str1.1)
+    .L.str.22                                0x0800d272   Data          45  csnp32.o(.rodata.str1.1)
+    .L.str                                   0x0800d2b5   Data          53  csnp32.o(.rodata.str1.1)
+    .L.str.30                                0x0800d2ea   Data          26  csnp32.o(.rodata.str1.1)
+    .L.str.24                                0x0800d304   Data          32  csnp32.o(.rodata.str1.1)
+    .L.str.36                                0x0800d324   Data          27  csnp32.o(.rodata.str1.1)
+    .L.str.19                                0x0800d33f   Data          25  csnp32.o(.rodata.str1.1)
+    .L.str.4                                 0x0800d358   Data          32  csnp32.o(.rodata.str1.1)
+    .L.str.6                                 0x0800d378   Data          33  csnp32.o(.rodata.str1.1)
+    .L.str.27                                0x0800d399   Data          36  csnp32.o(.rodata.str1.1)
+    .L.str.33                                0x0800d3bd   Data          37  csnp32.o(.rodata.str1.1)
+    .L.str.31                                0x0800d3e2   Data          40  csnp32.o(.rodata.str1.1)
+    .L.str.37                                0x0800d40a   Data          42  csnp32.o(.rodata.str1.1)
+    .L.str.38                                0x0800d434   Data          39  csnp32.o(.rodata.str1.1)
+    .L.str.32                                0x0800d45b   Data          40  csnp32.o(.rodata.str1.1)
+    .L.str.41                                0x0800d483   Data          41  csnp32.o(.rodata.str1.1)
+    .L.str.28                                0x0800d4ac   Data          32  csnp32.o(.rodata.str1.1)
+    .L.str.34                                0x0800d4cc   Data          33  csnp32.o(.rodata.str1.1)
+    .L.str.42                                0x0800d4d5   Data          22  csnp32.o(.rodata.str1.1)
+    .L.str.43                                0x0800d4eb   Data          24  csnp32.o(.rodata.str1.1)
+    .L.str.39                                0x0800d4ed   Data          30  csnp32.o(.rodata.str1.1)
+    .L.str.44                                0x0800d503   Data          28  csnp32.o(.rodata.str1.1)
+    .L.str.21                                0x0800d50b   Data          12  csnp32.o(.rodata.str1.1)
+    .L.str.20                                0x0800d50f   Data           8  csnp32.o(.rodata.str1.1)
+    [Anonymous Symbol]                       0x0800d517   Section        0  ads1258.o(.rodata.str1.1)
+    .L.str                                   0x0800d54a   Data          66  ads1258.o(.rodata.str1.1)
+    .L.str.12                                0x0800d58c   Data          52  ads1258.o(.rodata.str1.1)
+    .L.str.4                                 0x0800d5ba   Data          51  ads1258.o(.rodata.str1.1)
+    .L.str.5                                 0x0800d5ed   Data          27  ads1258.o(.rodata.str1.1)
+    .L.str.2                                 0x0800d600   Data          43  ads1258.o(.rodata.str1.1)
+    .L.str.6                                 0x0800d608   Data           5  ads1258.o(.rodata.str1.1)
+    .L.str.7                                 0x0800d60d   Data           4  ads1258.o(.rodata.str1.1)
+    .L.str.8                                 0x0800d62b   Data          44  ads1258.o(.rodata.str1.1)
+    .L.str.9                                 0x0800d657   Data          41  ads1258.o(.rodata.str1.1)
+    .L.str.10                                0x0800d666   Data          36  ads1258.o(.rodata.str1.1)
+    .L.str.3                                 0x0800d680   Data          20  ads1258.o(.rodata.str1.1)
+    .L.str.11                                0x0800d68a   Data          28  ads1258.o(.rodata.str1.1)
+    .L.str.1                                 0x0800d694   Data          34  ads1258.o(.rodata.str1.1)
+    .L.str                                   0x0800d6da   Data          56  bat_adc.o(.rodata.str1.1)
+    [Anonymous Symbol]                       0x0800d6da   Section        0  bat_adc.o(.rodata.str1.1)
+    .L.str.3                                 0x0800d712   Data          38  bat_adc.o(.rodata.str1.1)
+    .L.str.2                                 0x0800d738   Data          34  bat_adc.o(.rodata.str1.1)
+    .L.str.4                                 0x0800d75a   Data          57  bat_adc.o(.rodata.str1.1)
+    .L.str.1                                 0x0800d793   Data          27  bat_adc.o(.rodata.str1.1)
+    .L.str.1                                 0x0800d7ae   Data          31  key.o(.rodata.str1.1)
+    [Anonymous Symbol]                       0x0800d7ae   Section        0  key.o(.rodata.str1.1)
+    .L.str                                   0x0800d7cd   Data          16  key.o(.rodata.str1.1)
+    .L.str.2                                 0x0800d7dd   Data          14  key.o(.rodata.str1.1)
+    .L.str.20                                0x0800d7eb   Data          63  transmit.o(.rodata.str1.1)
+    [Anonymous Symbol]                       0x0800d7eb   Section        0  transmit.o(.rodata.str1.1)
+    .L.str.18                                0x0800d82a   Data          50  transmit.o(.rodata.str1.1)
+    .L.str.6                                 0x0800d8c5   Data          33  transmit.o(.rodata.str1.1)
+    .L.str.23                                0x0800d8d4   Data          26  transmit.o(.rodata.str1.1)
+    .L.str.7                                 0x0800d8e6   Data          52  transmit.o(.rodata.str1.1)
+    .L.str.19                                0x0800d8ee   Data          52  transmit.o(.rodata.str1.1)
+    .L.str.8                                 0x0800d91a   Data          35  transmit.o(.rodata.str1.1)
+    .L.str.14                                0x0800d922   Data          49  transmit.o(.rodata.str1.1)
+    .L.str.13                                0x0800d953   Data          26  transmit.o(.rodata.str1.1)
+    .L.str.12                                0x0800d96d   Data          31  transmit.o(.rodata.str1.1)
+    .L.str.16                                0x0800d98c   Data          46  transmit.o(.rodata.str1.1)
+    .L.str.15                                0x0800d9ba   Data          47  transmit.o(.rodata.str1.1)
+    .L.str.22                                0x0800d9e9   Data          48  transmit.o(.rodata.str1.1)
+    .L.str.9                                 0x0800da19   Data          54  transmit.o(.rodata.str1.1)
+    .L.str.21                                0x0800da4f   Data          48  transmit.o(.rodata.str1.1)
+    .L.str.11                                0x0800da7f   Data          49  transmit.o(.rodata.str1.1)
+    .L.str                                   0x0800dab0   Data          25  transmit.o(.rodata.str1.1)
+    .L.str.3                                 0x0800dac9   Data          35  transmit.o(.rodata.str1.1)
+    .L.str.10                                0x0800daec   Data          45  transmit.o(.rodata.str1.1)
+    .L.str.17                                0x0800db19   Data          37  transmit.o(.rodata.str1.1)
+    .L.str.1                                 0x0800db3e   Data          34  transmit.o(.rodata.str1.1)
+    .L.str.5                                 0x0800db60   Data          45  transmit.o(.rodata.str1.1)
+    .L.str.2                                 0x0800db8d   Data          39  transmit.o(.rodata.str1.1)
+    .L.str.4                                 0x0800dbb4   Data          40  transmit.o(.rodata.str1.1)
     KEY_Scan.Long_Cnt                        0x20000000   Data           1  key.o(.data.KEY_Scan.Long_Cnt)
     [Anonymous Symbol]                       0x20000000   Section        0  key.o(.data.KEY_Scan.Long_Cnt)
     KEY_Scan.Twice_Cnt                       0x20000001   Data           1  key.o(.data.KEY_Scan.Twice_Cnt)
@@ -4201,58 +4201,58 @@ Image Symbol Table
     calculate_crc16                          0x0800a4c5   Thumb Code   102  transmit.o(.text.calculate_crc16)
     convert_voltage_to_percentage            0x0800a52d   Thumb Code   140  bat_adc.o(.text.convert_voltage_to_percentage)
     count_channel_info                       0x0800a5b9   Thumb Code   250  ads1258.o(.text.count_channel_info)
-    decode_received_command                  0x0800a6b5   Thumb Code   504  transmit.o(.text.decode_received_command)
-    delay_microseconds                       0x0800a8ad   Thumb Code   222  utils.o(.text.delay_microseconds)
-    detect_battery_status                    0x0800a98d   Thumb Code   208  bat_adc.o(.text.detect_battery_status)
-    determine_battery_status                 0x0800aa5d   Thumb Code    58  bat_adc.o(.text.determine_battery_status)
-    encode_command_response                  0x0800aa99   Thumb Code    96  transmit.o(.text.encode_command_response)
-    fnirs_struct_init                        0x0800aaf9   Thumb Code    82  fnirs.o(.text.fnirs_struct_init)
-    generate_crc16_table                     0x0800ab4d   Thumb Code   144  transmit.o(.text.generate_crc16_table)
-    get_battery_percentage                   0x0800abdd   Thumb Code    12  bat_adc.o(.text.get_battery_percentage)
-    get_battery_status                       0x0800abe9   Thumb Code    18  bat_adc.o(.text.get_battery_status)
-    handle_channel_config_command            0x0800ac01   Thumb Code   456  transmit.o(.text.handle_channel_config_command)
-    handle_critical_battery_level            0x0800add1   Thumb Code   108  bat_adc.o(.text.handle_critical_battery_level)
-    handle_data_supplement_request           0x0800ae3d   Thumb Code    74  transmit.o(.text.handle_data_supplement_request)
-    handle_low_battery_warning               0x0800ae89   Thumb Code    98  bat_adc.o(.text.handle_low_battery_warning)
-    handle_sample_rate_command               0x0800aeed   Thumb Code   346  transmit.o(.text.handle_sample_rate_command)
-    init_data_frame                          0x0800b049   Thumb Code   104  transmit.o(.text.init_data_frame)
-    init_data_frame_module                   0x0800b0b1   Thumb Code   138  transmit.o(.text.init_data_frame_module)
-    init_tlc_struct                          0x0800b13d   Thumb Code   162  tlc5940.o(.text.init_tlc_struct)
-    main                                     0x0800b1e1   Thumb Code   248  main.o(.text.main)
-    nirs_config                              0x0800b2d9   Thumb Code   498  fnirs.o(.text.nirs_config)
-    nirs_data_collect                        0x0800b4cd   Thumb Code   174  fnirs.o(.text.nirs_data_collect)
-    nirs_data_send                           0x0800b57d   Thumb Code   204  fnirs.o(.text.nirs_data_send)
-    nirs_init                                0x0800b649   Thumb Code    36  fnirs.o(.text.nirs_init)
-    nirs_set_sample_rate                     0x0800b66d   Thumb Code   176  fnirs.o(.text.nirs_set_sample_rate)
-    nirs_start                               0x0800b71d   Thumb Code    96  fnirs.o(.text.nirs_start)
-    nirs_stop                                0x0800b77d   Thumb Code   128  fnirs.o(.text.nirs_stop)
-    nirs_timer_handle                        0x0800b7fd   Thumb Code   576  fnirs.o(.text.nirs_timer_handle)
-    readMultipleRegisters                    0x0800ba3d   Thumb Code   136  ads1258.o(.text.readMultipleRegisters)
-    readSingleRegister                       0x0800bac5   Thumb Code   110  ads1258.o(.text.readSingleRegister)
-    reverse_array                            0x0800bb35   Thumb Code    76  utils.o(.text.reverse_array)
-    sd_read_nirs                             0x0800bb81   Thumb Code   194  fnirs.o(.text.sd_read_nirs)
-    sdio_init                                0x0800bc45   Thumb Code   654  csnp32.o(.text.sdio_init)
-    sdio_read                                0x0800bed5   Thumb Code   336  csnp32.o(.text.sdio_read)
-    sdio_write                               0x0800c025   Thumb Code   544  csnp32.o(.text.sdio_write)
-    set_ads_channel                          0x0800c245   Thumb Code    36  ads1258.o(.text.set_ads_channel)
-    set_led_color                            0x0800c269   Thumb Code   686  led.o(.text.set_led_color)
-    spi_transmit_dma                         0x0800c519   Thumb Code   180  transmit.o(.text.spi_transmit_dma)
-    start_debug_dma_transfer                 0x0800c5cd   Thumb Code   250  utils.o(.text.start_debug_dma_transfer)
-    stopConversions                          0x0800c6c9   Thumb Code    18  ads1258.o(.text.stopConversions)
-    tlc5940_init                             0x0800c6dd   Thumb Code   170  tlc5940.o(.text.tlc5940_init)
-    tlcSetDC                                 0x0800c789   Thumb Code   386  tlc5940.o(.text.tlcSetDC)
-    tlcSetGS                                 0x0800c90d   Thumb Code   274  tlc5940.o(.text.tlcSetGS)
-    uart_transmit_dma                        0x0800ca21   Thumb Code   160  transmit.o(.text.uart_transmit_dma)
-    writeMultipleRegisters                   0x0800cac1   Thumb Code   126  ads1258.o(.text.writeMultipleRegisters)
-    writeTLC                                 0x0800cb41   Thumb Code   146  tlc5940.o(.text.writeTLC)
-    __hardfp_ceil                            0x0800cbd9   Thumb Code   252  ceil.o(i.__hardfp_ceil)
-    __scatterload_copy                       0x0800ccf1   Thumb Code    14  handlers.o(i.__scatterload_copy)
-    __scatterload_null                       0x0800ccff   Thumb Code     2  handlers.o(i.__scatterload_null)
-    __scatterload_zeroinit                   0x0800cd01   Thumb Code    14  handlers.o(i.__scatterload_zeroinit)
-    AHBPrescTable                            0x0800cd0e   Data          16  system_stm32f4xx.o(.rodata.AHBPrescTable)
-    APBPrescTable                            0x0800cd1e   Data           8  system_stm32f4xx.o(.rodata.APBPrescTable)
-    Region$$Table$$Base                      0x0800dba4   Number         0  anon$$obj.o(Region$$Table)
-    Region$$Table$$Limit                     0x0800dbc4   Number         0  anon$$obj.o(Region$$Table)
+    decode_received_command                  0x0800a6b5   Thumb Code   558  transmit.o(.text.decode_received_command)
+    delay_microseconds                       0x0800a8e5   Thumb Code   222  utils.o(.text.delay_microseconds)
+    detect_battery_status                    0x0800a9c5   Thumb Code   208  bat_adc.o(.text.detect_battery_status)
+    determine_battery_status                 0x0800aa95   Thumb Code    58  bat_adc.o(.text.determine_battery_status)
+    encode_command_response                  0x0800aad1   Thumb Code    96  transmit.o(.text.encode_command_response)
+    fnirs_struct_init                        0x0800ab31   Thumb Code    82  fnirs.o(.text.fnirs_struct_init)
+    generate_crc16_table                     0x0800ab85   Thumb Code   144  transmit.o(.text.generate_crc16_table)
+    get_battery_percentage                   0x0800ac15   Thumb Code    12  bat_adc.o(.text.get_battery_percentage)
+    get_battery_status                       0x0800ac21   Thumb Code    18  bat_adc.o(.text.get_battery_status)
+    handle_channel_config_command            0x0800ac39   Thumb Code   456  transmit.o(.text.handle_channel_config_command)
+    handle_critical_battery_level            0x0800ae09   Thumb Code   108  bat_adc.o(.text.handle_critical_battery_level)
+    handle_data_supplement_request           0x0800ae75   Thumb Code    74  transmit.o(.text.handle_data_supplement_request)
+    handle_low_battery_warning               0x0800aec1   Thumb Code    98  bat_adc.o(.text.handle_low_battery_warning)
+    handle_sample_rate_command               0x0800af25   Thumb Code   346  transmit.o(.text.handle_sample_rate_command)
+    init_data_frame                          0x0800b081   Thumb Code   104  transmit.o(.text.init_data_frame)
+    init_data_frame_module                   0x0800b0e9   Thumb Code   138  transmit.o(.text.init_data_frame_module)
+    init_tlc_struct                          0x0800b175   Thumb Code   162  tlc5940.o(.text.init_tlc_struct)
+    main                                     0x0800b219   Thumb Code   248  main.o(.text.main)
+    nirs_config                              0x0800b311   Thumb Code   498  fnirs.o(.text.nirs_config)
+    nirs_data_collect                        0x0800b505   Thumb Code   174  fnirs.o(.text.nirs_data_collect)
+    nirs_data_send                           0x0800b5b5   Thumb Code   204  fnirs.o(.text.nirs_data_send)
+    nirs_init                                0x0800b681   Thumb Code    36  fnirs.o(.text.nirs_init)
+    nirs_set_sample_rate                     0x0800b6a5   Thumb Code   176  fnirs.o(.text.nirs_set_sample_rate)
+    nirs_start                               0x0800b755   Thumb Code    96  fnirs.o(.text.nirs_start)
+    nirs_stop                                0x0800b7b5   Thumb Code   128  fnirs.o(.text.nirs_stop)
+    nirs_timer_handle                        0x0800b835   Thumb Code   576  fnirs.o(.text.nirs_timer_handle)
+    readMultipleRegisters                    0x0800ba75   Thumb Code   136  ads1258.o(.text.readMultipleRegisters)
+    readSingleRegister                       0x0800bafd   Thumb Code   110  ads1258.o(.text.readSingleRegister)
+    reverse_array                            0x0800bb6d   Thumb Code    76  utils.o(.text.reverse_array)
+    sd_read_nirs                             0x0800bbb9   Thumb Code   194  fnirs.o(.text.sd_read_nirs)
+    sdio_init                                0x0800bc7d   Thumb Code   654  csnp32.o(.text.sdio_init)
+    sdio_read                                0x0800bf0d   Thumb Code   336  csnp32.o(.text.sdio_read)
+    sdio_write                               0x0800c05d   Thumb Code   544  csnp32.o(.text.sdio_write)
+    set_ads_channel                          0x0800c27d   Thumb Code    36  ads1258.o(.text.set_ads_channel)
+    set_led_color                            0x0800c2a1   Thumb Code   686  led.o(.text.set_led_color)
+    spi_transmit_dma                         0x0800c551   Thumb Code   180  transmit.o(.text.spi_transmit_dma)
+    start_debug_dma_transfer                 0x0800c605   Thumb Code   250  utils.o(.text.start_debug_dma_transfer)
+    stopConversions                          0x0800c701   Thumb Code    18  ads1258.o(.text.stopConversions)
+    tlc5940_init                             0x0800c715   Thumb Code   170  tlc5940.o(.text.tlc5940_init)
+    tlcSetDC                                 0x0800c7c1   Thumb Code   386  tlc5940.o(.text.tlcSetDC)
+    tlcSetGS                                 0x0800c945   Thumb Code   274  tlc5940.o(.text.tlcSetGS)
+    uart_transmit_dma                        0x0800ca59   Thumb Code   160  transmit.o(.text.uart_transmit_dma)
+    writeMultipleRegisters                   0x0800caf9   Thumb Code   126  ads1258.o(.text.writeMultipleRegisters)
+    writeTLC                                 0x0800cb79   Thumb Code   146  tlc5940.o(.text.writeTLC)
+    __hardfp_ceil                            0x0800cc11   Thumb Code   252  ceil.o(i.__hardfp_ceil)
+    __scatterload_copy                       0x0800cd29   Thumb Code    14  handlers.o(i.__scatterload_copy)
+    __scatterload_null                       0x0800cd37   Thumb Code     2  handlers.o(i.__scatterload_null)
+    __scatterload_zeroinit                   0x0800cd39   Thumb Code    14  handlers.o(i.__scatterload_zeroinit)
+    AHBPrescTable                            0x0800cd46   Data          16  system_stm32f4xx.o(.rodata.AHBPrescTable)
+    APBPrescTable                            0x0800cd56   Data           8  system_stm32f4xx.o(.rodata.APBPrescTable)
+    Region$$Table$$Base                      0x0800dbdc   Number         0  anon$$obj.o(Region$$Table)
+    Region$$Table$$Limit                     0x0800dbfc   Number         0  anon$$obj.o(Region$$Table)
     SystemCoreClock                          0x20000004   Data           4  system_stm32f4xx.o(.data.SystemCoreClock)
     g_debug_uart_tx_complete                 0x20000009   Data           1  utils.o(.data.g_debug_uart_tx_complete)
     g_sd_write_ready                         0x2000000a   Data           1  csnp32.o(.data.g_sd_write_ready)
@@ -4300,9 +4300,9 @@ Memory Map of the image
 
   Image Entry point : 0x08000189
 
-  Load Region LR_IROM1 (Base: 0x08000000, Size: 0x0000dbe0, Max: 0x00100000, ABSOLUTE)
+  Load Region LR_IROM1 (Base: 0x08000000, Size: 0x0000dc18, Max: 0x00100000, ABSOLUTE)
 
-    Execution Region ER_IROM1 (Exec base: 0x08000000, Load base: 0x08000000, Size: 0x0000dbc4, Max: 0x00100000, ABSOLUTE)
+    Execution Region ER_IROM1 (Exec base: 0x08000000, Load base: 0x08000000, Size: 0x0000dbfc, Max: 0x00100000, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
@@ -4674,123 +4674,124 @@ Memory Map of the image
     0x0800a52c   0x0800a52c   0x0000008c   Code   RO         1675    .text.convert_voltage_to_percentage  bat_adc.o
     0x0800a5b8   0x0800a5b8   0x000000fa   Code   RO         1632    .text.count_channel_info  ads1258.o
     0x0800a6b2   0x0800a6b2   0x00000002   PAD
-    0x0800a6b4   0x0800a6b4   0x000001f8   Code   RO         1811    .text.decode_received_command  transmit.o
-    0x0800a8ac   0x0800a8ac   0x000000de   Code   RO         1734    .text.delay_microseconds  utils.o
-    0x0800a98a   0x0800a98a   0x00000002   PAD
-    0x0800a98c   0x0800a98c   0x000000d0   Code   RO         1673    .text.detect_battery_status  bat_adc.o
-    0x0800aa5c   0x0800aa5c   0x0000003a   Code   RO         1687    .text.determine_battery_status  bat_adc.o
-    0x0800aa96   0x0800aa96   0x00000002   PAD
-    0x0800aa98   0x0800aa98   0x00000060   Code   RO         1809    .text.encode_command_response  transmit.o
-    0x0800aaf8   0x0800aaf8   0x00000052   Code   RO         1526    .text.fnirs_struct_init  fnirs.o
-    0x0800ab4a   0x0800ab4a   0x00000002   PAD
-    0x0800ab4c   0x0800ab4c   0x00000090   Code   RO         1793    .text.generate_crc16_table  transmit.o
-    0x0800abdc   0x0800abdc   0x0000000c   Code   RO         1683    .text.get_battery_percentage  bat_adc.o
-    0x0800abe8   0x0800abe8   0x00000012   Code   RO         1685    .text.get_battery_status  bat_adc.o
-    0x0800abfa   0x0800abfa   0x00000006   PAD
-    0x0800ac00   0x0800ac00   0x000001d0   Code   RO         1805    .text.handle_channel_config_command  transmit.o
-    0x0800add0   0x0800add0   0x0000006c   Code   RO         1693    .text.handle_critical_battery_level  bat_adc.o
-    0x0800ae3c   0x0800ae3c   0x0000004a   Code   RO         1807    .text.handle_data_supplement_request  transmit.o
-    0x0800ae86   0x0800ae86   0x00000002   PAD
-    0x0800ae88   0x0800ae88   0x00000062   Code   RO         1691    .text.handle_low_battery_warning  bat_adc.o
-    0x0800aeea   0x0800aeea   0x00000002   PAD
-    0x0800aeec   0x0800aeec   0x0000015a   Code   RO         1803    .text.handle_sample_rate_command  transmit.o
-    0x0800b046   0x0800b046   0x00000002   PAD
-    0x0800b048   0x0800b048   0x00000068   Code   RO         1799    .text.init_data_frame  transmit.o
-    0x0800b0b0   0x0800b0b0   0x0000008a   Code   RO         1801    .text.init_data_frame_module  transmit.o
-    0x0800b13a   0x0800b13a   0x00000002   PAD
-    0x0800b13c   0x0800b13c   0x000000a2   Code   RO         1590    .text.init_tlc_struct  tlc5940.o
-    0x0800b1de   0x0800b1de   0x00000002   PAD
-    0x0800b1e0   0x0800b1e0   0x000000f8   Code   RO           15    .text.main          main.o
-    0x0800b2d8   0x0800b2d8   0x000001f2   Code   RO         1536    .text.nirs_config   fnirs.o
-    0x0800b4ca   0x0800b4ca   0x00000002   PAD
-    0x0800b4cc   0x0800b4cc   0x000000ae   Code   RO         1524    .text.nirs_data_collect  fnirs.o
-    0x0800b57a   0x0800b57a   0x00000002   PAD
-    0x0800b57c   0x0800b57c   0x000000cc   Code   RO         1546    .text.nirs_data_send  fnirs.o
-    0x0800b648   0x0800b648   0x00000024   Code   RO         1532    .text.nirs_init     fnirs.o
-    0x0800b66c   0x0800b66c   0x000000b0   Code   RO         1534    .text.nirs_set_sample_rate  fnirs.o
-    0x0800b71c   0x0800b71c   0x00000060   Code   RO         1538    .text.nirs_start    fnirs.o
-    0x0800b77c   0x0800b77c   0x00000080   Code   RO         1540    .text.nirs_stop     fnirs.o
-    0x0800b7fc   0x0800b7fc   0x00000240   Code   RO         1550    .text.nirs_timer_handle  fnirs.o
-    0x0800ba3c   0x0800ba3c   0x00000088   Code   RO         1626    .text.readMultipleRegisters  ads1258.o
-    0x0800bac4   0x0800bac4   0x0000006e   Code   RO         1622    .text.readSingleRegister  ads1258.o
-    0x0800bb32   0x0800bb32   0x00000002   PAD
-    0x0800bb34   0x0800bb34   0x0000004c   Code   RO         1744    .text.reverse_array  utils.o
-    0x0800bb80   0x0800bb80   0x000000c2   Code   RO         1554    .text.sd_read_nirs  fnirs.o
-    0x0800bc42   0x0800bc42   0x00000002   PAD
-    0x0800bc44   0x0800bc44   0x0000028e   Code   RO         1573    .text.sdio_init     csnp32.o
-    0x0800bed2   0x0800bed2   0x00000002   PAD
-    0x0800bed4   0x0800bed4   0x00000150   Code   RO         1575    .text.sdio_read     csnp32.o
-    0x0800c024   0x0800c024   0x00000220   Code   RO         1577    .text.sdio_write    csnp32.o
-    0x0800c244   0x0800c244   0x00000024   Code   RO         1634    .text.set_ads_channel  ads1258.o
-    0x0800c268   0x0800c268   0x000002ae   Code   RO         1766    .text.set_led_color  led.o
-    0x0800c516   0x0800c516   0x00000002   PAD
-    0x0800c518   0x0800c518   0x000000b4   Code   RO         1789    .text.spi_transmit_dma  transmit.o
-    0x0800c5cc   0x0800c5cc   0x000000fa   Code   RO         1748    .text.start_debug_dma_transfer  utils.o
-    0x0800c6c6   0x0800c6c6   0x00000002   PAD
-    0x0800c6c8   0x0800c6c8   0x00000012   Code   RO         1644    .text.stopConversions  ads1258.o
-    0x0800c6da   0x0800c6da   0x00000002   PAD
-    0x0800c6dc   0x0800c6dc   0x000000aa   Code   RO         1592    .text.tlc5940_init  tlc5940.o
-    0x0800c786   0x0800c786   0x00000002   PAD
-    0x0800c788   0x0800c788   0x00000182   Code   RO         1596    .text.tlcSetDC      tlc5940.o
-    0x0800c90a   0x0800c90a   0x00000002   PAD
-    0x0800c90c   0x0800c90c   0x00000112   Code   RO         1594    .text.tlcSetGS      tlc5940.o
-    0x0800ca1e   0x0800ca1e   0x00000002   PAD
-    0x0800ca20   0x0800ca20   0x000000a0   Code   RO         1791    .text.uart_transmit_dma  transmit.o
-    0x0800cac0   0x0800cac0   0x0000007e   Code   RO         1624    .text.writeMultipleRegisters  ads1258.o
-    0x0800cb3e   0x0800cb3e   0x00000002   PAD
-    0x0800cb40   0x0800cb40   0x00000092   Code   RO         1600    .text.writeTLC      tlc5940.o
-    0x0800cbd2   0x0800cbd2   0x00000006   PAD
-    0x0800cbd8   0x0800cbd8   0x00000118   Code   RO         1828    i.__hardfp_ceil     m_wm.l(ceil.o)
-    0x0800ccf0   0x0800ccf0   0x0000000e   Code   RO         1886    i.__scatterload_copy  mc_w.l(handlers.o)
-    0x0800ccfe   0x0800ccfe   0x00000002   Code   RO         1887    i.__scatterload_null  mc_w.l(handlers.o)
-    0x0800cd00   0x0800cd00   0x0000000e   Code   RO         1888    i.__scatterload_zeroinit  mc_w.l(handlers.o)
-    0x0800cd0e   0x0800cd0e   0x00000010   Data   RO         1513    .rodata.AHBPrescTable  system_stm32f4xx.o
-    0x0800cd1e   0x0800cd1e   0x00000008   Data   RO         1514    .rodata.APBPrescTable  system_stm32f4xx.o
-    0x0800cd26   0x0800cd26   0x00000008   Data   RO          500    .rodata.DMA_CalcBaseAndBitshift.flagBitshiftOffset  stm32f4xx_hal_dma.o
-    0x0800cd2e   0x0800cd2e   0x00000016   Data   RO         1699    .rodata.g_battery_voltage_thresholds  bat_adc.o
-    0x0800cd44   0x0800cd44   0x00000030   Data   RO           23    .rodata.str1.1      main.o
-    0x0800cd74   0x0800cd74   0x00000114   Data   RO         1559    .rodata.str1.1      fnirs.o
-    0x0800ce88   0x0800ce88   0x00000657   Data   RO         1582    .rodata.str1.1      csnp32.o
-    0x0800d4df   0x0800d4df   0x000001c3   Data   RO         1660    .rodata.str1.1      ads1258.o
-    0x0800d6a2   0x0800d6a2   0x000000d4   Data   RO         1698    .rodata.str1.1      bat_adc.o
-    0x0800d776   0x0800d776   0x0000003d   Data   RO         1723    .rodata.str1.1      key.o
-    0x0800d7b3   0x0800d7b3   0x000003f1   Data   RO         1820    .rodata.str1.1      transmit.o
-    0x0800dba4   0x0800dba4   0x00000020   Data   RO         1885    Region$$Table       anon$$obj.o
+    0x0800a6b4   0x0800a6b4   0x0000022e   Code   RO         1811    .text.decode_received_command  transmit.o
+    0x0800a8e2   0x0800a8e2   0x00000002   PAD
+    0x0800a8e4   0x0800a8e4   0x000000de   Code   RO         1734    .text.delay_microseconds  utils.o
+    0x0800a9c2   0x0800a9c2   0x00000002   PAD
+    0x0800a9c4   0x0800a9c4   0x000000d0   Code   RO         1673    .text.detect_battery_status  bat_adc.o
+    0x0800aa94   0x0800aa94   0x0000003a   Code   RO         1687    .text.determine_battery_status  bat_adc.o
+    0x0800aace   0x0800aace   0x00000002   PAD
+    0x0800aad0   0x0800aad0   0x00000060   Code   RO         1809    .text.encode_command_response  transmit.o
+    0x0800ab30   0x0800ab30   0x00000052   Code   RO         1526    .text.fnirs_struct_init  fnirs.o
+    0x0800ab82   0x0800ab82   0x00000002   PAD
+    0x0800ab84   0x0800ab84   0x00000090   Code   RO         1793    .text.generate_crc16_table  transmit.o
+    0x0800ac14   0x0800ac14   0x0000000c   Code   RO         1683    .text.get_battery_percentage  bat_adc.o
+    0x0800ac20   0x0800ac20   0x00000012   Code   RO         1685    .text.get_battery_status  bat_adc.o
+    0x0800ac32   0x0800ac32   0x00000006   PAD
+    0x0800ac38   0x0800ac38   0x000001d0   Code   RO         1805    .text.handle_channel_config_command  transmit.o
+    0x0800ae08   0x0800ae08   0x0000006c   Code   RO         1693    .text.handle_critical_battery_level  bat_adc.o
+    0x0800ae74   0x0800ae74   0x0000004a   Code   RO         1807    .text.handle_data_supplement_request  transmit.o
+    0x0800aebe   0x0800aebe   0x00000002   PAD
+    0x0800aec0   0x0800aec0   0x00000062   Code   RO         1691    .text.handle_low_battery_warning  bat_adc.o
+    0x0800af22   0x0800af22   0x00000002   PAD
+    0x0800af24   0x0800af24   0x0000015a   Code   RO         1803    .text.handle_sample_rate_command  transmit.o
+    0x0800b07e   0x0800b07e   0x00000002   PAD
+    0x0800b080   0x0800b080   0x00000068   Code   RO         1799    .text.init_data_frame  transmit.o
+    0x0800b0e8   0x0800b0e8   0x0000008a   Code   RO         1801    .text.init_data_frame_module  transmit.o
+    0x0800b172   0x0800b172   0x00000002   PAD
+    0x0800b174   0x0800b174   0x000000a2   Code   RO         1590    .text.init_tlc_struct  tlc5940.o
+    0x0800b216   0x0800b216   0x00000002   PAD
+    0x0800b218   0x0800b218   0x000000f8   Code   RO           15    .text.main          main.o
+    0x0800b310   0x0800b310   0x000001f2   Code   RO         1536    .text.nirs_config   fnirs.o
+    0x0800b502   0x0800b502   0x00000002   PAD
+    0x0800b504   0x0800b504   0x000000ae   Code   RO         1524    .text.nirs_data_collect  fnirs.o
+    0x0800b5b2   0x0800b5b2   0x00000002   PAD
+    0x0800b5b4   0x0800b5b4   0x000000cc   Code   RO         1546    .text.nirs_data_send  fnirs.o
+    0x0800b680   0x0800b680   0x00000024   Code   RO         1532    .text.nirs_init     fnirs.o
+    0x0800b6a4   0x0800b6a4   0x000000b0   Code   RO         1534    .text.nirs_set_sample_rate  fnirs.o
+    0x0800b754   0x0800b754   0x00000060   Code   RO         1538    .text.nirs_start    fnirs.o
+    0x0800b7b4   0x0800b7b4   0x00000080   Code   RO         1540    .text.nirs_stop     fnirs.o
+    0x0800b834   0x0800b834   0x00000240   Code   RO         1550    .text.nirs_timer_handle  fnirs.o
+    0x0800ba74   0x0800ba74   0x00000088   Code   RO         1626    .text.readMultipleRegisters  ads1258.o
+    0x0800bafc   0x0800bafc   0x0000006e   Code   RO         1622    .text.readSingleRegister  ads1258.o
+    0x0800bb6a   0x0800bb6a   0x00000002   PAD
+    0x0800bb6c   0x0800bb6c   0x0000004c   Code   RO         1744    .text.reverse_array  utils.o
+    0x0800bbb8   0x0800bbb8   0x000000c2   Code   RO         1554    .text.sd_read_nirs  fnirs.o
+    0x0800bc7a   0x0800bc7a   0x00000002   PAD
+    0x0800bc7c   0x0800bc7c   0x0000028e   Code   RO         1573    .text.sdio_init     csnp32.o
+    0x0800bf0a   0x0800bf0a   0x00000002   PAD
+    0x0800bf0c   0x0800bf0c   0x00000150   Code   RO         1575    .text.sdio_read     csnp32.o
+    0x0800c05c   0x0800c05c   0x00000220   Code   RO         1577    .text.sdio_write    csnp32.o
+    0x0800c27c   0x0800c27c   0x00000024   Code   RO         1634    .text.set_ads_channel  ads1258.o
+    0x0800c2a0   0x0800c2a0   0x000002ae   Code   RO         1766    .text.set_led_color  led.o
+    0x0800c54e   0x0800c54e   0x00000002   PAD
+    0x0800c550   0x0800c550   0x000000b4   Code   RO         1789    .text.spi_transmit_dma  transmit.o
+    0x0800c604   0x0800c604   0x000000fa   Code   RO         1748    .text.start_debug_dma_transfer  utils.o
+    0x0800c6fe   0x0800c6fe   0x00000002   PAD
+    0x0800c700   0x0800c700   0x00000012   Code   RO         1644    .text.stopConversions  ads1258.o
+    0x0800c712   0x0800c712   0x00000002   PAD
+    0x0800c714   0x0800c714   0x000000aa   Code   RO         1592    .text.tlc5940_init  tlc5940.o
+    0x0800c7be   0x0800c7be   0x00000002   PAD
+    0x0800c7c0   0x0800c7c0   0x00000182   Code   RO         1596    .text.tlcSetDC      tlc5940.o
+    0x0800c942   0x0800c942   0x00000002   PAD
+    0x0800c944   0x0800c944   0x00000112   Code   RO         1594    .text.tlcSetGS      tlc5940.o
+    0x0800ca56   0x0800ca56   0x00000002   PAD
+    0x0800ca58   0x0800ca58   0x000000a0   Code   RO         1791    .text.uart_transmit_dma  transmit.o
+    0x0800caf8   0x0800caf8   0x0000007e   Code   RO         1624    .text.writeMultipleRegisters  ads1258.o
+    0x0800cb76   0x0800cb76   0x00000002   PAD
+    0x0800cb78   0x0800cb78   0x00000092   Code   RO         1600    .text.writeTLC      tlc5940.o
+    0x0800cc0a   0x0800cc0a   0x00000006   PAD
+    0x0800cc10   0x0800cc10   0x00000118   Code   RO         1828    i.__hardfp_ceil     m_wm.l(ceil.o)
+    0x0800cd28   0x0800cd28   0x0000000e   Code   RO         1886    i.__scatterload_copy  mc_w.l(handlers.o)
+    0x0800cd36   0x0800cd36   0x00000002   Code   RO         1887    i.__scatterload_null  mc_w.l(handlers.o)
+    0x0800cd38   0x0800cd38   0x0000000e   Code   RO         1888    i.__scatterload_zeroinit  mc_w.l(handlers.o)
+    0x0800cd46   0x0800cd46   0x00000010   Data   RO         1513    .rodata.AHBPrescTable  system_stm32f4xx.o
+    0x0800cd56   0x0800cd56   0x00000008   Data   RO         1514    .rodata.APBPrescTable  system_stm32f4xx.o
+    0x0800cd5e   0x0800cd5e   0x00000008   Data   RO          500    .rodata.DMA_CalcBaseAndBitshift.flagBitshiftOffset  stm32f4xx_hal_dma.o
+    0x0800cd66   0x0800cd66   0x00000016   Data   RO         1699    .rodata.g_battery_voltage_thresholds  bat_adc.o
+    0x0800cd7c   0x0800cd7c   0x00000030   Data   RO           23    .rodata.str1.1      main.o
+    0x0800cdac   0x0800cdac   0x00000114   Data   RO         1559    .rodata.str1.1      fnirs.o
+    0x0800cec0   0x0800cec0   0x00000657   Data   RO         1582    .rodata.str1.1      csnp32.o
+    0x0800d517   0x0800d517   0x000001c3   Data   RO         1660    .rodata.str1.1      ads1258.o
+    0x0800d6da   0x0800d6da   0x000000d4   Data   RO         1698    .rodata.str1.1      bat_adc.o
+    0x0800d7ae   0x0800d7ae   0x0000003d   Data   RO         1723    .rodata.str1.1      key.o
+    0x0800d7eb   0x0800d7eb   0x000003f1   Data   RO         1820    .rodata.str1.1      transmit.o
+    0x0800dbdc   0x0800dbdc   0x00000020   Data   RO         1885    Region$$Table       anon$$obj.o
 
 
-    Execution Region RW_IRAM1 (Exec base: 0x20000000, Load base: 0x0800dbc8, Size: 0x00002910, Max: 0x0001c000, ABSOLUTE)
+    Execution Region RW_IRAM1 (Exec base: 0x20000000, Load base: 0x0800dc00, Size: 0x00002910, Max: 0x0001c000, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
-    0x20000000   0x0800dbc8   0x00000001   Data   RW         1721    .data.KEY_Scan.Long_Cnt  key.o
-    0x20000001   0x0800dbc9   0x00000001   Data   RW         1722    .data.KEY_Scan.Twice_Cnt  key.o
-    0x20000002   0x0800dbca   0x00000001   Data   RW         1720    .data.KEY_Scan.key_state  key.o
-    0x20000003   0x0800dbcb   0x00000001   PAD
-    0x20000004   0x0800dbcc   0x00000004   Data   RW         1512    .data.SystemCoreClock  system_stm32f4xx.o
-    0x20000008   0x0800dbd0   0x00000001   Data   RW         1774    .data.cur_chr       led.o
-    0x20000009   0x0800dbd1   0x00000001   Data   RW         1757    .data.g_debug_uart_tx_complete  utils.o
-    0x2000000a   0x0800dbd2   0x00000001   Data   RW         1581    .data.g_sd_write_ready  csnp32.o
-    0x2000000b   0x0800dbd3   0x00000001   Data   RW         1818    .data.g_spi_tx_complete  transmit.o
-    0x2000000c   0x0800dbd4   0x00000001   Data   RW         1819    .data.g_uart_tx_complete  transmit.o
-    0x2000000d   0x0800dbd5   0x00000001   Data   RW         1775    .data.pre_chr       led.o
-    0x2000000e   0x0800dbd6   0x00000001   Data   RW          700    .data.uwTickFreq    stm32f4xx_hal.o
-    0x2000000f   0x0800dbd7   0x00000001   PAD
-    0x20000010   0x0800dbd8   0x00000004   Data   RW          699    .data.uwTickPrio    stm32f4xx_hal.o
-    0x20000014   0x0800dbdc   0x00000004   PAD
+    0x20000000   0x0800dc00   0x00000001   Data   RW         1721    .data.KEY_Scan.Long_Cnt  key.o
+    0x20000001   0x0800dc01   0x00000001   Data   RW         1722    .data.KEY_Scan.Twice_Cnt  key.o
+    0x20000002   0x0800dc02   0x00000001   Data   RW         1720    .data.KEY_Scan.key_state  key.o
+    0x20000003   0x0800dc03   0x00000001   PAD
+    0x20000004   0x0800dc04   0x00000004   Data   RW         1512    .data.SystemCoreClock  system_stm32f4xx.o
+    0x20000008   0x0800dc08   0x00000001   Data   RW         1774    .data.cur_chr       led.o
+    0x20000009   0x0800dc09   0x00000001   Data   RW         1757    .data.g_debug_uart_tx_complete  utils.o
+    0x2000000a   0x0800dc0a   0x00000001   Data   RW         1581    .data.g_sd_write_ready  csnp32.o
+    0x2000000b   0x0800dc0b   0x00000001   Data   RW         1818    .data.g_spi_tx_complete  transmit.o
+    0x2000000c   0x0800dc0c   0x00000001   Data   RW         1819    .data.g_uart_tx_complete  transmit.o
+    0x2000000d   0x0800dc0d   0x00000001   Data   RW         1775    .data.pre_chr       led.o
+    0x2000000e   0x0800dc0e   0x00000001   Data   RW          700    .data.uwTickFreq    stm32f4xx_hal.o
+    0x2000000f   0x0800dc0f   0x00000001   PAD
+    0x20000010   0x0800dc10   0x00000004   Data   RW          699    .data.uwTickPrio    stm32f4xx_hal.o
+    0x20000014   0x0800dc14   0x00000004   PAD
     0x20000018        -       0x00000004   Zero   RW           22    .bss.HAL_TIM_PeriodElapsedCallback.__cnt  main.o
     0x2000001c        -       0x00000001   Zero   RW         1717    .bss.KEY_Scan.Click  key.o
     0x2000001d        -       0x00000001   Zero   RW         1715    .bss.KEY_Scan.Click_Buf  key.o
     0x2000001e        -       0x00000001   Zero   RW         1719    .bss.KEY_Scan.Double_Click  key.o
     0x2000001f        -       0x00000001   Zero   RW         1716    .bss.KEY_Scan.KEY_flag  key.o
     0x20000020        -       0x00000001   Zero   RW         1718    .bss.KEY_Scan.Long_Press  key.o
-    0x20000021   0x0800dbdc   0x00000003   PAD
+    0x20000021   0x0800dc14   0x00000003   PAD
     0x20000024        -       0x00000024   Zero   RW         1659    .bss.channel        ads1258.o
     0x20000048        -       0x00000001   Zero   RW         1821    .bss.decode_received_command.is_initialized  transmit.o
-    0x20000049   0x0800dbdc   0x00000001   PAD
+    0x20000049   0x0800dc14   0x00000001   PAD
     0x2000004a        -       0x00000002   Zero   RW         1695    .bss.g_adc_raw_value  bat_adc.o
     0x2000004c        -       0x000000c0   Zero   RW         1557    .bss.g_adc_sample   fnirs.o
     0x2000010c        -       0x00000001   Zero   RW         1697    .bss.g_battery_percentage  bat_adc.o
-    0x2000010d   0x0800dbdc   0x00000001   PAD
+    0x2000010d   0x0800dc14   0x00000001   PAD
     0x2000010e        -       0x00000002   Zero   RW         1696    .bss.g_battery_voltage_mv  bat_adc.o
     0x20000110        -       0x00000200   Zero   RW         1813    .bss.g_crc16_table  transmit.o
     0x20000310        -       0x0000050c   Zero   RW         1756    .bss.g_debug_buffer  utils.o
@@ -4805,7 +4806,7 @@ Memory Map of the image
     0x20001fe8        -       0x00000048   Zero   RW           46    .bss.hadc1          adc.o
     0x20002030        -       0x00000001   Zero   RW         1704    .bss.handle_critical_battery_level.critical_handled  bat_adc.o
     0x20002031        -       0x00000001   Zero   RW         1703    .bss.handle_low_battery_warning.warning_count  bat_adc.o
-    0x20002032   0x0800dbdc   0x00000002   PAD
+    0x20002032   0x0800dc14   0x00000002   PAD
     0x20002034        -       0x00000060   Zero   RW           69    .bss.hdma_sdio_tx   sdio.o
     0x20002094        -       0x00000060   Zero   RW           87    .bss.hdma_spi2_tx   spi.o
     0x200020f4        -       0x00000060   Zero   RW          130    .bss.hdma_usart2_tx  usart.o
@@ -4823,16 +4824,16 @@ Memory Map of the image
     0x200024f8        -       0x00000001   Zero   RW         1714    .bss.key_return     key.o
     0x200024f9        -       0x00000001   Zero   RW         1560    .bss.nirs_timer_handle.half_cycle  fnirs.o
     0x200024fa        -       0x00000001   Zero   RW         1562    .bss.nirs_timer_handle.led_index  fnirs.o
-    0x200024fb   0x0800dbdc   0x00000001   PAD
+    0x200024fb   0x0800dc14   0x00000001   PAD
     0x200024fc        -       0x00000002   Zero   RW         1563    .bss.nirs_timer_handle.open_detectors  fnirs.o
     0x200024fe        -       0x00000001   Zero   RW         1561    .bss.nirs_timer_handle.wavelength_type  fnirs.o
     0x200024ff        -       0x0000000a   Zero   RW         1653    .bss.registerMap    ads1258.o
-    0x20002509   0x0800dbdc   0x00000003   PAD
+    0x20002509   0x0800dc14   0x00000003   PAD
     0x2000250c        -       0x00000004   Zero   RW          701    .bss.uwTick         stm32f4xx_hal.o
     0x20002510        -       0x00000400   Zero   RW            1    STACK               startup_stm32f407xx.o
 
 
-    Execution Region RW_IRAM2 (Exec base: 0x2001c000, Load base: 0x0800dbe0, Size: 0x00000000, Max: 0x00004000, ABSOLUTE)
+    Execution Region RW_IRAM2 (Exec base: 0x2001c000, Load base: 0x0800dc18, Size: 0x00000000, Max: 0x00004000, ABSOLUTE)
 
     **** No section assigned to this execution region ****
 
@@ -4874,14 +4875,14 @@ Image component sizes
         18          0         24          4          0       2502   system_stm32f4xx.o
       1352          0          0          0        288       9803   tim.o
       1138          0          0          0        192       7304   tlc5940.o
-      2688         60       1009          2       1051      10947   transmit.o
+      2742         60       1009          2       1051      11048   transmit.o
        700          0          0          0        432       7317   usart.o
        572          0          0          1       1292       4819   utils.o
 
     ----------------------------------------------------------------------
-     50544        230       4158         20      10492     281517   Object Totals
+     50600        230       4158         20      10492     281618   Object Totals
          0          0         32          0          0          0   (incl. Generated)
-       242          0          0          2         15          0   (incl. Padding)
+       244          0          0          2         15          0   (incl. Padding)
 
     ----------------------------------------------------------------------
 
@@ -4935,15 +4936,15 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-     52102        276       4158         20      10492     281901   Grand Totals
-     52102        276       4158         20      10492     281901   ELF Image Totals
-     52102        276       4158         20          0          0   ROM Totals
+     52158        276       4158         20      10492     282002   Grand Totals
+     52158        276       4158         20      10492     282002   ELF Image Totals
+     52158        276       4158         20          0          0   ROM Totals
 
 ==============================================================================
 
-    Total RO  Size (Code + RO Data)                56260 (  54.94kB)
+    Total RO  Size (Code + RO Data)                56316 (  55.00kB)
     Total RW  Size (RW Data + ZI Data)             10512 (  10.27kB)
-    Total ROM Size (Code + RO Data + RW Data)      56280 (  54.96kB)
+    Total ROM Size (Code + RO Data + RW Data)      56336 (  55.02kB)
 
 ==============================================================================
 
