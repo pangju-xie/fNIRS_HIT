@@ -4,7 +4,7 @@
 #include "utils.h"
 #include "main.h"
 #include "gpio.h"
-
+#include "usart.h"
 /******************************************************************************
  * 全局变量定义
  ******************************************************************************/
@@ -384,7 +384,7 @@ uint8_t ReadDataDirect(uint8_t data[])
     channel_id = rx_data[0] & STATUS_CHID_MASK;
     
     memcpy(data, rx_data + 1, 3);
-//    voltage = DataConvert(channel_id, data);
+    voltage = DataConvert(channel_id, data);
 //    /* 查找通道在映射表中的位置并存储数据 */
 //    for (uint8_t i = 0; i < channel.num; i++) {
 //        if (channel_id == channel.chn_map[i]) {
@@ -508,6 +508,8 @@ float DataConvert(uint8_t chn, uint8_t data[])
                     /* 正数处理 */
                     result = ((float)raw_value / 0x780000) * ref / gain * 1000;  /* 转换为mV */
                 }
+                
+                //HAL_UART_Transmit(&huart2, (uint8_t*)&result,4, 100);
                 
                 /* 输出调试信息 */
                 if (chn < STATUS_CHID_DIFF7) {

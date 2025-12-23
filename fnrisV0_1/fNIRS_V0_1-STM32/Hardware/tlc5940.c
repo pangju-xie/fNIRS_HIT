@@ -44,9 +44,8 @@ void tlc5940_init(void) {
   SETBLANK(GPIO_ON); // 初始关闭输出
   
   HAL_TIM_Base_Start_IT(&htim2);
-  __HAL_TIM_SET_AUTORELOAD(g_tlc.gsclk,1000-1);
-  __HAL_TIM_SET_PRESCALER(g_tlc.gsclk, 1250-1);
-  HAL_TIM_PWM_Start(g_tlc.gsclk, g_tlc.tim_chn);
+//  __HAL_TIM_SET_AUTORELOAD(g_tlc.gsclk,1000-1);
+//  __HAL_TIM_SET_PRESCALER(g_tlc.gsclk, 1250-1);
   // 短暂延时确保芯片稳定
   HAL_Delay(10);
   
@@ -94,6 +93,7 @@ void writeTLC(uint8_t* data, uint8_t len) {
   Delay_us(2);  // 短暂延时  
   
   SETBLANK(GPIO_OFF);  // 恢复各通道控制
+  Delay_us(10);
  
 }
 

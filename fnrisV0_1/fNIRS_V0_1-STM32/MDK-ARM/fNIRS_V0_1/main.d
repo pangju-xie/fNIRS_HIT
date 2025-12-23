@@ -41,4 +41,6 @@ fnirs_v0_1/main.o: ..\Core\Src\main.c ..\Core\Inc\main.h \
   D:\Keil_v5\ARM\ARMCLANG\include\stdio.h ..\utils\utils.h \
   D:\Keil_v5\ARM\ARMCLANG\include\stdarg.h ..\utils\key.h \
   ..\utils\bat_adc.h ..\Hardware\fnirs.h ..\Hardware\CSNP32.h \
-  ..\utils\transmit.h ..\Hardware\tlc5940.h
+  ..\utils\transmit.h ..\Hardware\tlc5940.h ..\Hardware\ads1258.h \
+  D:\Keil_v5\ARM\ARMCLANG\include\assert.h \
+  D:\Keil_v5\ARM\ARMCLANG\include\stdbool.h

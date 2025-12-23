@@ -36,6 +36,7 @@
 #include "transmit.h"
 #include "CSNP32.h"
 #include "tlc5940.h"
+#include "ads1258.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -84,10 +85,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			}
 		}
 		
-//	if(htim == g_tlc.tlctim)
-//	{
-//		g_timer_ready_flag = 1;
-//	}
+	if(htim == g_tlc.tlctim)
+	{
+		g_timer_ready_flag = 1;
+	}
   if(htim == &htim2){
     SETBLANK(GPIO_ON);
     SETBLANK(GPIO_OFF);
@@ -130,6 +131,7 @@ int main(void)
       hsd.Init.BusWide = SDIO_BUS_WIDE_4B;
       中SDIO_BUS_WIDE_4B改为SDIO_BUS_WIDE_1B。
       否则会报错无法正常运行。 */
+  uint16_t ads_channel = 0x0020;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -167,22 +169,26 @@ int main(void)
 	HAL_TIM_Base_Start_IT(&htim6);
 	nirs_init();
 	DebugPrintf("stm32 init done.");
+//  ads1258init();
+//  set_ads_channel(&ads_channel);
+//  ADS1258_START(HIGH);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-//    for(uint8_t i = 0; i<16; i++){
+    
+//    for(uint8_t i = 0; i<4; i++){
 //      tlcSetGS(i, 0x0fff, 1, 1);
-//      HAL_Delay(1000);
+//      HAL_Delay(10);
 //      tlcSetGS(i, 0x0fff, 0, 1);
-//      HAL_Delay(1000);
+//      HAL_Delay(10);
 //    }
     /* 检查UART接收是否完成 */
     if (g_uart_rx_buffer.data_ready_flag) {
         /* 输出接收到的数据长度信息 */
-        DebugPrintf("UART received %d bytes of data", g_uart_rx_buffer.write_index);
+        //DebugPrintf("UART received %d bytes of data", g_uart_rx_buffer.write_index);
         
         /* 清除接收完成标志，准备接收下一帧数据 */
         g_uart_rx_buffer.data_ready_flag = 0;

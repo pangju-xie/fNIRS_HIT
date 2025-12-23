@@ -667,7 +667,7 @@ class MainWindow(QMainWindow):
                     self.displayUpdate.emit(self.state_manager.sensors['fnirs'].OD[-1,:,:])
                 elif display_signal_type == '血红蛋白浓度':
                     self.displayUpdate.emit(self.state_manager.sensors['fnirs'].hemoglobin[-1,:,:])
-        
+    
     
     def on_data_patched(self, sensor_type, packet_id, data):
         """处理数据修补"""

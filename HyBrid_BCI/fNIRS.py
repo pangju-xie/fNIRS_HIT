@@ -318,7 +318,7 @@ class fNIRS:
         for ch_idx in range(self.channel_num):
             od_channel = OD[0, :, ch_idx]
             hb_values = np.dot(self.struct.get_D_matrix(), od_channel)
-            hemoglobin[0, :, ch_idx] = hb_values
+            hemoglobin[0, :, ch_idx] = hb_values*10e6  # 转换为微摩尔
         
         # hemoglobin[0,0,0] = packet_id  # 恢复包ID
         if(self.hemoglobin.shape[0]==0):

@@ -22,6 +22,7 @@
 #define ADS_SAMPLES_PER_LED     16     /**< 每个LED的平均采样次数 */
 #define FNIRS_DETECTOR_NUM      16     /**< fnirs系统的最大探测器数量>*/
 
+uint8_t sample_count[16] = {0};
 /******************************************************************************
  * 数据结构定义
  ******************************************************************************/
@@ -90,6 +91,9 @@ void nirs_data_collect(uint16_t GPIO_Pin)
                                    ((uint32_t)temp_buffer[1] << 8)  |
                                    (uint32_t)temp_buffer[2];
               adc_value = adc_value & 0x00ffffff;
+              if(adc_value & 0x00800000){
+                adc_value = 0x00ffffff - adc_value;
+              }
               
               g_adc_sample[ch_id].sample_sum += adc_value;
               g_adc_sample[ch_id].sample_count++;
@@ -309,6 +313,7 @@ uint8_t nirs_start(void)
     HAL_TIM_PWM_Start(g_tlc.tlctim, TIM_CHANNEL_1);
     HAL_TIM_IC_Start_IT(g_tlc.tlctim, TIM_CHANNEL_2);
     
+    
     /* 初始化数据缓冲区 */
     g_fnirs_ctx.data_buffer.buffer_idx = 0;
     g_fnirs_ctx.data_buffer.data_save_addr = 
@@ -331,6 +336,8 @@ uint8_t nirs_stop(void)
     
     /* 停止ADC转换和定时器 */
     stopConversions();
+  
+    HAL_TIM_PWM_Stop(g_tlc.gsclk, g_tlc.tim_chn);
     HAL_TIM_PWM_Stop(g_tlc.tlctim, TIM_CHANNEL_1);
     HAL_TIM_IC_Stop_IT(g_tlc.tlctim, TIM_CHANNEL_2);
     g_tlc.tlctim_polarity = TIM_INPUTCHANNELPOLARITY_RISING;
@@ -379,7 +386,7 @@ static void _fnirs_process_adc_samples(uint8_t i, uint8_t* save_addr)
         save_addr[0] = (g_adc_sample[i].average_value >> 16) & 0xFF;
         save_addr[1] = (g_adc_sample[i].average_value >> 8) & 0xFF;
         save_addr[2] = g_adc_sample[i].average_value & 0xFF;
-//        DataConvert(10, save_addr);
+        DataConvert(10, save_addr);
         /* 重置采样数据 */
         g_adc_sample[i].sample_sum = 0;
         g_adc_sample[i].sample_count = 0;
@@ -453,7 +460,7 @@ void nirs_data_send(void)
     
     /* 通过SPI DMA发送数据 */
     spi_transmit_dma(srcbuf, g_fnirs_ctx.data_buffer.send_buffer_len, 1000);
-    DebugPrintf("Send data packet:%d.\r\n", g_fnirs_ctx.data_buffer.period_counter);
+    //DebugPrintf("Send data packet:%d.\r\n", g_fnirs_ctx.data_buffer.period_counter);
     
     /* 写入SD卡 */
     _fnirs_write_sd_card(srcbuf, g_fnirs_ctx.data_buffer.period_counter);
@@ -494,7 +501,7 @@ void nirs_timer_handle(uint8_t flag)
       
       /* 根据开启的探测器数量控制ADC转换 */
       open_detectors = g_fnirs_ctx.config.detector_open[led_index];
-      
+      HAL_TIM_PWM_Stop(g_tlc.gsclk, g_tlc.tim_chn);
       /* 根据波长类型处理 */
       if (wavelength_type == LED_RED_WAVELENGTH) {
         /* 开启红光LED */
@@ -504,10 +511,14 @@ void nirs_timer_handle(uint8_t flag)
           tlcSetGS(led_index, g_tlc.red_led, 0, 1);
       }
       /* 设置ADC通道 */
+      
+      HAL_TIM_PWM_Start(g_tlc.gsclk, g_tlc.tim_chn);
+      __HAL_TIM_SET_COUNTER(&htim2, 0);
       set_ads_channel(&g_fnirs_ctx.config.config[led_index]);
       Delay_us(10);  /* 等待稳定 */
       if (open_detectors) {
           ADS1258_START(HIGH);  /* 开始ADC转换 */
+          
       }
       
       g_fnirs_ctx.timer_count++;
@@ -515,14 +526,20 @@ void nirs_timer_handle(uint8_t flag)
     }else if(flag == 2){ /* PWM下降沿，关闭led，并保存数据 */
       
       //DebugPrintf("close led and stop adc\r\n");
-      tlcSetGS(0, g_tlc.red_led, 0, 0); /* 关闭所有LED */
       ADS1258_START(LOW);               /* 停止ADC转换 */
+      Delay_us(20);
+      
+      //HAL_TIM_PWM_Stop(g_tlc.gsclk, g_tlc.tim_chn);
+      //tlcSetGS(0, g_tlc.red_led, 0, 0); /* 关闭所有LED */
       
       /* 处理之前采集的数据（除了第一个周期） */
       if (g_fnirs_ctx.timer_count != 0) {
         uint8_t count = 0;
+        uint16_t open_det = g_fnirs_ctx.config.config[led_index];
         for(uint8_t i = 0; i<16;i++){
-          if(g_adc_sample[i].sample_count){
+          if(g_adc_sample[i].sample_count && GET_BIT(open_det, i) == 1){
+            //DebugPrintf("led:%d, open det:%d, sam_num:%d", led_index, i, g_adc_sample[i].sample_count);
+            sample_count[2*i+wavelength_type] = g_adc_sample[i].sample_count;
             _fnirs_process_adc_samples(i, g_fnirs_ctx.data_buffer.data_save_addr + wavelength_type*3 + count * 6 );
             count++;
           }
