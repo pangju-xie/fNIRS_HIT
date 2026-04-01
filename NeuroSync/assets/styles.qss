@@ -1,0 +1,194 @@
+/* =========================================
+   Component: QTabWidget & QTabBar
+   Description: 主窗口标签导航栏样式
+   Feature: 配合 Controller 层状态机，提供 Enabled/Disabled/Selected 视觉反馈
+   ========================================= */
+   
+/* 1. 全局背景与字体 */
+QMainWindow {
+    background-color: #f7f9fc; /* 极轻灰蓝色背景 */
+    font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+}
+
+/* 面板内容区基础样式 */
+QTabWidget::pane {
+    border: 1px solid #dbe3eb;
+    background-color: #ffffff;
+    border-radius: 4px;
+    top: -1px;
+}
+
+QTabWidget::tab-bar {
+    left: 5px; /* 标签栏左边距 */
+}
+
+/* 标签页：默认状态 (未选中、处于可用状态) */
+QTabBar::tab {
+    background-color: #f8f9fa;
+    color: #7f8c8d;
+    border: 1px solid #dbe3eb;
+    border-bottom: none; 
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    min-width: 120px;
+    min-height: 24px;
+    padding: 8px 15px;
+    margin-top: 2px;
+    font-size: 18px;
+    font-weight: bold;
+    margin-right: 2px;
+}
+
+/* 标签页：鼠标悬浮状态 (逻辑：不可用及已选中的标签不响应悬浮) */
+QTabBar::tab:hover:enabled:!selected {
+    background-color: #e9ecef;
+    color: #34495e;
+}
+
+/* 标签页：激活状态 (当前所在工作区) */
+QTabBar::tab:selected {
+    background-color: #ffffff;
+    color: #2980b9; 
+    border-top: 3px solid #3498db; /* 顶部高亮主色条，视觉寻址引流 */
+    margin-top: 0px; /* 让 Tab 有视觉凸起感 */
+    padding-bottom: 6px; /* 确保文字绝对居中，并盖住底部的线 */
+}
+
+/* 标签页：禁用状态 (业务逻辑锁定时触发，如未连接设备时锁定配置页) */
+QTabBar::tab:disabled {
+    background-color: #ecf0f1; 
+    color: #bdc3c7; 
+}
+/* 3. 中间画布 (Pane) 的背景颜色 */
+QWidget#homeTab, QWidget#configTab, QWidget#testTab, QWidget#sampleTab, QWidget#analyzeTab {
+    background-color: white;
+}
+
+/* 4. 原子组件的特定样式 */
+
+/* LED 指示器样式 */
+QLabel[led_state="red"] { background-color: #f44336; border-radius: 8px; border: 1px solid #c62828; }
+QLabel[led_state="green"] { background-color: #4caf50; border-radius: 8px; border: 1px solid #2e7d32; }
+QLabel[led_state="yellow"] { background-color: #ffeb3b; border-radius: 8px; border: 1px solid #fbc02d; }
+
+/* 状态按钮样式 */
+QPushButton[state="idle"] {
+    background-color: white;
+    border: 1px solid #dbe3eb;
+    color: #3498db;
+    border-radius: 6px;
+    font-weight: bold;
+}
+QPushButton[state="idle"]:hover { background-color: #e6f7ff; }
+
+QPushButton[state="connected"] {
+    background-color: #f44336; /* 断开时变成警告红 */
+    color: white;
+    border-radius: 6px;
+    font-weight: bold;
+}
+
+QPushButton[state="acting"] {
+    background-color: #bdc3c7; /* 正在操作时变灰 */
+    color: white;
+    border-radius: 6px;
+}
+
+/* =========================================
+   全局基础控件 (Input, Combo, GroupBox, List)
+   ========================================= */
+QGroupBox {
+    font-weight: bold; font-size: 14px; color: #2c3e50;
+    border: 1px solid #dbe3eb; border-radius: 6px;
+    margin-top: 15px; background-color: #ffffff;
+}
+QGroupBox::title { subcontrol-origin: margin; left: 15px; padding: 0 5px; }
+
+QLineEdit, QComboBox, QSpinBox, QDoubleSpinBox, QDateEdit, QTextEdit {
+    border: 1px solid #bdc3c7; border-radius: 4px;
+    padding: 2px 8px; background-color: #f8f9fa; 
+    min-height: 24px; max-height: 26px; font-size: 13px;
+}
+QLineEdit:focus, QComboBox:focus, QSpinBox:focus, QDoubleSpinBox:focus, QDateEdit:focus, QTextEdit:focus {
+    border: 1px solid #3498db; background-color: #ffffff;
+}
+
+QSpinBox::up-button, QDoubleSpinBox::up-button, 
+QSpinBox::down-button, QDoubleSpinBox::down-button {
+    width: 16px;                /* 收窄按钮宽度 */
+    background-color: transparent; 
+    border-left: 1px solid #ecf0f1; /* 左侧加一条极细的分割线 */
+}
+
+QSpinBox::up-button:hover, QDoubleSpinBox::up-button:hover, 
+QSpinBox::down-button:hover, QDoubleSpinBox::down-button:hover {
+    background-color: #e9ecef;  /* 鼠标悬浮反馈 */
+}
+
+QTextEdit {
+    border: 1px solid #bdc3c7; border-radius: 4px;
+    padding: 4px 10px; background-color: #f8f9fa;
+    font-size: 14px;
+}
+QTextEdit:focus {
+    border: 1px solid #3498db; background-color: #ffffff;
+}
+
+QListWidget { border: 1px solid #bdc3c7; border-radius: 4px; background-color: #ffffff; font-size: 14px;}
+QListWidget::item { padding: 12px; min-height: 30px; border-bottom: 1px solid #ecf0f1; }
+QListWidget::item:selected { background-color: #3498db; color: white; font-weight: bold; }
+
+
+/* =========================================
+   全局动作按钮统一样式 (基于 ObjectName 映射)
+   ========================================= */
+
+/* 1. 所有按钮的基础基调 (白底黑字边框) */
+QPushButton {
+    padding: 6px 15px; font-size: 14px;
+    border-radius: 4px; border: 1px solid #bdc3c7;
+    background-color: #ffffff; color: #2c3e50;
+}
+QPushButton:hover { background-color: #f0f3f6; }
+QPushButton:disabled { background-color: #ecf0f1; color: #95a5a6; border: 1px solid #dbe3eb; }
+
+/* 2. 蓝色系主操作 (保存 / 记录 / 设置 / 下一步) */
+QPushButton#btnSave, QPushButton#btn_apply, QPushButton#btnRecord, QPushButton#btn_complete {
+    background-color: #3498db; color: white; border: none; font-weight: bold;
+}
+QPushButton#btnSave:hover, QPushButton#btn_apply:hover, QPushButton#btnRecord:hover, QPushButton#btn_complete:hover { 
+    background-color: #2980b9; 
+}
+
+/* 3. 绿色系推进 (开始 / 完成) */
+QPushButton#btnStart, QPushButton#btn_start, QPushButton#btn_finish {
+    background-color: #2ecc71; color: white; border: none; font-weight: bold;
+}
+QPushButton#btnStart:hover, QPushButton#btn_start:hover, QPushButton#btn_finish:hover { 
+    background-color: #27ae60; 
+}
+
+/* 4. 红色系危险 (停止 / 清除 / 取消) */
+QPushButton#btnStop, QPushButton#btn_stop, QPushButton#btnClear {
+    background-color: #e74c3c; color: white; border: none; font-weight: bold;
+}
+QPushButton#btnStop:hover, QPushButton#btn_stop:hover, QPushButton#btnClear:hover { 
+    background-color: #c0392b; 
+}
+
+/* 5. 其他特殊指示 (重置等) */
+QPushButton#btnReset { background-color: #f39c12; color: white; border: none; font-weight: bold; }
+QPushButton#btnReset:hover { background-color: #e67e22; }
+QPushButton#btnComplete { background-color: #9b59b6; color: white; border: none; font-weight: bold; }
+QPushButton#btnComplete:hover { background-color: #8e44ad; }
+
+/* =========================================
+   全局底部统一操作栏 (Action Bar)
+   ========================================= */
+QFrame#bottomControlBar {
+    background-color: #f8f9fa;   /* 极浅灰底色，与白色主画布区分 */
+    border: 1px solid #dbe3eb;   /* 柔和的边框 */
+    border-radius: 6px;
+    min-height: 50px;            /* 统一锁死高度，保持四个界面绝对一致 */
+    max-height: 50px;
+}

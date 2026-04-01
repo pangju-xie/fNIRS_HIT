@@ -1,7 +1,7 @@
-set(CMAKE_C_COMPILER "D:/ProgramData/Espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/xtensa-esp32s3-elf-gcc.exe")
+set(CMAKE_C_COMPILER "E:/Espressif/tools/xtensa-esp-elf/esp-14.2.0_20250730/xtensa-esp-elf/bin/xtensa-esp32s3-elf-gcc.exe")
 set(CMAKE_C_COMPILER_ARG1 "")
 set(CMAKE_C_COMPILER_ID "GNU")
-set(CMAKE_C_COMPILER_VERSION "13.2.0")
+set(CMAKE_C_COMPILER_VERSION "14.2.0")
 set(CMAKE_C_COMPILER_VERSION_INTERNAL "")
 set(CMAKE_C_COMPILER_WRAPPER "")
 set(CMAKE_C_STANDARD_COMPUTED_DEFAULT "17")
@@ -22,11 +22,11 @@ set(CMAKE_C_SIMULATE_VERSION "")
 
 
 
-set(CMAKE_AR "D:/ProgramData/Espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/xtensa-esp32s3-elf-ar.exe")
-set(CMAKE_C_COMPILER_AR "D:/ProgramData/Espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/xtensa-esp32s3-elf-gcc-ar.exe")
-set(CMAKE_RANLIB "D:/ProgramData/Espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/xtensa-esp32s3-elf-ranlib.exe")
-set(CMAKE_C_COMPILER_RANLIB "D:/ProgramData/Espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/xtensa-esp32s3-elf-gcc-ranlib.exe")
-set(CMAKE_LINKER "D:/ProgramData/Espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/xtensa-esp32s3-elf-ld.exe")
+set(CMAKE_AR "E:/Espressif/tools/xtensa-esp-elf/esp-14.2.0_20250730/xtensa-esp-elf/bin/xtensa-esp32s3-elf-ar.exe")
+set(CMAKE_C_COMPILER_AR "E:/Espressif/tools/xtensa-esp-elf/esp-14.2.0_20250730/xtensa-esp-elf/bin/xtensa-esp32s3-elf-gcc-ar.exe")
+set(CMAKE_RANLIB "E:/Espressif/tools/xtensa-esp-elf/esp-14.2.0_20250730/xtensa-esp-elf/bin/xtensa-esp32s3-elf-ranlib.exe")
+set(CMAKE_C_COMPILER_RANLIB "E:/Espressif/tools/xtensa-esp-elf/esp-14.2.0_20250730/xtensa-esp-elf/bin/xtensa-esp32s3-elf-gcc-ranlib.exe")
+set(CMAKE_LINKER "E:/Espressif/tools/xtensa-esp-elf/esp-14.2.0_20250730/xtensa-esp-elf/bin/xtensa-esp32s3-elf-ld.exe")
 set(CMAKE_LINKER_LINK "")
 set(CMAKE_LINKER_LLD "")
 set(CMAKE_C_COMPILER_LINKER "NOTFOUND")
@@ -75,7 +75,7 @@ endif()
 
 
 
-set(CMAKE_C_IMPLICIT_INCLUDE_DIRECTORIES "D:/ProgramData/Espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/lib/gcc/xtensa-esp-elf/13.2.0/include;D:/ProgramData/Espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/lib/gcc/xtensa-esp-elf/13.2.0/include-fixed;D:/ProgramData/Espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/xtensa-esp-elf/include")
+set(CMAKE_C_IMPLICIT_INCLUDE_DIRECTORIES "E:/Espressif/tools/xtensa-esp-elf/esp-14.2.0_20250730/xtensa-esp-elf/lib/gcc/xtensa-esp-elf/14.2.0/include;E:/Espressif/tools/xtensa-esp-elf/esp-14.2.0_20250730/xtensa-esp-elf/lib/gcc/xtensa-esp-elf/14.2.0/include-fixed;E:/Espressif/tools/xtensa-esp-elf/esp-14.2.0_20250730/xtensa-esp-elf/xtensa-esp-elf/include")
 set(CMAKE_C_IMPLICIT_LINK_LIBRARIES "gcc;c;nosys;c;gcc")
-set(CMAKE_C_IMPLICIT_LINK_DIRECTORIES "D:/ProgramData/Espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/lib/gcc/xtensa-esp-elf/13.2.0/esp32s3;D:/ProgramData/Espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/xtensa-esp-elf/lib/esp32s3;D:/ProgramData/Espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/lib/gcc/xtensa-esp-elf/13.2.0;D:/ProgramData/Espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/lib/gcc;D:/ProgramData/Espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/xtensa-esp-elf/lib")
+set(CMAKE_C_IMPLICIT_LINK_DIRECTORIES "E:/Espressif/tools/xtensa-esp-elf/esp-14.2.0_20250730/xtensa-esp-elf/lib/gcc/xtensa-esp-elf/14.2.0/esp32s3;E:/Espressif/tools/xtensa-esp-elf/esp-14.2.0_20250730/xtensa-esp-elf/xtensa-esp-elf/lib/esp32s3;E:/Espressif/tools/xtensa-esp-elf/esp-14.2.0_20250730/xtensa-esp-elf/lib/gcc/xtensa-esp-elf/14.2.0;E:/Espressif/tools/xtensa-esp-elf/esp-14.2.0_20250730/xtensa-esp-elf/lib/gcc;E:/Espressif/tools/xtensa-esp-elf/esp-14.2.0_20250730/xtensa-esp-elf/xtensa-esp-elf/lib")
 set(CMAKE_C_IMPLICIT_LINK_FRAMEWORK_DIRECTORIES "")

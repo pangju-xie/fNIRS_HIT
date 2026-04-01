@@ -10,6 +10,7 @@
 #include <string.h>
 #include <esp_log.h>
 #include "udp.h"
+#include "transmit.h"
 
 
 static const char *TAG = "BUFFER";
@@ -444,11 +445,15 @@ static frame_process_result_t  process_frame(circular_buffer_t *cb, uint32_t fra
     // }
     // printf("\r\n");
     
+    //如果是连接命令，则直接返回类型帧
+    if(CMD_CONN == (T_COMMAND) frame_buf[CMD_PLACE]){
+        stype = (SENSOR_TYPE) frame_buf[5];
+        ESP_LOGI(TAG, "sensor type: %d", stype);
+        return FRAME_SUCCESS;
+    }
+
     // 发送UDP数据
     udp_safe_send(frame_buf, total_frame_len);
-    
-    return true;
-
     
     return FRAME_SUCCESS;
 }

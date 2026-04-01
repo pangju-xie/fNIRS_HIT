@@ -55,6 +55,8 @@ E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/bootloader/esp-idf/efuse/CMakeFile
 E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/bootloader/esp-idf/efuse/CMakeFiles/efuse_test_table.dir
 E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/bootloader/esp-idf/efuse/CMakeFiles/edit_cache.dir
 E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/bootloader/esp-idf/efuse/CMakeFiles/rebuild_cache.dir
+E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/bootloader/esp-idf/esp_security/CMakeFiles/edit_cache.dir
+E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/bootloader/esp-idf/esp_security/CMakeFiles/rebuild_cache.dir
 E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/bootloader/esp-idf/esp_system/CMakeFiles/__idf_esp_system.dir
 E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/bootloader/esp-idf/esp_system/CMakeFiles/edit_cache.dir
 E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/bootloader/esp-idf/esp_system/CMakeFiles/rebuild_cache.dir

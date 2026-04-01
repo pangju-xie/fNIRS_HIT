@@ -11,6 +11,7 @@ extern "C"
 #define PORT0 2227
 #define PORT1 1227
 
+extern uint8_t sensor_type;
 
 void udp_task(void);
 ssize_t udp_safe_send(uint8_t *buf, ssize_t len);

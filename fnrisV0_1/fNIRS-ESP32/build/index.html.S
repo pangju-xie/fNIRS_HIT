@@ -110,3 +110,7 @@ _binary_index_html_end: /* for objcopy compatibility */
 .global index_html_length
 index_html_length:
 .long 1472
+
+#if defined (__linux__)
+.section .note.GNU-stack,"",@progbits
+#endif

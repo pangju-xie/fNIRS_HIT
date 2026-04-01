@@ -54,6 +54,7 @@ ssize_t udp_safe_send(uint8_t *buf, ssize_t len)
 				/* 
 				 * 参考链接：https://blog.csdn.net/modi000/article/details/106783572
 				 */
+				vTaskDelay(1);
 				continue;
 			}
 			ESP_LOGE("UDP_CLIENT", "send failed errno: %d info: %s", errno, strerror(errno));
@@ -62,7 +63,7 @@ ssize_t udp_safe_send(uint8_t *buf, ssize_t len)
 		else{
 			
 			inet_ntoa_r(((struct sockaddr_in *)&dest_addr)->sin_addr, addr_str, sizeof(addr_str) - 1);
-			ESP_LOGI("UDP_CLIENT", "send %d bytes data to ip addr: %s, port: %d", nsend, addr_str, PORT1 );
+			ESP_LOGI("UDP_CLIENT", "send %d bytes data to ip addr: %s, port: %d", nsend, addr_str, ntohs(((struct sockaddr_in *)&dest_addr)->sin_port) );
 		}
 		left -= nsend;
 		buf += nsend;
@@ -110,13 +111,13 @@ static void udp_receice_task(void *arg){
 	ESP_LOGI(TAG, "Socket bound, ip: %s, port %d", addr_str, PORT0);
 
     while(1){
-		vTaskDelay(10/portTICK_PERIOD_MS);
         len = recvfrom(sock, data, sizeof(data)-1, 0, (struct sockaddr*)&broad_adr, &broadlen);
         // Error occurred during receiving
 		if (len < 0) {
 			if (errno == EINPROGRESS || errno == EAGAIN || errno == EWOULDBLOCK) {
 				//ESP_LOGE(TAG, "recvfrom negnected: errno %d", errno);
 				//errno为该几个并非通讯错误，可忽略
+				vTaskDelay(10/portTICK_PERIOD_MS);
             	continue;   // Not an error
         	}
 			else{
@@ -127,7 +128,7 @@ static void udp_receice_task(void *arg){
         else{
 			if(broad_adr.ss_family == PF_INET){	
 			 	inet_ntoa_r(((struct sockaddr_in *)&broad_adr)->sin_addr, addr_str, sizeof(addr_str) - 1);
-				ESP_LOGI(TAG, "Received %d bytes data from ip:%s", len, addr_str);
+				// ESP_LOGI(TAG, "Received %d bytes data from ip:%s", len, addr_str);
 			}
 			// printf("read data:");
 			// for(int i = 0;i<len && i<15 ;i++){
@@ -145,7 +146,14 @@ static void udp_receice_task(void *arg){
 			}
 			else{
 				if(CMD_CONN == (T_COMMAND) ret){
-					memcpy(&dest_addr.sin_addr.s_addr, data+DATA_PLACE, 4);
+					// 【修改/注释】：修复防火墙拦截的核心代码！
+                    // 不要信任数据包 payload 里的 IP，也不要写死 PORT1。
+                    // 直接获取发包方（上位机）在底层网络层真实的源 IP 和源端口。
+                    // 防火墙允许“原路返回”的 UDP 包。
+					dest_addr.sin_family = AF_INET;
+                    dest_addr.sin_addr.s_addr = ((struct sockaddr_in *)&broad_adr)->sin_addr.s_addr;
+                    dest_addr.sin_port = ((struct sockaddr_in *)&broad_adr)->sin_port;
+					// memcpy(&dest_addr.sin_addr.s_addr, data+DATA_PLACE, 4);
 			 		inet_ntoa_r(((struct sockaddr_in *)&dest_addr)->sin_addr, addr_str, sizeof(addr_str) - 1);
 					
 					ESP_LOGI(TAG, "dest address: %s, dest connected", addr_str);

@@ -48,6 +48,8 @@ typedef enum{
 	CMD_SUPP 					= 0xA2,
 }T_COMMAND;
 
+extern SENSOR_TYPE stype;
+
 void command_init(void);
 int DecodeCommand(uint8_t* data, int len);
 int EncodeCommand(uint8_t* RxBuf, T_COMMAND cmd, uint8_t* data);

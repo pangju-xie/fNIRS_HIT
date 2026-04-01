@@ -56,9 +56,7 @@ void uart_init(void) {
 
 //串口发送
 void uart_tx_task(uint8_t *data, int len){
-    int tx_byte = uart_write_bytes(UART_NUM, data, len);
-    //ESP_LOGI(TAG, "SEND %d bytes UART DATA TO STM32.", tx_byte);
-    
+    uart_write_bytes(UART_NUM, data, len);
     return;
 }
 

@@ -3,7 +3,7 @@
 <title>Static Call Graph - [fNIRS_V0_1\fNIRS_V0_1.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image fNIRS_V0_1\fNIRS_V0_1.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6210000: Last Updated: Tue Dec 23 16:52:50 2025
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6210000: Last Updated: Tue Mar 31 15:27:09 2026
 <BR><P>
 <H3>Maximum Stack Usage =        372 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -409,7 +409,7 @@ Global Symbols
 <LI><a href="#[144]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SystemClock_Config
 <LI><a href="#[155]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;count_channel_info
 <LI><a href="#[172]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;init_tlc_struct
-<LI><a href="#[17a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tlcSetGS
+<LI><a href="#[17b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tlcSetGS
 <LI><a href="#[158]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fnirs_struct_init
 </UL>
 
@@ -430,7 +430,7 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[75]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_round
 </UL>
-<BR>[Called By]<UL><LI><a href="#[15d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;handle_channel_config_command
+<BR>[Called By]<UL><LI><a href="#[15c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;handle_channel_config_command
 </UL>
 
 <P><STRONG><a name="[76]"></a>__aeabi_i2d</STRONG> (Thumb, 34 bytes, Stack size 16 bytes, dflti.o(.text))
@@ -438,7 +438,7 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[77]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_epilogue
 </UL>
-<BR>[Called By]<UL><LI><a href="#[15d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;handle_channel_config_command
+<BR>[Called By]<UL><LI><a href="#[15c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;handle_channel_config_command
 </UL>
 
 <P><STRONG><a name="[78]"></a>__aeabi_d2iz</STRONG> (Thumb, 62 bytes, Stack size 16 bytes, dfixi.o(.text))
@@ -446,7 +446,7 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_llsr
 </UL>
-<BR>[Called By]<UL><LI><a href="#[15d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;handle_channel_config_command
+<BR>[Called By]<UL><LI><a href="#[15c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;handle_channel_config_command
 </UL>
 
 <P><STRONG><a name="[80]"></a>__aeabi_f2d</STRONG> (Thumb, 38 bytes, Stack size 0 bytes, f2d.o(.text))
@@ -603,8 +603,8 @@ Global Symbols
 <LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DataConvert
 <LI><a href="#[14c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sdio_write
 <LI><a href="#[177]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;spi_transmit_dma
-<LI><a href="#[15a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nirs_stop
-<LI><a href="#[159]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nirs_start
+<LI><a href="#[159]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nirs_stop
+<LI><a href="#[160]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nirs_start
 <LI><a href="#[16e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nirs_config
 <LI><a href="#[170]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nirs_set_sample_rate
 <LI><a href="#[179]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sdio_init
@@ -612,10 +612,10 @@ Global Symbols
 <LI><a href="#[150]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ads1258init
 <LI><a href="#[16a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;init_data_frame
 <LI><a href="#[14b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_fnirs_write_sd_card
-<LI><a href="#[160]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;encode_command_response
-<LI><a href="#[15f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;handle_data_supplement_request
-<LI><a href="#[15d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;handle_channel_config_command
-<LI><a href="#[15c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;handle_sample_rate_command
+<LI><a href="#[15f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;encode_command_response
+<LI><a href="#[15e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;handle_data_supplement_request
+<LI><a href="#[15c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;handle_channel_config_command
+<LI><a href="#[15b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;handle_sample_rate_command
 <LI><a href="#[16b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;generate_crc16_table
 <LI><a href="#[167]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;uart_transmit_dma
 </UL>
@@ -843,7 +843,7 @@ Global Symbols
 <LI><a href="#[180]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;writeTLC
 <LI><a href="#[17f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tlcSetDC
 <LI><a href="#[177]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;spi_transmit_dma
-<LI><a href="#[17b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stopConversions
+<LI><a href="#[17a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stopConversions
 <LI><a href="#[150]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ads1258init
 <LI><a href="#[178]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tlc5940_init
 <LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_SPI_TxCpltCallback
@@ -1329,7 +1329,7 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM_CCxChannelCmd
 </UL>
-<BR>[Called By]<UL><LI><a href="#[159]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nirs_start
+<BR>[Called By]<UL><LI><a href="#[160]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nirs_start
 </UL>
 
 <P><STRONG><a name="[eb]"></a>HAL_TIM_IC_Stop_IT</STRONG> (Thumb, 346 bytes, Stack size 40 bytes, stm32f4xx_hal_tim.o(.text.HAL_TIM_IC_Stop_IT))
@@ -1337,7 +1337,7 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM_CCxChannelCmd
 </UL>
-<BR>[Called By]<UL><LI><a href="#[15a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nirs_stop
+<BR>[Called By]<UL><LI><a href="#[159]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nirs_stop
 </UL>
 
 <P><STRONG><a name="[ec]"></a>HAL_TIM_IRQHandler</STRONG> (Thumb, 538 bytes, Stack size 24 bytes, stm32f4xx_hal_tim.o(.text.HAL_TIM_IRQHandler))
@@ -1411,7 +1411,7 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM_CCxChannelCmd
 </UL>
 <BR>[Called By]<UL><LI><a href="#[175]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nirs_timer_handle
-<LI><a href="#[159]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nirs_start
+<LI><a href="#[160]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nirs_start
 </UL>
 
 <P><STRONG><a name="[fd]"></a>HAL_TIM_PWM_Stop</STRONG> (Thumb, 262 bytes, Stack size 32 bytes, stm32f4xx_hal_tim.o(.text.HAL_TIM_PWM_Stop))
@@ -1420,7 +1420,7 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM_CCxChannelCmd
 </UL>
 <BR>[Called By]<UL><LI><a href="#[175]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nirs_timer_handle
-<LI><a href="#[15a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nirs_stop
+<LI><a href="#[159]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nirs_stop
 </UL>
 
 <P><STRONG><a name="[f0]"></a>HAL_TIM_PeriodElapsedCallback</STRONG> (Thumb, 182 bytes, Stack size 24 bytes, main.o(.text.HAL_TIM_PeriodElapsedCallback))
@@ -2254,7 +2254,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[176]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nirs_data_send
 <LI><a href="#[156]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;decode_received_command
 <LI><a href="#[16f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sd_read_nirs
-<LI><a href="#[160]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;encode_command_response
+<LI><a href="#[15f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;encode_command_response
 </UL>
 
 <P><STRONG><a name="[165]"></a>convert_voltage_to_percentage</STRONG> (Thumb, 140 bytes, Stack size 8 bytes, bat_adc.o(.text.convert_voltage_to_percentage))
@@ -2271,21 +2271,21 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[17c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;set_ads_channel
 </UL>
 
-<P><STRONG><a name="[156]"></a>decode_received_command</STRONG> (Thumb, 558 bytes, Stack size 40 bytes, transmit.o(.text.decode_received_command))
+<P><STRONG><a name="[156]"></a>decode_received_command</STRONG> (Thumb, 552 bytes, Stack size 40 bytes, transmit.o(.text.decode_received_command))
 <BR><BR>[Stack]<UL><LI>Max Depth = 348<LI>Call Chain = decode_received_command &rArr; handle_data_supplement_request &rArr; sd_read_nirs &rArr; sdio_read &rArr; HAL_SD_ReadBlocks &rArr; SDMMC_CmdReadMultiBlock &rArr; SDMMC_GetCmdResp1 &rArr; SDIO_GetResponse
 </UL>
 <BR>[Calls]<UL><LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DebugPrintf
 <LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_battery_status
-<LI><a href="#[15e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;reverse_array
-<LI><a href="#[15b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_battery_percentage
+<LI><a href="#[15d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;reverse_array
+<LI><a href="#[15a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_battery_percentage
 <LI><a href="#[157]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;calculate_crc16
-<LI><a href="#[15a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nirs_stop
-<LI><a href="#[159]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nirs_start
+<LI><a href="#[159]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nirs_stop
+<LI><a href="#[160]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nirs_start
 <LI><a href="#[158]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fnirs_struct_init
-<LI><a href="#[160]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;encode_command_response
-<LI><a href="#[15f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;handle_data_supplement_request
-<LI><a href="#[15d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;handle_channel_config_command
-<LI><a href="#[15c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;handle_sample_rate_command
+<LI><a href="#[15f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;encode_command_response
+<LI><a href="#[15e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;handle_data_supplement_request
+<LI><a href="#[15c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;handle_channel_config_command
+<LI><a href="#[15b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;handle_sample_rate_command
 </UL>
 <BR>[Called By]<UL><LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
@@ -2322,7 +2322,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_battery_status
 </UL>
 
-<P><STRONG><a name="[160]"></a>encode_command_response</STRONG> (Thumb, 96 bytes, Stack size 16 bytes, transmit.o(.text.encode_command_response))
+<P><STRONG><a name="[15f]"></a>encode_command_response</STRONG> (Thumb, 96 bytes, Stack size 16 bytes, transmit.o(.text.encode_command_response))
 <BR><BR>[Stack]<UL><LI>Max Depth = 136<LI>Call Chain = encode_command_response &rArr; uart_transmit_dma &rArr; HAL_UART_Transmit_DMA &rArr; HAL_DMA_Start_IT &rArr; DMA_SetConfig
 </UL>
 <BR>[Calls]<UL><LI><a href="#[87]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;set_led_color
@@ -2353,7 +2353,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[171]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;init_data_frame_module
 </UL>
 
-<P><STRONG><a name="[15b]"></a>get_battery_percentage</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, bat_adc.o(.text.get_battery_percentage))
+<P><STRONG><a name="[15a]"></a>get_battery_percentage</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, bat_adc.o(.text.get_battery_percentage))
 <BR><BR>[Called By]<UL><LI><a href="#[156]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;decode_received_command
 </UL>
 
@@ -2366,7 +2366,7 @@ Global Symbols
 <LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIM_PeriodElapsedCallback
 </UL>
 
-<P><STRONG><a name="[15d]"></a>handle_channel_config_command</STRONG> (Thumb, 456 bytes, Stack size 32 bytes, transmit.o(.text.handle_channel_config_command))
+<P><STRONG><a name="[15c]"></a>handle_channel_config_command</STRONG> (Thumb, 456 bytes, Stack size 32 bytes, transmit.o(.text.handle_channel_config_command))
 <BR><BR>[Stack]<UL><LI>Max Depth = 160<LI>Call Chain = handle_channel_config_command &rArr; __hardfp_ceil &rArr; __aeabi_drsub &rArr; __aeabi_dadd &rArr; _double_epilogue &rArr; _double_round
 </UL>
 <BR>[Calls]<UL><LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DebugPrintf
@@ -2388,7 +2388,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[14d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_update_battery_indicator
 </UL>
 
-<P><STRONG><a name="[15f]"></a>handle_data_supplement_request</STRONG> (Thumb, 74 bytes, Stack size 24 bytes, transmit.o(.text.handle_data_supplement_request))
+<P><STRONG><a name="[15e]"></a>handle_data_supplement_request</STRONG> (Thumb, 74 bytes, Stack size 24 bytes, transmit.o(.text.handle_data_supplement_request))
 <BR><BR>[Stack]<UL><LI>Max Depth = 308<LI>Call Chain = handle_data_supplement_request &rArr; sd_read_nirs &rArr; sdio_read &rArr; HAL_SD_ReadBlocks &rArr; SDMMC_CmdReadMultiBlock &rArr; SDMMC_GetCmdResp1 &rArr; SDIO_GetResponse
 </UL>
 <BR>[Calls]<UL><LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DebugPrintf
@@ -2406,7 +2406,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[14d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_update_battery_indicator
 </UL>
 
-<P><STRONG><a name="[15c]"></a>handle_sample_rate_command</STRONG> (Thumb, 346 bytes, Stack size 32 bytes, transmit.o(.text.handle_sample_rate_command))
+<P><STRONG><a name="[15b]"></a>handle_sample_rate_command</STRONG> (Thumb, 346 bytes, Stack size 32 bytes, transmit.o(.text.handle_sample_rate_command))
 <BR><BR>[Stack]<UL><LI>Max Depth = 52<LI>Call Chain = handle_sample_rate_command &rArr; nirs_set_sample_rate &rArr; DebugPrintf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DebugPrintf
@@ -2471,7 +2471,7 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> entry9a.o(.ARM.Collect$$$$0000000B)
 </UL>
-<P><STRONG><a name="[16e]"></a>nirs_config</STRONG> (Thumb, 498 bytes, Stack size 48 bytes, fnirs.o(.text.nirs_config))
+<P><STRONG><a name="[16e]"></a>nirs_config</STRONG> (Thumb, 506 bytes, Stack size 48 bytes, fnirs.o(.text.nirs_config))
 <BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = nirs_config &rArr; HAL_Delay
 </UL>
 <BR>[Calls]<UL><LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_Delay
@@ -2480,7 +2480,7 @@ Global Symbols
 <LI><a href="#[169]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_fnirs_update_buffer_length
 <LI><a href="#[71]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr
 </UL>
-<BR>[Called By]<UL><LI><a href="#[15d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;handle_channel_config_command
+<BR>[Called By]<UL><LI><a href="#[15c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;handle_channel_config_command
 </UL>
 
 <P><STRONG><a name="[98]"></a>nirs_data_collect</STRONG> (Thumb, 200 bytes, Stack size 24 bytes, fnirs.o(.text.nirs_data_collect))
@@ -2521,10 +2521,10 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DebugPrintf
 </UL>
-<BR>[Called By]<UL><LI><a href="#[15c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;handle_sample_rate_command
+<BR>[Called By]<UL><LI><a href="#[15b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;handle_sample_rate_command
 </UL>
 
-<P><STRONG><a name="[159]"></a>nirs_start</STRONG> (Thumb, 96 bytes, Stack size 24 bytes, fnirs.o(.text.nirs_start))
+<P><STRONG><a name="[160]"></a>nirs_start</STRONG> (Thumb, 96 bytes, Stack size 24 bytes, fnirs.o(.text.nirs_start))
 <BR><BR>[Stack]<UL><LI>Max Depth = 120<LI>Call Chain = nirs_start &rArr; HAL_TIM_IC_Start_IT &rArr; TIM_CCxChannelCmd
 </UL>
 <BR>[Calls]<UL><LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DebugPrintf
@@ -2534,12 +2534,12 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[156]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;decode_received_command
 </UL>
 
-<P><STRONG><a name="[15a]"></a>nirs_stop</STRONG> (Thumb, 138 bytes, Stack size 16 bytes, fnirs.o(.text.nirs_stop))
+<P><STRONG><a name="[159]"></a>nirs_stop</STRONG> (Thumb, 144 bytes, Stack size 16 bytes, fnirs.o(.text.nirs_stop))
 <BR><BR>[Stack]<UL><LI>Max Depth = 288<LI>Call Chain = nirs_stop &rArr; tlcSetGS &rArr; writeTLC &rArr; HAL_SPI_TransmitReceive &rArr; SPI_EndRxTxTransaction &rArr; SPI_WaitFlagStateUntilTimeout
 </UL>
 <BR>[Calls]<UL><LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DebugPrintf
-<LI><a href="#[17b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stopConversions
-<LI><a href="#[17a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tlcSetGS
+<LI><a href="#[17b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tlcSetGS
+<LI><a href="#[17a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stopConversions
 <LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIM_IC_Stop_IT
 <LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIM_PWM_Stop
 </UL>
@@ -2552,7 +2552,7 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_WritePin
 <LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Delay_us
 <LI><a href="#[17c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;set_ads_channel
-<LI><a href="#[17a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tlcSetGS
+<LI><a href="#[17b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tlcSetGS
 <LI><a href="#[14a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_fnirs_process_adc_samples
 <LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIM_PWM_Stop
 <LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIM_PWM_Start
@@ -2581,7 +2581,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[150]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ads1258init
 </UL>
 
-<P><STRONG><a name="[15e]"></a>reverse_array</STRONG> (Thumb, 76 bytes, Stack size 20 bytes, utils.o(.text.reverse_array))
+<P><STRONG><a name="[15d]"></a>reverse_array</STRONG> (Thumb, 76 bytes, Stack size 20 bytes, utils.o(.text.reverse_array))
 <BR><BR>[Stack]<UL><LI>Max Depth = 20<LI>Call Chain = reverse_array
 </UL>
 <BR>[Called By]<UL><LI><a href="#[156]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;decode_received_command
@@ -2595,7 +2595,7 @@ Global Symbols
 <LI><a href="#[177]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;spi_transmit_dma
 <LI><a href="#[157]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;calculate_crc16
 </UL>
-<BR>[Called By]<UL><LI><a href="#[15f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;handle_data_supplement_request
+<BR>[Called By]<UL><LI><a href="#[15e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;handle_data_supplement_request
 </UL>
 
 <P><STRONG><a name="[179]"></a>sdio_init</STRONG> (Thumb, 654 bytes, Stack size 80 bytes, csnp32.o(.text.sdio_init))
@@ -2658,7 +2658,7 @@ Global Symbols
 <LI><a href="#[14e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;handle_low_battery_warning
 <LI><a href="#[14d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_update_battery_indicator
 <LI><a href="#[141]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SwitchLED
-<LI><a href="#[160]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;encode_command_response
+<LI><a href="#[15f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;encode_command_response
 </UL>
 
 <P><STRONG><a name="[177]"></a>spi_transmit_dma</STRONG> (Thumb, 180 bytes, Stack size 32 bytes, transmit.o(.text.spi_transmit_dma))
@@ -2682,12 +2682,12 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[113]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_TxCpltCallback
 </UL>
 
-<P><STRONG><a name="[17b]"></a>stopConversions</STRONG> (Thumb, 18 bytes, Stack size 8 bytes, ads1258.o(.text.stopConversions))
+<P><STRONG><a name="[17a]"></a>stopConversions</STRONG> (Thumb, 18 bytes, Stack size 8 bytes, ads1258.o(.text.stopConversions))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = stopConversions &rArr; HAL_GPIO_WritePin
 </UL>
 <BR>[Calls]<UL><LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_WritePin
 </UL>
-<BR>[Called By]<UL><LI><a href="#[15a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nirs_stop
+<BR>[Called By]<UL><LI><a href="#[159]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nirs_stop
 </UL>
 
 <P><STRONG><a name="[178]"></a>tlc5940_init</STRONG> (Thumb, 124 bytes, Stack size 24 bytes, tlc5940.o(.text.tlc5940_init))
@@ -2698,7 +2698,7 @@ Global Symbols
 <LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_WritePin
 <LI><a href="#[17f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tlcSetDC
 <LI><a href="#[172]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;init_tlc_struct
-<LI><a href="#[17a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tlcSetGS
+<LI><a href="#[17b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tlcSetGS
 </UL>
 <BR>[Called By]<UL><LI><a href="#[174]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nirs_init
 </UL>
@@ -2712,14 +2712,14 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[178]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tlc5940_init
 </UL>
 
-<P><STRONG><a name="[17a]"></a>tlcSetGS</STRONG> (Thumb, 274 bytes, Stack size 16 bytes, tlc5940.o(.text.tlcSetGS))
+<P><STRONG><a name="[17b]"></a>tlcSetGS</STRONG> (Thumb, 274 bytes, Stack size 16 bytes, tlc5940.o(.text.tlcSetGS))
 <BR><BR>[Stack]<UL><LI>Max Depth = 272<LI>Call Chain = tlcSetGS &rArr; writeTLC &rArr; HAL_SPI_TransmitReceive &rArr; SPI_EndRxTxTransaction &rArr; SPI_WaitFlagStateUntilTimeout
 </UL>
 <BR>[Calls]<UL><LI><a href="#[180]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;writeTLC
 <LI><a href="#[145]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 </UL>
 <BR>[Called By]<UL><LI><a href="#[175]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nirs_timer_handle
-<LI><a href="#[15a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nirs_stop
+<LI><a href="#[159]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nirs_stop
 <LI><a href="#[178]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tlc5940_init
 </UL>
 
@@ -2730,7 +2730,7 @@ Global Symbols
 <LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_microseconds
 <LI><a href="#[112]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Transmit_DMA
 </UL>
-<BR>[Called By]<UL><LI><a href="#[160]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;encode_command_response
+<BR>[Called By]<UL><LI><a href="#[15f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;encode_command_response
 </UL>
 
 <P><STRONG><a name="[152]"></a>writeMultipleRegisters</STRONG> (Thumb, 126 bytes, Stack size 64 bytes, ads1258.o(.text.writeMultipleRegisters))
@@ -2753,7 +2753,7 @@ Global Symbols
 <LI><a href="#[71]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr
 </UL>
 <BR>[Called By]<UL><LI><a href="#[17f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tlcSetDC
-<LI><a href="#[17a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tlcSetGS
+<LI><a href="#[17b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tlcSetGS
 </UL>
 
 <P><STRONG><a name="[16d]"></a>__hardfp_ceil</STRONG> (Thumb, 252 bytes, Stack size 40 bytes, ceil.o(i.__hardfp_ceil))
@@ -2763,7 +2763,7 @@ Global Symbols
 <LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dadd
 <LI><a href="#[181]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_cdrcmple
 </UL>
-<BR>[Called By]<UL><LI><a href="#[15d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;handle_channel_config_command
+<BR>[Called By]<UL><LI><a href="#[15c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;handle_channel_config_command
 </UL>
 
 <P><STRONG><a name="[192]"></a>__scatterload_copy</STRONG> (Thumb, 14 bytes, Stack size unknown bytes, handlers.o(i.__scatterload_copy), UNUSED)

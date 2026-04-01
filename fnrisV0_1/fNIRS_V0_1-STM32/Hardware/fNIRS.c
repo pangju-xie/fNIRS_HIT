@@ -248,7 +248,8 @@ uint8_t nirs_config(uint8_t* config_data, uint8_t data_len)
         /* 构建探测器配置字 */
         for (uint8_t byte_idx = 0; byte_idx < data_len; byte_idx++) {
             uint8_t data_index = source_idx * data_len + 2 + byte_idx;
-            detector_config = (detector_config << 8) | config_data[data_index];
+            detector_config |= config_data[data_index]<<(byte_idx*8);
+            //detector_config = (detector_config << 8) | config_data[data_index];
         }
         g_fnirs_ctx.config.config[source_idx] = detector_config;
         
@@ -331,8 +332,6 @@ uint8_t nirs_stop(void)
 {
     DebugPrintf("===== stop fNIRS=====\r\n");
     
-    /* 关闭所有LED */
-    tlcSetGS(0, g_tlc.red_led, 0, 0);
     
     /* 停止ADC转换和定时器 */
     stopConversions();
@@ -343,6 +342,10 @@ uint8_t nirs_stop(void)
     g_tlc.tlctim_polarity = TIM_INPUTCHANNELPOLARITY_RISING;
     __HAL_TIM_SetCounter(g_tlc.tlctim, 0);
     __HAL_TIM_SET_CAPTUREPOLARITY(g_tlc.tlctim, TIM_CHANNEL_2, TIM_ICPOLARITY_RISING);
+  
+  
+    /* 关闭所有LED */
+    tlcSetGS(0, g_tlc.red_led, 0, 0);
     
     /* 更新系统状态 */
     g_fnirs_ctx.state = FNIRS_STATE_STOP;
@@ -545,6 +548,7 @@ void nirs_timer_handle(uint8_t flag)
           }
         }
         if(wavelength_type == 1){
+          
           g_fnirs_ctx.data_buffer.data_save_addr += count*6;  /* 移动到下一个数据位置 */
         }
         

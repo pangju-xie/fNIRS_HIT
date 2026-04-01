@@ -17,6 +17,7 @@ E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/hal/libhal.a
 E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/log/liblog.a
 E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/heap/libheap.a
 E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/soc/libsoc.a
+E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/esp_security/libesp_security.a
 E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/esp_hw_support/libesp_hw_support.a
 E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/freertos/libfreertos.a
 E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/newlib/libnewlib.a
@@ -77,6 +78,7 @@ E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/json/libjson.a
 E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/mqtt/libmqtt.a
 E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/nvs_sec_provider/libnvs_sec_provider.a
 E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/perfmon/libperfmon.a
+E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/rt/librt.a
 E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/spiffs/libspiffs.a
 E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/touch_element/libtouch_element.a
 E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/esp-idf/usb/libusb.a

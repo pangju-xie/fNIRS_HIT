@@ -6,8 +6,8 @@ cmake_minimum_required(VERSION 3.5)
 # If CMAKE_DISABLE_SOURCE_CHANGES is set to true and the source directory is an
 # existing directory in our source tree, calling file(MAKE_DIRECTORY) on it
 # would cause a fatal error, even though it would be a no-op.
-if(NOT EXISTS "D:/ProgramData/Espressif/frameworks/esp-idf-v5.3.3/components/bootloader/subproject")
-  file(MAKE_DIRECTORY "D:/ProgramData/Espressif/frameworks/esp-idf-v5.3.3/components/bootloader/subproject")
+if(NOT EXISTS "E:/Espressif/frameworks/esp-idf-v5.4.3/components/bootloader/subproject")
+  file(MAKE_DIRECTORY "E:/Espressif/frameworks/esp-idf-v5.4.3/components/bootloader/subproject")
 endif()
 file(MAKE_DIRECTORY
   "E:/xfw/code/fnirs/fnrisV0_1/fNIRS-ESP32/build/bootloader"

@@ -12,3 +12,9 @@ fnrisV0_1/fNIRS-ESP32/build/*
 /montage
 /用户信息
 */用户信息
+
+Logs/
+Records/
+Database/
+Montages/
+*.snirf

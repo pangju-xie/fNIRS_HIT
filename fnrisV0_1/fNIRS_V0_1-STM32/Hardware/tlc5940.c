@@ -44,6 +44,7 @@ void tlc5940_init(void) {
   SETBLANK(GPIO_ON); // 初始关闭输出
   
   HAL_TIM_Base_Start_IT(&htim2);
+//  HAL_TIM_PWM_Start(g_tlc.gsclk, g_tlc.tim_chn);
 //  __HAL_TIM_SET_AUTORELOAD(g_tlc.gsclk,1000-1);
 //  __HAL_TIM_SET_PRESCALER(g_tlc.gsclk, 1250-1);
   // 短暂延时确保芯片稳定

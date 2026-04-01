@@ -8,8 +8,7 @@
 
 #define CRC16_POLY 0x1021
 
-uint8_t sensor_id[3];
-uint8_t mac_addr[10];
+uint8_t mac_addr[8];
 uint16_t CRC16_Table[256];
 
 static const char* TAG = "TRANSMIT";
@@ -43,12 +42,23 @@ uint16_t CRC16Calculate(uint8_t* data, uint16_t len){
 }
 
 void command_init(void){
+	uint8_t init_buf[15] = {0};
 	GenerateCRC16Table(CRC16_POLY);
 	esp_read_mac(mac_addr+2, ESP_MAC_WIFI_STA);
-	mac_addr[0] = 0xBB;
-	mac_addr[1] = 0xBB;
 	ESP_LOGE(TAG,"MAC ADDR: [%02X:%02X:%02X:%02X:%02X:%02X]. ", mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5], mac_addr[6], mac_addr[7]);
-	//uart_tx_task(mac_addr, 8);
+	init_buf[0] = 0xAB;
+	init_buf[1] = 0xAB;
+	init_buf[2] = mac_addr[5];
+	init_buf[3] = mac_addr[6];
+	init_buf[4] = mac_addr[7];
+	init_buf[5] = 0;
+	init_buf[6] = CMD_CONN;
+	init_buf[7] = 0;
+	init_buf[8] = 4;
+	uint16_t crc16 = CRC16Calculate(init_buf, 13);
+	init_buf[13] = (uint8_t)(crc16 & 0x00ff);
+	init_buf[14] = (uint8_t)(crc16>>8);
+	uart_tx_task(init_buf, 15);
 }
 
 int DecodeCommand(uint8_t* data, int len){
@@ -58,7 +68,6 @@ int DecodeCommand(uint8_t* data, int len){
 		return -1;
 	}
 	uint16_t header = (uint16_t)(data[0]<<8)|(data[1]<<0);
-	stype = (SENSOR_TYPE)data[5];
 	T_COMMAND cmd = (T_COMMAND)data[CMD_PLACE];
 	uint16_t dlen = (uint16_t)(data[DLEN_PLACE]<<8|data[DLEN_PLACE+1]<<0);
 	if((header != DOWNHEADER) && (header != UPHEADER) ){

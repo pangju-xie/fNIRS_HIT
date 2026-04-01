@@ -560,7 +560,7 @@ void encode_command_response(TRANSMIT_COMMAND command, uint8_t response_data)
  */
 void decode_received_command(uint8_t *data, int length)
 {
-    static uint8_t is_initialized = 0;  /* 初始化状态标志 */
+    //static uint8_t is_initialized = 0;  /* 初始化状态标志 */
     uint32_t package_number = 0;
     uint8_t response = 0;
     SENSOR_TYPE sub_sensor_type = 0;
@@ -622,21 +622,28 @@ void decode_received_command(uint8_t *data, int length)
     }
     
     /* 首次接收命令时初始化设备ID */
-    if (!is_initialized) {
-        is_initialized = 1;
-        memcpy(g_sensor_id, data + 2, 3);  /* 从命令中获取设备ID */
-        memcpy(g_response_frame + 2, data + 2, 3);  /* 更新响应帧的设备ID */
-        fnirs_struct_init();  /* 初始化fNIRS数据结构 */
-        DebugPrintf("Device initialized with ID from first command\r\n");
-    }
+//    if (!is_initialized) {
+//        is_initialized = 1;
+//        memcpy(g_sensor_id, data + 2, 3);  /* 从命令中获取设备ID */
+//        memcpy(g_response_frame + 2, data + 2, 3);  /* 更新响应帧的设备ID */
+//        fnirs_struct_init();  /* 初始化fNIRS数据结构 */
+//        DebugPrintf("Device initialized with ID from first command\r\n");
+//    }
     
     DebugPrintf("Command received: type=%d, cmd=0x%02X, len=%d\r\n",
                sensor_type, command, data_length);
     
     /* 根据命令类型执行相应操作 */
     switch (command) {
+        case CMD_CONNECT:
+            memcpy(g_sensor_id, data + 2, 3);  /* 从命令中获取设备ID */
+            memcpy(g_response_frame + 2, data + 2, 3);  /* 更新响应帧的设备ID */
+            fnirs_struct_init();  /* 初始化fNIRS数据结构 */
+            DebugPrintf("Device initialized with ID from first command\r\n");
+            response = 1;
+            break;
         case CMD_START:
-            response = nirs_start();
+            response = 1;
             break;
             
         case CMD_STOP:
@@ -676,5 +683,9 @@ void decode_received_command(uint8_t *data, int length)
     /* 发送命令响应 (补充命令不需要响应) */
     if (command != CMD_SUPPLEMENTARY) {
         encode_command_response(command, response);
+    }
+    
+    if(command == CMD_START){
+      nirs_start();
     }
 }

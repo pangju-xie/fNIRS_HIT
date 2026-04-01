@@ -178,12 +178,12 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    
-//    for(uint8_t i = 0; i<4; i++){
+//    
+//    for(uint8_t i = 0; i<1; i++){
 //      tlcSetGS(i, 0x0fff, 1, 1);
-//      HAL_Delay(10);
+//      HAL_Delay(100);
 //      tlcSetGS(i, 0x0fff, 0, 1);
-//      HAL_Delay(10);
+//      HAL_Delay(2000);
 //    }
     /* 检查UART接收是否完成 */
     if (g_uart_rx_buffer.data_ready_flag) {
