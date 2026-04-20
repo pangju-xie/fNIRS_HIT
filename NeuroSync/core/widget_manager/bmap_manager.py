@@ -1,6 +1,6 @@
-# core/widget_manager/bmap_manager.py
 import math
 import logging
+import mne
 from PyQt5.QtCore import QObject, pyqtSignal
 
 logger = logging.getLogger(__name__)
@@ -18,18 +18,12 @@ class BrainMapManager(QObject):
     
     def __init__(self):
         super().__init__()
-        # 存储所有物理节点及其纯 2D 圆形坐标，格式: {'Cz': (x, y)}
         self.all_nodes = {}         
-        # 存储节点的状态，格式: {'Cz': 'Source', 'Oz': 'EEG'}
         self.selected_states = {}   
-        # 存储节点的自动编号，格式: {'Cz': 'S1', 'Oz': 'E1'}
         self.node_aliases = {}      
-        # 存储当前连接的有效通道对，格式: [('S_name', 'D_name'), ...]
         self.valid_channels = []    
-        # 存储被用户手动断开（熔断）的通道黑名单
         self.blacklisted_channels = set() 
         
-        # 归一化空间下的最大通道距离阈值 (约等于实际的 3cm 范围)
         self.channel_distance_threshold = 0.35 
 
         self.limits = {'EEG': 32, 'Source': 16, 'Detector': 16, 'EMG': 16}
@@ -45,8 +39,6 @@ class BrainMapManager(QObject):
         name = name.upper()
         y_val = None
         
-        # 1. 解析 Y 轴 (前后向冠状切面)
-        # 优先匹配 10-5 系统的三字母过渡行 (如 AFP, FCC)
         if name.startswith('AFP'): y_val = 0.875; name = name[3:]
         elif name.startswith('AFF'): y_val = 0.625; name = name[3:]
         elif name.startswith('FFC'): y_val = 0.375; name = name[3:]
@@ -94,7 +86,6 @@ class BrainMapManager(QObject):
     def _generate_2d_planar_layout(self):
         """核心魔法：生成节点并使用方圆映射 (Squircle Mapping)"""
         try:
-            import mne
             # 仅借用 MNE 内置的 10-5 字符串名字列表，不使用它的 3D 坐标
             montage = mne.channels.make_standard_montage('standard_1005')
             names = montage.ch_names

@@ -1,4 +1,3 @@
-# ui/views/user_view.py
 from PyQt5.QtWidgets import (QWidget, QHBoxLayout, QVBoxLayout, QGridLayout, QFrame,
                              QGroupBox, QLabel, QLineEdit, QComboBox, QSpinBox,
                              QTextEdit, QPushButton, QListWidget, QSplitter, QListWidgetItem)

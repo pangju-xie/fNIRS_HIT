@@ -1,6 +1,6 @@
 import math
 import os
-import sys, re
+import sys
 import logging
 from PyQt5.QtWidgets import QWidget, QMenu, QAction, QApplication
 from PyQt5.QtCore import Qt, QPointF, QRectF
@@ -71,7 +71,6 @@ class BrainLocatorView(QWidget):
     def paintEvent(self, event): # type: ignore
         """核心渲染循环：每次拉伸窗口都会触发，保证图形 100% 贴合窗口"""
         painter = QPainter(self)
-        # 严格的 Qt 枚举：开启抗锯齿，让圆形极其平滑
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
         
         w, h = self.width(), self.height()

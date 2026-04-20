@@ -1,11 +1,11 @@
 # core/controller.py
 from PyQt5.QtCore import QObject, QTimer
 from PyQt5.QtWidgets import QMessageBox
-import time, os, datetime
+import os, datetime
 import logging
 
 # 引入状态模型与硬件配置模型
-from models.stats import SystemState, SensorTypes, Commands, WorkflowStates
+from utils.stats import SystemState, SensorTypes, Commands, WorkflowStates
 from core.thread_udp import UdpThread
 from core.process import DeviceProcessManager
 from core.buffer import DataBufferManager

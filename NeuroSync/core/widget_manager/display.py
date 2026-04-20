@@ -7,7 +7,6 @@ from PyQt5.QtWidgets import QWidget, QApplication, QMessageBox
 from PyQt5.QtCore import QTimer, pyqtSignal, Qt, QEvent
 from PyQt5.QtGui import QFont
 
-# 动态将项目根目录加入环境变量，方便独立运行测试
 project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.append(project_root)
 
@@ -20,7 +19,7 @@ pg.setConfigOption('foreground', 'k')        # 全局前景（坐标轴、文字
 
 logger = logging.getLogger(__name__)
 
-# 为打标事件准备 9 种高对比度颜色
+# 为打标事件准备 10 种高对比度颜色
 MARKER_COLORS = [
     '#000000', '#9C27B0', '#E91E63', '#00838F', '#795548', 
     '#F57F17', '#4A148C', '#827717', '#C2185B', '#37474F'
@@ -28,6 +27,7 @@ MARKER_COLORS = [
 class BaseSweepCanvas(pg.GraphicsLayoutWidget):
     def __init__(self, parent, frequency, time_window, y_offset):
         super().__init__(parent=parent)
+        self.manager = parent
         self.ci.layout.setContentsMargins(0, 0, 0, 0)
         self.frequency = frequency
         self.time_window = time_window
@@ -44,7 +44,7 @@ class BaseSweepCanvas(pg.GraphicsLayoutWidget):
         
         
         self.plot_item = self.addPlot(row=0, col=0)
-        self.plot_item.showGrid(x=False, y=True, alpha=0.3)
+        self.plot_item.showGrid(x=False, y=True, alpha=0.1)
         self.plot_item.setMouseEnabled(x=False, y=False)
         self.plot_item.hideButtons()
         self.plot_item.setMenuEnabled(False)
@@ -67,7 +67,6 @@ class BaseSweepCanvas(pg.GraphicsLayoutWidget):
         if self.stage_buffer is None:
             self.stage_buffer = np.zeros((2000, len(data_point)), dtype=np.float32)
             
-        # 直接覆盖写入，极其轻量
         if self.stage_ptr < 2000:
             self.stage_buffer[self.stage_ptr] = data_point
             self.stage_ptr += 1
@@ -237,6 +236,10 @@ class FNIRSPlotCanvas(BaseSweepCanvas):
         self._init_plot()
         
         self.setMinimumHeight(max(300, self.num_channels * 40))
+        self.raw_history = np.full((self.max_points, self.num_channels * 2), np.nan)
+        self.active_r_dc = np.zeros(self.num_channels)
+        self.active_i_dc = np.zeros(self.num_channels)
+        self.active_span = np.ones(self.num_channels)
         
     def _init_plot(self):
         self.plot_item.clear()
@@ -256,12 +259,12 @@ class FNIRSPlotCanvas(BaseSweepCanvas):
             # 使用高对比度颜色，防干扰
             lr = self.plot_item.plot(
                 self.time_data, d_red, 
-                pen=pg.mkPen('#E74C3C', width=1.5),
+                pen=pg.mkPen('#E74C3C', width=2.2),
                 connect='finite', autoDownsample=True
             )
             li = self.plot_item.plot(
                 self.time_data, d_ir, 
-                pen=pg.mkPen('#2980B9', width=1.5),
+                pen=pg.mkPen('#2980B9', width=2.2),
                 connect='finite', autoDownsample=True
             )
             self.lines_red.append(lr); self.lines_ir.append(li)
@@ -273,8 +276,11 @@ class FNIRSPlotCanvas(BaseSweepCanvas):
         if getattr(self, 'stage_buffer', None) is None or self.stage_ptr == 0: 
             return
             
+        current_mode = self.manager.ui.comboSigType_fnirs.currentText()
+        is_raw_mode = (current_mode == "Raw")
+            
         n = self.stage_ptr
-        new_samples = self.stage_buffer[:n] # type: ignore
+        new_samples = self.stage_buffer[:n].copy()  # type: ignore
         self.stage_ptr = 0
         
         if n > self.max_points:
@@ -282,31 +288,136 @@ class FNIRSPlotCanvas(BaseSweepCanvas):
             n = self.max_points
             
         end_pos = self.sweep_pos + n
-        
+
+        # ==========================================
+        # 阶段 1：同步更新全屏 Raw 缓存 (解决微小跳变的根本)
+        # ==========================================
+        if end_pos <= self.max_points:
+            self.raw_history[self.sweep_pos:end_pos] = new_samples
+        else:
+            part1 = self.max_points - self.sweep_pos
+            part2 = n - part1
+            self.raw_history[self.sweep_pos:] = new_samples[:part1]
+            self.raw_history[:part2] = new_samples[part1:]
+
+        # 同步擦除 gap，防止即将被覆盖的旧数据干扰最大最小值计算
+        gap = max(1, int(self.frequency * 0.1))
+        gap_end = end_pos + gap
+        if gap_end <= self.max_points:
+            self.raw_history[end_pos:gap_end] = np.nan
+        else:
+            gap1 = self.max_points - end_pos
+            gap2 = gap_end - self.max_points
+            self.raw_history[end_pos:] = np.nan
+            self.raw_history[:gap2] = np.nan
+
+        # ==========================================
+        # 阶段 2：计算真实波动范围与中心偏置 (纯数学)
+        # ==========================================
+        ch_metadata = []
+        if is_raw_mode:
+            all_spans = []
+            for i in range(self.num_channels):
+                r_data = self.raw_history[:, 2*i]
+                i_data = self.raw_history[:, 2*i+1]
+                
+                r_valid = r_data[~np.isnan(r_data)]
+                i_valid = i_data[~np.isnan(i_data)]
+
+                if len(r_valid) == 0 or len(i_valid) == 0:
+                    ch_metadata.append({'r_dc': 0, 'i_dc': 0, 'offset': 1.0})
+                    all_spans.append(1.0)
+                    continue
+
+                # 1. 绝对的 Max 和 Min (无滤波、无分位数)
+                r_max, r_min = np.max(r_valid), np.min(r_valid)
+                i_max, i_min = np.max(i_valid), np.min(i_valid)
+
+                # 2. 计算平均值作为中心偏置 (DC)
+                r_dc_true = (r_max + r_min) / 2.0
+                i_dc_true = (i_max + i_min) / 2.0
+
+                # 3. 综合考虑 Red 和 IR 的跨度
+                span_true = max(r_max - r_min, i_max - i_min)
+                if span_true == 0: span_true = 1.0
+
+                # 4. 死区锁存机制：避免 UI 频繁闪烁。只有变化超过 10% 时才更新基准。
+                if abs(r_dc_true - self.active_r_dc[i]) > 0.1 * span_true:
+                    self.active_r_dc[i] = r_dc_true
+                if abs(i_dc_true - self.active_i_dc[i]) > 0.1 * span_true:
+                    self.active_i_dc[i] = i_dc_true
+                if abs(span_true - self.active_span[i]) > 0.1 * self.active_span[i]:
+                    self.active_span[i] = span_true
+
+                # 计算最终排版所需的 Offset (波动的 1.1倍 的一半)
+                ch_offset = (self.active_span[i] * 1.1) / 2.0
+
+                ch_metadata.append({
+                    'r_dc': self.active_r_dc[i],
+                    'i_dc': self.active_i_dc[i],
+                    'offset': ch_offset
+                })
+                all_spans.append(ch_offset * 2.0) # 记录需要的完整轨道高度
+            
+            if all_spans:
+                target_offset = np.max(all_spans)
+                # 全局轨道高度防抖
+                if abs(target_offset - self.y_offset) > 0.05 * self.y_offset:
+                    self.update_ylim(target_offset, channel_info=ch_metadata)
+
+        # ==========================================
+        # 阶段 3：安全渲染并写入画布缓存
+        # ==========================================
         if end_pos <= self.max_points:
             for i in range(self.num_channels):
                 y_pos = (self.num_channels - 0.5 - i) * self.y_offset
-                self.data_red[i][self.sweep_pos:end_pos] = new_samples[:, 2*i] + y_pos
-                self.data_ir[i][self.sweep_pos:end_pos] = new_samples[:, 2*i+1] + y_pos
+                r_val = new_samples[:, 2*i].copy()
+                i_val = new_samples[:, 2*i+1].copy()
+                
+                if is_raw_mode and ch_metadata:
+                    # 分别减去各自锁存的偏置中心
+                    r_val -= ch_metadata[i]['r_dc']
+                    i_val -= ch_metadata[i]['i_dc']
+                    limit = self.y_offset * 0.5 # 严格锁定在自己的半边天内
+                else:
+                    limit = self.y_offset * 1.5
+                    
+                r_val = np.clip(r_val, -limit, limit) + y_pos
+                i_val = np.clip(i_val, -limit, limit) + y_pos
+                
+                self.data_red[i][self.sweep_pos:end_pos] = r_val
+                self.data_ir[i][self.sweep_pos:end_pos] = i_val
         else:
             part1 = self.max_points - self.sweep_pos
             part2 = n - part1
             for i in range(self.num_channels):
                 y_pos = (self.num_channels - 0.5 - i) * self.y_offset
-                self.data_red[i][self.sweep_pos:] = new_samples[:part1, 2*i] + y_pos
-                self.data_red[i][:part2] = new_samples[part1:, 2*i] + y_pos
-                self.data_ir[i][self.sweep_pos:] = new_samples[:part1, 2*i+1] + y_pos
-                self.data_ir[i][:part2] = new_samples[part1:, 2*i+1] + y_pos
+                r_val = new_samples[:, 2*i].copy()
+                i_val = new_samples[:, 2*i+1].copy()
                 
-        gap = max(1, int(self.frequency * 0.1))
-        gap_end = end_pos + gap
+                if is_raw_mode and ch_metadata:
+                    r_val -= ch_metadata[i]['r_dc']
+                    i_val -= ch_metadata[i]['i_dc']
+                    limit = self.y_offset * 0.5
+                else:
+                    limit = self.y_offset * 1.5
+                    
+                r_val = np.clip(r_val, -limit, limit) + y_pos
+                i_val = np.clip(i_val, -limit, limit) + y_pos
+                
+                self.data_red[i][self.sweep_pos:] = r_val[:part1]
+                self.data_red[i][:part2] = r_val[part1:]
+                self.data_ir[i][self.sweep_pos:] = i_val[:part1]
+                self.data_ir[i][:part2] = i_val[part1:]
+                
+        # ==========================================
+        # 阶段 4：擦除残影并触发刷新
+        # ==========================================
         if gap_end <= self.max_points:
             for i in range(self.num_channels):
                 self.data_red[i][end_pos:gap_end] = np.nan
                 self.data_ir[i][end_pos:gap_end] = np.nan
         else:
-            gap1 = self.max_points - end_pos
-            gap2 = gap_end - self.max_points
             for i in range(self.num_channels):
                 self.data_red[i][end_pos:] = np.nan
                 self.data_red[i][:gap2] = np.nan
@@ -329,7 +440,7 @@ class FNIRSPlotCanvas(BaseSweepCanvas):
             self.lines_ir[i].setData(self.time_data, self.data_ir[i])
         self.sweep_line.setValue(self.time_data[self.sweep_pos])
         
-    def update_ylim(self, new_offset):
+    def update_ylim(self, new_offset, channel_info=None):
         old_offset = self.y_offset
         self.y_offset = new_offset
         
@@ -337,17 +448,27 @@ class FNIRSPlotCanvas(BaseSweepCanvas):
         self.plot_item.setYRange(0, y_max, padding=0)
         
         yticks_pos = [(self.num_channels - 0.5 - i) * self.y_offset for i in range(self.num_channels)]
-        self.plot_item.getAxis('left').setTicks([[(y, name) for y, name in zip(yticks_pos, self.labels)]])
         
-        for i in range(self.num_channels):
-            shift = (self.num_channels - 0.5 - i) * (new_offset - old_offset) 
-            mask_red = ~np.isnan(self.data_red[i])
-            self.data_red[i][mask_red] += shift
-            self.lines_red[i].setData(self.time_data, self.data_red[i])
-
-            mask_ir = ~np.isnan(self.data_ir[i])
-            self.data_ir[i][mask_ir] += shift
-            self.lines_ir[i].setData(self.time_data, self.data_ir[i])
+        # 动态组装左侧标签
+        labels_to_show = []
+        for i, name in enumerate(self.labels):
+            if channel_info and i < len(channel_info):
+                info = channel_info[i]
+                label_text = f"{name}\nR:{info['r_dc']:.0f}  I:{info['i_dc']:.0f}\n± {info['offset']:.0f}"
+            else:
+                label_text = name
+            labels_to_show.append((yticks_pos[i], label_text))
+            
+        self.plot_item.getAxis('left').setTicks([labels_to_show])
+        
+        if old_offset != new_offset:
+            for i in range(self.num_channels):
+                shift = (self.num_channels - 0.5 - i) * (new_offset - old_offset) 
+                for data, line in [(self.data_red[i], self.lines_red[i]), (self.data_ir[i], self.lines_ir[i])]:
+                    mask = ~np.isnan(data)
+                    data[mask] += shift
+                    line.setData(self.time_data, data)
+        
 
     def reset(self):
         super().reset()
@@ -414,6 +535,7 @@ class DisplayManager(QWidget):
         bar = getattr(self.ui, f"filterBar_{prefix}", None)
         if not chk or not bar: return
         
+        
         def toggle_vis(is_checked):
             bar.setVisible(is_checked)
             if is_checked:
@@ -433,12 +555,29 @@ class DisplayManager(QWidget):
             getattr(self.ui, f"lblFreq2_{prefix}").setVisible(is_band or is_high)
             getattr(self.ui, f"spinFreq2_{prefix}").setVisible(is_band or is_high)
             getattr(self.ui, f"lblOrder_{prefix}").setText("窗口:" if f_type == "平滑滤波(S-G)" else "阶数:")
+            
+        def update_dynamic_step(val):
+            import math
+            if val > 0:
+                power = math.floor(math.log10(val))
+                # 如果当前值正好是 10 的整数次幂 (如 1.0, 10.0)，缩小一步步长，防止直接减到 0
+                if math.isclose(val, 10**power, rel_tol=1e-5):
+                    step = 10**(power - 1)
+                else:
+                    step = 10**power
+                spin_y.setSingleStep(max(step, 0.001))
 
         chk.toggled.connect(toggle_vis)
         getattr(self.ui, f"comboType_{prefix}").currentTextChanged.connect(combo_change)
         
         spin_y = getattr(self.ui, f"spinYLim_{prefix}")
         canvas = getattr(self, f"{prefix}_canvas")
+        
+        if prefix == 'fnirs':
+            spin_y.setValue(0.1) 
+            spin_y.setSingleStep(0.1)
+            
+        spin_y.valueChanged.connect(update_dynamic_step)
         spin_y.valueChanged.connect(canvas.update_ylim)
         
         getattr(self.ui, f"btnApply_{prefix}").clicked.connect(lambda: self._apply_filter(prefix))
@@ -568,6 +707,17 @@ class DisplayManager(QWidget):
         self.signal_request_record.emit(True)
     
     def _apply_sigtype_change(self, new_type):
+        lbl = getattr(self.ui, "lblYLim_fnirs", None)
+        spin = getattr(self.ui, "spinYLim_fnirs", None)
+        
+        if "Raw" in new_type:
+            if lbl: lbl.setVisible(False)
+            if spin: spin.setVisible(False)
+        else:
+            if lbl: lbl.setVisible(True)
+            if spin: spin.setVisible(True)
+            if spin: spin.setValue(0.1) # 恢复 Heamo 默认小量纲
+            
         self.signal_op_mode_changed.emit(new_type)
         self.reset_system() # 切换信号类型时重置画布与滤波器，避免数据错乱
 

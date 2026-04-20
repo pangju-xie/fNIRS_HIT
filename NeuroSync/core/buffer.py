@@ -3,7 +3,7 @@ from PyQt5.QtCore import QObject, pyqtSignal
 from collections import defaultdict
 import logging, os
 
-from models.stats import SensorTypes, WorkflowStates
+from utils.stats import SensorTypes, WorkflowStates
 
 logger = logging.getLogger(__name__)
 
@@ -174,7 +174,7 @@ class DataBufferManager(QObject):
         return None, []
 
     def handle_patched_data_received(self, target_sensor, packet_id):
-        """【新增/提取】：当收到补传包时调用此方法进行精细销账"""
+        """当收到补传包时调用此方法进行精细销账"""
         # 1. 从总账本中剔除（表示这个包永久找回了）
         if target_sensor in self.missing_packets_dict and packet_id in self.missing_packets_dict[target_sensor]:
             self.missing_packets_dict[target_sensor].remove(packet_id)

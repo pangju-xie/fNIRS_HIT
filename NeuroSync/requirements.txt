@@ -1,0 +1,6 @@
+pandas numpy scipy 
+math json csv collections enum typing dataclasses 
+sys os logging pathlib datetime time
+mne pypinyin uuid h5py 
+PyQt5 pyqtgraph
+socket pustil

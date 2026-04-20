@@ -1,11 +1,9 @@
-import random, os, sys, logging
+import sys, logging
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLabel, QApplication
 from PyQt5.QtCore import QTimer, pyqtSignal
 
-
-
 from ui.views.quality_view import QualityViewWidget
-from models.stats import SensorTypes
+from utils.stats import SensorTypes
 from ui.views.locate_widget import BrainLocatorView
 
 logger = logging.getLogger(__name__)
@@ -57,7 +55,6 @@ class QualityManager(QWidget):
         self.sensor_types = sensor_types
         self.bmap_manager = bmap_manager
         
-        # 创建一个全新的拓扑视图，并传入配置好的模型
         self.locate_widget = BrainLocatorView(model=self.bmap_manager)
         self.ui.brain_layout.addWidget(self.locate_widget)
         

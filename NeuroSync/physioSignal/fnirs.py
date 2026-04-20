@@ -3,7 +3,9 @@ import numpy as np
 import pandas as pd
 import os, h5py
 import logging
+import mne
 from scipy.signal import butter, filtfilt
+from utils.paths import get_resource_path
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +20,7 @@ class fNIRS_Struct:
         self.coef = np.zeros((len(wavelengths), 2))
         
         # 建议：将 extinction_coefficients.csv 放到 assets 目录下
-        ext_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'extinction_coefficients.csv')
+        ext_path = get_resource_path(os.path.join('assets', 'extinction_coefficients.csv'))
         if not os.path.exists(ext_path):
             raise FileNotFoundError(f"找不到消光系数文件: {ext_path}")
             
@@ -279,7 +281,7 @@ class fNIRSProcessor:
             
             hemo_val = np.zeros((2, self.channel_num))
             for ch in range(self.channel_num):
-                hemo_val[:, ch] = np.dot(self.struct.get_d_matrix(), od_val[:, ch])
+                hemo_val[:, ch] = np.dot(self.struct.get_d_matrix(), od_val[:, ch]) * 100
                 
             # self.base_hemo = hemo_val.copy() 
             # hemo_val = hemo_val - self.base_hemo
@@ -333,7 +335,7 @@ class fNIRSProcessor:
         import numpy as np
         from scipy.signal import butter, filtfilt
         
-        sci_dict = {}  # 【核心修改】：改用字典存储
+        sci_dict = {}  
         
         # 提取当前滑窗内的红光和红外光数据，shape: (window_size, channels)
         red_data = self.quality_buffer[:, 0, :]

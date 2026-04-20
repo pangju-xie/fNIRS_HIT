@@ -14,7 +14,7 @@ if project_root not in sys.path:
 
 from core.widget_manager.bmap_manager import BrainMapManager
 from ui.views.locate_widget import BrainLocatorView
-from models.stats import SensorTypes  # 引入强类型枚举
+from utils.stats import SensorTypes 
 
 logger = logging.getLogger(__name__)
 

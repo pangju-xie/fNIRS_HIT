@@ -16,5 +16,5 @@ class Crc:
     def crc16(self, data, len):
         crc = np.int16(0)
         for i in range(len):
-            crc = ((crc << 8) ^ self.crc_table[((crc >> 8) ^ data[i]) % 256]) % 65536
+            crc = ((crc << 8) ^ self.crc_table[((crc >> 8) ^ data[i]) % 256]) &0xFFFF
         return crc.astype(int)

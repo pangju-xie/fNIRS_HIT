@@ -1,8 +1,19 @@
-import os
+import os, sys
 import logging
 
 logger = logging.getLogger(__name__)
 
+def get_resource_path(relative_path):
+    """
+    智能寻址函数：兼容代码开发环境与 PyInstaller 打包后的 exe 环境
+    """
+    if hasattr(sys, '_MEIPASS'):
+        # 如果是 exe 运行，它会去系统的临时解压目录找
+        return os.path.join(sys._MEIPASS, relative_path) # type: ignore
+    else:
+        # 如果是纯代码运行，就在项目根目录下找
+        return os.path.join(os.path.abspath(os.path.dirname(os.path.dirname(__file__))), relative_path)
+    
 # ==========================================
 # 1. 智能决策工作区根目录
 # ==========================================

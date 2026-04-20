@@ -2,7 +2,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 class DisplayViewWidget(object):
-    """实时波形采集与展示界面 (纯 UI 布局 - PyQt5 适配版)"""
+    """实时波形采集与展示界面"""
     def setupUi(self, Form):
         Form.setObjectName("DisplayForm")
         self.mainLayout = QtWidgets.QVBoxLayout(Form)
@@ -87,12 +87,15 @@ class DisplayViewWidget(object):
             headerLayout.addWidget(comboType)
             headerLayout.addSpacing(10)
 
-        headerLayout.addWidget(QtWidgets.QLabel(f"Y轴缩放 ({unit}):"))
+        # headerLayout.addWidget(QtWidgets.QLabel(f"Y轴缩放 ({unit}):"))
+        lblYLim = QtWidgets.QLabel(f"Y轴缩放 ({unit}):")
+        setattr(self, f"lblYLim_{prefix}", lblYLim)
+        headerLayout.addWidget(lblYLim)
         spinYLim = QtWidgets.QDoubleSpinBox()
         
-        spinYLim.setRange(1, 100000.0)
-        spinYLim.setValue(10.0 if prefix == 'fnirs' else 100.0)
-        spinYLim.setSingleStep(5.0)
+        # spinYLim.setRange(1, 100000.0)
+        # spinYLim.setValue(10.0 if prefix == 'fnirs' else 100.0)
+        # spinYLim.setSingleStep(5.0)
         setattr(self, f"spinYLim_{prefix}", spinYLim)
         headerLayout.addWidget(spinYLim)
 

@@ -1,8 +1,7 @@
-import time
 import logging
 from collections import deque
 from PyQt5.QtCore import QObject, pyqtSignal, QThread, QTimer
-from models.stats import SensorTypes, Commands, Device, PendingCommand
+from utils.stats import SensorTypes, Commands, Device, PendingCommand
 from utils import crc
 
 logger = logging.getLogger(__name__)

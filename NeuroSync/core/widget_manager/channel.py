@@ -14,7 +14,7 @@ if project_root not in sys.path:
     
 from ui.views.channel_view import ChannelViewWidget
 from utils.paths import TEMPLATE_DIR
-from models.stats import SensorTypes
+from utils.stats import SensorTypes
 
 logger = logging.getLogger(__name__)
 

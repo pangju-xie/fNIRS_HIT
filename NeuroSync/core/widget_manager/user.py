@@ -2,13 +2,16 @@
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import pyqtSignal
 import logging
-import os
+import os, sys
 from pathlib import Path
 from datetime import datetime
 
 from ui.views.user_view import UserViewWidget
-from models.subjects import PatientData, PatientDatabase
+from utils.subjects import PatientData, PatientDatabase
 from utils.paths import DB_DIR
+
+project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(project_root)
 
 logger = logging.getLogger(__name__)
 

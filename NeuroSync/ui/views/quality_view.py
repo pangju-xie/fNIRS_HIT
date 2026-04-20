@@ -1,4 +1,3 @@
-# ui/views/quality_view.py
 from PyQt5 import QtCore, QtWidgets
 
 class QualityViewWidget(object):

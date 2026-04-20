@@ -1,11 +1,10 @@
-# ui/main_window.py
-import logging
-from PyQt5.QtWidgets import QMainWindow, QMessageBox, QWidget, QVBoxLayout, QHBoxLayout, QTabWidget, QLabel, QFrame, QSizePolicy, QSpacerItem, QPushButton
-from PyQt5.QtCore import pyqtSignal, Qt, QSize
-from PyQt5.QtGui import QIcon, QFont
+import logging, os
+from PyQt5.QtWidgets import QMainWindow, QMessageBox, QWidget, QVBoxLayout, QHBoxLayout, QTabWidget, QLabel, QSizePolicy, QPushButton
+from PyQt5.QtCore import pyqtSignal, Qt
+from PyQt5.QtGui import QIcon
+from utils.paths import get_resource_path
 
 logger = logging.getLogger(__name__)
-
 
 class MainWindow(QMainWindow):
     """
@@ -18,19 +17,20 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("NeuroSync v1.0")
-        self.resize(1400, 900) # 建议一个较大的默认尺寸
-        # self.setWindowIcon(QIcon("assets/app_icon.png")) # 建议加上应用图标
+        self.resize(1400, 900) 
+        icon_path = get_resource_path(os.path.join('assets','icons','logo.ico'))
+    
+        if os.path.exists(icon_path):
+            self.setWindowIcon(QIcon(icon_path))
+        else:
+            logging.warning(f"未找到应用图标文件: {icon_path}，将使用默认系统图标。")
         
-        # 记录状态
         self._is_connected_ui_state = False
         
-        # 1. 核心布局架构
         self._setup_main_layout()
-        
-        # 2. 绑定 UI 内部信号
         self._setup_ui_connections()
         
-        logger.info("美化版专业主视图 (MainWindow) 初始化完成")
+        logger.info("MainWindow初始化完成")
 
     def _setup_main_layout(self):
         """
@@ -41,26 +41,21 @@ class MainWindow(QMainWindow):
                 - QHBoxLayout (右侧状态区域)
             - QFrame#statusFooter (最下方一行小字提示)
         """
-        # 1. 实例化核心 QTabWidget
         self.tab_widget = QTabWidget()
-        self.tab_widget.setMovable(False) # 工业软件通常不允许拖动 Tab
+        self.tab_widget.setMovable(False)
         
-        # 实例化各个标签页的空篮子 (Pane)
         self.tab_home = QWidget(); self.tab_home.setObjectName("homeTab")
         self.tab_config = QWidget(); self.tab_config.setObjectName("configTab")
         self.tab_qualify = QWidget(); self.tab_qualify.setObjectName("testTab")
         self.tab_display = QWidget(); self.tab_display.setObjectName("displayTab")
         self.tab_analyze = QWidget(); self.tab_analyze.setObjectName("analyzeTab")
         
-        # 将空篮子塞进 TabWidget
         self.tab_widget.addTab(self.tab_home, "主页")
         self.tab_widget.addTab(self.tab_config, "配置")
         self.tab_widget.addTab(self.tab_qualify, "测试")
         self.tab_widget.addTab(self.tab_display, "显示")
         self.tab_widget.addTab(self.tab_analyze, "分析")
         
-        # 【核心要求】：我们将 Tab 里面的内容做成水平垂直都自动拉伸，
-        # 而不是限定一个最小值。这需要在实例化各页 Pane 时指定 SizePolicy。
         for tab in [self.tab_home, self.tab_config, self.tab_qualify, self.tab_display, self.tab_analyze]:
             tab.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
             # 为每一页预设一个 QVBoxLayout，方便后面 embed_widget_to_tab
@@ -75,9 +70,6 @@ class MainWindow(QMainWindow):
         top_status_layout.setContentsMargins(0, 0, 10, 0) # 整体右边距
         top_status_layout.setSpacing(10) # 组件间距
         
-        # (S) 弹簧：把状态组件推到最右侧
-        # top_status_layout.addItem(QSpacerItem(20, 40, QSizePolicy.Expanding, QSizePolicy.Minimum))
-        
         # 2.1 LED指示器与设备 ID (整合到一起)
         self.conn_led = StatusLED(color="red")
         self.label_device_id = QLabel("   ")
@@ -88,22 +80,13 @@ class MainWindow(QMainWindow):
         id_frame.addWidget(self.conn_led)
         id_frame.addWidget(self.label_device_id)
         
-        # 2.3 小型电池图标
         self.battery_icon = SmallBatteryWidget()
-        
-        # 2.4 连接设备按钮 (StatusButton)
         self.btn_connect = StatusButton(text="Connect")
 
-        # 将组件塞进右侧顶部布局
         top_status_layout.addLayout(id_frame)
         top_status_layout.addWidget(self.battery_icon)
         top_status_layout.addWidget(self.btn_connect)
         
-
-        # 3. 将 TabBar 和 右侧状态栏拼接到一个水平布局中
-        # 这是一个小技巧，利用 QTabWidget 的 setCornerWidget 完美实现
-        # ==========================================
-        # 【核心调整】：实现 Tab 和 状态组件在同一行的右侧对齐分布。
         self.tab_widget.setCornerWidget(self.top_status_container, Qt.Corner.TopRightCorner)
         
 
@@ -118,13 +101,10 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(central_widget)
         
         main_layout = QVBoxLayout(central_widget)
-        main_layout.setContentsMargins(10, 10, 10, 0) # 增加整体边距，提升呼吸感
+        main_layout.setContentsMargins(10, 10, 10, 0)
         main_layout.setSpacing(0)
         
-        # 塞进 TabWidget (此时它已经包含了顶部的 CornerWidget)
         main_layout.addWidget(self.tab_widget)
-        
-        # 塞进最下方的一行小字
         main_layout.addWidget(self.label_footer_status)
 
     def _setup_ui_connections(self):
@@ -135,21 +115,14 @@ class MainWindow(QMainWindow):
     def _on_connect_btn_clicked(self):
         """UI 层面处理按钮状态变化，发射业务信号"""
         if not self._is_connected_ui_state:
-            # 向外发送“请求连接”信号
             self.signal_connect_clicked.emit(True)
         else:
-            # 向外发送“请求断开”信号
             self.signal_connect_clicked.emit(False)
-
-    # ==========================================
-    # 提供的与旧 View 100% 兼容的接口 API
-    # ==========================================
     
     def set_connected_state(self, device_type: str):
         """Controller 唤醒：设置为已连接状态"""
         self._is_connected_ui_state = True
         
-        # 指挥原子组件变色
         self.btn_connect.set_connected_state()
         self.conn_led.set_status("green")
         self.show_status(f"设备 {device_type} 已连接。", "#4CAF50")
@@ -198,12 +171,9 @@ class MainWindow(QMainWindow):
         }
         
         if tab_name in name_map:
-            # 找到 Pane 上的垂直布局，并将组件添加进去。
-            # 这不需要我们在 Pane 里放任何特定名字的 Layout 了，
-            # 因为手写布局时我们已经为每个 Pane 预设了一个 Layout。
             name_map[tab_name].layout().addWidget(widget) # type: ignore
             
-            logger.info(f"成功将业务子视图嵌入 Professional Tab [{tab_name}] 标签页")
+            logger.info(f"成功嵌入 [{tab_name}] 标签页")
 
     def show_error(self, title: str, message: str):
         QMessageBox.critical(self, title, message)
@@ -212,9 +182,6 @@ class MainWindow(QMainWindow):
         self.signal_close_requested.emit()
         event.accept()
         
-# ==========================================
-# 1. 可状态化的按钮 (StatusButton)
-# ==========================================
 class StatusButton(QPushButton):
     """
     一个可以根据状态切换文本和 QSS 样式的按钮。
@@ -263,9 +230,7 @@ class StatusLED(QLabel):
     def __init__(self, color="red", size=16, parent=None):
         super().__init__(parent)
         self.setFixedSize(size, size)
-        # 通过 QSS 的 border-radius 制作原型
         self.setProperty("led_state", color)
-        # 基础样式 (通常写在 main_window.py 的全局 QSS 里)
 
     def set_status(self, color):
         """color: 'green', 'red', 'yellow'"""
@@ -287,8 +252,6 @@ class SmallBatteryWidget(QWidget):
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(2)
         
-        # 1. 电池图标 (可以使用 ASCII 或者简易绘制，或者 QIcon)
-        # 这里为了演示方便使用文字，实际上建议用 QIcon
         self.icon_label = QLabel("🔋") 
         
         # 2. 百分比
@@ -301,10 +264,9 @@ class SmallBatteryWidget(QWidget):
     def set_battery_level(self, percent: int):
         self.percent_label.setText(f"{percent}%")
         
-        # 根据电量改变颜色 (也建议放到 QSS 属性里)
         if percent < 20:
             self.percent_label.setStyleSheet("font-size: 13px; color: #f44336;") # 红色
-        elif percent < 50:
+        elif percent < 40:
             self.percent_label.setStyleSheet("font-size: 13px; color: #ff9800;") # 橙色
         else:
             self.percent_label.setStyleSheet("font-size: 13px; color: #4caf50;") # 绿色

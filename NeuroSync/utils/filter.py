@@ -1,7 +1,9 @@
 # physioSignal/signal_processor.py
 import numpy as np
 from scipy.signal import butter, sosfilt_zi, sosfilt, savgol_filter
-import warnings
+import logging
+
+logger = logging.getLogger(__name__)
 
 class FilterState:
     """实时滤波状态缓存器"""
@@ -76,7 +78,7 @@ class SignalProcessor:
             return sample
         except Exception as e:
             # 容错：算炸了就原样输出，不要让软件崩溃
-            warnings.warn(f"Ch{channel} 滤波异常: {e}")
+            logger.warning(f"Ch{channel} 滤波异常: {e}")
             return sample
 
     def _process_iir(self, state: FilterState, sample: float) -> float:
