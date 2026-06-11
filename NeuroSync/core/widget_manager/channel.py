@@ -157,7 +157,7 @@ class ChannelManager(ChannelViewWidget):
                 elif alias.startswith('D'): state = 'Detector'
                 elif alias.startswith('E'): state = 'EEG'
                 else: state = 'None'
-                self.brain_manager.set_node_state(node_name, state)
+                self.brain_manager.set_node_state(node_name, state, alias=alias)
 
             # 3. 恢复黑名单
             for pair in data.get("blacklisted", []):
@@ -200,7 +200,7 @@ class ChannelManager(ChannelViewWidget):
             
             d_bytes = (actual_det + 7) // 8
             for value in fnirs_buf:
-                buf.extend([(value >> ((d_bytes - i - 1) * 8)) & 0xff for i in range(d_bytes)])
+                buf.extend([(value >> (i * 8)) & 0xff for i in range(d_bytes)])
 
         if actual_eeg > 0:
             buf.extend([SensorTypes.EEG, actual_eeg])
@@ -211,7 +211,7 @@ class ChannelManager(ChannelViewWidget):
                     eeg_value |= (1 << e_idx)
             
             e_bytes = (actual_eeg + 7) // 8
-            buf.extend([(eeg_value >> ((e_bytes - i - 1) * 8)) & 0xff for i in range(e_bytes)])
+            buf.extend([(eeg_value >> (i * 8)) & 0xff for i in range(e_bytes)])
             
         if acutal_emg > 0:
             pass

@@ -344,6 +344,8 @@ class AppController(QObject):
             
     def _init_quality_component(self):
         """当进入质量测试阶段时，动态实例化并加载第三页"""
+        self._dispose_embedded_widget('qualify_widget', 'qualify')
+        self._dispose_embedded_widget('display_widget', 'display')
         if not self.qualify_widget:
             logger.info("正在加载信号测试界面...")
             
@@ -420,6 +422,36 @@ class AppController(QObject):
     # ==========================================
     # 模块五：工作流与权限锁控制中心 (Workflow)
     # ==========================================
+    def _dispose_embedded_widget(self, attr_name: str, tab_name: str):
+        widget = getattr(self, attr_name, None)
+        if not widget:
+            return
+
+        if attr_name == 'qualify_widget':
+            try:
+                self.buffer_manager.signal_quality_updated.disconnect(widget.update_quality_data)
+            except Exception:
+                pass
+
+        if attr_name == 'display_widget':
+            try:
+                self.buffer_manager.signal_raw_stream.disconnect(self._route_raw_data_to_display)
+            except Exception:
+                pass
+            for canvas_attr in ['fnirs_canvas', 'eeg_canvas', 'semg_canvas']:
+                canvas = getattr(widget, canvas_attr, None)
+                if canvas and hasattr(canvas, 'render_timer'):
+                    canvas.render_timer.stop()
+
+        tab = getattr(self.ui, f'tab_{tab_name}', None)
+        layout = tab.layout() if tab and hasattr(tab, 'layout') else None
+        if layout:
+            layout.removeWidget(widget)
+
+        widget.setParent(None)
+        widget.deleteLater()
+        setattr(self, attr_name, None)
+
     def _update_tab_locks(self):
         """
         集中处理所有 Tab 的解锁与锁定逻辑 (业务规则中心)
@@ -630,4 +662,3 @@ class AppController(QObject):
         self._update_tab_locks()
         
 
-    

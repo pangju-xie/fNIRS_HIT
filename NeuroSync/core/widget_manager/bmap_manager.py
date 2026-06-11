@@ -140,7 +140,7 @@ class BrainMapManager(QObject):
                 self.set_node_state(node_name, next_state)
                 return
             
-    def set_node_state(self, node_name: str, state: str):
+    def set_node_state(self, node_name: str, state: str, alias: str = None):
         """设置节点状态，并自动分配或回收别名"""
         if node_name not in self.all_nodes: return
         
@@ -164,7 +164,9 @@ class BrainMapManager(QObject):
         else:
             self.selected_states[node_name] = state
             # 自动分配连续且最小的序号
-            if state == 'Source': self.node_aliases[node_name] = self._get_next_alias('S')
+            if alias:
+                self.node_aliases[node_name] = alias
+            elif state == 'Source': self.node_aliases[node_name] = self._get_next_alias('S')
             elif state == 'Detector': self.node_aliases[node_name] = self._get_next_alias('D')
             elif state == 'EEG': self.node_aliases[node_name] = self._get_next_alias('E')
             
@@ -187,6 +189,8 @@ class BrainMapManager(QObject):
         self.valid_channels.clear()
         sources = [n for n, s in self.selected_states.items() if s == 'Source']
         detectors = [n for n, s in self.selected_states.items() if s == 'Detector']
+        sources.sort(key=lambda n: self._alias_index(self.node_aliases.get(n, 'S0')))
+        detectors.sort(key=lambda n: self._alias_index(self.node_aliases.get(n, 'D0')))
         
         for s in sources:
             for d in detectors:
@@ -199,6 +203,12 @@ class BrainMapManager(QObject):
                 dist = math.hypot(p1[0] - p2[0], p1[1] - p2[1])
                 if dist <= self.channel_distance_threshold:
                     self.valid_channels.append((s, d))
+
+    def _alias_index(self, alias: str) -> int:
+        try:
+            return int(alias[1:])
+        except (TypeError, ValueError):
+            return 0
 
     def toggle_channel_blacklist(self, source_alias: str, detector_alias: str, disable: bool):
         """添加或移除通道黑名单 (即 UI 上的右键断开/重连功能)"""
