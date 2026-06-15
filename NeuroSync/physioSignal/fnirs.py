@@ -6,6 +6,7 @@ import logging
 import mne
 from scipy.signal import butter, filtfilt
 from utils.paths import get_resource_path
+from utils.stats import DisplayMode
 
 logger = logging.getLogger(__name__)
 
@@ -72,7 +73,7 @@ class fNIRSProcessor:
         if self.current_idx > 0:
             relative_time = self.current_idx / self.sample_rate
             self.stim_events.append((relative_time, key_val))
-            logger.info(f"底层已记录 打标事件 {key_val} 于 {relative_time:.2f}s")
+            logger.info("已记录打标事件 %s，时间 %.2fs", key_val, relative_time)
     
     def get_channels(self) -> list:
         """获取当前已配置的 fNIRS 通道对列表 (如 ['S1-D1', 'S1-D2'])"""
@@ -86,7 +87,7 @@ class fNIRSProcessor:
     def set_sample_rate(self, sample_rate: int):
         """动态更新采样率，并重置可能依赖采样率的滤波器"""
         self.sample_rate = sample_rate
-        logger.info(f"fNIRS 处理器采样率已更新为: {self.sample_rate} Hz")
+        logger.info("fNIRS 处理器采样率已更新为：%s Hz", self.sample_rate)
         # 如果你后续有带通滤波器，可以在这里根据新的 sample_rate 重新设计滤波器系数
         
     def set_config(self, montage_dict: dict):
@@ -135,19 +136,19 @@ class fNIRSProcessor:
                         'distance_mm': dist_mm
                     })
                 except Exception as e:
-                    logger.warning(f"解析通道 {pair} 物理信息时出错: {e}")
+                    logger.warning("解析通道 %s 的物理信息时出错：%s", pair, e)
 
             # 4. 重置底层数据矩阵，并点亮配置完成标志
             if hasattr(self, 'reset_data'):
                 self.reset_data()
             self.is_configured = True
             
-            logger.info(f"fNIRS 处理器配置解析完毕！")
-            logger.info(f"-> 包含 {self.source_num} 个光源, {self.detector_num} 个探测器")
-            logger.info(f"-> 有效通道数: {self.channel_num}")
-            logger.info(f"-> 通道列表: {self.channels}")
+            logger.info("fNIRS 处理器配置解析完成。")
+            logger.info("包含 %s 个光源、%s 个探测器", self.source_num, self.detector_num)
+            logger.info("有效通道数：%s", self.channel_num)
+            logger.info("通道列表：%s", self.channels)
         else:
-            logger.warning("下发的 fNIRS 配置中没有有效的通道连接，请检查配置！")
+            logger.warning("下发的 fNIRS 配置中没有有效的通道连接，请检查配置。")
             
     def reset_data(self):
         """清空并预分配数据矩阵"""
@@ -181,7 +182,7 @@ class fNIRSProcessor:
         
     def _expand_capacity(self):
         """当预分配内存即将用尽时，将所有矩阵容量翻倍"""
-        logging.info(f"触发内存矩阵自动扩容，当前容量: {self.max_capacity}...")
+        logging.info("触发内存矩阵自动扩容，当前容量：%s", self.max_capacity)
         old_capacity = self.max_capacity
         self.max_capacity *= 2
         
@@ -195,46 +196,35 @@ class fNIRSProcessor:
         self.raw = np.pad(self.raw, pad_multi, constant_values=np.nan)
         
 
-    def process_packet(self, packet_id: int, data_bytes: list, op_mode: int = 0):
-        """
-        统一的数据解包入口。
-        :param op_mode: 0: Quality, 1: 仅看Raw, 2: 仅看Hemo, 3: 采Raw+看Raw, 4: 采Raw+看Hemo
-        :return: (missing_ids, parsed_values, sci_results)
-        """
+    def process_quality_packet(self, packet_id: int, data_bytes: list):
         if not self.is_configured:
-            return [], [], None
+            return None
 
-        # 1. 解析 24 位字节流，获得 shape 为 (1, wls, chs) 的 dataline
         dataline = self._decode_24bit_bytes(data_bytes)
+        self.quality_buffer[:-1] = self.quality_buffer[1:]
+        self.quality_buffer[-1] = dataline[0]
+        self.quality_count += 1
 
+        if not self.quality_ready:
+            if self.quality_count >= self.quality_window_size:
+                self.quality_ready = True
+                self.quality_count = 0
+                return self._calculate_sci()
+            return None
+
+        if self.quality_count >= self.quality_step_size:
+            self.quality_count = 0
+            return self._calculate_sci()
+        return None
+
+    def process_live_packet(self, packet_id: int, data_bytes: list, display_mode: DisplayMode, record_enabled: bool):
+        if not self.is_configured:
+            return [], []
+
+        dataline = self._decode_24bit_bytes(data_bytes)
         missing_ids = []
-        sci_results = None
-        parsed_values = []
 
-        # ==========================================
-        # 状态 0: Quality 阶段 (实时 SCI 节流更新，不落盘)
-        # ==========================================
-        if op_mode == 0:
-            self.quality_buffer[:-1] = self.quality_buffer[1:]
-            self.quality_buffer[-1] = dataline[0]
-            self.quality_count += 1
-            
-            if not self.quality_ready:
-                if self.quality_count >= self.quality_window_size:
-                    self.quality_ready = True
-                    self.quality_count = 0  
-                    sci_results = self._calculate_sci()
-            else:
-                if self.quality_count >= self.quality_step_size:
-                    self.quality_count = 0
-                    sci_results = self._calculate_sci()
-                    
-            return missing_ids, parsed_values, sci_results
-
-        # ==========================================
-        # 状态 3, 4: 正式记录阶段 (填补丢包，【仅落盘原始光强 raw】)
-        # ==========================================
-        if op_mode in [3, 4]:
+        if record_enabled:
             if self.current_idx >= self.max_capacity - 5000:
                 self._expand_capacity()
 
@@ -244,15 +234,12 @@ class fNIRSProcessor:
                     missing_count = packet_id - (last_id + 1)
                     if missing_count > 5000:
                         missing_count = 10
-                        
+
                     missing_ids = list(range(last_id + 1, last_id + 1 + missing_count))
-                    
                     start_idx = self.current_idx
                     end_idx = self.current_idx + missing_count
-                    
-                    # 仅复制并填补 raw 矩阵的数据，不再处理 od 和 hemoglobin
                     self.raw[start_idx:end_idx] = self.raw[self.current_idx - 1]
-                    
+
                     for i, m_id in enumerate(missing_ids):
                         self.packet_ids[start_idx + i] = m_id
                         self.time[start_idx + i] = m_id / self.sample_rate
@@ -262,36 +249,37 @@ class fNIRSProcessor:
             self.time[self.current_idx] = packet_id / self.sample_rate
             self.packet_ids[self.current_idx] = packet_id
             self.raw[self.current_idx] = dataline[0]
-            
-            # 游标步进 (去除了 _calculate_mbll，彻底不存血氧)
             self.current_idx += 1
 
-        # ==========================================
-        # UI 数据“定制化”组装：发 Raw 还是现算 Heamo
-        # ==========================================
-        if op_mode in [1, 3]:  
-            # Display Raw: 组装红光和红外光发给前端
+        return missing_ids, self._format_display_values(dataline[0], display_mode)
+
+    def process_packet(self, packet_id: int, data_bytes: list, op_mode: int = 0):
+        if op_mode == 0:
+            return [], [], self.process_quality_packet(packet_id, data_bytes)
+
+        display_mode = DisplayMode.RAW if op_mode in [1, 3] else DisplayMode.HEMO
+        record_enabled = op_mode in [3, 4]
+        missing_ids, parsed_values = self.process_live_packet(packet_id, data_bytes, display_mode, record_enabled)
+        return missing_ids, parsed_values, None
+
+    def _format_display_values(self, dataline, display_mode: DisplayMode):
+        parsed_values = []
+        if display_mode == DisplayMode.RAW:
             for ch_idx in range(self.channel_num):
                 for wl_idx in range(len(self.struct.wavelengths)):
-                    parsed_values.append(float(dataline[0, wl_idx, ch_idx]))
-                    
-        elif op_mode in [2, 4]:  
-            safe_dataline = np.maximum(dataline[0], 1e-6)
-            od_val = -np.log(safe_dataline)
-            
-            hemo_val = np.zeros((2, self.channel_num))
-            for ch in range(self.channel_num):
-                hemo_val[:, ch] = np.dot(self.struct.get_d_matrix(), od_val[:, ch]) * 100
-                
-            # self.base_hemo = hemo_val.copy() 
-            # hemo_val = hemo_val - self.base_hemo
+                    parsed_values.append(float(dataline[wl_idx, ch_idx]))
+            return parsed_values
 
-            # 组装格式依然保持一维列表，前端画布直接画，毫无察觉
-            for ch_idx in range(self.channel_num):
-                parsed_values.append(float(hemo_val[0, ch_idx])) # HbO
-                parsed_values.append(float(hemo_val[1, ch_idx])) # HbR
+        safe_dataline = np.maximum(dataline, 1e-6)
+        od_val = -np.log(safe_dataline)
+        hemo_val = np.zeros((2, self.channel_num))
+        for ch in range(self.channel_num):
+            hemo_val[:, ch] = np.dot(self.struct.get_d_matrix(), od_val[:, ch]) * 100
 
-        return missing_ids, parsed_values, sci_results
+        for ch_idx in range(self.channel_num):
+            parsed_values.append(float(hemo_val[0, ch_idx]))
+            parsed_values.append(float(hemo_val[1, ch_idx]))
+        return parsed_values
 
 
     def patch_packet(self, packet_id: int, data_bytes: list):
@@ -301,7 +289,7 @@ class fNIRSProcessor:
         # 查找这个 packet_id 当时在数组中被占位时的索引 (Index)
         indices = np.where(self.packet_ids == packet_id)[0]
         if len(indices) == 0:
-            logger.debug(f"收到过期的补包 ID: {packet_id}，直接丢弃。")
+            logger.debug("收到过期补包 ID：%s，已直接丢弃。", packet_id)
             return
             
         target_idx = indices[0]
@@ -309,7 +297,7 @@ class fNIRSProcessor:
         # 解析真实的 24位 数据
         real_dataline = self._decode_24bit_bytes(data_bytes)
         self.raw[target_idx:target_idx+1, :, :] = real_dataline
-        logger.info(f"Packet ID {packet_id} 补包数据已成功嵌入矩阵！")
+        logger.info("包 ID %s 的补包数据已成功写回矩阵。", packet_id)
     
     def _decode_24bit_bytes(self, data_bytes):
         """24位解包纯逻辑，返回 shape 为 (1, wls, chs) 的 ndarray"""
@@ -475,7 +463,7 @@ class fNIRSProcessor:
                         stim_group.create_dataset('data', data=np.array(events, dtype=np.float64))
                         stim_idx += 1
                 
-            logging.info(f"✅ SNIRF 格式数据已成功导出至: {snirf_path}")
+            logging.info("SNIRF 格式数据已成功导出至：%s", snirf_path)
             
         except Exception as e:
-            logging.error(f"导出 SNIRF 文件失败: {e}", exc_info=True)
+            logging.error("导出 SNIRF 文件失败：%s", e, exc_info=True)

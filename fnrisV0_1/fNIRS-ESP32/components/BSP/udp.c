@@ -74,8 +74,8 @@ ssize_t udp_safe_send(uint8_t *buf, ssize_t len)
 
 static void udp_receice_task(void *arg){
 
-    uint8_t data[128];
-	uint8_t txbuf[20];
+    uint8_t data[512];
+	uint8_t txbuf[32];
 	int txlen = 0;
     int len = 0;
 

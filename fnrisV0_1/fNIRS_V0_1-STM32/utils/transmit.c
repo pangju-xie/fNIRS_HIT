@@ -1,4 +1,4 @@
-#include "transmit.h"
+ï»¿#include "transmit.h"
 #include "main.h"
 #include "usart.h"
 #include "spi.h"
@@ -11,108 +11,109 @@
 #include <math.h>
 
 /******************************************************************************
- * Íâ²¿±äÁ¿ÉùÃ÷
+ * å¤–éƒ¨å˜é‡å£°æ˜
  ******************************************************************************/
 
-extern DMA_HandleTypeDef hdma_spi2_tx;      /**< SPI2·¢ËÍDMA¾ä±ú */
-extern DMA_HandleTypeDef hdma_usart3_rx;   /**< USART3½ÓÊÕDMA¾ä±ú */
+extern DMA_HandleTypeDef hdma_spi2_tx;      /**< SPI2å‘é€DMAå¥æŸ„ */
+extern DMA_HandleTypeDef hdma_usart3_rx;   /**< USART3æ¥æ”¶DMAå¥æŸ„ */
 
 /******************************************************************************
- * È«¾Ö±äÁ¿¶¨Òå
+ * å…¨å±€å˜é‡å®šä¹‰
  ******************************************************************************/
 
-uint16_t g_crc16_table[256] = {0};          /**< CRC16¿ìËÙ¼ÆËã²éÕÒ±í */
+uint16_t g_crc16_table[256] = {0};          /**< CRC16å¿«é€Ÿè®¡ç®—æŸ¥æ‰¾è¡¨ */
 
-uint8_t g_uart_rx_buffer_raw[RX_BUFFER_SIZE] = {0};  /**< UARTÔ­Ê¼½ÓÊÕ»º³åÇø */
-UART_RX_BUFFER g_uart_rx_buffer = {0};               /**< UART½ÓÊÕ»º³åÇø¹ÜÀí½á¹¹ */
+uint8_t g_uart_rx_buffer_raw[RX_BUFFER_SIZE] = {0};  /**< UARTåŸå§‹æ¥æ”¶ç¼“å†²åŒº */
+UART_RX_BUFFER g_uart_rx_buffer = {0};               /**< UARTæ¥æ”¶ç¼“å†²åŒºç®¡ç†ç»“æ„ */
 
-uint8_t g_sensor_id[6] = {0};               /**< ´«¸ĞÆ÷Éè±¸ID (MACµØÖ·) */
-uint8_t g_response_frame[12] = {0};         /**< ÃüÁîÏìÓ¦Ö¡»º³åÇø */
+uint8_t g_sensor_id[6] = {0};               /**< ä¼ æ„Ÿå™¨è®¾å¤‡ID (MACåœ°å€) */
+uint8_t g_response_frame[12] = {0};         /**< å‘½ä»¤å“åº”å¸§ç¼“å†²åŒº */
 
-volatile uint8_t g_spi_tx_complete = 1;     /**< SPI·¢ËÍÍê³É±êÖ¾ */
-volatile uint8_t g_uart_tx_complete = 1;    /**< UART·¢ËÍÍê³É±êÖ¾ */
+volatile uint8_t g_spi_tx_complete = 1;     /**< SPIå‘é€å®Œæˆæ ‡å¿— */
+volatile uint8_t g_uart_tx_complete = 1;    /**< UARTå‘é€å®Œæˆæ ‡å¿— */
+static DEVICE_MODE g_device_mode = DEVICE_MODE_IDLE;
 
 /******************************************************************************
- * SPI·¢ËÍÍê³É»Øµ÷º¯Êı
+ * SPIå‘é€å®Œæˆå›è°ƒå‡½æ•°
  ******************************************************************************/
 
 /**
- * @brief SPI·¢ËÍÍê³ÉÖĞ¶Ï»Øµ÷º¯Êı
- * @param hspi SPI¾ä±úÖ¸Õë
- * @note SPI DMA´«ÊäÍê³Éºó×Ô¶¯µ÷ÓÃ£¬ÉèÖÃ·¢ËÍÍê³É±êÖ¾²¢ÊÍ·ÅÆ¬Ñ¡
+ * @brief SPIå‘é€å®Œæˆä¸­æ–­å›è°ƒå‡½æ•°
+ * @param hspi SPIå¥æŸ„æŒ‡é’ˆ
+ * @note SPI DMAä¼ è¾“å®Œæˆåè‡ªåŠ¨è°ƒç”¨ï¼Œè®¾ç½®å‘é€å®Œæˆæ ‡å¿—å¹¶é‡Šæ”¾ç‰‡é€‰
  */
 void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi)
 {
     if (hspi->Instance == T_SPI.Instance) {
-        g_spi_tx_complete = 1;      /* ÉèÖÃSPI·¢ËÍÍê³É±êÖ¾ */
-        SPI_CS_DISABLE();           /* ÊÍ·ÅÆ¬Ñ¡ĞÅºÅ */
+        g_spi_tx_complete = 1;      /* è®¾ç½®SPIå‘é€å®Œæˆæ ‡å¿— */
+        SPI_CS_DISABLE();           /* é‡Šæ”¾ç‰‡é€‰ä¿¡å· */
     }
 }
 
 /******************************************************************************
- * UART·¢ËÍÍê³É»Øµ÷º¯Êı
+ * UARTå‘é€å®Œæˆå›è°ƒå‡½æ•°
  ******************************************************************************/
 
 /**
- * @brief UART·¢ËÍÍê³ÉÖĞ¶Ï»Øµ÷º¯Êı
- * @param huart UART¾ä±úÖ¸Õë
- * @note UART DMA´«ÊäÍê³Éºó×Ô¶¯µ÷ÓÃ£¬ÉèÖÃ·¢ËÍÍê³É±êÖ¾
+ * @brief UARTå‘é€å®Œæˆä¸­æ–­å›è°ƒå‡½æ•°
+ * @param huart UARTå¥æŸ„æŒ‡é’ˆ
+ * @note UART DMAä¼ è¾“å®Œæˆåè‡ªåŠ¨è°ƒç”¨ï¼Œè®¾ç½®å‘é€å®Œæˆæ ‡å¿—
  */
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 {
     if (huart->Instance == T_UART.Instance) {
-        g_uart_tx_complete = 1;     /* ÉèÖÃUART·¢ËÍÍê³É±êÖ¾ */
+        g_uart_tx_complete = 1;     /* è®¾ç½®UARTå‘é€å®Œæˆæ ‡å¿— */
     } 
     
     else if (huart->Instance == DEBUG_UART.Instance) {
-        g_debug_buffer.dma_busy = 0;  /* Çå³ıDMAÃ¦±êÖ¾ */
+        g_debug_buffer.dma_busy = 0;  /* æ¸…é™¤DMAå¿™æ ‡å¿— */
         
-        /* ¼ì²éÊÇ·ñ»¹ÓĞÊı¾İĞèÒª·¢ËÍ */
+        /* æ£€æŸ¥æ˜¯å¦è¿˜æœ‰æ•°æ®éœ€è¦å‘é€ */
         uint32_t bytes_available = (g_debug_buffer.write_index - g_debug_buffer.read_index) % DEBUG_BUFFER_SIZE;
         if (bytes_available > 0) {
-            /* ¼ÌĞø·¢ËÍÊ£ÓàÊı¾İ */
+            /* ç»§ç»­å‘é€å‰©ä½™æ•°æ® */
             start_debug_dma_transfer();
         } else {
-            /* ËùÓĞÊı¾İ·¢ËÍÍê³É */
+            /* æ‰€æœ‰æ•°æ®å‘é€å®Œæˆ */
             g_debug_uart_tx_complete = 1;
         }
     }
 }
 
 /******************************************************************************
- * UART½ÓÊÕ¿ÕÏĞ»Øµ÷º¯Êı
+ * UARTæ¥æ”¶ç©ºé—²å›è°ƒå‡½æ•°
  ******************************************************************************/
 
 /**
- * @brief UART½ÓÊÕ¿ÕÏĞÖĞ¶Ï»Øµ÷º¯Êı
- * @param huart UART¾ä±úÖ¸Õë
- * @note ¼ì²âµ½UART½ÓÊÕ¿ÕÏĞÊ±×Ô¶¯µ÷ÓÃ£¬´¦Àí½ÓÊÕÍê³ÉµÄÊı¾İ
+ * @brief UARTæ¥æ”¶ç©ºé—²ä¸­æ–­å›è°ƒå‡½æ•°
+ * @param huart UARTå¥æŸ„æŒ‡é’ˆ
+ * @note æ£€æµ‹åˆ°UARTæ¥æ”¶ç©ºé—²æ—¶è‡ªåŠ¨è°ƒç”¨ï¼Œå¤„ç†æ¥æ”¶å®Œæˆçš„æ•°æ®
  */
 void HAL_UART_RxIdleCallback(UART_HandleTypeDef *huart)
 {
     if (huart->Instance == T_UART.Instance) {
         if (__HAL_UART_GET_FLAG(&T_UART, UART_FLAG_IDLE)) {
-            /* Çå³ı¿ÕÏĞÖĞ¶Ï±êÖ¾Î» */
+            /* æ¸…é™¤ç©ºé—²ä¸­æ–­æ ‡å¿—ä½ */
             __HAL_UART_CLEAR_IDLEFLAG(&T_UART);
             
-            /* Í£Ö¹DMA½ÓÊÕ */
+            /* åœæ­¢DMAæ¥æ”¶ */
             HAL_UART_DMAStop(&T_UART);
             
-            /* ¼ÆËã½ÓÊÕµ½µÄÊı¾İ³¤¶È */
+            /* è®¡ç®—æ¥æ”¶åˆ°çš„æ•°æ®é•¿åº¦ */
             g_uart_rx_buffer.write_index = RX_BUFFER_SIZE - 
                                           __HAL_DMA_GET_COUNTER(&hdma_usart3_rx);
             
-            /* ÉèÖÃÊı¾İ¾ÍĞ÷±êÖ¾ */
+            /* è®¾ç½®æ•°æ®å°±ç»ªæ ‡å¿— */
             g_uart_rx_buffer.data_ready_flag = 1;
             
-            /* ¸´ÖÆÊı¾İµ½¹ÜÀí»º³åÇø */
+            /* å¤åˆ¶æ•°æ®åˆ°ç®¡ç†ç¼“å†²åŒº */
             memcpy(g_uart_rx_buffer.buffer, g_uart_rx_buffer_raw, 
                    g_uart_rx_buffer.write_index);
             
-            /* Çå¿ÕÔ­Ê¼½ÓÊÕ»º³åÇø */
+            /* æ¸…ç©ºåŸå§‹æ¥æ”¶ç¼“å†²åŒº */
             memset(g_uart_rx_buffer_raw, 0, sizeof(g_uart_rx_buffer_raw));
             
-            /* ÖØĞÂÆô¶¯DMA½ÓÊÕ */
+            /* é‡æ–°å¯åŠ¨DMAæ¥æ”¶ */
             HAL_UART_Receive_DMA(&T_UART, g_uart_rx_buffer_raw, RX_BUFFER_SIZE);
             
             DebugPrintf("UART received %d bytes\r\n", 
@@ -122,40 +123,40 @@ void HAL_UART_RxIdleCallback(UART_HandleTypeDef *huart)
 }
 
 /******************************************************************************
- * SPIÍ¨ĞÅº¯Êı
+ * SPIé€šä¿¡å‡½æ•°
  ******************************************************************************/
 
 /**
- * @brief Í¨¹ıSPI DMA·½Ê½·¢ËÍÊı¾İ
- * @param data ´ı·¢ËÍÊı¾İÖ¸Õë
- * @param length Êı¾İ³¤¶È (×Ö½Ú)
- * @param timeout ³¬Ê±Ê±¼ä (ºÁÃë)
- * @return HAL_StatusTypeDef HAL¿â×´Ì¬Âë
- * @note ESP32¶Ë½ÓÊÕÊ±¿ÉÄÜ»á¸²¸ÇÇ°4¸ö×Ö½Ú£¬Òò´Ë¶îÍâ·¢ËÍ4¸ö¿Õ×Ö½Ú
+ * @brief é€šè¿‡SPI DMAæ–¹å¼å‘é€æ•°æ®
+ * @param data å¾…å‘é€æ•°æ®æŒ‡é’ˆ
+ * @param length æ•°æ®é•¿åº¦ (å­—èŠ‚)
+ * @param timeout è¶…æ—¶æ—¶é—´ (æ¯«ç§’)
+ * @return HAL_StatusTypeDef HALåº“çŠ¶æ€ç 
+ * @note ESP32ç«¯æ¥æ”¶æ—¶å¯èƒ½ä¼šè¦†ç›–å‰4ä¸ªå­—èŠ‚ï¼Œå› æ­¤é¢å¤–å‘é€4ä¸ªç©ºå­—èŠ‚
  */
 HAL_StatusTypeDef spi_transmit_dma(uint8_t *data, uint32_t length, uint32_t timeout)
 {
     HAL_StatusTypeDef result = HAL_ERROR;
     uint32_t retry_count = 0;
     
-    /* ´ø³¬Ê±ºÍÖØÊÔ»úÖÆµÄSPI·¢ËÍ */
+    /* å¸¦è¶…æ—¶å’Œé‡è¯•æœºåˆ¶çš„SPIå‘é€ */
     while (retry_count < timeout) {
         if (g_spi_tx_complete) {
-            g_spi_tx_complete = 0;      /* Çå³ı·¢ËÍÍê³É±êÖ¾ */
-            SPI_CS_ENABLE();            /* Ê¹ÄÜÆ¬Ñ¡ĞÅºÅ */
+            g_spi_tx_complete = 0;      /* æ¸…é™¤å‘é€å®Œæˆæ ‡å¿— */
+            SPI_CS_ENABLE();            /* ä½¿èƒ½ç‰‡é€‰ä¿¡å· */
             
-            /* ESP32½ÓÊÕÊ±¿ÉÄÜ»á¸²¸ÇÇ°4¸ö×Ö½Ú£¬Òò´Ë¶îÍâ·¢ËÍ4¸ö¿Õ×Ö½Ú */
+            /* ESP32æ¥æ”¶æ—¶å¯èƒ½ä¼šè¦†ç›–å‰4ä¸ªå­—èŠ‚ï¼Œå› æ­¤é¢å¤–å‘é€4ä¸ªç©ºå­—èŠ‚ */
             result = HAL_SPI_Transmit_DMA(&T_SPI, data, length + 4);
             
             if (result == HAL_OK) {
                 DebugPrintf("SPI transmit started: %lu bytes. ", 
                            (unsigned long)length + 4);
-                return result;          /* ·¢ËÍ³É¹¦Æô¶¯ */
+                return result;          /* å‘é€æˆåŠŸå¯åŠ¨ */
             }
         }
         
         retry_count++;
-        delay_microseconds(100);        /* ¶ÌÔİÑÓÊ±ºóÖØÊÔ */
+        delay_microseconds(100);        /* çŸ­æš‚å»¶æ—¶åé‡è¯• */
     }
     
     DebugPrintf("SPI transmit timeout after %lu retries", 
@@ -164,37 +165,37 @@ HAL_StatusTypeDef spi_transmit_dma(uint8_t *data, uint32_t length, uint32_t time
 }
 
 /******************************************************************************
- * UARTÍ¨ĞÅº¯Êı
+ * UARTé€šä¿¡å‡½æ•°
  ******************************************************************************/
 
 /**
- * @brief Í¨¹ıUART DMA·½Ê½·¢ËÍÊı¾İ
- * @param data ´ı·¢ËÍÊı¾İÖ¸Õë
- * @param length Êı¾İ³¤¶È (×Ö½Ú)
- * @param timeout ³¬Ê±Ê±¼ä (ºÁÃë)
- * @return HAL_StatusTypeDef HAL¿â×´Ì¬Âë
+ * @brief é€šè¿‡UART DMAæ–¹å¼å‘é€æ•°æ®
+ * @param data å¾…å‘é€æ•°æ®æŒ‡é’ˆ
+ * @param length æ•°æ®é•¿åº¦ (å­—èŠ‚)
+ * @param timeout è¶…æ—¶æ—¶é—´ (æ¯«ç§’)
+ * @return HAL_StatusTypeDef HALåº“çŠ¶æ€ç 
  */
 HAL_StatusTypeDef uart_transmit_dma(uint8_t *data, uint32_t length, uint32_t timeout)
 {
     HAL_StatusTypeDef result = HAL_ERROR;
     uint32_t retry_count = 0;
     
-    /* ´ø³¬Ê±ºÍÖØÊÔ»úÖÆµÄUART·¢ËÍ */
+    /* å¸¦è¶…æ—¶å’Œé‡è¯•æœºåˆ¶çš„UARTå‘é€ */
     while (retry_count < timeout) {
         if (g_uart_tx_complete) {
-            g_uart_tx_complete = 0;     /* Çå³ı·¢ËÍÍê³É±êÖ¾ */
+            g_uart_tx_complete = 0;     /* æ¸…é™¤å‘é€å®Œæˆæ ‡å¿— */
             
             result = HAL_UART_Transmit_DMA(&T_UART, data, length);
             
             if (result == HAL_OK) {
                 DebugPrintf("UART transmit started: %lu bytes\r\n", 
                            (unsigned long)length);
-                return result;          /* ·¢ËÍ³É¹¦Æô¶¯ */
+                return result;          /* å‘é€æˆåŠŸå¯åŠ¨ */
             }
         }
         
         retry_count++;
-        delay_microseconds(100);        /* ¶ÌÔİÑÓÊ±ºóÖØÊÔ */
+        delay_microseconds(100);        /* çŸ­æš‚å»¶æ—¶åé‡è¯• */
     }
     
     DebugPrintf("UART transmit timeout after %lu retries", 
@@ -203,13 +204,13 @@ HAL_StatusTypeDef uart_transmit_dma(uint8_t *data, uint32_t length, uint32_t tim
 }
 
 /******************************************************************************
- * CRCĞ£Ñéº¯Êı
+ * CRCæ ¡éªŒå‡½æ•°
  ******************************************************************************/
 
 /**
- * @brief Éú³ÉCRC16²éÕÒ±í
- * @param polynomial CRC16¶àÏîÊ½
- * @note ³õÊ¼»¯CRC16¿ìËÙ¼ÆËã²éÕÒ±í£¬Ê¹ÓÃ¶àÏîÊ½0x1021
+ * @brief ç”ŸæˆCRC16æŸ¥æ‰¾è¡¨
+ * @param polynomial CRC16å¤šé¡¹å¼
+ * @note åˆå§‹åŒ–CRC16å¿«é€Ÿè®¡ç®—æŸ¥æ‰¾è¡¨ï¼Œä½¿ç”¨å¤šé¡¹å¼0x1021
  */
 void generate_crc16_table(uint16_t polynomial)
 {
@@ -217,30 +218,30 @@ void generate_crc16_table(uint16_t polynomial)
     int i, j;
     
     for (i = 0; i < 256; i++) {
-        remainder = i << 8;  /* ½«×Ö½ÚÒÆµ½¸ßÎ» */
+        remainder = i << 8;  /* å°†å­—èŠ‚ç§»åˆ°é«˜ä½ */
         
         for (j = 0; j < 8; j++) {
             if (remainder & 0x8000) {
-                /* Èç¹û×î¸ßÎ»Îª1£¬½øĞĞ¶àÏîÊ½Òì»ò */
+                /* å¦‚æœæœ€é«˜ä½ä¸º1ï¼Œè¿›è¡Œå¤šé¡¹å¼å¼‚æˆ– */
                 remainder = (remainder << 1) ^ polynomial;
             } else {
-                /* Èç¹û×î¸ßÎ»Îª0£¬½ö×óÒÆ */
+                /* å¦‚æœæœ€é«˜ä½ä¸º0ï¼Œä»…å·¦ç§» */
                 remainder = remainder << 1;
             }
         }
         
-        g_crc16_table[i] = remainder;  /* ´æ´¢µ½²éÕÒ±í */
+        g_crc16_table[i] = remainder;  /* å­˜å‚¨åˆ°æŸ¥æ‰¾è¡¨ */
     }
     
     DebugPrintf("CRC16 table generated with polynomial 0x%04X", polynomial);
 }
 
 /**
- * @brief ¼ÆËãCRC16Ğ£ÑéÂë£¨¿ìËÙ·½·¨£©
- * @param data ´ıĞ£ÑéÊı¾İÖ¸Õë
- * @param length Êı¾İ³¤¶È (×Ö½Ú)
- * @return 16Î»CRCĞ£ÑéÂë
- * @note Ê¹ÓÃÔ¤ÏÈÉú³ÉµÄ²éÕÒ±í½øĞĞ¿ìËÙ¼ÆËã
+ * @brief è®¡ç®—CRC16æ ¡éªŒç ï¼ˆå¿«é€Ÿæ–¹æ³•ï¼‰
+ * @param data å¾…æ ¡éªŒæ•°æ®æŒ‡é’ˆ
+ * @param length æ•°æ®é•¿åº¦ (å­—èŠ‚)
+ * @return 16ä½CRCæ ¡éªŒç 
+ * @note ä½¿ç”¨é¢„å…ˆç”Ÿæˆçš„æŸ¥æ‰¾è¡¨è¿›è¡Œå¿«é€Ÿè®¡ç®—
  */
 uint16_t calculate_crc16(uint8_t *data, uint16_t length)
 {
@@ -255,50 +256,60 @@ uint16_t calculate_crc16(uint8_t *data, uint16_t length)
     return crc;
 }
 
+void set_device_mode(DEVICE_MODE mode)
+{
+    g_device_mode = mode;
+}
+
+DEVICE_MODE get_device_mode(void)
+{
+    return g_device_mode;
+}
+
 /******************************************************************************
- * Éè±¸ID»ñÈ¡º¯Êı
+ * è®¾å¤‡IDè·å–å‡½æ•°
  ******************************************************************************/
 
 /**
- * @brief »ñÈ¡ESP32µÄMACµØÖ·×÷ÎªÉè±¸ID
- * @note µÈ´ı½ÓÊÕESP32·¢ËÍµÄÉè±¸IDÊı¾İ°ü
- *       Êı¾İÖ¡¸ñÊ½£º0xBB 0xBB ID[0] ID[1] ID[2] ID[3] ID[4] ID[5]
+ * @brief è·å–ESP32çš„MACåœ°å€ä½œä¸ºè®¾å¤‡ID
+ * @note ç­‰å¾…æ¥æ”¶ESP32å‘é€çš„è®¾å¤‡IDæ•°æ®åŒ…
+ *       æ•°æ®å¸§æ ¼å¼ï¼š0xBB 0xBB ID[0] ID[1] ID[2] ID[3] ID[4] ID[5]
  */
 void get_sensor_id(void)
 {
-    const uint32_t MAX_WAIT_TIME = 4000;  /* ×î´óµÈ´ıÊ±¼ä4Ãë */
+    const uint32_t MAX_WAIT_TIME = 4000;  /* æœ€å¤§ç­‰å¾…æ—¶é—´4ç§’ */
     uint32_t wait_count = 0;
     
     DebugPrintf("Waiting for ESP32 device ID...\r\n");
     
     while (wait_count < MAX_WAIT_TIME) {
         if (g_uart_rx_buffer.data_ready_flag) {
-            g_uart_rx_buffer.data_ready_flag = 0;  /* Çå³ıÊı¾İ¾ÍĞ÷±êÖ¾ */
+            g_uart_rx_buffer.data_ready_flag = 0;  /* æ¸…é™¤æ•°æ®å°±ç»ªæ ‡å¿— */
             
-            /* ¼ì²é½ÓÊÕµ½µÄÊı¾İÊÇ·ñ·ûºÏÉè±¸IDÖ¡¸ñÊ½ */
+            /* æ£€æŸ¥æ¥æ”¶åˆ°çš„æ•°æ®æ˜¯å¦ç¬¦åˆè®¾å¤‡IDå¸§æ ¼å¼ */
             if (g_uart_rx_buffer.write_index == 8 && 
                 g_uart_rx_buffer.buffer[0] == 0xBB && 
                 g_uart_rx_buffer.buffer[1] == 0xBB) {
                 
-                /* ÌáÈ¡Éè±¸ID */
+                /* æå–è®¾å¤‡ID */
                 memcpy(g_sensor_id, g_uart_rx_buffer.buffer + 2, 6);
                 
-                /* ·´×ª×Ö½ÚË³Ğò£¨´óĞ¡¶Ë×ª»»£© */
+                /* åè½¬å­—èŠ‚é¡ºåºï¼ˆå¤§å°ç«¯è½¬æ¢ï¼‰ */
                 reverse_array(g_sensor_id, 6);
                 
-                /* Çå¿Õ½ÓÊÕ»º³åÇø */
+                /* æ¸…ç©ºæ¥æ”¶ç¼“å†²åŒº */
                 memset(g_uart_rx_buffer.buffer, 0, 8);
                 g_uart_rx_buffer.write_index = 0;
                 
                 DebugPrintf("Device ID received: %02X:%02X:%02X:%02X:%02X:%02X\r\n",
                            g_sensor_id[0], g_sensor_id[1], g_sensor_id[2],
                            g_sensor_id[3], g_sensor_id[4], g_sensor_id[5]);
-                break;  /* ³É¹¦»ñÈ¡Éè±¸ID */
+                break;  /* æˆåŠŸè·å–è®¾å¤‡ID */
             }
         }
         
         wait_count++;
-        HAL_Delay(1);  /* µÈ´ı1ºÁÃëºóÖØÊÔ */
+        HAL_Delay(1);  /* ç­‰å¾…1æ¯«ç§’åé‡è¯• */
     }
     
     if (wait_count >= MAX_WAIT_TIME) {
@@ -307,32 +318,32 @@ void get_sensor_id(void)
 }
 
 /******************************************************************************
- * Êı¾İÖ¡³õÊ¼»¯º¯Êı
+ * æ•°æ®å¸§åˆå§‹åŒ–å‡½æ•°
  ******************************************************************************/
 
 /**
- * @brief ³õÊ¼»¯Êı¾İÖ¡»º³åÇø
- * @param buffer Êı¾İÖ¡»º³åÇøÖ¸Õë
- * @param sensor_type ´«¸ĞÆ÷ÀàĞÍ
- * @param command ÃüÁîÀàĞÍ
- * @param data_length Êı¾İ²¿·Ö³¤¶È (×Ö½Ú)
+ * @brief åˆå§‹åŒ–æ•°æ®å¸§ç¼“å†²åŒº
+ * @param buffer æ•°æ®å¸§ç¼“å†²åŒºæŒ‡é’ˆ
+ * @param sensor_type ä¼ æ„Ÿå™¨ç±»å‹
+ * @param command å‘½ä»¤ç±»å‹
+ * @param data_length æ•°æ®éƒ¨åˆ†é•¿åº¦ (å­—èŠ‚)
  */
 void init_data_frame(uint8_t *buffer, SENSOR_TYPE sensor_type, 
                      TRANSMIT_COMMAND command, uint16_t data_length)
 {
-    /* ÉèÖÃÖ¡Í· (ÉÏĞĞÖ¡Í·) */
+    /* è®¾ç½®å¸§å¤´ (ä¸Šè¡Œå¸§å¤´) */
     *(uint16_t *)(buffer) = ENDIAN_SWAP_16B(FRAME_HEADER_UPLINK);
     
-    /* ÉèÖÃ´«¸ĞÆ÷ID (Ê¹ÓÃµÍ3×Ö½Ú) */
+    /* è®¾ç½®ä¼ æ„Ÿå™¨ID (ä½¿ç”¨ä½3å­—èŠ‚) */
     memcpy(buffer + 2, g_sensor_id, 3);
     
-    /* ÉèÖÃÉè±¸ÀàĞÍ */
+    /* è®¾ç½®è®¾å¤‡ç±»å‹ */
     buffer[5] = (uint8_t)sensor_type;
     
-    /* ÉèÖÃÃüÁîÀàĞÍ */
+    /* è®¾ç½®å‘½ä»¤ç±»å‹ */
     buffer[FRAME_CMD_POSITION] = (uint8_t)command;
     
-    /* ÉèÖÃÊı¾İ³¤¶È (´ó¶Ë¸ñÊ½) */
+    /* è®¾ç½®æ•°æ®é•¿åº¦ (å¤§ç«¯æ ¼å¼) */
     *(uint16_t *)(buffer + FRAME_LEN_POSITION) = ENDIAN_SWAP_16B(data_length);
     
     DebugPrintf("Data frame initialized: type=%d, cmd=0x%02X, len=%d\r\n",
@@ -340,48 +351,48 @@ void init_data_frame(uint8_t *buffer, SENSOR_TYPE sensor_type,
 }
 
 /**
- * @brief ³õÊ¼»¯Êı¾İ´«ÊäÄ£¿é
- * @note ÅäÖÃÍ¨ĞÅ½Ó¿Ú¡¢³õÊ¼»¯CRC±í¡¢Æô¶¯½ÓÊÕµÈ
+ * @brief åˆå§‹åŒ–æ•°æ®ä¼ è¾“æ¨¡å—
+ * @note é…ç½®é€šä¿¡æ¥å£ã€åˆå§‹åŒ–CRCè¡¨ã€å¯åŠ¨æ¥æ”¶ç­‰
  */
 void init_data_frame_module(void)
 {
-    SENSOR_TYPE current_sensor_type = SENSOR_FNIRS;  /* µ±Ç°Éè±¸ÀàĞÍÎªfNIRS */
+    SENSOR_TYPE current_sensor_type = SENSOR_FNIRS;  /* å½“å‰è®¾å¤‡ç±»å‹ä¸ºfNIRS */
     
-    /* Éú³ÉCRC16²éÕÒ±í */
+    /* ç”ŸæˆCRC16æŸ¥æ‰¾è¡¨ */
     generate_crc16_table(CRC16_POLYNOMIAL);
     
-    /* Ê¹ÄÜUART¿ÕÏĞÖĞ¶Ï */
+    /* ä½¿èƒ½UARTç©ºé—²ä¸­æ–­ */
     UART_ENABLE_IDLE_IT(T_UART);
     
-    /* Æô¶¯UART DMA½ÓÊÕ */
+    /* å¯åŠ¨UART DMAæ¥æ”¶ */
     HAL_UART_Receive_DMA(&T_UART, g_uart_rx_buffer_raw, RX_BUFFER_SIZE);
     
-    /* Á´½ÓSPI DMAÍ¨µÀ */
+    /* é“¾æ¥SPI DMAé€šé“ */
     __HAL_LINKDMA(&T_SPI, hdmatx, hdma_spi2_tx);
     __HAL_DMA_ENABLE_IT(&hdma_spi2_tx, DMA_IT_TC);
     
-    /* »ñÈ¡Éè±¸ID (¿ÉÑ¡£¬Èç¹ûĞèÒª´ÓESP32»ñÈ¡) */
+    /* è·å–è®¾å¤‡ID (å¯é€‰ï¼Œå¦‚æœéœ€è¦ä»ESP32è·å–) */
     // get_sensor_id();
     
-    /* ³õÊ¼»¯ÏìÓ¦Ö¡»º³åÇø */
+    /* åˆå§‹åŒ–å“åº”å¸§ç¼“å†²åŒº */
     *(uint16_t *)(g_response_frame) = ENDIAN_SWAP_16B(FRAME_HEADER_UPLINK);
-    // memcpy(g_response_frame + 2, g_sensor_id + 3, 3);  /* Èç¹ûĞèÒªÊ¹ÓÃÉè±¸ID */
-    g_response_frame[5] = (uint8_t)current_sensor_type;  /* Éè±¸ÀàĞÍ */
-    *(uint16_t *)(g_response_frame + FRAME_LEN_POSITION) = ENDIAN_SWAP_16B(1);  /* ¹Ì¶¨³¤¶È1 */
+    // memcpy(g_response_frame + 2, g_sensor_id + 3, 3);  /* å¦‚æœéœ€è¦ä½¿ç”¨è®¾å¤‡ID */
+    g_response_frame[5] = (uint8_t)current_sensor_type;  /* è®¾å¤‡ç±»å‹ */
+    *(uint16_t *)(g_response_frame + FRAME_LEN_POSITION) = ENDIAN_SWAP_16B(1);  /* å›ºå®šé•¿åº¦1 */
     
     DebugPrintf("Data frame module initialized successfully\r\n");
 }
 
 /******************************************************************************
- * ÃüÁî´¦Àíº¯Êı
+ * å‘½ä»¤å¤„ç†å‡½æ•°
  ******************************************************************************/
 
 /**
- * @brief ´¦Àí²ÉÑùÂÊÉèÖÃÃüÁî
- * @param data ÃüÁîÊı¾İÖ¸Õë
- * @param sensor_type ´«¸ĞÆ÷ÀàĞÍÑÚÂë
- * @param data_length Êı¾İ³¤¶È
- * @return ´¦Àí½á¹û£º0=Ê§°Ü£¬1=³É¹¦
+ * @brief å¤„ç†é‡‡æ ·ç‡è®¾ç½®å‘½ä»¤
+ * @param data å‘½ä»¤æ•°æ®æŒ‡é’ˆ
+ * @param sensor_type ä¼ æ„Ÿå™¨ç±»å‹æ©ç 
+ * @param data_length æ•°æ®é•¿åº¦
+ * @return å¤„ç†ç»“æœï¼š0=å¤±è´¥ï¼Œ1=æˆåŠŸ
  */
 uint8_t handle_sample_rate_command(uint8_t *data, SENSOR_TYPE sensor_type, uint16_t data_length)
 {
@@ -389,45 +400,45 @@ uint8_t handle_sample_rate_command(uint8_t *data, SENSOR_TYPE sensor_type, uint1
     uint8_t sensor_count = 0;
     uint8_t i;
     
-    /* Í³¼Æ´«¸ĞÆ÷ÊıÁ¿ */
+    /* ç»Ÿè®¡ä¼ æ„Ÿå™¨æ•°é‡ */
     for (i = 0; i < 4; i++) {
         if (GET_BIT(sensor_type, i)) {
             sensor_count++;
         }
     }
     
-    /* ÑéÖ¤Êı¾İ³¤¶È: Ã¿¸ö´«¸ĞÆ÷ĞèÒª2×Ö½Ú (ÀàĞÍ + ²ÉÑùÂÊ) */
+    /* éªŒè¯æ•°æ®é•¿åº¦: æ¯ä¸ªä¼ æ„Ÿå™¨éœ€è¦2å­—èŠ‚ (ç±»å‹ + é‡‡æ ·ç‡) */
     if (sensor_count * 2 != data_length) {
         DebugPrintf("Sample rate command error: Invalid data length\r\n");
         return 0;
     }
     
-    /* ´¦ÀíÃ¿¸ö´«¸ĞÆ÷µÄ²ÉÑùÂÊÉèÖÃ */
+    /* å¤„ç†æ¯ä¸ªä¼ æ„Ÿå™¨çš„é‡‡æ ·ç‡è®¾ç½® */
     for (i = 0; i < sensor_count; i++) {
         SENSOR_TYPE current_sensor = (SENSOR_TYPE)data[i * 2];
         uint8_t sample_rate = data[i * 2 + 1];
         
-        /* ÑéÖ¤´«¸ĞÆ÷ÀàĞÍ */
+        /* éªŒè¯ä¼ æ„Ÿå™¨ç±»å‹ */
         if ((current_sensor <= 8) && (sensor_type & current_sensor)) {
             switch (current_sensor) {
                 case SENSOR_EEG:
-                    /* EEG²ÉÑùÂÊÉèÖÃ */
+                    /* EEGé‡‡æ ·ç‡è®¾ç½® */
                     result = 1;
                     break;
                     
                 case SENSOR_EMG:
-                    /* EMG²ÉÑùÂÊÉèÖÃ */
+                    /* EMGé‡‡æ ·ç‡è®¾ç½® */
                     result = 1;
                     break;
                     
                 case SENSOR_FNIRS:
-                    /* fNIRS²ÉÑùÂÊÉèÖÃ */
+                    /* fNIRSé‡‡æ ·ç‡è®¾ç½® */
                     result = nirs_set_sample_rate(sample_rate);
                     DebugPrintf("fNIRS sample rate set to: %d\r\n", sample_rate);
                     break;
                     
                 case SENSOR_NIRS:
-                    /* NIRS²ÉÑùÂÊÉèÖÃ */
+                    /* NIRSé‡‡æ ·ç‡è®¾ç½® */
                     result = 1;
                     break;
                     
@@ -444,11 +455,11 @@ uint8_t handle_sample_rate_command(uint8_t *data, SENSOR_TYPE sensor_type, uint1
 }
 
 /**
- * @brief ´¦ÀíÍ¨µÀÅäÖÃÃüÁî
- * @param data ÃüÁîÊı¾İÖ¸Õë
- * @param sensor_type ´«¸ĞÆ÷ÀàĞÍÑÚÂë
- * @param data_length Êı¾İ³¤¶È
- * @return ´¦Àí½á¹û£º0=Ê§°Ü£¬1=³É¹¦
+ * @brief å¤„ç†é€šé“é…ç½®å‘½ä»¤
+ * @param data å‘½ä»¤æ•°æ®æŒ‡é’ˆ
+ * @param sensor_type ä¼ æ„Ÿå™¨ç±»å‹æ©ç 
+ * @param data_length æ•°æ®é•¿åº¦
+ * @return å¤„ç†ç»“æœï¼š0=å¤±è´¥ï¼Œ1=æˆåŠŸ
  */
 uint8_t handle_channel_config_command(uint8_t *data, SENSOR_TYPE sensor_type, uint16_t data_length)
 {
@@ -457,38 +468,38 @@ uint8_t handle_channel_config_command(uint8_t *data, SENSOR_TYPE sensor_type, ui
     uint8_t data_offset = 0;
     uint8_t i;
     
-    /* Í³¼Æ´«¸ĞÆ÷ÊıÁ¿ */
+    /* ç»Ÿè®¡ä¼ æ„Ÿå™¨æ•°é‡ */
     for (i = 0; i < 4; i++) {
         if (GET_BIT(sensor_type, i)) {
             sensor_count++;
         }
     }
     
-    /* ±éÀúÃ¿¸ö´«¸ĞÆ÷µÄÅäÖÃÊı¾İ */
+    /* éå†æ¯ä¸ªä¼ æ„Ÿå™¨çš„é…ç½®æ•°æ® */
     for (i = 0; i < sensor_count; i++) {
         SENSOR_TYPE current_sensor = (SENSOR_TYPE)data[data_offset];
         
-        /* ÑéÖ¤´«¸ĞÆ÷ÀàĞÍ */
+        /* éªŒè¯ä¼ æ„Ÿå™¨ç±»å‹ */
         if (current_sensor > 8 || !(sensor_type & current_sensor)) {
             DebugPrintf("Config command error: Invalid sensor type %d\r\n", current_sensor);
             return 0;
         }
         
-        /* ¸ù¾İ´«¸ĞÆ÷ÀàĞÍ´¦ÀíÅäÖÃ */
+        /* æ ¹æ®ä¼ æ„Ÿå™¨ç±»å‹å¤„ç†é…ç½® */
         if (current_sensor == SENSOR_EEG || current_sensor == SENSOR_EMG) {
-            /* EEG/EMGÅäÖÃ£ºÀàĞÍ(1) + Í¨µÀÊı(1) + Í¨µÀÑÚÂë(ceil(Í¨µÀÊı/8)) */
+            /* EEG/EMGé…ç½®ï¼šç±»å‹(1) + é€šé“æ•°(1) + é€šé“æ©ç (ceil(é€šé“æ•°/8)) */
             uint8_t channel_count = data[data_offset + 1];
             uint8_t config_length = 2 + (uint8_t)ceil(channel_count / 8.0);
             data_offset += config_length;
             
         } else if (current_sensor == SENSOR_FNIRS || current_sensor == SENSOR_NIRS) {
-            /* fNIRS/NIRSÅäÖÃ£ºÀàĞÍ(1) + ¹âÔ´Êı(1) + Ì½²âÆ÷Êı(1) + ÅäÖÃÊı¾İ */
+            /* fNIRS/NIRSé…ç½®ï¼šç±»å‹(1) + å…‰æºæ•°(1) + æ¢æµ‹å™¨æ•°(1) + é…ç½®æ•°æ® */
             uint8_t source_count = data[data_offset + 1];
             uint8_t detector_count = data[data_offset + 2];
             uint8_t bytes_per_source = (uint8_t)ceil(detector_count / 8.0);
             uint8_t config_length = 3 + source_count * bytes_per_source;
             
-            /* µ÷ÓÃfNIRSÅäÖÃº¯Êı */
+            /* è°ƒç”¨fNIRSé…ç½®å‡½æ•° */
             result = nirs_config(data + data_offset + 1, bytes_per_source);
             data_offset += config_length;
         }
@@ -499,28 +510,28 @@ uint8_t handle_channel_config_command(uint8_t *data, SENSOR_TYPE sensor_type, ui
 }
 
 /**
- * @brief ´¦ÀíÊı¾İ²¹³äÇëÇó
- * @param sensor_type ´«¸ĞÆ÷ÀàĞÍ
- * @param package_number Êı¾İ°ü±àºÅ
+ * @brief å¤„ç†æ•°æ®è¡¥å……è¯·æ±‚
+ * @param sensor_type ä¼ æ„Ÿå™¨ç±»å‹
+ * @param package_number æ•°æ®åŒ…ç¼–å·
  */
 void handle_data_supplement_request(SENSOR_TYPE sensor_type, uint32_t package_number)
 {
     switch (sensor_type) {
         case SENSOR_EEG:
-            /* EEGÊı¾İ²¹³ä´¦Àí */
+            /* EEGæ•°æ®è¡¥å……å¤„ç† */
             break;
             
         case SENSOR_EMG:
-            /* EMGÊı¾İ²¹³ä´¦Àí */
+            /* EMGæ•°æ®è¡¥å……å¤„ç† */
             break;
             
         case SENSOR_FNIRS:
-            /* fNIRSÊı¾İ²¹³ä´¦Àí£º´ÓSD¿¨¶ÁÈ¡Ö¸¶¨Êı¾İ°ü */
+            /* fNIRSæ•°æ®è¡¥å……å¤„ç†ï¼šä»SDå¡è¯»å–æŒ‡å®šæ•°æ®åŒ… */
             sd_read_nirs(package_number);
             break;
             
         case SENSOR_NIRS:
-            /* NIRSÊı¾İ²¹³ä´¦Àí */
+            /* NIRSæ•°æ®è¡¥å……å¤„ç† */
             break;
             
         default:
@@ -530,54 +541,54 @@ void handle_data_supplement_request(SENSOR_TYPE sensor_type, uint32_t package_nu
 }
 
 /**
- * @brief ±àÂëÃüÁîÏìÓ¦²¢·¢ËÍ
- * @param command ÃüÁîÀàĞÍ
- * @param response_data ÏìÓ¦Êı¾İ
+ * @brief ç¼–ç å‘½ä»¤å“åº”å¹¶å‘é€
+ * @param command å‘½ä»¤ç±»å‹
+ * @param response_data å“åº”æ•°æ®
  */
 void encode_command_response(TRANSMIT_COMMAND command, uint8_t response_data)
 {
-    /* ¸üĞÂÏìÓ¦Ö¡µÄÃüÁîºÍÏìÓ¦Êı¾İ */
+    /* æ›´æ–°å“åº”å¸§çš„å‘½ä»¤å’Œå“åº”æ•°æ® */
     g_response_frame[FRAME_CMD_POSITION] = (uint8_t)command;
     g_response_frame[FRAME_DATA_POSITION] = response_data;
     
-    /* ¼ÆËãCRCĞ£ÑéÂë */
+    /* è®¡ç®—CRCæ ¡éªŒç  */
     uint16_t crc_value = calculate_crc16(g_response_frame, 10);
     
-    /* Ìí¼ÓCRCĞ£ÑéÂë (´ó¶Ë¸ñÊ½) */
+    /* æ·»åŠ CRCæ ¡éªŒç  (å¤§ç«¯æ ¼å¼) */
     *(uint16_t *)(g_response_frame + 10) = ENDIAN_SWAP_16B(crc_value);
     
-    /* ·¢ËÍÏìÓ¦Ö¡ */
+    /* å‘é€å“åº”å¸§ */
     if (uart_transmit_dma(g_response_frame, 12, 100) == HAL_OK) {
-        set_led_color('g');  /* ÉèÖÃÂÌÉ«LEDÖ¸Ê¾·¢ËÍ³É¹¦ */
+        set_led_color('g');  /* è®¾ç½®ç»¿è‰²LEDæŒ‡ç¤ºå‘é€æˆåŠŸ */
         DebugPrintf("Command response sent successfully\r\n");
     }
 }
 
 /**
- * @brief ½âÂë½ÓÊÕµ½µÄÃüÁî²¢Ö´ĞĞÏàÓ¦²Ù×÷
- * @param data ½ÓÊÕµ½µÄÊı¾İÖ¸Õë
- * @param length Êı¾İ³¤¶È (×Ö½Ú)
+ * @brief è§£ç æ¥æ”¶åˆ°çš„å‘½ä»¤å¹¶æ‰§è¡Œç›¸åº”æ“ä½œ
+ * @param data æ¥æ”¶åˆ°çš„æ•°æ®æŒ‡é’ˆ
+ * @param length æ•°æ®é•¿åº¦ (å­—èŠ‚)
  */
 void decode_received_command(uint8_t *data, int length)
 {
-    //static uint8_t is_initialized = 0;  /* ³õÊ¼»¯×´Ì¬±êÖ¾ */
+    //static uint8_t is_initialized = 0;  /* åˆå§‹åŒ–çŠ¶æ€æ ‡å¿— */
     uint32_t package_number = 0;
     uint8_t response = 0;
     SENSOR_TYPE sub_sensor_type = 0;
     
-//    /* È¥³ı¿ªÍ·µÄ0x00Êı¾İ */
+//    /* å»é™¤å¼€å¤´çš„0x00æ•°æ® */
 //    int valid_start_index = 0;
 //    while (valid_start_index < length && data[valid_start_index] == 0x00) {
 //        valid_start_index++;
 //    }
 //    
-//    /* Èç¹ûÈ«²¿ÊÇ0x00£¬Ö±½Ó·µ»Ø */
+//    /* å¦‚æœå…¨éƒ¨æ˜¯0x00ï¼Œç›´æ¥è¿”å› */
 //    if (valid_start_index >= length) {
 //        set_led_color('g');
 //        return;
 //    }
 //    
-//    /* Èç¹ûÓĞĞ§Êı¾İÔÚÖĞ¼ä£¬ĞèÒªµ÷ÕûÖ¸ÕëºÍÊı¾İ³¤¶È */
+//    /* å¦‚æœæœ‰æ•ˆæ•°æ®åœ¨ä¸­é—´ï¼Œéœ€è¦è°ƒæ•´æŒ‡é’ˆå’Œæ•°æ®é•¿åº¦ */
 //    if (valid_start_index > 0) {
 //        data = &data[valid_start_index];
 //        length = length - valid_start_index;
@@ -586,69 +597,76 @@ void decode_received_command(uint8_t *data, int length)
 //                   valid_start_index, length);
 //    }
     
-    /* ¼ì²é×îĞ¡Êı¾İ³¤¶È */
+    /* æ£€æŸ¥æœ€å°æ•°æ®é•¿åº¦ */
     if (length < FRAME_FIXED_HEADER_LENGTH) {
         DebugPrintf("Command decode error: Data too short (%d bytes)\r\n", length);
         return;
     }
     
-    /* ½âÎöÊı¾İÖ¡¸÷×Ö¶Î */
+    /* è§£ææ•°æ®å¸§å„å­—æ®µ */
     uint16_t frame_header = (uint16_t)((data[0] << 8) | data[1]);
     SENSOR_TYPE sensor_type = (SENSOR_TYPE)data[5];
     TRANSMIT_COMMAND command = (TRANSMIT_COMMAND)data[FRAME_CMD_POSITION];
     uint16_t data_length = (uint16_t)((data[FRAME_LEN_POSITION] << 8) | 
                                      data[FRAME_LEN_POSITION + 1]);
     
-    /* ÑéÖ¤Ö¡Í· */
+    /* éªŒè¯å¸§å¤´ */
     if (frame_header != FRAME_HEADER_DOWNLINK) {
         DebugPrintf("Command decode error: Invalid frame header 0x%04X\r\n", frame_header);
         return;
     }
     
-    /* ÑéÖ¤Éè±¸ID (¿ÉÑ¡) */
+    /* éªŒè¯è®¾å¤‡ID (å¯é€‰) */
     // if (memcmp(data + 2, g_sensor_id + 3, 3) != 0) {
     //     DebugPrintf("Command decode error: Invalid device ID\r\n");
     //     return;
     // }
     
-    /* ¼ÆËã²¢ÑéÖ¤CRCĞ£ÑéÂë */
+    /* è®¡ç®—å¹¶éªŒè¯CRCæ ¡éªŒç  */
     uint16_t received_crc = (uint16_t)((data[length - 2] << 8) | data[length - 1]);
     uint16_t calculated_crc = calculate_crc16(data, length - 2);
     
     if (received_crc != calculated_crc) {
         DebugPrintf("Command decode error: CRC mismatch (got:0x%04X, calc:0x%04X)\r\n",
                    received_crc, calculated_crc);
-        // return;  /* ¸ù¾İĞèÇó¾ö¶¨ÊÇ·ñÑÏ¸ñĞ£Ñé */
+        // return;  /* æ ¹æ®éœ€æ±‚å†³å®šæ˜¯å¦ä¸¥æ ¼æ ¡éªŒ */
     }
     
-    /* Ê×´Î½ÓÊÕÃüÁîÊ±³õÊ¼»¯Éè±¸ID */
+    /* é¦–æ¬¡æ¥æ”¶å‘½ä»¤æ—¶åˆå§‹åŒ–è®¾å¤‡ID */
 //    if (!is_initialized) {
 //        is_initialized = 1;
-//        memcpy(g_sensor_id, data + 2, 3);  /* ´ÓÃüÁîÖĞ»ñÈ¡Éè±¸ID */
-//        memcpy(g_response_frame + 2, data + 2, 3);  /* ¸üĞÂÏìÓ¦Ö¡µÄÉè±¸ID */
-//        fnirs_struct_init();  /* ³õÊ¼»¯fNIRSÊı¾İ½á¹¹ */
+//        memcpy(g_sensor_id, data + 2, 3);  /* ä»å‘½ä»¤ä¸­è·å–è®¾å¤‡ID */
+//        memcpy(g_response_frame + 2, data + 2, 3);  /* æ›´æ–°å“åº”å¸§çš„è®¾å¤‡ID */
+//        fnirs_struct_init();  /* åˆå§‹åŒ–fNIRSæ•°æ®ç»“æ„ */
 //        DebugPrintf("Device initialized with ID from first command\r\n");
 //    }
     
     DebugPrintf("Command received: type=%d, cmd=0x%02X, len=%d\r\n",
                sensor_type, command, data_length);
     
-    /* ¸ù¾İÃüÁîÀàĞÍÖ´ĞĞÏàÓ¦²Ù×÷ */
+    /* æ ¹æ®å‘½ä»¤ç±»å‹æ‰§è¡Œç›¸åº”æ“ä½œ */
     switch (command) {
         case CMD_CONNECT:
-            memcpy(g_sensor_id, data + 2, 3);  /* ´ÓÃüÁîÖĞ»ñÈ¡Éè±¸ID */
-            memcpy(g_response_frame + 2, data + 2, 3);  /* ¸üĞÂÏìÓ¦Ö¡µÄÉè±¸ID */
-            fnirs_struct_init();  /* ³õÊ¼»¯fNIRSÊı¾İ½á¹¹ */
+            memcpy(g_sensor_id, data + 2, 3);  /* ä»å‘½ä»¤ä¸­è·å–è®¾å¤‡ID */
+            memcpy(g_response_frame + 2, data + 2, 3);  /* æ›´æ–°å“åº”å¸§çš„è®¾å¤‡ID */
+            fnirs_struct_init();  /* åˆå§‹åŒ–fNIRSæ•°æ®ç»“æ„ */
+            set_device_mode(DEVICE_MODE_IDLE);
             DebugPrintf("Device initialized with ID from first command\r\n");
             response = 1;
             break;
         case CMD_START:
+            set_device_mode(DEVICE_MODE_ACQUIRE);
+            response = 1;
+            break;
+        case CMD_QUALITY_TEST:
+            set_device_mode(DEVICE_MODE_QUALITY);
             response = 1;
             break;
             
         case CMD_STOP:
+            set_device_mode(DEVICE_MODE_IDLE);
             response = nirs_stop();
-            get_battery_status();  /* Í£Ö¹²É¼¯Ê±¼ì²âµç³Ø×´Ì¬ */
+            get_battery_status();  /* åœæ­¢é‡‡é›†æ—¶æ£€æµ‹ç”µæ± çŠ¶æ€ */
             break;
             
         case CMD_BATTERY_VOLTAGE:
@@ -666,7 +684,7 @@ void decode_received_command(uint8_t *data, int length)
             break;
             
         case CMD_SUPPLEMENTARY:
-            /* ÌáÈ¡Êı¾İ°ü±àºÅ²¢·´×ª×Ö½ÚĞò */
+            /* æå–æ•°æ®åŒ…ç¼–å·å¹¶åè½¬å­—èŠ‚åº */
             sub_sensor_type = data[FRAME_DATA_POSITION];
             for(uint8_t i = 1; i< data_length; i+=4){
               memcpy((uint8_t *)&package_number, data + FRAME_DATA_POSITION + i, 4);
@@ -680,12 +698,12 @@ void decode_received_command(uint8_t *data, int length)
             break;
     }
     
-    /* ·¢ËÍÃüÁîÏìÓ¦ (²¹³äÃüÁî²»ĞèÒªÏìÓ¦) */
+    /* å‘é€å‘½ä»¤å“åº” (è¡¥å……å‘½ä»¤ä¸éœ€è¦å“åº”) */
     if (command != CMD_SUPPLEMENTARY) {
         encode_command_response(command, response);
     }
     
-    if(command == CMD_START){
+    if(command == CMD_START || command == CMD_QUALITY_TEST){
       nirs_start();
     }
 }

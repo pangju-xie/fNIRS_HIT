@@ -91,9 +91,10 @@ int DecodeCommand(uint8_t* data, int len){
 	if(cmd == CMD_CONN || cmd == CMD_DISC){
 		return cmd;
 	}
-	else if(cmd == CMD_START || cmd == CMD_STOP || 
-		 cmd == CMD_VBAT ||  cmd == CMD_SPR ||
-		  cmd == CMD_CFGC || cmd == CMD_DATA || cmd == CMD_SUPP ){
+	else if(cmd == CMD_START || cmd == CMD_STOP ||
+		 cmd == CMD_VBAT || cmd == CMD_SPR ||
+		 cmd == CMD_CFGC || cmd == CMD_QUALITY_TEST ||
+		 cmd == CMD_SUPP ){
 			ESP_LOGI(TAG, "read command: %02x.", cmd);
 			return 0;
 		  }

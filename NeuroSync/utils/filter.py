@@ -32,6 +32,8 @@ class SignalProcessor:
         self.nyquist_freq = sample_rate / 2.0
         self.filter_states = {} # {channel_idx: FilterState}
         
+    def clear_online_filters(self):
+        self.filter_states.clear()
 
     def setup_online_filter(self, channel: int, filter_type: str, **params):
         """为特定通道装配滤波器 (自带强力参数防呆保护)"""
@@ -57,6 +59,11 @@ class SignalProcessor:
             
         self.filter_states[channel] = FilterState(filter_type, **params)
 
+    def setup_online_filter_for_all_channels(self, filter_type: str, **params):
+        self.clear_online_filters()
+        for channel in range(self.num_channels):
+            self.setup_online_filter(channel, filter_type, **params)
+
     def reset_online_filters(self, channel=None):
         if channel is not None and channel in self.filter_states:
             self.filter_states[channel].reset()
@@ -78,7 +85,7 @@ class SignalProcessor:
             return sample
         except Exception as e:
             # 容错：算炸了就原样输出，不要让软件崩溃
-            logger.warning(f"Ch{channel} 滤波异常: {e}")
+            logger.warning("通道 %s 滤波异常：%s", channel, e)
             return sample
 
     def _process_iir(self, state: FilterState, sample: float) -> float:

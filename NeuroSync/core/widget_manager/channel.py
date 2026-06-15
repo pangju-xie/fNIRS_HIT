@@ -35,7 +35,7 @@ class ChannelManager(ChannelViewWidget):
         self.template_dir = Path(TEMPLATE_DIR)
         self._wire_signals()
         self._update_manager_limits() 
-        logger.info(f"Channel Manager Initialized with sensor flags: {sensor_types.name}")
+        logger.info("通道管理器已初始化，传感器模式：%s", sensor_types.name)
 
     # def _get_template_directory(self) -> Path:
     #     """保存和读取到项目根目录下的 template/montage 目录下"""
@@ -77,7 +77,7 @@ class ChannelManager(ChannelViewWidget):
     def _handle_save(self):
         try:
             file_path, _ = QFileDialog.getSaveFileName(
-                self, "保存通道模板", str(self.template_dir / "my_template.json"), "JSON files (*.json)"
+                self, "保存通道模板", str(self.template_dir / "我的模板.json"), "JSON 文件 (*.json)"
             )
             if not file_path: return
 
@@ -88,7 +88,18 @@ class ChannelManager(ChannelViewWidget):
                 num = int(alias[1:]) if len(alias)>1 and alias[1:].isdigit() else 0
                 return (prefix, num)
             
-            sorted_nodes = dict(sorted(self.brain_manager.node_aliases.items(), key=alias_sort_key))
+            sorted_items = sorted(self.brain_manager.node_aliases.items(), key=alias_sort_key)
+            sorted_nodes = dict(sorted_items)
+            selected_node_details = {}
+            for node_name, alias in sorted_items:
+                meta = self.brain_manager.node_meta.get(node_name, {})
+                selected_node_details[node_name] = {
+                    "alias": alias,
+                    "state": self.brain_manager.selected_states.get(node_name, "None"),
+                    "standard_name": meta.get("standard_name", node_name),
+                    "coord_2d": self.brain_manager.all_nodes.get(node_name),
+                    "coord_3d": meta.get("coord_3d"),
+                }
 
             # 2. 收集有效的 fNIRS 通道对 (如 "S1-D1")
             active_fnirs_pairs = []
@@ -112,6 +123,7 @@ class ChannelManager(ChannelViewWidget):
                 },
                 # 保存 {"FC1": "S1", "C2": "E2"} 
                 "selected_nodes": sorted_nodes,
+                "selected_node_details": selected_node_details,
                 # 保存当前有效的 fNIRS 通道对
                 "fnirs_pairs": active_fnirs_pairs,
                 # 依然保留黑名单，以便完美还原用户手动断开的线
@@ -128,7 +140,7 @@ class ChannelManager(ChannelViewWidget):
     def _handle_load(self):
         try:
             file_path, _ = QFileDialog.getOpenFileName(
-                self, "加载通道模板", str(self.template_dir), "JSON files (*.json)"
+                self, "加载通道模板", str(self.template_dir), "JSON 文件 (*.json)"
             )
             if not file_path: return
 
@@ -152,12 +164,25 @@ class ChannelManager(ChannelViewWidget):
             nodes = data.get("selected_nodes", {})
             
             # 因为我们在保存时已经排好了序，所以这里依次添加时，底层会自动按顺序还原 S1, S2, D1...
+            details = data.get("selected_node_details", {})
             for node_name, alias in nodes.items():
-                if alias.startswith('S'): state = 'Source'
-                elif alias.startswith('D'): state = 'Detector'
-                elif alias.startswith('E'): state = 'EEG'
-                else: state = 'None'
-                self.brain_manager.set_node_state(node_name, state, alias=alias)
+                resolved_name = self.brain_manager.resolve_node_name(node_name)
+                detail = details.get(node_name, {})
+                if detail.get("state") in {"Source", "Detector", "EEG", "Ref", "GND"}:
+                    state = detail["state"]
+                elif alias.startswith('S'):
+                    state = 'Source'
+                elif alias.startswith('D'):
+                    state = 'Detector'
+                elif alias.startswith('E'):
+                    state = 'EEG'
+                elif alias == 'REF':
+                    state = 'Ref'
+                elif alias == 'GND':
+                    state = 'GND'
+                else:
+                    state = 'None'
+                self.brain_manager.set_node_state(resolved_name, state, alias=alias)
 
             # 3. 恢复黑名单
             for pair in data.get("blacklisted", []):

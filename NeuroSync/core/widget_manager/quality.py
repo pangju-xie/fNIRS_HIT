@@ -1,94 +1,101 @@
-import sys, logging
-from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLabel, QApplication
-from PyQt5.QtCore import QTimer, pyqtSignal
+import logging
+import sys
 
+from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtWidgets import QApplication, QHBoxLayout, QLabel, QWidget
+
+from ui.views.locate_widget import BrainLocatorView
 from ui.views.quality_view import QualityViewWidget
 from utils.stats import SensorTypes
-from ui.views.locate_widget import BrainLocatorView
 
 logger = logging.getLogger(__name__)
 
+
 class ChannelItemWidget(QWidget):
-    """滚动列表中单个通道的展示条目"""
-    def __init__(self, mode, name):
+    """滚动列表中的单个通道展示项。"""
+
+    def __init__(self, name, value_title):
         super().__init__()
         layout = QHBoxLayout(self)
-        layout.setContentsMargins(5, 2, 5, 2)
-        
-        self.lbl_mode = QLabel(mode)
-        self.lbl_mode.setFixedWidth(60)
-        self.lbl_mode.setStyleSheet("font-weight: bold; color: #555;")
-        
+        layout.setContentsMargins(4, 2, 4, 2)
+        layout.setSpacing(10)
+
         self.lbl_name = QLabel(name)
-        self.lbl_name.setFixedWidth(80)
-        
-        self.lbl_value = QLabel("0.0")
-        self.lbl_value.setFixedWidth(80)
-        
-        self.lbl_status = QLabel("Unknown")
-        self.lbl_status.setFixedWidth(80)
-        self.lbl_status.setStyleSheet("border-radius: 4px; padding: 2px; text-align: center; color: white; background-color: #9e9e9e;")
-        
-        layout.addWidget(self.lbl_mode)
+        self.lbl_name.setFixedWidth(110)
+        self.lbl_name.setAlignment(Qt.AlignCenter)
+
+        self.lbl_value = QLabel("0.00")
+        self.lbl_value.setFixedWidth(96)
+        self.lbl_value.setAlignment(Qt.AlignCenter)
+        self.lbl_value.setToolTip(value_title)
+
         layout.addWidget(self.lbl_name)
         layout.addWidget(self.lbl_value)
-        layout.addWidget(self.lbl_status)
-        layout.addStretch()
-        
-    def update_data(self, value, status_text, hex_color):
+
+    def update_data(self, value, hex_color):
         self.lbl_value.setText(f"{value:.2f}")
-        self.lbl_status.setText(status_text)
-        self.lbl_status.setStyleSheet(f"border-radius: 4px; padding: 2px; text-align: center; color: white; background-color: {hex_color}; font-weight: bold;")
+        self.lbl_value.setStyleSheet(f"color: {hex_color}; font-weight: bold;")
 
 
 class QualityManager(QWidget):
-    """质量评估逻辑控制器"""
-    signal_qualify_finished = pyqtSignal() 
+    """质量评估逻辑控制器。"""
+
+    signal_qualify_finished = pyqtSignal()
     signal_request_start = pyqtSignal()
     signal_request_stop = pyqtSignal()
-    
+
     def __init__(self, sensor_types: SensorTypes, bmap_manager):
         super().__init__()
         self.ui = QualityViewWidget()
         self.ui.setupUi(self)
-        
+
         self.sensor_types = sensor_types
         self.bmap_manager = bmap_manager
-        
-        self.locate_widget = BrainLocatorView(model=self.bmap_manager)
+        self.locate_widget = BrainLocatorView(model=self.bmap_manager, quality_view_mode=True)
         self.ui.brain_layout.addWidget(self.locate_widget)
-        
+
         self.is_running = False
-        self.channel_widgets = {} # 存放所有列表 UI 条目
-        
+        self.fnirs_widgets = {}
+        self.eeg_widgets = {}
+        self.eeg_name_map = {}
+
         self._init_channels()
         self._wire_signals()
-        
         logger.info("质量评估组件已初始化。")
 
+    def _clear_layout(self, layout):
+        while layout.count():
+            item = layout.takeAt(0)
+            if item.widget():
+                item.widget().deleteLater()  # type: ignore
+
     def _init_channels(self):
-        """根据配置模型生成列表项"""
-        # 清空列表
-        while self.ui.scrollAreaLayout.count():
-            item = self.ui.scrollAreaLayout.takeAt(0)
-            if item.widget(): item.widget().deleteLater() # type: ignore
-        self.channel_widgets.clear()
-        
-        # 1. 加载 fNIRS 通道
-        if self.sensor_types.value & SensorTypes.FNIRS.value:
-            fnirs_dict = self.bmap_manager.get_fnirs_montage_dict()
-            for pair in fnirs_dict.get('fnirs_pairs', []):
-                item = ChannelItemWidget("fNIRS", pair)
-                self.channel_widgets[pair] = item
-                self.ui.scrollAreaLayout.addWidget(item)
-                
-        # 2. 加载 EEG 通道
-        if self.sensor_types.value & SensorTypes.EEG.value:
-            eeg_dict = self.bmap_manager.get_eeg_montage_dict()
-            for ch in eeg_dict.get('eeg_channels', []):
-                item = ChannelItemWidget("EEG", ch)
-                self.channel_widgets[ch] = item
-                self.ui.scrollAreaLayout.addWidget(item)
+        self._clear_layout(self.ui.fnirs_scroll.content_layout)
+        self._clear_layout(self.ui.eeg_scroll.content_layout)
+        self.fnirs_widgets.clear()
+        self.eeg_widgets.clear()
+        self.eeg_name_map.clear()
+
+        fnirs_dict = self.bmap_manager.get_fnirs_montage_dict()
+        fnirs_pairs = fnirs_dict.get("fnirs_pairs", [])
+        if fnirs_pairs:
+            for pair in fnirs_pairs:
+                item = ChannelItemWidget(pair, "fNIRS 通道强度")
+                self.fnirs_widgets[pair] = item
+                self.ui.fnirs_scroll.content_layout.addWidget(item)
+
+        eeg_dict = self.bmap_manager.get_eeg_montage_dict()
+        eeg_channels = eeg_dict.get("eeg_channels", [])
+        if eeg_channels:
+            for ch in eeg_channels:
+                standard_name = eeg_dict.get("eeg_details", {}).get(ch, {}).get("standard_name", ch) or ch
+                self.eeg_name_map[ch] = standard_name
+                item = ChannelItemWidget(standard_name, "EEG 阻抗(kΩ)")
+                self.eeg_widgets[ch] = item
+                self.ui.eeg_scroll.content_layout.addWidget(item)
+
+        self.ui.fnirs_group.setVisible(bool(fnirs_pairs))
+        self.ui.eeg_group.setVisible(bool(eeg_channels))
 
     def _wire_signals(self):
         self.ui.btn_start.clicked.connect(self.start_test)
@@ -96,35 +103,49 @@ class QualityManager(QWidget):
         self.ui.btn_complete.clicked.connect(self.complete_test)
 
     def _get_color_mapping(self, value, is_eeg=False):
-        """将信号值映射为红黄绿"""
         if is_eeg:
-            # EEG 阻抗越低越好 (假设 0-50kOhm)
-            ratio = 1.0 - min(max(value / 50.0, 0.0), 1.0)
-        else:
-            # fNIRS 信号越强越好
-            ratio = value
-            # ratio = min(max(value / 3000.0, 0.0), 1.0)
-            
-        if ratio < 0.3: return "Poor", "#F44336"
-        elif ratio < 0.6: return "Fair", "#FFC107"
-        elif ratio < 0.85: return "Good", "#8BC34A"
-        else: return "Excellent", "#4CAF50"
+            if value < 5.0:
+                return "#4CAF50"
+            if value < 10.0:
+                return "#8BC34A"
+            if value < 20.0:
+                return "#FFC107"
+            return "#F44336"
+
+        ratio = value
+        if ratio < 0.3:
+            return "#F44336"
+        if ratio < 0.6:
+            return "#FFC107"
+        if ratio < 0.85:
+            return "#8BC34A"
+        return "#4CAF50"
+
+    def _get_eeg_quality_display(self, payload):
+        if isinstance(payload, dict):
+            impedance = float(payload.get("impedance_kohm", 0.0))
+            lead_off = bool(payload.get("lead_off", False))
+            if lead_off:
+                return impedance, "#F44336"
+            return impedance, self._get_color_mapping(impedance, is_eeg=True)
+
+        impedance = float(payload)
+        return impedance, self._get_color_mapping(impedance, is_eeg=True)
 
     def start_test(self):
         self.is_running = True
         self.ui.btn_start.setEnabled(False)
         self.ui.btn_stop.setEnabled(True)
-        
-        # 清空拓扑图上的历史颜色
-        if hasattr(self.locate_widget, 'clear_colors'):
+        if hasattr(self.locate_widget, "clear_colors"):
             self.locate_widget.clear_colors()
-            
         self.signal_request_start.emit()
 
     def stop_test(self):
         self.is_running = False
         self.ui.btn_start.setEnabled(True)
         self.ui.btn_stop.setEnabled(False)
+        if hasattr(self.locate_widget, "clear_colors"):
+            self.locate_widget.clear_colors()
         self.signal_request_stop.emit()
 
     def complete_test(self):
@@ -134,62 +155,53 @@ class QualityManager(QWidget):
     def update_quality_data(self, sensor_type: SensorTypes, quality_dict: dict):
         if not self.is_running:
             return
-        logger.debug(f"收到新的质量数据更新，模态: {sensor_type.name}，数据: {quality_dict}")
+
+        logger.debug("收到新的质量数据更新，模态: %s，数据: %s", sensor_type.name, quality_dict)
+
         if sensor_type == SensorTypes.FNIRS:
             fnirs_dict = self.bmap_manager.get_fnirs_montage_dict()
-            for pair, val in quality_dict.items():
-                if pair in self.channel_widgets:
-                    status, color = self._get_color_mapping(val, is_eeg=False)
-                    self.channel_widgets[pair].update_data(val, status, color)
-                    
-                    # 更新拓扑图连线颜色
-                    s_alias, d_alias = pair.split('-')
-                    s_std = fnirs_dict['sources'][s_alias]['standard_name']
-                    d_std = fnirs_dict['detectors'][d_alias]['standard_name']
-                    self.locate_widget.set_line_color(s_std, d_std, color)
+            for pair, value in quality_dict.items():
+                if pair not in self.fnirs_widgets:
+                    continue
+                color = self._get_color_mapping(value, is_eeg=False)
+                self.fnirs_widgets[pair].update_data(value, color)
+
+                s_alias, d_alias = pair.split("-")
+                source_entry = fnirs_dict["sources"].get(s_alias, {})
+                detector_entry = fnirs_dict["detectors"].get(d_alias, {})
+                source_name = source_entry.get("layout_name")
+                detector_name = detector_entry.get("layout_name")
+                if source_name and detector_name:
+                    self.locate_widget.set_line_color(source_name, detector_name, color)
 
         elif sensor_type == SensorTypes.EEG:
             eeg_dict = self.bmap_manager.get_eeg_montage_dict()
-            for ch, val in quality_dict.items():
-                if ch in self.channel_widgets:
-                    status, color = self._get_color_mapping(val, is_eeg=True)
-                    self.channel_widgets[ch].update_data(val, status, color)
-                    
-                    # 更新拓扑图节点颜色
-                    std_name = eeg_dict['eeg_details'][ch]['standard_name']
-                    self.locate_widget.set_node_color(std_name, color)
-                    
+            for ch, payload in quality_dict.items():
+                if ch not in self.eeg_widgets:
+                    continue
+                impedance, color = self._get_eeg_quality_display(payload)
+                self.eeg_widgets[ch].update_data(impedance, color)
+                layout_name = eeg_dict["eeg_details"][ch].get("layout_name")
+                if layout_name:
+                    self.locate_widget.set_node_color(layout_name, color)
+
         self.locate_widget.update()
-        
-        
-if __name__ == "__main__":            
+
+
+if __name__ == "__main__":
     from core.widget_manager.bmap_manager import BrainMapManager
 
     app = QApplication(sys.argv)
-    
-    # 1. 模拟一个已经配好节点的 BMapManager 模型
     mock_bmap = BrainMapManager()
-    
-    # 手动在模型上激活几个节点（模拟第二页用户的操作）
-    mock_bmap.set_node_state('FC1', 'Source')
-    mock_bmap.set_node_state('FC2', 'Source')
-    mock_bmap.set_node_state('C1', 'Detector')
-    mock_bmap.set_node_state('C2', 'Detector')
-    mock_bmap.set_node_state('Cz', 'EEG')
-    mock_bmap.set_node_state('Oz', 'EEG')
-    
-    # 2. 模拟当前连接的模态为 双模态 (fNIRS + EEG)
-    # 若无法引入 SensorTypes，可自行定义枚举
-    mock_sensor_type = SensorTypes.EEG_FNIRS 
-    
-    # 3. 实例化界面
-    manager = QualityManager(
-        sensor_types=mock_sensor_type,
-        bmap_manager=mock_bmap
-    )
-    
+    mock_bmap.set_node_state("FC1", "Source")
+    mock_bmap.set_node_state("FC2", "Source")
+    mock_bmap.set_node_state("C1", "Detector")
+    mock_bmap.set_node_state("C2", "Detector")
+    mock_bmap.set_node_state("Cz", "EEG")
+    mock_bmap.set_node_state("Oz", "EEG")
+
+    manager = QualityManager(sensor_types=SensorTypes.EEG_FNIRS, bmap_manager=mock_bmap)
     manager.setWindowTitle("独立测试：信号质量与阻抗评估")
     manager.resize(1100, 750)
     manager.show()
-    
     sys.exit(app.exec_())

@@ -30,7 +30,7 @@ class MainWindow(QMainWindow):
         self._setup_main_layout()
         self._setup_ui_connections()
         
-        logger.info("MainWindow初始化完成")
+        logger.info("主窗口初始化完成。")
 
     def _setup_main_layout(self):
         """
@@ -81,7 +81,7 @@ class MainWindow(QMainWindow):
         id_frame.addWidget(self.label_device_id)
         
         self.battery_icon = SmallBatteryWidget()
-        self.btn_connect = StatusButton(text="Connect")
+        self.btn_connect = StatusButton(text="连接设备")
 
         top_status_layout.addLayout(id_frame)
         top_status_layout.addWidget(self.battery_icon)
@@ -92,7 +92,7 @@ class MainWindow(QMainWindow):
 
         # 4. 最下方的状态提示 (一行小字提示)
         # ==========================================
-        self.label_footer_status = QLabel("状态: 待机.")
+        self.label_footer_status = QLabel("状态：待机。")
         self.label_footer_status.setStyleSheet("font-size: 12px; color: #7f8c8d; padding-left: 10px; padding-bottom: 2px;")
         
         # 5. 总装：最外层竖直布局
@@ -135,7 +135,7 @@ class MainWindow(QMainWindow):
         self.btn_connect.set_disconnect_state()
         self.conn_led.set_status("red")
         
-        self.label_device_id.setText("ID: --")
+        self.label_device_id.setText("设备：--")
         self.battery_icon.set_battery_level(0)
 
     def update_battery_display(self, battery_level: int):
@@ -144,7 +144,7 @@ class MainWindow(QMainWindow):
 
     def show_status(self, message: str, color="#7f8c8d"):
         """Controller 唤醒：更新最下方的一行小字提示"""
-        self.label_footer_status.setText(f"状态: {message}")
+        self.label_footer_status.setText(f"状态：{message}")
         self.label_footer_status.setStyleSheet(f"font-size: 12px; color: {color};")
 
     def lock_tabs_for_acquisition(self):
@@ -173,7 +173,7 @@ class MainWindow(QMainWindow):
         if tab_name in name_map:
             name_map[tab_name].layout().addWidget(widget) # type: ignore
             
-            logger.info(f"成功嵌入 [{tab_name}] 标签页")
+            logger.info("已成功嵌入 [%s] 标签页。", tab_name)
 
     def show_error(self, title: str, message: str):
         QMessageBox.critical(self, title, message)
@@ -187,7 +187,7 @@ class StatusButton(QPushButton):
     一个可以根据状态切换文本和 QSS 样式的按钮。
     （原 ConnectButton 的升级版）
     """
-    def __init__(self, text="Connect", parent=None):
+    def __init__(self, text="连接设备", parent=None):
         super().__init__(text, parent)
         self.setCursor(Qt.CursorShape.PointingHandCursor)
         # 应用初始样式 (在全局 QSS 中定义)
@@ -196,18 +196,18 @@ class StatusButton(QPushButton):
         self.setMinimumHeight(35)
 
     def set_disconnect_state(self):
-        self.setText("Connect")
+        self.setText("连接设备")
         self.setProperty("state", "idle")
         self.setEnabled(True)
         self._refresh_style()
 
     def set_connected_state(self):
-        self.setText("Disconnect")
+        self.setText("断开设备")
         self.setProperty("state", "connected")
         self.setEnabled(True)
         self._refresh_style()
 
-    def set_action_state(self, action_text="Connecting..."):
+    def set_action_state(self, action_text="连接中..."):
         self.setText(action_text)
         self.setProperty("state", "acting")
         self.setEnabled(False)

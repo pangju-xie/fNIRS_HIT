@@ -5,7 +5,7 @@ import os, datetime
 import logging
 
 # 引入状态模型与硬件配置模型
-from utils.stats import SystemState, SensorTypes, Commands, WorkflowStates
+from utils.stats import AcquisitionSessionType, DisplayMode, SystemState, SensorTypes, Commands, WorkflowStates
 from core.thread_udp import UdpThread
 from core.process import DeviceProcessManager
 from core.buffer import DataBufferManager
@@ -59,6 +59,7 @@ class AppController(QObject):
         
         self.current_view_mode = "Heamo" 
         self.is_recording = False
+        self.active_session_type = AcquisitionSessionType.IDLE
         
         self._wire_signals()
         
@@ -86,7 +87,8 @@ class AppController(QObject):
         self.batTimer.timeout.connect(self._on_bat_timerout)
         
         # 缓存与补包层
-        self.process_manager.signal_data_packet.connect(self.buffer_manager.handle_normal_data)
+        self.process_manager.signal_quality_packet.connect(self.buffer_manager.handle_quality_data)
+        self.process_manager.signal_data_packet.connect(self.buffer_manager.handle_live_data)
         self.process_manager.signal_data_patched.connect(self.buffer_manager.handle_patched_data)
         self.buffer_manager.signal_batch_patched_done.connect(self._process_next_patch_batch)
         
@@ -111,13 +113,13 @@ class AppController(QObject):
             )
             
             if reply == QMessageBox.Yes:
-                logger.info("用户确认断开，正在发送 DISCONNECT 指令...")
+                logger.info("用户确认断开，正在发送断开指令...")
                 self.ui.btn_connect.set_action_state("Disconnecting...")
                 self.process_manager.send_command(Commands.DISCONNECT)
                 self._handle_device_disconnected()
 
             else:
-                logger.info("用户取消了断开操作。")
+                logger.info("用户已取消断开操作。")
                 return # 直接返回，什么都不做
             
             
@@ -126,7 +128,7 @@ class AppController(QObject):
         self.current_sensor_type = sensor_type
         
         if self.process_manager.add_device(device_ip, sensor_id, sensor_type):
-            logger.info(f"设备已接入: {sensor_id} @ {device_ip}")
+            logger.info("设备已接入：%s @ %s", sensor_id, device_ip)
 
         self.ui.set_connected_state(str(sensor_type.name))
         
@@ -134,6 +136,8 @@ class AppController(QObject):
         self.process_manager.send_command(Commands.BATTERY_QUERY)
         self.batTimer.start()
         self.buffer_manager.init_processors(sensor_type)
+        self.buffer_manager.set_session_type(AcquisitionSessionType.IDLE)
+        self._update_buffer_display_mode()
     
         # 设备连上后，动态加载配置页，并触发锁检查
         self._init_base_components()
@@ -144,6 +148,8 @@ class AppController(QObject):
         self.batTimer.stop()
         self.timer_conn_timeout.stop()
         self.process_manager.clear_devices()
+        self.active_session_type = AcquisitionSessionType.IDLE
+        self.buffer_manager.reset_all()
         
         self.system_state.advance_workflow(WorkflowStates.DISCONNECTED)
         self.ui.set_disconnected_state()
@@ -161,6 +167,7 @@ class AppController(QObject):
     def shutdown_system(self):
         logger.info("正在关闭系统...")
         self.batTimer.stop()
+        self._teardown_dynamic_components()
         if self.system_state.workflow > WorkflowStates.DISCONNECTED:
             self.process_manager.send_command(Commands.DISCONNECT)
         
@@ -171,41 +178,42 @@ class AppController(QObject):
     # 模块三：补包引擎与指令 ACK 回调
     # ==========================================
     def _handle_command_ack(self, cmd: Commands, sensor_id: list, is_success: bool):
-        self.process_manager.acknowledge_command(cmd, sensor_id)
-
         if cmd == Commands.STOP_SAMPLE and is_success:
             logger.info("下位机已确认停止采集。")
-            
-            if self.system_state.workflow <= WorkflowStates.QUALIFIED:
+
+            if self.active_session_type == AcquisitionSessionType.QUALITY_TEST:
+                self.active_session_type = AcquisitionSessionType.IDLE
                 logger.info("阻抗检测完成。")
                 self.ui.show_status("阻抗检测完成。", "#4CAF50")
                 return
-                
-            elif self.system_state.workflow >= WorkflowStates.ACQUIRED:
-                if self.buffer_manager.op_mode >=3:
+
+            if self.active_session_type == AcquisitionSessionType.LIVE_ACQUIRE:
+                self.active_session_type = AcquisitionSessionType.IDLE
+                if self.is_recording:
                     total_missing = self.buffer_manager.get_total_missing_count()
                     if total_missing > 0:
                         self.is_patching_phase = True
                         self.ui.show_status(f"准备补包，共计丢失 {total_missing} 包...", "#e67e22")
                         self._process_next_patch_batch() 
                     else:
-                        logger.info("已停止记录，无丢包！")
+                        logger.info("已停止记录，未发现丢包。")
                         self._finalize_and_save_data()
                 else:
-                    logger.info("已停止采集")
+                    logger.info("已停止采集。")
                     self.ui.show_status("已停止采集信号", "#7f8c8d")
                     self.system_state.advance_workflow(WorkflowStates.ACQUIRED)
+                self.buffer_manager.set_session_type(AcquisitionSessionType.IDLE)
                 
         elif cmd == Commands.CHANNEL_CONFIG:
             if is_success:
-                logger.info("通道配置成功！")
+                logger.info("通道配置成功。")
                 self.ui.show_status("通道配置成功！", "#4CAF50")
             else:
                 self.ui.show_error("配置失败", "下位机拒绝了通道配置")
 
         elif cmd == Commands.SAMPLE_RATE:
             if is_success:
-                logger.info("采样率配置成功！")
+                logger.info("采样率配置成功。")
                 
                 self._finalize_configuration()
                 self.config_widget.btn_finish.setEnabled(True) # type: ignore # 只有采样率配置成功后，才允许用户点击完成按钮
@@ -239,8 +247,8 @@ class AppController(QObject):
         
         if s_type is not None and len(batch_ids) > 0:
             # 队列里还有任务，继续发送本轮的补包指令
-            logger.info(f"请求 [{SensorTypes(s_type).name}] 的 {len(batch_ids)} 个补包数据...")
-            patch_payload = [s_type]
+            logger.info("请求 [%s] 的 %s 个补包数据，范围 %s-%s", SensorTypes(s_type).name, len(batch_ids), batch_ids[0], batch_ids[-1])
+            patch_payload = [int(s_type)]
             for m_id in batch_ids:
                 patch_payload.extend([(m_id >> 24) & 0xFF, (m_id >> 16) & 0xFF, (m_id >> 8) & 0xFF, m_id & 0xFF])
                 
@@ -253,21 +261,21 @@ class AppController(QObject):
             
             if current_missing == 0:
                 # 完美收官
-                logger.info("所有丢失数据已全部补齐！")
+                logger.info("所有丢失数据已全部补齐。")
                 self.ui.show_status("补包完美完成，准备保存数据。", "#4CAF50")
                 self.is_patching_phase = False
                 self._finalize_and_save_data()
                 
             elif current_missing == self.last_round_missing_count:
                 # 毫无进展：一整轮问询下来，一个包都没补上。说明硬件已经丢弃了这些数据或彻底断流。
-                logger.warning(f"本轮无新的补包！放弃剩余的 {current_missing} 个包，强制结束。")
+                logger.warning("本轮没有新的补包，放弃剩余 %s 个包并强制结束。", current_missing)
                 self.ui.show_status(f"补包不全。", "#e74c3c")
                 self.is_patching_phase = False
                 self._finalize_and_save_data()
                 
             else:
                 # 仍有丢包，但有进展：说明刚才那一轮确实捞回来了一些数据，值得再来一轮！
-                logger.info(f"本轮补包结束，成功找回部分数据。仍剩余 {current_missing} 个包，开启下一轮轮询...")
+                logger.info("本轮补包结束，已找回部分数据，仍剩余 %s 个包，开始下一轮轮询。", current_missing)
                 self.ui.show_status(f"补包进行中---", "#f39c12")
                 
                 # 更新参考值，重新装填队列，启动下一轮第一批
@@ -278,6 +286,7 @@ class AppController(QObject):
     def _finalize_and_save_data(self):
         self.ui.show_status("正在保存文件...", "#f39c12")
         self.buffer_manager.stop_recording() 
+        self.is_recording = False
 
         patient_info = self.current_patient.to_dict() if self.current_patient else {}
         # 触发生成 .snirf 和 .csv
@@ -285,6 +294,8 @@ class AppController(QObject):
             file_name = self.file_basename
             if hasattr(processor, 'export_snirf'):
                 processor.export_snirf(self.current_session_dir, file_name, self.record_start_time, patient_info)
+            if hasattr(processor, 'export_csv'):
+                processor.export_csv(self.current_session_dir, file_name, self.record_start_time, patient_info)
 
         self.ui.show_status(f"✅ 数据已成功存入: {os.path.basename(self.current_session_dir)}", "#4CAF50")
         
@@ -298,7 +309,7 @@ class AppController(QObject):
         
     def _on_patch_timeout(self):
         """补包超时处理，放弃当前批次的等待，立刻请求本轮的下一批"""
-        logger.warning("补包硬件响应超时，直接跳过，请求下一批...")
+        logger.warning("补包硬件响应超时，已跳过当前批次并请求下一批。")
         self.buffer_manager.current_patching_batch.clear()
         self._process_next_patch_batch()
     
@@ -317,7 +328,7 @@ class AppController(QObject):
         self.user_widget = UserInfoManager()
         self.user_widget.onUserSet.connect(self._handle_user_set)
         self.ui.embed_widget_to_tab("home", self.user_widget)
-        logger.info("用户界面加载完毕！")
+        logger.info("用户界面加载完成。")
         
         # 启动时强制锁定除 Home 页外的所有子窗口
         self._update_tab_locks()
@@ -328,7 +339,7 @@ class AppController(QObject):
         当设备成功连接后，动态加载并嵌入通道配置组件 (第二页)
         """
         if not self.config_widget:
-            logger.info(f"正在加载通道配置界面，设备类型: {sensor_types.name}")
+            logger.info("正在加载通道配置界面，设备类型：%s", sensor_types.name)
             
             # 1. 实例化通道配置
             self.config_widget = ChannelManager(sensor_types=sensor_types)
@@ -340,7 +351,7 @@ class AppController(QObject):
             
             # 3. 嵌入 UI
             self.ui.embed_widget_to_tab("config", self.config_widget)
-            logger.info("配置界面加载完毕！")
+            logger.info("配置界面加载完成。")
             
     def _init_quality_component(self):
         """当进入质量测试阶段时，动态实例化并加载第三页"""
@@ -364,12 +375,12 @@ class AppController(QObject):
             
             # 嵌入第 3 个 Tab (假设标识符是 "qualify" 或根据你实际的 tab 名字)
             self.ui.embed_widget_to_tab("qualify", self.qualify_widget)
-            logger.info("测试界面加载完毕！")
+            logger.info("测试界面加载完成。")
         
     def _init_display_component(self):
         """当阻抗测试完成时，动态实例化并加载第四页 (波形图)"""
         if not hasattr(self, 'display_widget') or not self.display_widget:
-            logger.info("正在加载绘制界面...")
+            logger.info("正在加载显示界面...")
             
             # 1. 直接从底层的 Processor 实例中提取通道信息与采样率 (解耦 UI)
             fnirs_chs, eeg_chs = [], []
@@ -383,7 +394,9 @@ class AppController(QObject):
             if SensorTypes.EEG in self.buffer_manager.processors:
                 e_processor = self.buffer_manager.processors[SensorTypes.EEG]
                 # EEG 同理，做向下兼容处理
-                if hasattr(e_processor, 'get_channels'):
+                if hasattr(e_processor, 'get_display_channels'):
+                    eeg_chs = e_processor.get_display_channels()
+                elif hasattr(e_processor, 'get_channels'):
                     eeg_chs = e_processor.get_channels()
                 elif hasattr(e_processor, 'config'):
                     eeg_chs = e_processor.config.get('eeg_channels', [])
@@ -416,7 +429,7 @@ class AppController(QObject):
             
             # 5. 嵌入第 4 个 Tab (假设标识符是 "display" 或根据你实际 tab 名字调整)
             self.ui.embed_widget_to_tab("display", self.display_widget)
-            logger.info("绘制界面加载完毕！")
+            logger.info("显示界面加载完成。")
     
     
     # ==========================================
@@ -438,6 +451,8 @@ class AppController(QObject):
                 self.buffer_manager.signal_raw_stream.disconnect(self._route_raw_data_to_display)
             except Exception:
                 pass
+            if hasattr(widget, 'shutdown'):
+                widget.shutdown()
             for canvas_attr in ['fnirs_canvas', 'eeg_canvas', 'semg_canvas']:
                 canvas = getattr(widget, canvas_attr, None)
                 if canvas and hasattr(canvas, 'render_timer'):
@@ -492,7 +507,7 @@ class AppController(QObject):
         """处理第一页传来的受试者锁定信号"""
         # 【修改】：直接存在 Controller 自己的属性里
         self.current_patient = patient_data
-        logger.info(f"受试者已锁定: {patient_data.name} (PID: {patient_data.pid})")
+        logger.info("受试者已锁定：%s（PID：%s）", patient_data.name, patient_data.pid)
         
         self._update_tab_locks()
         
@@ -522,6 +537,8 @@ class AppController(QObject):
                 
                 # 2. 掐断 Canvas 定时器防泄漏
                 if attr_name == 'display_widget':
+                    if hasattr(widget, 'shutdown'):
+                        widget.shutdown()
                     for canvas_attr in ['fnirs_canvas', 'eeg_canvas', 'semg_canvas']:
                         canvas = getattr(widget, canvas_attr, None)
                         if canvas and hasattr(canvas, 'render_timer'):
@@ -534,7 +551,7 @@ class AppController(QObject):
                 
         # 重置系统内部状态
         self.current_patient = None
-        logger.info("业务 UI 组件已全部物理卸载，内存已释放。")
+        logger.info("业务 UI 组件已全部卸载，内存已释放。")
         
         
     # ==========================================
@@ -554,7 +571,7 @@ class AppController(QObject):
         """
         用户点击“完成所有配置”后触发：推进全局状态机，自动跳转至下一页
         """
-        logger.info("配置阶段完成。准备进入阻抗测试阶段。")
+        logger.info("配置阶段完成，准备进入阻抗测试阶段。")
         self.system_state.advance_workflow(WorkflowStates.CONFIGURED)
         self._update_tab_locks()
         
@@ -563,7 +580,7 @@ class AppController(QObject):
             self.ui.show_status("进入阻抗测试阶段。", "#8e44ad")
             
     def _handle_quality_finished(self):
-        logger.info("阻抗测试完成。准备进入正式数据采集阶段。")
+        logger.info("阻抗测试完成，准备进入正式数据采集阶段。")
         self.system_state.advance_workflow(WorkflowStates.QUALIFIED)
         self._update_tab_locks()
         
@@ -585,8 +602,10 @@ class AppController(QObject):
             
     def _on_quality_start(self):
         """响应质量测试页的开始测试按钮，直接发开始指令给底层"""
-        logger.info("用户请求开始质量测试，正在发送开始采集指令...")
-        self.buffer_manager.op_mode = 0 # 进入质量测试模式
+        logger.info("用户请求开始质量测试，正在发送质量测试指令。")
+        self.active_session_type = AcquisitionSessionType.QUALITY_TEST
+        self.buffer_manager.set_session_type(AcquisitionSessionType.QUALITY_TEST)
+        self.buffer_manager.set_recording_enabled(False)
     
         if SensorTypes.FNIRS in self.buffer_manager.processors:
             self.buffer_manager.processors[SensorTypes.FNIRS].reset_quality_data()
@@ -594,23 +613,29 @@ class AppController(QObject):
             self.buffer_manager.processors[SensorTypes.EEG].reset_quality_data()
             
         self.ui.show_status("阻抗检测中...", "#f39c12")
-        self.process_manager.send_command(Commands.START_SAMPLE)
+        self.process_manager.send_command(Commands.QUALITY_TEST)
         
     def _on_quality_stop(self):
+        self.active_session_type = AcquisitionSessionType.IDLE
+        self.buffer_manager.set_session_type(AcquisitionSessionType.IDLE)
         self.process_manager.send_command(Commands.STOP_SAMPLE)
     
 
     def _on_display_start(self):
-        logger.info("开始采集...")
+        logger.info("开始采集。")
         self.system_state.advance_workflow(WorkflowStates.ACQUIRED)
+        self.active_session_type = AcquisitionSessionType.LIVE_ACQUIRE
         self.is_recording = False
-        self._update_buffer_op_mode()
+        self.buffer_manager.set_session_type(AcquisitionSessionType.LIVE_ACQUIRE)
+        self.buffer_manager.set_recording_enabled(False)
+        self._update_buffer_display_mode()
         self.process_manager.send_command(Commands.START_SAMPLE)
         self.ui.show_status("采集中... ", "#4CAF50")
 
     def _on_display_stop(self):
-        logger.info("停止采集并进行补包检查...")
-        self.is_recording = False
+        logger.info("停止采集并进行补包检查。")
+        self.active_session_type = AcquisitionSessionType.IDLE
+        self.buffer_manager.set_session_type(AcquisitionSessionType.IDLE)
         # 发出停止指令后，下位机会回复 ACK，进而自动触发 _handle_command_ack 里的丢包检测和修补！
         self.process_manager.send_command(Commands.STOP_SAMPLE)
 
@@ -632,32 +657,34 @@ class AppController(QObject):
             os.makedirs(self.current_session_dir, exist_ok=True)
             
             self.buffer_manager.start_recording(self.current_session_dir, self.file_basename)
-            self._update_buffer_op_mode()
+            self.buffer_manager.set_recording_enabled(True)
             self.ui.show_status(f"🔴 记录中... ", "#e74c3c")
+        else:
+            self.is_recording = False
+            self.buffer_manager.stop_recording()
+            self.buffer_manager.set_recording_enabled(False)
         
     def _handle_op_mode_change(self, mode_str):
         """响应界面的下拉框，切换看原始光强还是血氧"""
-        self.current_view_mode = "Raw" if "Raw" in mode_str else "Heamo"
-        self._update_buffer_op_mode()
-        logger.info(f"显示模式已切换为: {self.current_view_mode}")
+        self.current_view_mode = "Raw" if ("Raw" in mode_str or "原始" in mode_str) else "Heamo"
+        self._update_buffer_display_mode()
+        logger.info("显示模式已切换为：%s", self.current_view_mode)
         
     def _handle_mark_event(self, key_val):
         """响应界面传来的 0-9 按键，通知底层记录事件时间戳"""
         if self.is_recording and SensorTypes.FNIRS in self.buffer_manager.processors:
             self.buffer_manager.processors[SensorTypes.FNIRS].add_marker(key_val)
 
-    def _update_buffer_op_mode(self):
-        """集中管理底层 Buffer 吐数据的模式 (1/3:Raw, 2/4:Heamo)"""
-        # 3/4 是落盘并展示，1/2 是只展示不落盘
-        if self.is_recording:
-            self.buffer_manager.op_mode = 3 if self.current_view_mode == "Raw" else 4
-        else:
-            self.buffer_manager.op_mode = 1 if self.current_view_mode == "Raw" else 2
+    def _update_buffer_display_mode(self):
+        display_mode = DisplayMode.RAW if self.current_view_mode == "Raw" else DisplayMode.HEMO
+        self.buffer_manager.set_display_mode(display_mode)
             
     def _handle_display_finished(self):
         logger.info("波形监控与记录完成。")
         # 停止一切底层活动
         # self.process_manager.send_command(Commands.STOP_SAMPLE)
+        self.active_session_type = AcquisitionSessionType.IDLE
+        self.buffer_manager.set_session_type(AcquisitionSessionType.IDLE)
         self.system_state.advance_workflow(WorkflowStates.ACQUIRED)
         self._update_tab_locks()
         

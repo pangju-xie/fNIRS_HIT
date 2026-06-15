@@ -1,4 +1,4 @@
-#include "fnirs.h"
+ï»¿#include "fnirs.h"
 #include "main.h"
 #include "tim.h"
 #include "sdio.h"
@@ -13,41 +13,41 @@
 #include "tlc5940.h"
 
 /******************************************************************************
- * ºê¶¨Òå
+ * å®å®šä¹‰
  ******************************************************************************/
 
-#define LED_RED_WAVELENGTH      0      /**< ºì¹âLED±êÊ¶ */
-#define LED_IR_WAVELENGTH       1      /**< ºìÍâ¹âLED±êÊ¶ */
+#define LED_RED_WAVELENGTH      0      /**< çº¢å…‰LEDæ ‡è¯† */
+#define LED_IR_WAVELENGTH       1      /**< çº¢å¤–å…‰LEDæ ‡è¯† */
 
-#define ADS_SAMPLES_PER_LED     16     /**< Ã¿¸öLEDµÄÆ½¾ù²ÉÑù´ÎÊı */
-#define FNIRS_DETECTOR_NUM      16     /**< fnirsÏµÍ³µÄ×î´óÌ½²âÆ÷ÊıÁ¿>*/
+#define ADS_SAMPLES_PER_LED     16     /**< æ¯ä¸ªLEDçš„å¹³å‡é‡‡æ ·æ¬¡æ•° */
+#define FNIRS_DETECTOR_NUM      16     /**< fnirsç³»ç»Ÿçš„æœ€å¤§æ¢æµ‹å™¨æ•°é‡>*/
 
 uint8_t sample_count[16] = {0};
 /******************************************************************************
- * Êı¾İ½á¹¹¶¨Òå
+ * æ•°æ®ç»“æ„å®šä¹‰
  ******************************************************************************/
 
 /**
- * @brief ADC²ÉÑùÊı¾İ½á¹¹
- * @note ÓÃÓÚÍ³¼Æ¶à´Î²ÉÑùµÄÆ½¾ùÖµ
+ * @brief ADCé‡‡æ ·æ•°æ®ç»“æ„
+ * @note ç”¨äºç»Ÿè®¡å¤šæ¬¡é‡‡æ ·çš„å¹³å‡å€¼
  */
 typedef struct {
-    uint32_t sample_count;           /**< ²ÉÑù´ÎÊı¼ÆÊıÆ÷ */
-    //uint32_t sample_buffer[ADS_SAMPLES_PER_LED];  /**< Ô­Ê¼²ÉÑùÖµ»º³åÇø */
-    uint32_t sample_sum;             /**< ²ÉÑùÖµÀÛ¼ÓºÍ */
-    uint32_t average_value;          /**< Æ½¾ù²ÉÑùÖµ */
+    uint32_t sample_count;           /**< é‡‡æ ·æ¬¡æ•°è®¡æ•°å™¨ */
+    //uint32_t sample_buffer[ADS_SAMPLES_PER_LED];  /**< åŸå§‹é‡‡æ ·å€¼ç¼“å†²åŒº */
+    uint32_t sample_sum;             /**< é‡‡æ ·å€¼ç´¯åŠ å’Œ */
+    uint32_t average_value;          /**< å¹³å‡é‡‡æ ·å€¼ */
 } ADC_SAMPLE_DATA;
 
 /******************************************************************************
- * È«¾Ö±äÁ¿¶¨Òå
+ * å…¨å±€å˜é‡å®šä¹‰
  ******************************************************************************/
 
-FNIRS_STRUCT g_fnirs_ctx = {0};      /**< fNIRSÈ«¾ÖÉÏÏÂÎÄ */
-ADC_SAMPLE_DATA g_adc_sample[FNIRS_DETECTOR_NUM] = {0};  /**< ADC²ÉÑùÊı¾İ */
+FNIRS_STRUCT g_fnirs_ctx = {0};      /**< fNIRSå…¨å±€ä¸Šä¸‹æ–‡ */
+ADC_SAMPLE_DATA g_adc_sample[FNIRS_DETECTOR_NUM] = {0};  /**< ADCé‡‡æ ·æ•°æ® */
 
-uint8_t g_fnirs_ready_flag = 0;      /*  fnirsµ¥ÖÜÆÚ²ÉÑùÍê³É*/
+uint8_t g_fnirs_ready_flag = 0;      /*  fnirså•å‘¨æœŸé‡‡æ ·å®Œæˆ*/
 /******************************************************************************
- * ¾²Ì¬º¯ÊıÉùÃ÷
+ * é™æ€å‡½æ•°å£°æ˜
  ******************************************************************************/
 
 static void _fnirs_init_default_config(void);
@@ -58,13 +58,13 @@ static void _fnirs_process_adc_samples(uint8_t i, uint8_t* save_addr);
 static void _fnirs_write_sd_card(uint8_t* data_buffer, uint32_t period_number);
 
 /******************************************************************************
- * ÖĞ¶Ï»Øµ÷º¯Êı
+ * ä¸­æ–­å›è°ƒå‡½æ•°
  ******************************************************************************/
 
 /**
- * @brief GPIOÍâ²¿ÖĞ¶Ï»Øµ÷º¯Êı
- * @param GPIO_Pin ´¥·¢ÖĞ¶ÏµÄGPIOÒı½ÅºÅ
- * @note ´¦ÀíNIRS_DRDY_PinµÄÊı¾İ¾ÍĞ÷ÖĞ¶Ï
+ * @brief GPIOå¤–éƒ¨ä¸­æ–­å›è°ƒå‡½æ•°
+ * @param GPIO_Pin è§¦å‘ä¸­æ–­çš„GPIOå¼•è„šå·
+ * @note å¤„ç†NIRS_DRDY_Pinçš„æ•°æ®å°±ç»ªä¸­æ–­
  */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
@@ -74,19 +74,19 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 }
 
 /**
- * @brief fNIRSÊı¾İ²É¼¯º¯Êı
- * @param GPIO_Pin ´¥·¢²É¼¯µÄGPIOÒı½ÅºÅ
- * @note ÔÚDRDYÒı½ÅÖĞ¶ÏÖĞµ÷ÓÃ£¬²É¼¯ADCÊı¾İ
+ * @brief fNIRSæ•°æ®é‡‡é›†å‡½æ•°
+ * @param GPIO_Pin è§¦å‘é‡‡é›†çš„GPIOå¼•è„šå·
+ * @note åœ¨DRDYå¼•è„šä¸­æ–­ä¸­è°ƒç”¨ï¼Œé‡‡é›†ADCæ•°æ®
  */
 void nirs_data_collect(uint16_t GPIO_Pin)
 {
     if (GPIO_Pin == NIRS_DRDY_Pin) {
-        if (!ReadNIRS()) {  /* ¼ì²éDRDYÒı½ÅÊÇ·ñÎªµÍµçÆ½£¨Êı¾İ¾ÍĞ÷£© */
-            /* ¶ÁÈ¡ADCÊı¾İ²¢ÀÛ¼Ó */
+        if (!ReadNIRS()) {  /* æ£€æŸ¥DRDYå¼•è„šæ˜¯å¦ä¸ºä½ç”µå¹³ï¼ˆæ•°æ®å°±ç»ªï¼‰ */
+            /* è¯»å–ADCæ•°æ®å¹¶ç´¯åŠ  */
             uint8_t temp_buffer[3] = {0};
             uint8_t ch_id = ReadDataDirect(temp_buffer);
             if(ch_id >= 0 && ch_id<=15){
-              /* ½«3×Ö½ÚÊı¾İ×ª»»Îª24Î»ÕûÊı */
+              /* å°†3å­—èŠ‚æ•°æ®è½¬æ¢ä¸º24ä½æ•´æ•° */
               uint32_t adc_value = ((uint32_t)temp_buffer[0] << 16) |
                                    ((uint32_t)temp_buffer[1] << 8)  |
                                    (uint32_t)temp_buffer[2];
@@ -107,90 +107,90 @@ void nirs_data_collect(uint16_t GPIO_Pin)
 }
 
 /******************************************************************************
- * ³õÊ¼»¯º¯Êı
+ * åˆå§‹åŒ–å‡½æ•°
  ******************************************************************************/
 
 /**
- * @brief ³õÊ¼»¯fNIRSÊı¾İ½á¹¹
- * @note ÉèÖÃÄ¬ÈÏÅäÖÃºÍ³õÊ¼»¯»º³åÇø
+ * @brief åˆå§‹åŒ–fNIRSæ•°æ®ç»“æ„
+ * @note è®¾ç½®é»˜è®¤é…ç½®å’Œåˆå§‹åŒ–ç¼“å†²åŒº
  */
 void fnirs_struct_init(void)
 {
-    /* ÇåÁãÈ«¾ÖÉÏÏÂÎÄ */
+    /* æ¸…é›¶å…¨å±€ä¸Šä¸‹æ–‡ */
     memset(&g_fnirs_ctx, 0, sizeof(g_fnirs_ctx));
     
-    /* ÉèÖÃÄ¬ÈÏ×´Ì¬ºÍ²ÉÑùÂÊ */
+    /* è®¾ç½®é»˜è®¤çŠ¶æ€å’Œé‡‡æ ·ç‡ */
     g_fnirs_ctx.state = FNIRS_STATE_INIT;
-    g_fnirs_ctx.sample_rate = 10;  /* Ä¬ÈÏ²ÉÑùÂÊ10Hz */
+    g_fnirs_ctx.sample_rate = 10;  /* é»˜è®¤é‡‡æ ·ç‡10Hz */
     
-    /* ³õÊ¼»¯Ä¬ÈÏÅäÖÃ */
+    /* åˆå§‹åŒ–é»˜è®¤é…ç½® */
     _fnirs_init_default_config();
     
-    /* ³õÊ¼»¯Êı¾İ»º³åÇø */
+    /* åˆå§‹åŒ–æ•°æ®ç¼“å†²åŒº */
     _fnirs_update_buffer_length();
-    init_data_frame(g_fnirs_ctx.data_buffer.send_buffer[0].channel_data, SENSOR_FNIRS, CMD_DATA_TRANSMISSION, 
+    init_data_frame(g_fnirs_ctx.data_buffer.send_buffer[0].channel_data, SENSOR_FNIRS, CMD_START, 
                 g_fnirs_ctx.data_buffer.data_frame_len);
-    init_data_frame(g_fnirs_ctx.data_buffer.send_buffer[1].channel_data, SENSOR_FNIRS, CMD_DATA_TRANSMISSION, 
+    init_data_frame(g_fnirs_ctx.data_buffer.send_buffer[1].channel_data, SENSOR_FNIRS, CMD_START, 
                 g_fnirs_ctx.data_buffer.data_frame_len);
 }
 
 /**
- * @brief ³õÊ¼»¯Ä¬ÈÏfNIRSÅäÖÃ
- * @note ÉèÖÃ16¸ö¹âÔ´ºÍ16¸öÌ½²âÆ÷£¬È«²¿¿ªÆô
+ * @brief åˆå§‹åŒ–é»˜è®¤fNIRSé…ç½®
+ * @note è®¾ç½®16ä¸ªå…‰æºå’Œ16ä¸ªæ¢æµ‹å™¨ï¼Œå…¨éƒ¨å¼€å¯
  */
 static void _fnirs_init_default_config(void)
 {
-    /* ÉèÖÃ¹âÔ´ºÍÌ½²âÆ÷ÊıÁ¿ */
+    /* è®¾ç½®å…‰æºå’Œæ¢æµ‹å™¨æ•°é‡ */
     g_fnirs_ctx.config.source_count = 16;
     g_fnirs_ctx.config.detector_count = 16;
     
-    /* ÉèÖÃÄ¬ÈÏÅäÖÃ£ºËùÓĞÌ½²âÆ÷È«²¿¿ªÆô */
+    /* è®¾ç½®é»˜è®¤é…ç½®ï¼šæ‰€æœ‰æ¢æµ‹å™¨å…¨éƒ¨å¼€å¯ */
     for (uint8_t i = 0; i < g_fnirs_ctx.config.source_count; i++) {
-        g_fnirs_ctx.config.config[i] = 0xFFFF;  /* ËùÓĞ16Î»¶¼ÖÃ1 */
-        g_fnirs_ctx.config.detector_open[i] = 16;  /* Ã¿¸ö¹âÔ´¿ªÆô16¸öÌ½²âÆ÷ */
+        g_fnirs_ctx.config.config[i] = 0xFFFF;  /* æ‰€æœ‰16ä½éƒ½ç½®1 */
+        g_fnirs_ctx.config.detector_open[i] = 16;  /* æ¯ä¸ªå…‰æºå¼€å¯16ä¸ªæ¢æµ‹å™¨ */
         g_fnirs_ctx.config.detector_cumulative[i+1] = 
             g_fnirs_ctx.config.detector_open[i] + g_fnirs_ctx.config.detector_cumulative[i];
     }
 }
 
 /**
- * @brief ¸üĞÂ»º³åÇø³¤¶È¼ÆËã
- * @note ¸ù¾İµ±Ç°ÅäÖÃÖØĞÂ¼ÆËãÊı¾İÖ¡³¤¶È
+ * @brief æ›´æ–°ç¼“å†²åŒºé•¿åº¦è®¡ç®—
+ * @note æ ¹æ®å½“å‰é…ç½®é‡æ–°è®¡ç®—æ•°æ®å¸§é•¿åº¦
  */
 static void _fnirs_update_buffer_length(void)
 {
-    /* ¼ÆËãÊı¾İÖ¡³¤¶È = ÓĞĞ§Êı¾İ + 4×Ö½Ú°üÍ· */
+    /* è®¡ç®—æ•°æ®å¸§é•¿åº¦ = æœ‰æ•ˆæ•°æ® + 4å­—èŠ‚åŒ…å¤´ */
     int valid_channels = g_fnirs_ctx.config.detector_cumulative[g_fnirs_ctx.config.source_count];
     g_fnirs_ctx.data_buffer.data_frame_len = valid_channels * LEN_ONE_SOURCE + 4;
     
-    /* ¼ÆËã×Ü·¢ËÍ³¤¶È = Êı¾İÖ¡³¤¶È + Ö¡Í·³¤¶È */
+    /* è®¡ç®—æ€»å‘é€é•¿åº¦ = æ•°æ®å¸§é•¿åº¦ + å¸§å¤´é•¿åº¦ */
     g_fnirs_ctx.data_buffer.send_buffer_len = g_fnirs_ctx.data_buffer.data_frame_len + FRAME_FIXED_HEADER_LENGTH;
 }
 
 /**
- * @brief fNIRSÏµÍ³³õÊ¼»¯
- * @note ³õÊ¼»¯ËùÓĞÓ²¼ş×é¼şºÍÊı¾İ½á¹¹
+ * @brief fNIRSç³»ç»Ÿåˆå§‹åŒ–
+ * @note åˆå§‹åŒ–æ‰€æœ‰ç¡¬ä»¶ç»„ä»¶å’Œæ•°æ®ç»“æ„
  */
 void nirs_init(void)
 {
-    /* ³õÊ¼»¯Ó²¼ş×é¼ş */
-    tlc5940_init();          /* ³õÊ¼»¯LEDÇı¶¯Æ÷ */
-    ads1258init();           /* ³õÊ¼»¯ADC */
-    init_data_frame_module();         /* ³õÊ¼»¯Êı¾İÖ¡½á¹¹ */
-    fnirs_struct_init();     /* ³õÊ¼»¯fNIRSÊı¾İ½á¹¹ */
-    sdio_init();              /* ³õÊ¼»¯CSNP32 sd¿¨ */
+    /* åˆå§‹åŒ–ç¡¬ä»¶ç»„ä»¶ */
+    tlc5940_init();          /* åˆå§‹åŒ–LEDé©±åŠ¨å™¨ */
+    ads1258init();           /* åˆå§‹åŒ–ADC */
+    init_data_frame_module();         /* åˆå§‹åŒ–æ•°æ®å¸§ç»“æ„ */
+    fnirs_struct_init();     /* åˆå§‹åŒ–fNIRSæ•°æ®ç»“æ„ */
+    sdio_init();              /* åˆå§‹åŒ–CSNP32 sdå¡ */
     
     DebugPrintf("fNIRS  init done\r\n");
 }
 
 /******************************************************************************
- * ÅäÖÃº¯Êı
+ * é…ç½®å‡½æ•°
  ******************************************************************************/
 
 /**
- * @brief ÉèÖÃfNIRS²ÉÑùÂÊ
- * @param sample_rate_hz ²ÉÑùÂÊÖµ£¨Hz£©
- * @return ²Ù×÷×´Ì¬£º0=Ê§°Ü£¬1=³É¹¦
+ * @brief è®¾ç½®fNIRSé‡‡æ ·ç‡
+ * @param sample_rate_hz é‡‡æ ·ç‡å€¼ï¼ˆHzï¼‰
+ * @return æ“ä½œçŠ¶æ€ï¼š0=å¤±è´¥ï¼Œ1=æˆåŠŸ
  */
 uint8_t nirs_set_sample_rate(uint8_t sample_rate_hz)
 {
@@ -211,7 +211,7 @@ uint8_t nirs_set_sample_rate(uint8_t sample_rate_hz)
     }
     
     if (ret) {
-        /* ¼ÆËã²¢ÉèÖÃ¶¨Ê±Æ÷ÖØÔØÖµ */
+        /* è®¡ç®—å¹¶è®¾ç½®å®šæ—¶å™¨é‡è½½å€¼ */
         uint16_t period_value = (40000) / (g_fnirs_ctx.config.source_count * 2) / g_fnirs_ctx.sample_rate;
         __HAL_TIM_SET_PRESCALER(g_tlc.tlctim, period_value - 1);
         DebugPrintf("set sample rate: %d Hz\r\n", g_fnirs_ctx.sample_rate);
@@ -221,17 +221,17 @@ uint8_t nirs_set_sample_rate(uint8_t sample_rate_hz)
 }
 
 /**
- * @brief ÅäÖÃfNIRS¹âÔ´-Ì½²âÆ÷ÍøÂç
- * @param config_data ÅäÖÃÊı¾İÊı×éÖ¸Õë
- * @param data_len ÅäÖÃÊı¾İ³¤¶È
- * @return ²Ù×÷×´Ì¬£º0=Ê§°Ü£¬1=³É¹¦
+ * @brief é…ç½®fNIRSå…‰æº-æ¢æµ‹å™¨ç½‘ç»œ
+ * @param config_data é…ç½®æ•°æ®æ•°ç»„æŒ‡é’ˆ
+ * @param data_len é…ç½®æ•°æ®é•¿åº¦
+ * @return æ“ä½œçŠ¶æ€ï¼š0=å¤±è´¥ï¼Œ1=æˆåŠŸ
  */
 uint8_t nirs_config(uint8_t* config_data, uint8_t data_len)
 {
-    /* ÇåÁãÅäÖÃ½á¹¹Ìå */
+    /* æ¸…é›¶é…ç½®ç»“æ„ä½“ */
     memset(&g_fnirs_ctx.config, 0, sizeof(g_fnirs_ctx.config));
     
-    /* ¶ÁÈ¡¹âÔ´ºÍÌ½²âÆ÷ÊıÁ¿ */
+    /* è¯»å–å…‰æºå’Œæ¢æµ‹å™¨æ•°é‡ */
     g_fnirs_ctx.config.source_count = config_data[0];
     g_fnirs_ctx.config.detector_count = config_data[1];
     
@@ -241,11 +241,11 @@ uint8_t nirs_config(uint8_t* config_data, uint8_t data_len)
         return 0;
     }
     
-    /* ½âÎöÃ¿¸ö¹âÔ´µÄÅäÖÃ */
+    /* è§£ææ¯ä¸ªå…‰æºçš„é…ç½® */
     for (uint8_t source_idx = 0; source_idx < g_fnirs_ctx.config.source_count; source_idx++) {
         uint16_t detector_config = 0;
         
-        /* ¹¹½¨Ì½²âÆ÷ÅäÖÃ×Ö */
+        /* æ„å»ºæ¢æµ‹å™¨é…ç½®å­— */
         for (uint8_t byte_idx = 0; byte_idx < data_len; byte_idx++) {
             uint8_t data_index = source_idx * data_len + 2 + byte_idx;
             detector_config |= config_data[data_index]<<(byte_idx*8);
@@ -253,7 +253,7 @@ uint8_t nirs_config(uint8_t* config_data, uint8_t data_len)
         }
         g_fnirs_ctx.config.config[source_idx] = detector_config;
         
-        /* Í³¼Æ¸Ã¹âÔ´¿ªÆôµÄÌ½²âÆ÷ÊıÁ¿ */
+        /* ç»Ÿè®¡è¯¥å…‰æºå¼€å¯çš„æ¢æµ‹å™¨æ•°é‡ */
         uint8_t open_count = 0;
         for (uint8_t detector_idx = 0; detector_idx < g_fnirs_ctx.config.detector_count; detector_idx++) {
             if (GET_BIT(detector_config, detector_idx)) {
@@ -262,29 +262,29 @@ uint8_t nirs_config(uint8_t* config_data, uint8_t data_len)
         }
         g_fnirs_ctx.config.detector_open[source_idx] = open_count;
         
-        /* ¼ÆËãÀÛ»ı¿ªÆôµÄÌ½²âÆ÷ÊıÁ¿ */
+        /* è®¡ç®—ç´¯ç§¯å¼€å¯çš„æ¢æµ‹å™¨æ•°é‡ */
         g_fnirs_ctx.config.detector_cumulative[source_idx + 1] = 
             open_count + g_fnirs_ctx.config.detector_cumulative[source_idx];
     }
     
     HAL_Delay(10);
-    /* ¸üĞÂ»º³åÇø³¤¶È */
+    /* æ›´æ–°ç¼“å†²åŒºé•¿åº¦ */
     _fnirs_update_buffer_length();
     
-    /* ÖØĞÂ³õÊ¼»¯Êı¾İ»º³åÇø */
-    init_data_frame(g_fnirs_ctx.data_buffer.send_buffer[0].channel_data, SENSOR_FNIRS, CMD_DATA_TRANSMISSION, 
+    /* é‡æ–°åˆå§‹åŒ–æ•°æ®ç¼“å†²åŒº */
+    init_data_frame(g_fnirs_ctx.data_buffer.send_buffer[0].channel_data, SENSOR_FNIRS, CMD_START, 
                 g_fnirs_ctx.data_buffer.data_frame_len);
-    init_data_frame(g_fnirs_ctx.data_buffer.send_buffer[1].channel_data, SENSOR_FNIRS, CMD_DATA_TRANSMISSION, 
+    init_data_frame(g_fnirs_ctx.data_buffer.send_buffer[1].channel_data, SENSOR_FNIRS, CMD_START, 
                 g_fnirs_ctx.data_buffer.data_frame_len);
     
-    /* ³õÊ¼»¯SD¿¨»º³åÇø */
+    /* åˆå§‹åŒ–SDå¡ç¼“å†²åŒº */
     g_fnirs_ctx.data_buffer.sd_buffer.sd_base_address = 0;
     g_fnirs_ctx.data_buffer.sd_buffer.buffer_idx = 0;
     g_fnirs_ctx.data_buffer.sd_buffer.batches_per_block = BLOCKSIZE / g_fnirs_ctx.data_buffer.send_buffer_len;
     g_fnirs_ctx.data_buffer.sd_buffer.blocks_to_write = 1;
     g_fnirs_ctx.data_buffer.sd_buffer.buffer_size = g_fnirs_ctx.data_buffer.sd_buffer.blocks_to_write * BLOCKSIZE;
     
-    /* ¸üĞÂÏµÍ³×´Ì¬ */
+    /* æ›´æ–°ç³»ç»ŸçŠ¶æ€ */
     g_fnirs_ctx.state = FNIRS_STATE_READY;
     
     DebugPrintf("fNIRS config done: s_num=%d, d_num=%d, dlen=%d\r\n", 
@@ -295,27 +295,27 @@ uint8_t nirs_config(uint8_t* config_data, uint8_t data_len)
 }
 
 /******************************************************************************
- * ¿ØÖÆº¯Êı
+ * æ§åˆ¶å‡½æ•°
  ******************************************************************************/
 
 /**
- * @brief Æô¶¯fNIRSÊı¾İ²É¼¯
- * @return ²Ù×÷×´Ì¬£º1=³É¹¦
+ * @brief å¯åŠ¨fNIRSæ•°æ®é‡‡é›†
+ * @return æ“ä½œçŠ¶æ€ï¼š1=æˆåŠŸ
  */
 uint8_t nirs_start(void)
 {
     DebugPrintf("===== start fnirs =====\r\n");
     
-    /* ¸üĞÂÏµÍ³×´Ì¬ */
+    /* æ›´æ–°ç³»ç»ŸçŠ¶æ€ */
     g_fnirs_ctx.state = FNIRS_STATE_START;
     g_fnirs_ctx.timer_count = 0;
     
-    /* ÖØÖÃ¶¨Ê±Æ÷ */
+    /* é‡ç½®å®šæ—¶å™¨ */
     HAL_TIM_PWM_Start(g_tlc.tlctim, TIM_CHANNEL_1);
     HAL_TIM_IC_Start_IT(g_tlc.tlctim, TIM_CHANNEL_2);
     
     
-    /* ³õÊ¼»¯Êı¾İ»º³åÇø */
+    /* åˆå§‹åŒ–æ•°æ®ç¼“å†²åŒº */
     g_fnirs_ctx.data_buffer.buffer_idx = 0;
     g_fnirs_ctx.data_buffer.data_save_addr = 
     g_fnirs_ctx.data_buffer.send_buffer[g_fnirs_ctx.data_buffer.buffer_idx].channel_data + FRAME_DATA_POSITION;
@@ -325,15 +325,15 @@ uint8_t nirs_start(void)
 }
 
 /**
- * @brief Í£Ö¹fNIRSÊı¾İ²É¼¯
- * @return ²Ù×÷×´Ì¬£º1=³É¹¦
+ * @brief åœæ­¢fNIRSæ•°æ®é‡‡é›†
+ * @return æ“ä½œçŠ¶æ€ï¼š1=æˆåŠŸ
  */
 uint8_t nirs_stop(void)
 {
     DebugPrintf("===== stop fNIRS=====\r\n");
     
     
-    /* Í£Ö¹ADC×ª»»ºÍ¶¨Ê±Æ÷ */
+    /* åœæ­¢ADCè½¬æ¢å’Œå®šæ—¶å™¨ */
     stopConversions();
   
     HAL_TIM_PWM_Stop(g_tlc.gsclk, g_tlc.tim_chn);
@@ -344,18 +344,18 @@ uint8_t nirs_stop(void)
     __HAL_TIM_SET_CAPTUREPOLARITY(g_tlc.tlctim, TIM_CHANNEL_2, TIM_ICPOLARITY_RISING);
   
   
-    /* ¹Ø±ÕËùÓĞLED */
+    /* å…³é—­æ‰€æœ‰LED */
     tlcSetGS(0, g_tlc.red_led, 0, 0);
     
-    /* ¸üĞÂÏµÍ³×´Ì¬ */
+    /* æ›´æ–°ç³»ç»ŸçŠ¶æ€ */
     g_fnirs_ctx.state = FNIRS_STATE_STOP;
     
     return 1;
 }
 
 /**
- * @brief »ñÈ¡fNIRSÏµÍ³µ±Ç°×´Ì¬
- * @return µ±Ç°ÏµÍ³×´Ì¬
+ * @brief è·å–fNIRSç³»ç»Ÿå½“å‰çŠ¶æ€
+ * @return å½“å‰ç³»ç»ŸçŠ¶æ€
  */
 uint8_t nirs_get_state(void)
 {
@@ -363,8 +363,8 @@ uint8_t nirs_get_state(void)
 }
 
 /**
- * @brief »ñÈ¡µ±Ç°Êı¾İÖ¡³¤¶È
- * @return Êı¾İÖ¡³¤¶È£¨×Ö½Ú£©
+ * @brief è·å–å½“å‰æ•°æ®å¸§é•¿åº¦
+ * @return æ•°æ®å¸§é•¿åº¦ï¼ˆå­—èŠ‚ï¼‰
  */
 uint16_t nirs_get_len(void)
 {
@@ -372,170 +372,172 @@ uint16_t nirs_get_len(void)
 }
 
 /******************************************************************************
- * Êı¾İ´¦Àíº¯Êı
+ * æ•°æ®å¤„ç†å‡½æ•°
  ******************************************************************************/
 
 /**
- * @brief ´¦ÀíADC²ÉÑùÊı¾İ²¢¼ÆËãÆ½¾ùÖµ
- * @param save_addr Êı¾İ±£´æµØÖ·
+ * @brief å¤„ç†ADCé‡‡æ ·æ•°æ®å¹¶è®¡ç®—å¹³å‡å€¼
+ * @param save_addr æ•°æ®ä¿å­˜åœ°å€
  */
 static void _fnirs_process_adc_samples(uint8_t i, uint8_t* save_addr)
 {
     if (g_adc_sample[i].sample_count > 0) {
-        /* ¼ÆËãÆ½¾ùÖµ */
+        /* è®¡ç®—å¹³å‡å€¼ */
         g_adc_sample[i].average_value = (uint32_t)(g_adc_sample[i].sample_sum / g_adc_sample[i].sample_count);
         
-        /* ±£´æ3×Ö½ÚÊı¾İ */
+        /* ä¿å­˜3å­—èŠ‚æ•°æ® */
         save_addr[0] = (g_adc_sample[i].average_value >> 16) & 0xFF;
         save_addr[1] = (g_adc_sample[i].average_value >> 8) & 0xFF;
         save_addr[2] = g_adc_sample[i].average_value & 0xFF;
         DataConvert(10, save_addr);
-        /* ÖØÖÃ²ÉÑùÊı¾İ */
+        /* é‡ç½®é‡‡æ ·æ•°æ® */
         g_adc_sample[i].sample_sum = 0;
         g_adc_sample[i].sample_count = 0;
     }
 }
 
 /**
- * @brief ´¦Àíºì¹â²¨³¤²É¼¯
- * @param led_index LEDË÷Òı
- * @param detector_config Ì½²âÆ÷ÅäÖÃ×Ö
+ * @brief å¤„ç†çº¢å…‰æ³¢é•¿é‡‡é›†
+ * @param led_index LEDç´¢å¼•
+ * @param detector_config æ¢æµ‹å™¨é…ç½®å­—
  */
 static void _fnirs_handle_red_wavelength(uint8_t led_index, uint16_t detector_config)
 {
-    /* ¿ªÆôºì¹âLED */
+    /* å¼€å¯çº¢å…‰LED */
     tlcSetGS(led_index, g_tlc.red_led, 1, 1);
-    /* ÉèÖÃADCÍ¨µÀ */
+    /* è®¾ç½®ADCé€šé“ */
     set_ads_channel(&detector_config);
-    Delay_us(10);  /* µÈ´ıÎÈ¶¨ */
+    Delay_us(10);  /* ç­‰å¾…ç¨³å®š */
     
-    /* ¸ù¾İ¿ªÆôµÄÌ½²âÆ÷ÊıÁ¿¿ØÖÆADC×ª»» */
+    /* æ ¹æ®å¼€å¯çš„æ¢æµ‹å™¨æ•°é‡æ§åˆ¶ADCè½¬æ¢ */
     uint8_t open_detectors = g_fnirs_ctx.config.detector_open[led_index];
     if (open_detectors >= 1) {
-        ADS1258_START(HIGH);  /* ¿ªÊ¼ADC×ª»» */
+        ADS1258_START(HIGH);  /* å¼€å§‹ADCè½¬æ¢ */
     }
 }
 
 /**
- * @brief ´¦ÀíºìÍâ¹â²¨³¤²É¼¯
- * @param led_index LEDË÷Òı
- * @param detector_config Ì½²âÆ÷ÅäÖÃ×Ö
+ * @brief å¤„ç†çº¢å¤–å…‰æ³¢é•¿é‡‡é›†
+ * @param led_index LEDç´¢å¼•
+ * @param detector_config æ¢æµ‹å™¨é…ç½®å­—
  */
 static void _fnirs_handle_ir_wavelength(uint8_t led_index, uint16_t detector_config)
 {
-    /* ¹Ø±Õºì¹âLED£¬×¼±¸ºìÍâ¹â²É¼¯ */
+    /* å…³é—­çº¢å…‰LEDï¼Œå‡†å¤‡çº¢å¤–å…‰é‡‡é›† */
     tlcSetGS(led_index, g_tlc.red_led, 0, 1);
-    /* ÉèÖÃADCÍ¨µÀ */
+    /* è®¾ç½®ADCé€šé“ */
     set_ads_channel(&detector_config);
-    Delay_us(10);  /* µÈ´ıÎÈ¶¨ */
+    Delay_us(10);  /* ç­‰å¾…ç¨³å®š */
   
-    /* ¸ù¾İ¿ªÆôµÄÌ½²âÆ÷ÊıÁ¿¿ØÖÆADC×ª»» */
+    /* æ ¹æ®å¼€å¯çš„æ¢æµ‹å™¨æ•°é‡æ§åˆ¶ADCè½¬æ¢ */
     uint8_t open_detectors = g_fnirs_ctx.config.detector_open[led_index];
     if (open_detectors >= 1) {
-        ADS1258_START(HIGH);  /* ¿ªÊ¼ADC×ª»» */
+        ADS1258_START(HIGH);  /* å¼€å§‹ADCè½¬æ¢ */
     }
 }
 
 
 /**
- * @brief ·¢ËÍfNIRSÊı¾İ
- * @param srcbuf Ô´Êı¾İ»º³åÇøÖ¸Õë
- * @note ´¦ÀíÊı¾İ°ü²¢·¢ËÍµ½SPIºÍSD¿¨
+ * @brief å‘é€fNIRSæ•°æ®
+ * @param srcbuf æºæ•°æ®ç¼“å†²åŒºæŒ‡é’ˆ
+ * @note å¤„ç†æ•°æ®åŒ…å¹¶å‘é€åˆ°SPIå’ŒSDå¡
  */
 void nirs_data_send(void)
 {
-    /* Ö¸Ê¾µÆÉÁË¸ */
+    /* æŒ‡ç¤ºç¯é—ªçƒ */
     SwitchLED();
     
-    /* »ñÈ¡µ±Ç°»º³åÇøÅäÖÃ */
+    /* è·å–å½“å‰ç¼“å†²åŒºé…ç½® */
     uint8_t* srcbuf = g_fnirs_ctx.data_buffer.send_buffer[g_fnirs_ctx.data_buffer.buffer_idx].channel_data;
+    UPLINK_FRAME_CODE stream_command = (get_device_mode() == DEVICE_MODE_QUALITY) ? FRAME_QUALITY_DATA : FRAME_STREAM_DATA;
+    srcbuf[FRAME_CMD_POSITION] = (uint8_t)stream_command;
     
-  /* Ìî³äÊı¾İ°ü±àºÅ£¨´ó¶Ë¸ñÊ½£© */
+  /* å¡«å……æ•°æ®åŒ…ç¼–å·ï¼ˆå¤§ç«¯æ ¼å¼ï¼‰ */
     uint32_t packet_number_be = ENDIAN_SWAP_32B(g_fnirs_ctx.data_buffer.period_counter);
     memcpy(srcbuf + g_fnirs_ctx.data_buffer.send_buffer_len - 6, 
            &packet_number_be, sizeof(packet_number_be));
     
-    /* ¼ÆËãCRCĞ£ÑéÂë */
+    /* è®¡ç®—CRCæ ¡éªŒç  */
     uint16_t crc_value = calculate_crc16(srcbuf, g_fnirs_ctx.data_buffer.send_buffer_len - 2);
     uint16_t crc_value_be = ENDIAN_SWAP_16B(crc_value);
     memcpy(srcbuf + g_fnirs_ctx.data_buffer.send_buffer_len - 2, 
            &crc_value_be, sizeof(crc_value_be));
     
-    /* Í¨¹ıSPI DMA·¢ËÍÊı¾İ */
+    /* é€šè¿‡SPI DMAå‘é€æ•°æ® */
     spi_transmit_dma(srcbuf, g_fnirs_ctx.data_buffer.send_buffer_len, 1000);
     //DebugPrintf("Send data packet:%d.\r\n", g_fnirs_ctx.data_buffer.period_counter);
     
-    /* Ğ´ÈëSD¿¨ */
+    /* å†™å…¥SDå¡ */
     _fnirs_write_sd_card(srcbuf, g_fnirs_ctx.data_buffer.period_counter);
     
-    /* ÇĞ»»»º³åÇøË÷Òı */
+    /* åˆ‡æ¢ç¼“å†²åŒºç´¢å¼• */
     g_fnirs_ctx.data_buffer.buffer_idx = (g_fnirs_ctx.data_buffer.buffer_idx == 1) ? 0 : 1;
     g_fnirs_ctx.data_buffer.period_counter++;
     
-    /* ¸üĞÂÊı¾İ±£´æµØÖ· */
+    /* æ›´æ–°æ•°æ®ä¿å­˜åœ°å€ */
     g_fnirs_ctx.data_buffer.data_save_addr = 
         g_fnirs_ctx.data_buffer.send_buffer[g_fnirs_ctx.data_buffer.buffer_idx].channel_data + FRAME_DATA_POSITION;
 }
 
 /**
- * @brief ¶¨Ê±Æ÷ÖĞ¶Ï´¦Àíº¯Êı
- * @param flag ¹âÔ´¿ª¹Ø¿ØÖÆ
- * @note ÔÚ¶¨Ê±Æ÷ÖĞ¶ÏÖĞµ÷ÓÃ£¬¿ØÖÆ²É¼¯Ê±Ğò
+ * @brief å®šæ—¶å™¨ä¸­æ–­å¤„ç†å‡½æ•°
+ * @param flag å…‰æºå¼€å…³æ§åˆ¶
+ * @note åœ¨å®šæ—¶å™¨ä¸­æ–­ä¸­è°ƒç”¨ï¼Œæ§åˆ¶é‡‡é›†æ—¶åº
  */
 void nirs_timer_handle(uint8_t flag)
 {
-    /* ¼ì²éÏµÍ³×´Ì¬ */
+    /* æ£€æŸ¥ç³»ç»ŸçŠ¶æ€ */
     if (g_fnirs_ctx.state != FNIRS_STATE_START) {
         return;
     }
     static uint8_t half_cycle = 0, wavelength_type = 0, led_index = 0;
     static uint16_t open_detectors = 0;
     
-    /* PWMÉÏÉıÑØ£¬¿ªÆôled  */
+    /* PWMä¸Šå‡æ²¿ï¼Œå¼€å¯led  */
     if(flag == 1){
-      /* ÇåÁãADC²ÉÑùÊı¾İ */
+      /* æ¸…é›¶ADCé‡‡æ ·æ•°æ® */
       memset(&g_adc_sample, 0, sizeof(g_adc_sample));
       
       
-     /* ¼ÆËãµ±Ç°´¦ÀíµÄLEDºÍ²¨³¤ÀàĞÍ */
-      half_cycle = g_fnirs_ctx.timer_count / 2;  /* Ã¿¸öLEDÓĞÁ½¸ö²¨³¤ÖÜÆÚ */
-      wavelength_type = g_fnirs_ctx.timer_count % 2;  /* 0=ºì¹â, 1=ºìÍâ¹â */
+     /* è®¡ç®—å½“å‰å¤„ç†çš„LEDå’Œæ³¢é•¿ç±»å‹ */
+      half_cycle = g_fnirs_ctx.timer_count / 2;  /* æ¯ä¸ªLEDæœ‰ä¸¤ä¸ªæ³¢é•¿å‘¨æœŸ */
+      wavelength_type = g_fnirs_ctx.timer_count % 2;  /* 0=çº¢å…‰, 1=çº¢å¤–å…‰ */
       led_index = half_cycle % g_fnirs_ctx.config.source_count;
       
-      /* ¸ù¾İ¿ªÆôµÄÌ½²âÆ÷ÊıÁ¿¿ØÖÆADC×ª»» */
+      /* æ ¹æ®å¼€å¯çš„æ¢æµ‹å™¨æ•°é‡æ§åˆ¶ADCè½¬æ¢ */
       open_detectors = g_fnirs_ctx.config.detector_open[led_index];
       HAL_TIM_PWM_Stop(g_tlc.gsclk, g_tlc.tim_chn);
-      /* ¸ù¾İ²¨³¤ÀàĞÍ´¦Àí */
+      /* æ ¹æ®æ³¢é•¿ç±»å‹å¤„ç† */
       if (wavelength_type == LED_RED_WAVELENGTH) {
-        /* ¿ªÆôºì¹âLED */
+        /* å¼€å¯çº¢å…‰LED */
           tlcSetGS(led_index, g_tlc.red_led, 1, 1);
       } else {
-        /* ¿ªÆôºìÍâ¹âLED */
+        /* å¼€å¯çº¢å¤–å…‰LED */
           tlcSetGS(led_index, g_tlc.red_led, 0, 1);
       }
-      /* ÉèÖÃADCÍ¨µÀ */
+      /* è®¾ç½®ADCé€šé“ */
       
       HAL_TIM_PWM_Start(g_tlc.gsclk, g_tlc.tim_chn);
       __HAL_TIM_SET_COUNTER(&htim2, 0);
       set_ads_channel(&g_fnirs_ctx.config.config[led_index]);
-      Delay_us(10);  /* µÈ´ıÎÈ¶¨ */
+      Delay_us(10);  /* ç­‰å¾…ç¨³å®š */
       if (open_detectors) {
-          ADS1258_START(HIGH);  /* ¿ªÊ¼ADC×ª»» */
+          ADS1258_START(HIGH);  /* å¼€å§‹ADCè½¬æ¢ */
           
       }
       
       g_fnirs_ctx.timer_count++;
       
-    }else if(flag == 2){ /* PWMÏÂ½µÑØ£¬¹Ø±Õled£¬²¢±£´æÊı¾İ */
+    }else if(flag == 2){ /* PWMä¸‹é™æ²¿ï¼Œå…³é—­ledï¼Œå¹¶ä¿å­˜æ•°æ® */
       
       //DebugPrintf("close led and stop adc\r\n");
-      ADS1258_START(LOW);               /* Í£Ö¹ADC×ª»» */
+      ADS1258_START(LOW);               /* åœæ­¢ADCè½¬æ¢ */
       Delay_us(20);
       
       //HAL_TIM_PWM_Stop(g_tlc.gsclk, g_tlc.tim_chn);
-      //tlcSetGS(0, g_tlc.red_led, 0, 0); /* ¹Ø±ÕËùÓĞLED */
+      //tlcSetGS(0, g_tlc.red_led, 0, 0); /* å…³é—­æ‰€æœ‰LED */
       
-      /* ´¦ÀíÖ®Ç°²É¼¯µÄÊı¾İ£¨³ıÁËµÚÒ»¸öÖÜÆÚ£© */
+      /* å¤„ç†ä¹‹å‰é‡‡é›†çš„æ•°æ®ï¼ˆé™¤äº†ç¬¬ä¸€ä¸ªå‘¨æœŸï¼‰ */
       if (g_fnirs_ctx.timer_count != 0) {
         uint8_t count = 0;
         uint16_t open_det = g_fnirs_ctx.config.config[led_index];
@@ -549,10 +551,10 @@ void nirs_timer_handle(uint8_t flag)
         }
         if(wavelength_type == 1){
           
-          g_fnirs_ctx.data_buffer.data_save_addr += count*6;  /* ÒÆ¶¯µ½ÏÂÒ»¸öÊı¾İÎ»ÖÃ */
+          g_fnirs_ctx.data_buffer.data_save_addr += count*6;  /* ç§»åŠ¨åˆ°ä¸‹ä¸€ä¸ªæ•°æ®ä½ç½® */
         }
         
-        /* ¼ì²éÊÇ·ñÍê³ÉÒ»ÂÖÍêÕûµÄ²É¼¯ */    
+        /* æ£€æŸ¥æ˜¯å¦å®Œæˆä¸€è½®å®Œæ•´çš„é‡‡é›† */    
         uint8_t total_cycles = g_fnirs_ctx.config.source_count * 2;
         if (g_fnirs_ctx.timer_count % total_cycles == 0) {
           g_fnirs_ready_flag = 1;
@@ -563,24 +565,24 @@ void nirs_timer_handle(uint8_t flag)
 }
 
 /**
- * @brief Ğ´ÈëSD¿¨Êı¾İ
- * @param data_buffer Êı¾İ»º³åÇøÖ¸Õë
- * @param period_number Êı¾İ°ü±àºÅ
+ * @brief å†™å…¥SDå¡æ•°æ®
+ * @param data_buffer æ•°æ®ç¼“å†²åŒºæŒ‡é’ˆ
+ * @param period_number æ•°æ®åŒ…ç¼–å·
  */
 static void _fnirs_write_sd_card(uint8_t* data_buffer, uint32_t period_number)
 {
     SD_CARD_STRUCT* sd_card = &g_fnirs_ctx.data_buffer.sd_buffer;
     
-    /* ¼ÆËãÔÚ»º³åÇøÖĞµÄÎ»ÖÃ */
+    /* è®¡ç®—åœ¨ç¼“å†²åŒºä¸­çš„ä½ç½® */
     uint8_t batch_offset = period_number % sd_card->batches_per_block;
     uint32_t block_offset = period_number / sd_card->batches_per_block;
     
-    /* ¸´ÖÆÊı¾İµ½SD¿¨»º³åÇø */
+    /* å¤åˆ¶æ•°æ®åˆ°SDå¡ç¼“å†²åŒº */
     uint8_t* dest_addr = sd_card->tx_buffer[sd_card->buffer_idx].buffer + 
                          batch_offset * g_fnirs_ctx.data_buffer.send_buffer_len;
     memcpy(dest_addr, data_buffer, g_fnirs_ctx.data_buffer.send_buffer_len);
     
-    /* ¼ì²éÊÇ·ñĞ´ÂúÒ»¸ö¿é */
+    /* æ£€æŸ¥æ˜¯å¦å†™æ»¡ä¸€ä¸ªå— */
     if (batch_offset == sd_card->batches_per_block - 1) {
         uint32_t block_address = sd_card->sd_base_address + block_offset * sd_card->blocks_to_write;
         
@@ -589,47 +591,48 @@ static void _fnirs_write_sd_card(uint8_t* data_buffer, uint32_t period_number)
             DebugPrintf("SD card write error\r\n");
         }
         
-        /* ÇĞ»»»º³åÇøË÷Òı */
+        /* åˆ‡æ¢ç¼“å†²åŒºç´¢å¼• */
         sd_card->buffer_idx = (sd_card->buffer_idx == 1) ? 0 : 1;
     }
 }
 
 
 /**
- * @brief ´ÓSD¿¨¶ÁÈ¡fNIRSÊı¾İ
- * @param package_number Êı¾İ°ü±àºÅ
+ * @brief ä»SDå¡è¯»å–fNIRSæ•°æ®
+ * @param package_number æ•°æ®åŒ…ç¼–å·
  */
 void sd_read_nirs(uint32_t package_number)
 {
     SD_CARD_STRUCT* sd_card = &g_fnirs_ctx.data_buffer.sd_buffer;
     
-    /* ¼ÆËãÊı¾İ°üÎ»ÖÃ */
+    /* è®¡ç®—æ•°æ®åŒ…ä½ç½® */
     uint8_t batch_offset = package_number % sd_card->batches_per_block;
     uint32_t block_offset = package_number / sd_card->batches_per_block;
     uint32_t block_address = sd_card->sd_base_address + block_offset * sd_card->blocks_to_write;
     
-    /* Ê¹ÓÃ±¸ÓÃ»º³åÇø£¨Ë÷Òı2£©½øĞĞ¶ÁÈ¡ */
+    /* ä½¿ç”¨å¤‡ç”¨ç¼“å†²åŒºï¼ˆç´¢å¼•2ï¼‰è¿›è¡Œè¯»å– */
     uint8_t* read_buffer = sd_card->tx_buffer[2].buffer;
     
-    /* ´ÓSD¿¨¶ÁÈ¡Êı¾İ */
+    /* ä»SDå¡è¯»å–æ•°æ® */
     if (sdio_read(read_buffer, block_address, sd_card->blocks_to_write) != HAL_OK) {
         DebugPrintf("SD card read error\r\n");
         return;
     }
     
-    /* ¶¨Î»µ½¾ßÌåµÄÊı¾İ°üÎ»ÖÃ */
+    /* å®šä½åˆ°å…·ä½“çš„æ•°æ®åŒ…ä½ç½® */
     uint8_t* data_packet = read_buffer + batch_offset * g_fnirs_ctx.data_buffer.send_buffer_len;
     
-    /* ĞŞ¸ÄÃüÁîÀàĞÍÎªÓ¦´ğ */
-    data_packet[FRAME_CMD_POSITION] = CMD_SUPPLEMENTARY;
+    data_packet[FRAME_CMD_POSITION] = FRAME_PATCHED_DATA;
     
-    /* ÖØĞÂ¼ÆËãCRCĞ£ÑéÂë */
+    /* é‡æ–°è®¡ç®—CRCæ ¡éªŒç  */
     uint16_t crc_value = calculate_crc16(data_packet, g_fnirs_ctx.data_buffer.send_buffer_len - 2);
     uint16_t crc_value_be = ENDIAN_SWAP_16B(crc_value);
     memcpy(data_packet + g_fnirs_ctx.data_buffer.send_buffer_len - 2, 
            &crc_value_be, sizeof(crc_value_be));
     
-    /* Í¨¹ıSPI·¢ËÍÊı¾İ */
-    spi_transmit_dma(data_packet, g_fnirs_ctx.data_buffer.send_buffer_len, 100);
+    /* ä¸²è¡Œå‘é€è¡¥åŒ…ï¼Œé¿å…æ‰¹é‡è¡¥åŒ…æ—¶ SPI DMA å›åŒ…äº’ç›¸è¦†ç›– */
+    if (spi_transmit_dma(data_packet, g_fnirs_ctx.data_buffer.send_buffer_len, 1000) != HAL_OK) {
+        DebugPrintf("Patch packet send failed: %lu\r\n", package_number);
+    }
 }
 

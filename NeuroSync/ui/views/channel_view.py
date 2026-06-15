@@ -54,11 +54,11 @@ class ChannelViewWidget(QWidget):
 
         if self.sensor_types & SensorTypes.EEG:
             param_layout.addWidget(QLabel("EEG 通道数:"))
-            self.spin_eeg = QSpinBox(); self.spin_eeg.setRange(1, 32); self.spin_eeg.setValue(32)
+            self.spin_eeg = QSpinBox(); self.spin_eeg.setRange(1, 32); self.spin_eeg.setValue(8)
             param_layout.addWidget(self.spin_eeg)
             
             param_layout.addWidget(QLabel("采样率(Hz):"))
-            self.combo_eeg_hz = QComboBox(); self.combo_eeg_hz.addItems(["500", "1000", "2000", "4000"])
+            self.combo_eeg_hz = QComboBox(); self.combo_eeg_hz.addItems(["500", "1000", "2000", "4000"]); self.combo_eeg_hz.setCurrentText("1000")
             param_layout.addWidget(self.combo_eeg_hz)
             self._add_vline(param_layout)
 
@@ -121,9 +121,9 @@ class ChannelViewWidget(QWidget):
         btn_layout = QHBoxLayout(self.bottom_frame)
         btn_layout.setContentsMargins(15, 5, 15, 5) # 设置底座内部留白
         
-        self.btn_clear = QPushButton("新建Montage")
-        self.btn_load = QPushButton("加载Montage")
-        self.btn_save = QPushButton("保存Montage")
+        self.btn_clear = QPushButton("新建模板")
+        self.btn_load = QPushButton("加载模板")
+        self.btn_save = QPushButton("保存模板")
         
         btn_layout.addWidget(self.btn_clear)
         btn_layout.addWidget(self.btn_load)

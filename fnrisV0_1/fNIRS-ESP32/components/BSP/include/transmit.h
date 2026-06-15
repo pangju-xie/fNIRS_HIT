@@ -37,16 +37,22 @@ typedef enum{
 }SENSOR_TYPE;   
 
 typedef enum{
-	CMD_CONN 					= 0xB0,
-	CMD_DISC 					= 0xB1,
+	CMD_CONN 					= 0xA0,
+	CMD_DISC 					= 0xA1,
+	CMD_SPR  					= 0xB0,
+	CMD_CFGC 					= 0xB1,
+	CMD_VBAT 					= 0xB2,
 	CMD_START					= 0xC0,
 	CMD_STOP 					= 0xC1,
-	CMD_VBAT 					= 0xC2,
-	CMD_SPR  					= 0xC3,
-	CMD_CFGC 					= 0xA0,
-	CMD_DATA 					= 0xA1,
-	CMD_SUPP 					= 0xA2,
+	CMD_QUALITY_TEST 			= 0xC2,
+	CMD_SUPP 					= 0xC3,
 }T_COMMAND;
+
+typedef enum{
+	FRAME_STREAM_DATA			= 0xD0,
+	FRAME_PATCHED_DATA			= 0xD1,
+	FRAME_QUALITY_DATA			= 0xD2,
+}T_UPLINK_FRAME_CODE;
 
 extern SENSOR_TYPE stype;
 

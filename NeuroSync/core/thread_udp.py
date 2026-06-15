@@ -42,13 +42,13 @@ class UdpWorker(QObject):
         try:
             self.socket = QUdpSocket(self) 
             if self.socket.bind(QHostAddress.Any, self.local_port, QUdpSocket.BindFlag.ReuseAddressHint):
-                logger.info(f"UDP 绑定成功: 端口 {self.local_port}")
+                logger.info("UDP 绑定成功，端口：%s", self.local_port)
                 self.socket.readyRead.connect(self._handle_ready_read)
             else:
                 raise Exception("端口绑定失败，可能被占用。")
         except Exception as e:
             self.signal_network_error.emit(str(e))
-            logger.error(f"UDP 初始化失败: {e}")
+            logger.error("UDP 初始化失败：%s", e)
 
     @pyqtSlot(bytes, str, int)
     def do_send(self, packet: bytes, ip: str, port: int):
@@ -114,10 +114,10 @@ class UdpWorker(QObject):
                             if bcast not in self.all_broadcast_ips:
                                 self.all_broadcast_ips.append(bcast)
             
-            logger.info(f"已开启全网段广播探测，目标网段包含: {self.all_broadcast_ips}")
+            logger.info("已开启全网段广播探测，目标广播地址：%s", self.all_broadcast_ips)
             
         except Exception as e:
-            logger.error(f"网络检测逻辑失败: {e}")
+            logger.error("网络检测逻辑失败：%s", e)
             raise Exception(f"Network detection failed: {e}")
     
     def _calc_broadcast(self, ip: str, netmask: str):
